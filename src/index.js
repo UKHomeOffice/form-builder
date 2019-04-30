@@ -5,8 +5,12 @@ import {Provider} from 'react-redux'
 import * as serviceWorker from './serviceWorker';
 import configureStore, {history} from '../src/core/store'
 import { ConnectedRouter } from 'connected-react-router'
-
+import { Formio} from 'react-formio';
 const store = configureStore();
+
+Formio.setProjectUrl("http://formio.lodev.xyz");
+Formio.setBaseUrl("http://formio.lodev.xyz");
+
 
 ReactDOM.render(
     <Provider store={store}>
