@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {Input, Menu} from 'semantic-ui-react';
+import { useKeycloak } from 'react-keycloak';
 
 const Header = () => {
+    const [keycloak] = useKeycloak();
     const [activeItem, setActiveItem] = useState("home");
     return <div>
         <Menu stackable>
@@ -20,8 +22,8 @@ const Header = () => {
                 <Menu.Item
                     name='logout'
                     active={activeItem === 'logout'}
-                    onClick={(e, {name}) => {
-                        setActiveItem(name)
+                    onClick={() => {
+                        keycloak.logout()
                     }}/>
             </Menu.Menu>
 

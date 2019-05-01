@@ -29,7 +29,8 @@ const FormList = ({forms}) => {
             <Table.Row>
                 <Table.HeaderCell>Form Identifier</Table.HeaderCell>
                 <Table.HeaderCell sorted={sort.column === 'title' ? sort.direction : null}
-                                  onClick={handleSort('title')}>Title</Table.HeaderCell>
+                                  onClick={
+                                      handleSort('title')}>Title</Table.HeaderCell>
                 <Table.HeaderCell sorted={sort.column === 'name' ? sort.direction : null}
                                   onClick={handleSort('name')}>Name</Table.HeaderCell>
                 <Table.HeaderCell sorted={sort.column === 'path' ? sort.direction : null}
@@ -54,6 +55,8 @@ const FormList = ({forms}) => {
                             <Button negative>Delete</Button>
                             <Button.Or />
                             <Button positive>Edit</Button>
+                            <Button.Or />
+                            <Button primary>Preview</Button>
                         </Button.Group>
                     </Table.Cell>
 
