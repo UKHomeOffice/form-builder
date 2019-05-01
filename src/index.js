@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
 import {Provider} from 'react-redux'
 import * as serviceWorker from './serviceWorker';
-import configureStore, {history} from '../src/core/store'
-import { ConnectedRouter } from 'connected-react-router'
-import { Formio} from 'react-formio';
+import {Formio} from 'react-formio';
+import {Router, View} from 'react-navi'
+import routes from './core/routes';
+import {App} from './App';
+import configureStore from '../src/core/store'
+
 const store = configureStore();
 
 Formio.setProjectUrl("http://formio.lodev.xyz");
@@ -14,11 +16,13 @@ Formio.setBaseUrl("http://formio.lodev.xyz");
 
 ReactDOM.render(
     <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <>
-                <App/>
-            </>
-        </ConnectedRouter>
+        <Router routes={routes}>
+            <App>
+                <Suspense fallback={null}>
+                    <View/>
+                </Suspense>
+            </App>
+        </Router>
     </Provider>,
     document.getElementById('root')
 );

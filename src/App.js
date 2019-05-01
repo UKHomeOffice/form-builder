@@ -1,15 +1,19 @@
 import React from 'react';
 import './App.scss';
 import Header from "./common/Header";
-import Main from "./core/Main";
 import Footer from "./common/Footer";
+import {NavNotFoundBoundary, useLoadingRoute} from "react-navi";
+import PageNotFound from "./pages/PageNotFound";
 
-const App = () => {
+export const App = ({children}) => {
+    const loadingRoute = useLoadingRoute();
     return <div>
         <Header/>
-        <Main/>
+        <main>
+            <NavNotFoundBoundary render={PageNotFound}>
+                {children || null}
+            </NavNotFoundBoundary>
+        </main>
         <Footer/>
     </div>
 };
-
-export default App;

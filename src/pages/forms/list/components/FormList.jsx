@@ -1,7 +1,7 @@
 import React from 'react';
 
-const FormList = () => (
-    <div>FormList</div>
-);
+const FormList = () => {
+    return <div>FormList</div>
+};
 
 export default FormList;
