@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {Button, Icon, Pagination, Table} from 'semantic-ui-react'
+import {Button, Confirm, Icon, Pagination, Table} from 'semantic-ui-react'
 import _ from 'lodash'
-import { useNavigation } from 'react-navi'
+import {useNavigation} from 'react-navi'
+import DeleteFormButton from "./DeleteFormButton";
 
 const FormList = ({forms}) => {
     const navigation = useNavigation();
@@ -61,7 +62,7 @@ const FormList = ({forms}) => {
                     <Table.Cell>{form.display ? form.display : 'form'}</Table.Cell>
                     <Table.Cell>
                         <Button.Group>
-                            <Button negative>Delete</Button>
+                            <DeleteFormButton form={form}/>
                             <Button.Or/>
                             <Button positive>Edit</Button>
                             <Button.Or/>
@@ -89,5 +90,7 @@ const FormList = ({forms}) => {
         </Table.Footer>
     </Table>
 };
+
+
 
 export default FormList;
