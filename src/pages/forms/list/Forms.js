@@ -8,12 +8,7 @@ export default mount({
         async getView(request) {
             const forms = await axios.get(`${process.env.REACT_APP_FORMIO_URL}/form?select=title,path,name,display`)
                 .then(res => res.data);
-            return <Forms forms={forms}/>
+            return <FormList forms={forms}/>
         }
     })
 })
-const Forms = ({forms}) => {
-    return <FormList forms={forms}/>
-};
-
-
