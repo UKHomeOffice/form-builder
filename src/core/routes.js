@@ -8,7 +8,7 @@ import {Loader} from "semantic-ui-react";
 
 
 const routes = mount({
-    '/': route({
+    '/home': route({
         title: 'Home',
         view: <Home/>
     }),
