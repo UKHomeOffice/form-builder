@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {Button, Icon, Pagination, Table} from 'semantic-ui-react'
 import _ from 'lodash'
+import { useNavigation } from 'react-navi'
 
 const FormList = ({forms}) => {
-
+    const navigation = useNavigation();
     const [sort, setSort] = useState({
         column: null,
         direction: null,
@@ -80,7 +81,7 @@ const FormList = ({forms}) => {
                 </Table.HeaderCell> : null}
                 <Table.HeaderCell colSpan={forms.length === 0 ? '6' : '2'}>
                     <Button floated='right' icon labelPosition='left' primary size='small'
-                            onClick={() => alert("hello")}>
+                            onClick={() => navigation.navigate('/forms/create')}>
                         <Icon name='wpforms'/>Create form
                     </Button>
                 </Table.HeaderCell>
