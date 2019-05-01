@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^4.3.1",
+    "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
@@ -12,6 +12,7 @@
     "jest-dom": "^3.1.4",
     "jest-enzyme": "^7.0.2",
     "keycloak-js": "^6.0.1",
+    "lodash": "^4.17.11",
     "navi": "^0.12.6",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
@@ -26,7 +27,9 @@
     "react-test-renderer": "^16.8.6",
     "react-testing-library": "^7.0.0",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.86.0"
   },
   "scripts": {
     "start": "react-scripts start",

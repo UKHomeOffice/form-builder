@@ -1,21 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux'
 import * as serviceWorker from './serviceWorker';
-import {Formio} from 'react-formio';
-import {App} from './App';
-import configureStore from './core/configureStore'
-
-const store = configureStore();
-
-Formio.setProjectUrl("http://formio.lodev.xyz");
-Formio.setBaseUrl("http://formio.lodev.xyz");
-
+import {App} from "./App";
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App/>
-    </Provider>,
+    <App/>,
     document.getElementById('root')
 );
 

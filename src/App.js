@@ -1,10 +1,17 @@
-import React, {Suspense} from 'react';
+import React from 'react';
 import './App.scss';
-import {Router, View} from "react-navi";
-import routes from "./core/routes";
-import {Main} from "./core/Main";
+import {AppRouter} from "./core/routes";
 import Keycloak from 'keycloak-js';
 import {KeycloakProvider} from 'react-keycloak';
+import {Provider} from "react-redux";
+import {Formio} from 'react-formio';
+import configureStore from './core/configureStore'
+import {Loader} from "semantic-ui-react";
+
+const store = configureStore();
+Formio.setProjectUrl(process.env.REACT_APP_FORMIO_URL);
+Formio.setBaseUrl(process.env.REACT_APP_FORMIO_URL);
+
 
 const keycloak = new Keycloak({
     "realm": process.env.REACT_APP_AUTH_REALM,
@@ -14,14 +21,11 @@ const keycloak = new Keycloak({
 
 export const App = () => (
     <KeycloakProvider keycloak={keycloak} initConfig={{
-        onLoad: 'login-required'
-    }} LoadingComponent={() => <div>Loading</div>}>
-        <Router routes={routes}>
-            <Main>
-                <Suspense fallback={null}>
-                    <View/>
-                </Suspense>
-            </Main>
-        </Router>
+        onLoad: 'login-required',
+        checkLoginIframe: false,
+    }} LoadingComponent={() => <Loader active inline='centered' size='large'>Loading</Loader>}>
+        <Provider store={store}>
+            <AppRouter/>
+        </Provider>
     </KeycloakProvider>
 );
