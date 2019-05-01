@@ -1,19 +1,27 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import './App.scss';
-import Header from "./common/Header";
-import Footer from "./common/Footer";
-import {NavNotFoundBoundary, useLoadingRoute} from "react-navi";
-import PageNotFound from "./pages/PageNotFound";
+import {Router, View} from "react-navi";
+import routes from "./core/routes";
+import {Main} from "./core/Main";
+import Keycloak from 'keycloak-js';
+import {KeycloakProvider} from 'react-keycloak';
 
-export const App = ({children}) => {
-    const loadingRoute = useLoadingRoute();
-    return <div>
-        <Header/>
-        <main>
-            <NavNotFoundBoundary render={PageNotFound}>
-                {children || null}
-            </NavNotFoundBoundary>
-        </main>
-        <Footer/>
-    </div>
-};
+const keycloak = new Keycloak({
+    "realm": process.env.REACT_APP_AUTH_REALM,
+    "url": process.env.REACT_APP_AUTH_URL,
+    "clientId": process.env.REACT_APP_AUTH_CLIENT_ID
+});
+
+export const App = () => (
+    <KeycloakProvider keycloak={keycloak} initConfig={{
+        onLoad: 'login-required'
+    }} LoadingComponent={() => <div>Loading</div>}>
+        <Router routes={routes}>
+            <Main>
+                <Suspense fallback={null}>
+                    <View/>
+                </Suspense>
+            </Main>
+        </Router>
+    </KeycloakProvider>
+);

@@ -1,7 +1,9 @@
 import React from 'react';
 
-const FormDetail = ({}) => (
-    <div>FormDetail</div>
+const FormDetail = ({form}) => (
+    <div>
+        {form.id}
+    </div>
 );
 
 export default FormDetail;

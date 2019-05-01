@@ -1,4 +1,4 @@
-import {mount, route} from 'navi'
+import {lazy, mount, route} from 'navi'
 import Home from "../pages/home/component/Home";
 import React from "react";
 
@@ -8,10 +8,7 @@ const routes = mount({
         title: 'Home',
         view: <Home/>
     }),
-    '/hello': route({
-        title: 'Home2',
-        view: <Home/>
-    })
+    '/forms': lazy(() => import('../pages/forms/list/Forms'))
 });
 
 export default routes;
