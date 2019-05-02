@@ -37,7 +37,7 @@ export default mount({
         view: <CreateFormBuilder/>
     }),
     '/file-upload': route({
-        title: 'Create form with file upload',
+        title: 'Create form via file upload',
         view: <CreateFormFileUpload/>
     })
 });

@@ -27,6 +27,8 @@ export const AppRouter = () => {
     if (!initialised) {
         return <div style={centerStyle}><Loader active inline='centered' size='large'>Loading</Loader></div>;
     }
+
+
     return (
         <Router routes={routes} context={{isAuthenticated: keycloak.authenticated}}>
             <Main>

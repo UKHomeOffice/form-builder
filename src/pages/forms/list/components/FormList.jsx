@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, Icon, Pagination, Table} from 'semantic-ui-react'
 import _ from 'lodash'
 import {useNavigation} from 'react-navi'
-import DeleteFormButton from "./DeleteFormButton";
+import DeleteFormButton from "../../common/DeleteFormButton";
 
 const FormList = ({forms}) => {
     const navigation = useNavigation();
