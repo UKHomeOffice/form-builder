@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Confirm, Icon, Pagination, Table} from 'semantic-ui-react'
+import {Button, Icon, Pagination, Table} from 'semantic-ui-react'
 import _ from 'lodash'
 import {useNavigation} from 'react-navi'
 import DeleteFormButton from "./DeleteFormButton";
