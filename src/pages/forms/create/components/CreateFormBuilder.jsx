@@ -40,12 +40,10 @@ const CreateFormBuilder = () => {
         }
     );
     const updateField = e => {
+        form.missing[e.target.name] = e.target.value === '' || !e.target.value;
         setValues({
             ...form,
-            [e.target.name]: e.target.value,
-            missing: {
-                [e.target.name]: e.target.value === '' || !e.target.value
-            }
+            [e.target.name]: e.target.value
         });
     };
 
