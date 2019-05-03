@@ -8,7 +8,7 @@ const DeleteFormButton = ({form}) => {
     const navigation = useNavigation();
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
-        `${process.env.REACT_APP_FORMIO_URL}/form/${form._id}`, {verb: 'delete'}
+         `${process.env.REACT_APP_FORMIO_URL}/form/${form._id}`, {verb: 'delete'}
     );
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const DeleteFormButton = ({form}) => {
             </Message.Content>
         </Message> : null)}</Container>;
 
-    return <React.Fragment>
+    return (<React.Fragment>
         <Button onClick={() => setOpen(true)} negative>Delete</Button>
         <Confirm
             confirmButton={<Button loading={status === EXECUTING} disabled={status === EXECUTING}
@@ -45,7 +45,7 @@ const DeleteFormButton = ({form}) => {
             onCancel={() => setOpen(false)}
             onConfirm={makeRequest}
             size="large"/>
-    </React.Fragment>
+    </React.Fragment>);
 
 };
 

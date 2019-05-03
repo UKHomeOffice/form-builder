@@ -8,13 +8,13 @@ const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const [keycloak] = useKeycloak();
 
-    axios.interceptors.request.use(function (config) {
+    axios.interceptors.request.use((config) => {
         const token = keycloak.token;
         if (token != null) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
-    }, function (err) {
+    }, (err) => {
         return Promise.reject(err);
     });
 

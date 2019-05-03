@@ -3,6 +3,14 @@ import * as _ from "lodash";
 import {mount} from "enzyme";
 import FormList from "./FormList";
 
+jest.mock('../../../../core/api/index');
+jest.mock('../../common/DeleteFormButton', () => {
+    const DeleteButton = () => (
+        <div>Delete button</div>
+    );
+    return DeleteButton;
+});
+
 describe('FormList', () => {
     it('renders a semantic ui table of forms', async () => {
         const forms = _.range(0, 10).map((index) => {
