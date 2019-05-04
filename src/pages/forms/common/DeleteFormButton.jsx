@@ -3,11 +3,11 @@ import {Button, Confirm, Container, Icon, Message} from "semantic-ui-react";
 import useApiRequest from "../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import {useNavigation} from "react-navi";
-import {NotificationContext} from "../../../core/Main";
+import {ApplicationContext} from "../../../core/Main";
 
 const DeleteFormButton = ({form}) => {
     const navigation = useNavigation();
-    const [notification, setNotification] = useContext(NotificationContext);
+    const [state, setState] = useContext(ApplicationContext);
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
         `${process.env.REACT_APP_FORMIO_URL}/form/${form._id}`, {verb: 'delete'}
@@ -16,13 +16,16 @@ const DeleteFormButton = ({form}) => {
     useEffect(() => {
         if (status === SUCCESS) {
             setOpen(false);
-            setNotification(notification => ({
-                notification, header: `${form.title}`,
-                content: `${form.name} has been successfully deleted`
+            setState(state => ({
+                ...state, notification: {
+                    header: `${form.title}`,
+                    content: `${form.name} has been successfully deleted`
+                }
             }));
-            navigation.navigate("/forms");
+            navigation.navigate("/forms", {replace: true})
         }
     }, [status]);
+
 
     const content = <Container>{status === EXECUTING ?
         <Message icon>

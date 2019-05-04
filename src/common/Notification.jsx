@@ -1,21 +1,20 @@
 import React, {useContext} from 'react';
-import {NotificationContext} from '../core/Main';
+import {ApplicationContext} from '../core/Main';
 import {Message} from "semantic-ui-react";
 
 const Notification = () => {
-    const [notification, setNotification] = useContext(NotificationContext);
+    const [state, setState] = useContext(ApplicationContext);
     const close = () => {
-        setNotification(notification => ({
-            notification, header: null,
-            content: null
+        setState(state => ({
+            state, notification: null
         }));
     };
-    if (notification && (notification.header && notification.content)) {
+    if (state && (state.notification)) {
         return <Message
             onDismiss={close}
             success
-            header={notification.header}
-            content={notification.content}
+            header={state.notification.header}
+            content={state.notification.content}
         />
     }
     return null;

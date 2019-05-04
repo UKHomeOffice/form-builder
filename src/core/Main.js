@@ -6,19 +6,19 @@ import PageNotFound from "../common/PageNotFound";
 import {Container} from 'semantic-ui-react';
 import Notification from "../common/Notification";
 
-export const NotificationContext = React.createContext([{}, () => {}]);
+export const ApplicationContext = React.createContext([{}, () => {}]);
 
 export const Main = ({children}) => {
-    const [notification, setNotification] = useState({});
+    const [state, setState] = useState({});
     return <div>
         <Header/>
         <Container>
-            <NotificationContext.Provider value={[notification, setNotification]}>
+            <ApplicationContext.Provider value={[state, setState]}>
                 <Notification/>
                 <NavNotFoundBoundary render={PageNotFound}>
                     {children || null}
                 </NavNotFoundBoundary>
-            </NotificationContext.Provider>
+            </ApplicationContext.Provider>
         </Container>
         <Footer/>
     </div>

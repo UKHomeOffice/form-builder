@@ -9,12 +9,12 @@ const Header = () => {
     const [keycloak] = useKeycloak();
 
     const path = route.url.pathname;
-    const [activeItem, setActiveItem] = useState(path ? path: "/home");
+    const [activeItem, setActiveItem] = useState(path === '/' ? "/home": path);
 
     return <Menu stackable pointing>
         <Menu.Item name='/home' active={activeItem === "/home"} onClick={(e, {name}) => {
             setActiveItem(name);
-            navigation.navigate(name);
+            navigation.navigate("/");
         }}/>
         <Menu.Item
             name='/forms'
