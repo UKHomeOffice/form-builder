@@ -13,7 +13,7 @@ export const Main = ({children}) => {
     return <div>
         <Header/>
         <Container>
-            <ApplicationContext.Provider value={[state, setState]}>
+            <ApplicationContext.Provider value={{state, setState}}>
                 <Notification/>
                 <NavNotFoundBoundary render={PageNotFound}>
                     {children || null}

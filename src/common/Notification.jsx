@@ -3,7 +3,7 @@ import {ApplicationContext} from '../core/Main';
 import {Message} from "semantic-ui-react";
 
 const Notification = () => {
-    const [state, setState] = useContext(ApplicationContext);
+    const {state, setState} = useContext(ApplicationContext);
     const close = () => {
         setState(state => ({
             state, notification: null

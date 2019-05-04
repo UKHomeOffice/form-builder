@@ -7,7 +7,7 @@ import {ApplicationContext} from "../../../core/Main";
 
 const DeleteFormButton = ({form}) => {
     const navigation = useNavigation();
-    const [state, setState] = useContext(ApplicationContext);
+    const {setState} = useContext(ApplicationContext);
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
         `${process.env.REACT_APP_FORMIO_URL}/form/${form._id}`, {verb: 'delete'}

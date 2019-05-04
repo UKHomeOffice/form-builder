@@ -4,8 +4,10 @@ import {useNavigation} from "react-navi";
 import useApiRequest from "../../../core/api";
 import {EXECUTING} from "../../../core/api/actionTypes";
 
+import _ from 'lodash';
+
 const useCreateForm = () => {
-    const [state,setState] = useContext(ApplicationContext);
+    const {setState} = useContext(ApplicationContext);
     const navigation = useNavigation();
     const [form, setValues] = useState({
         json: null,
@@ -51,12 +53,34 @@ const useCreateForm = () => {
     };
 
     const updateField = (target, value) => {
-        const hasValue = value === '' || !value;
-        form.missing[target] = hasValue;
-        setValues({
-            ...form,
-            [target]: value
-        });
+        const hasValue = value && value !== '';
+        if (target === 'title') {
+            if (hasValue) {
+                form.missing['title'] = false;
+                form.missing["path"] = false;
+                form.missing["formName"] = false;
+                setValues({
+                    ...form,
+                    "title" : value,
+                    "path": _.toLower(value).replace(/\s/g, ''),
+                    "formName":  _.camelCase(value)
+                });
+            } else {
+                form.missing['title'] = true;
+                setValues({
+                    ...form,
+                    "title" : '',
+                });
+            }
+
+        } else {
+            form.missing[target] = !hasValue;
+            setValues({
+                ...form,
+                [target]: value
+            });
+        }
+
     };
 
     const formInvalid = () => {

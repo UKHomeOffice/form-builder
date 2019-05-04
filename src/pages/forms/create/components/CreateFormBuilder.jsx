@@ -5,6 +5,7 @@ import 'formiojs/dist/formio.builder.css';
 import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
 import useCreateForm from "../useCreateForm";
 
+
 Formio.Templates.framework = 'semantic';
 
 
