@@ -1,9 +1,6 @@
-import React from 'react';
-import {mount, route} from 'navi'
-import {Button, Divider, Grid, Segment} from 'semantic-ui-react'
 import {useNavigation} from "react-navi";
-import CreateFormBuilder from "./components/CreateFormBuilder";
-import CreateFormFileUpload from "./components/CreateFormFileUpload";
+import React from 'react';
+import {Button, Divider, Grid, Segment} from 'semantic-ui-react'
 
 const CreateFormChoice = () => {
     const navigation = useNavigation();
@@ -26,20 +23,4 @@ const CreateFormChoice = () => {
     </Segment>
 };
 
-
-export default mount({
-    '/': route({
-        title: 'Create Form',
-        view: <CreateFormChoice/>
-    }),
-    '/builder': route({
-        title: 'Create form with builder',
-        view: <CreateFormBuilder/>
-    }),
-    '/file-upload': route({
-        title: 'Create form via file upload',
-        view: <CreateFormFileUpload/>
-    })
-});
-
-
+export default CreateFormChoice;

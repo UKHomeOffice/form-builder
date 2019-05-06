@@ -23,7 +23,7 @@ describe('FormList', () => {
             };
         });
 
-        const wrapper = await mount(<FormList forms={forms}/>);
+        const wrapper = await mount(<FormList/>);
         const table = wrapper.find('table');
         expect(table).toHaveLength(1)
 

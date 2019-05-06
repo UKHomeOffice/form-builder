@@ -12,20 +12,14 @@ const routes = mount({
         title: 'Home',
         view: <Home/>
     }),
-    '/forms': lazy(() => import('../pages/forms/list/Forms')),
-    '/forms/create': lazy(() => import('../pages/forms/create/CreateForm'))
+    '/forms': lazy(() => import('../pages/forms/list/formsRoute')),
+    '/forms/create': lazy(() => import('../pages/forms/create/createFormRoutes'))
 });
 
 export const AppRouter = () => {
     const [keycloak, initialised] = useKeycloak();
-    const centerStyle = {
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    };
     if (!initialised) {
-        return <div style={centerStyle}><Loader active inline='centered' size='large'>Loading</Loader></div>;
+        return <div className="center"><Loader active inline='centered' size='large'>Loading</Loader></div>;
     }
 
 

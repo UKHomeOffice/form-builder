@@ -1,28 +1,34 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Button, Confirm, Container, Icon, Message} from "semantic-ui-react";
-import useApiRequest from "../../../core/api";
-import {ERROR, EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
-import {useNavigation} from "react-navi";
-import {ApplicationContext} from "../../../core/Main";
+import useApiRequest from "../../../../core/api";
+import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
+import {ApplicationContext} from "../../../../core/Main";
 
 const DeleteFormButton = ({form}) => {
-    const navigation = useNavigation();
     const {setState} = useContext(ApplicationContext);
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
         `${process.env.REACT_APP_FORMIO_URL}/form/${form._id}`, {verb: 'delete'}
     );
 
+    const savedCallback = useRef();
+
+    const callback = () => {
+        setOpen(false);
+        setState(state => ({
+            ...state, notification: {
+                header: `${form.title}`,
+                content: `${form.name} has been successfully deleted`
+            }
+        }));
+    };
+
+    useEffect(() => {
+        savedCallback.current = callback;
+    });
     useEffect(() => {
         if (status === SUCCESS) {
-            setOpen(false);
-            setState(state => ({
-                ...state, notification: {
-                    header: `${form.title}`,
-                    content: `${form.name} has been successfully deleted`
-                }
-            }));
-            navigation.navigate("/forms", {replace: true})
+            savedCallback.current();
         }
     }, [status]);
 

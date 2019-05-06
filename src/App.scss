@@ -1,3 +1,10 @@
-//@import '~formiojs/dist/formio.full.css';
+
 @import "~semantic-ui-css/semantic.css";
 
+
+.center {
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}

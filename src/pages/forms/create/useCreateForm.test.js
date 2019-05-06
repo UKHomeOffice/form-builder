@@ -1,5 +1,10 @@
 import useCreateForm from "./useCreateForm";
-import {renderHook, act} from 'react-hooks-testing-library'
+import {act, renderHook} from 'react-hooks-testing-library'
+import useApiRequest from "../../../core/api";
+
+jest.mock('react-keycloak', () => ({
+    useKeycloak: jest.fn()
+}));
 
 
 describe('useCreateForm', () => {
@@ -12,10 +17,10 @@ describe('useCreateForm', () => {
         const {result} = renderHook(() => useCreateForm());
         act(() => result.current.setValues({
             ...result.current.form,
-            'path' : 'path',
-            'title' : 'title',
-            'formName' : 'formName',
-            'missing' : {
+            'path': 'path',
+            'title': 'title',
+            'formName': 'formName',
+            'missing': {
                 'path': false,
                 'title': false,
                 'formName': false

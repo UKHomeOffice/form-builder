@@ -3,7 +3,7 @@ import {Input, Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useCurrentRoute, useNavigation} from "react-navi";
 
-const Header = () => {
+const AppMenu = () => {
     const route = useCurrentRoute();
     const navigation = useNavigation();
     const [keycloak] = useKeycloak();
@@ -25,9 +25,6 @@ const Header = () => {
             }}
         />
         <Menu.Menu position='right'>
-            <Menu.Item>
-                <Input icon='search' placeholder='Search...'/>
-            </Menu.Item>
             <Menu.Item
                 name='logout'
                 onClick={() => {
@@ -37,4 +34,4 @@ const Header = () => {
     </Menu>
 };
 
-export default Header;
+export default AppMenu;

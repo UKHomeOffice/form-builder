@@ -1,10 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {FormBuilder, Formio} from 'react-formio';
 import {Button, Divider, Form, Icon, Label, Message} from 'semantic-ui-react'
-import 'formiojs/dist/formio.builder.css';
-import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
+import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import useCreateForm from "../useCreateForm";
-
+import './CreateFormBuilder.scss';
 
 Formio.Templates.framework = 'semantic';
 
@@ -30,14 +29,8 @@ const CreateFormBuilder = () => {
         form,
         setValues,
         updateField,
-        success
     } = useCreateForm();
 
-    useEffect(() => {
-        if (status === SUCCESS) {
-            success();
-        }
-    }, [status]);
 
     return <div style={{paddingBottom: '10px'}}>
         {status === ERROR ? <Message icon negative>

@@ -16,7 +16,6 @@ const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}, env = 'dev') 
                 password: password
             }
         });
-        console.log(tokenResponse);
         return tokenResponse.headers['x-jwt-token'];
     };
 

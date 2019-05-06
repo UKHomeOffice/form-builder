@@ -1,8 +1,8 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {ApplicationContext} from "../../../core/Main";
 import {useNavigation} from "react-navi";
 import useApiRequest from "../../../core/api";
-import {EXECUTING} from "../../../core/api/actionTypes";
+import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 
 import _ from 'lodash';
 
@@ -48,6 +48,22 @@ const useCreateForm = () => {
         }));
     };
 
+    const savedCallback = useRef();
+
+    const callback = () => {
+        success();
+    };
+
+    useEffect(() => {
+        savedCallback.current = callback;
+    });
+
+    useEffect(() => {
+        if (status === SUCCESS) {
+            savedCallback.current();
+        }
+    }, [status]);
+
     const backToForms = () => {
         navigation.navigate("/forms");
     };
@@ -80,7 +96,6 @@ const useCreateForm = () => {
                 [target]: value
             });
         }
-
     };
 
     const formInvalid = () => {
@@ -91,7 +106,6 @@ const useCreateForm = () => {
 
     return {
         formInvalid,
-        success,
         backToForms,
         makeRequest,
         status,
