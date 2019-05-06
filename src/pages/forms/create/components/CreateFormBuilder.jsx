@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {FormBuilder, Formio} from 'react-formio';
 import {Button, Divider, Form, Icon, Label, Message} from 'semantic-ui-react'
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";

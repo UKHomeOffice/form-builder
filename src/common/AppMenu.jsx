@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Input, Menu} from 'semantic-ui-react';
+import {Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useCurrentRoute, useNavigation} from "react-navi";
 
