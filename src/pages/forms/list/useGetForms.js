@@ -48,8 +48,6 @@ const useGetForms = () => {
                 data: response.data,
                 total: response.headers['content-range'].split('/')[1]
             }));
-
-
         }
     }, [response, status, setValues]);
 
