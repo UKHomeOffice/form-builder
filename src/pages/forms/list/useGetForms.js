@@ -46,7 +46,7 @@ const useGetForms = () => {
             setValues(forms => ({
                 ...forms,
                 data: response.data,
-                total: response.headers['content-range'].split('/')[1]
+                total: parseInt(response.headers['content-range'].split('/')[1])
             }));
         }
     }, [response, status, setValues]);
