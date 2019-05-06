@@ -15,7 +15,8 @@ const FormList = () => {
         response,
         handlePaginationChange,
         handleTitleSearch,
-        handleOnSuccessfulDeletion
+        handleOnSuccessfulDeletion,
+        handlePreview
     } = useGetForms();
 
     const {direction, column, data, total, activePage, limit} = forms;
@@ -66,7 +67,7 @@ const FormList = () => {
                                     <Button.Or/>
                                     <Button positive>Edit</Button>
                                     <Button.Or/>
-                                    <Button primary>Preview</Button>
+                                    <Button primary onClick={() => handlePreview(form)}>Preview</Button>
                                 </Button.Group>
                             </Table.Cell>
 

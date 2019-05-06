@@ -93,6 +93,10 @@ const useGetForms = () => {
         }))
     };
 
+    const handlePreview = (form) => {
+        navigation.navigate(`/forms/${form._id}/preview`, {replace: true});
+    };
+
     return {
         handleSort,
         navigation,
@@ -101,7 +105,8 @@ const useGetForms = () => {
         response,
         handleTitleSearch,
         handlePaginationChange,
-        handleOnSuccessfulDeletion
+        handleOnSuccessfulDeletion,
+        handlePreview
     }
 };
 

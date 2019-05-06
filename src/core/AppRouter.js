@@ -12,8 +12,7 @@ const routes = mount({
         title: 'Home',
         view: <Home/>
     }),
-    '/forms': lazy(() => import('../pages/forms/list/formsRoute')),
-    '/forms/create': lazy(() => import('../pages/forms/create/createFormRoutes'))
+    '/forms': lazy(() => import('../pages/forms/formsRoute')),
 });
 
 export const AppRouter = () => {
