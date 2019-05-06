@@ -1,13 +1,17 @@
-import useCreateForm from "./useCreateForm";
 import {act, renderHook} from 'react-hooks-testing-library'
-import useApiRequest from "../../../core/api";
-
-jest.mock('react-keycloak', () => ({
-    useKeycloak: jest.fn()
-}));
+import useCreateForm from "./useCreateForm";
 
 
 describe('useCreateForm', () => {
+    beforeEach(() => {
+        const naviModule = require('react-navi');
+        naviModule.useNavigation = jest.fn(()=>{ return 'fake bar'});
+
+        const apiModule = require('../../../core/api/index');
+        apiModule.default = () => {
+            return [{}, jest.fn()]
+        };
+    });
     it('check if form is invalid', () => {
         const {result} = renderHook(() => useCreateForm());
         expect(result.current.formInvalid()).toBe(true);

@@ -21,7 +21,6 @@ const useCreateForm = () => {
             formName: false
         }
     });
-
     const createPayload = () => {
         if (form.json) {
             form.json['title'] = form.title;
@@ -37,7 +36,6 @@ const useCreateForm = () => {
             verb: 'post', params: createPayload()
         }
     );
-
     const success = () => {
         navigation.navigate("/forms", {replace: true});
         setState(state => ({
