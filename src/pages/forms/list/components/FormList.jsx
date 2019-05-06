@@ -14,7 +14,8 @@ const FormList = () => {
         status,
         response,
         handlePaginationChange,
-        handleTitleSearch
+        handleTitleSearch,
+        handleOnSuccessfulDeletion
     } = useGetForms();
 
     const {direction, column, data, total, activePage, limit} = forms;
@@ -30,7 +31,7 @@ const FormList = () => {
     }
     return <Segment.Group>
         <Segment basic>
-            <Input icon='search' placeholder='Search by title...' size='medium' onChange={handleTitleSearch} fluid focus/>
+            <Input icon='search' placeholder='Search by title...' size='large' onChange={handleTitleSearch} fluid focus/>
         </Segment>
         <Segment basic loading={!status || status === EXECUTING}>
             <Table columns={6} sortable celled stackable>
@@ -39,7 +40,7 @@ const FormList = () => {
                         <Table.HeaderCell>Form Identifier</Table.HeaderCell>
                         <Table.HeaderCell sorted={column === 'title' ? direction : null}
                                           onClick={
-                                              handleSort('title')}>Title</Table.HeaderCell>
+                                              handleSort('title')} width={10}>Title</Table.HeaderCell>
                         <Table.HeaderCell sorted={column === 'name' ? direction : null}
                                           onClick={handleSort('name')}>Name</Table.HeaderCell>
                         <Table.HeaderCell sorted={column === 'path' ? direction : null}
@@ -61,7 +62,7 @@ const FormList = () => {
                             <Table.Cell>{form.display ? form.display : 'form'}</Table.Cell>
                             <Table.Cell>
                                 <Button.Group>
-                                    <DeleteFormButton form={form}/>
+                                    <DeleteFormButton form={form} onSuccessfulDeletion={handleOnSuccessfulDeletion}/>
                                     <Button.Or/>
                                     <Button positive>Edit</Button>
                                     <Button.Or/>
@@ -72,11 +73,10 @@ const FormList = () => {
                         </Table.Row>
                     ))}
                 </Table.Body>
-
-                <Table.Footer fullWidth>
+                <Table.Footer>
                     <Table.Row>
                         <Table.HeaderCell colSpan='1'>{total} forms</Table.HeaderCell>
-                        {total !== 0 ? <Table.HeaderCell colSpan='3'>
+                        {total > limit ? <Table.HeaderCell colSpan='3'>
                             <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                         activePage={activePage}
                                         ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
@@ -85,8 +85,8 @@ const FormList = () => {
                                         prevItem={{ content: <Icon name='angle left' />, icon: true }}
                                         nextItem={{ content: <Icon name='angle right' />, icon: true }}
                                         onPageChange={handlePaginationChange}/>
-                        </Table.HeaderCell> : null}
-                        <Table.HeaderCell colSpan={total === 0 ? '6' : '2'}>
+                        </Table.HeaderCell> : <Table.HeaderCell colSpan='3' />}
+                        <Table.HeaderCell colSpan={6}>
                             <Button floated='right' icon labelPosition='left' primary size='small'
                                     onClick={() => navigation.navigate('/forms/create')}>
                                 <Icon name='wpforms'/>Create form

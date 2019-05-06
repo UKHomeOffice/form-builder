@@ -18,7 +18,7 @@ const useGetForms = () => {
 
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `${process.env.REACT_APP_FORMIO_URL}/form?select=title,path,name,display${forms.activePage !== 1 ?`&skip=${((forms.activePage - 1) * forms.limit)}`: ''}${forms.searchTitle !== '' ?`&title__regex=/^${forms.searchTitle}/i`: '' }`, {
+        `${process.env.REACT_APP_FORMIO_URL}/form?select=title,path,name,display${forms.activePage !== 1 ?`&skip=${((forms.activePage - 1) * forms.limit)}`: ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/^${forms.searchTitle}/i`: '' }`, {
             verb: 'get', params:{}
         }
     );
@@ -79,8 +79,14 @@ const useGetForms = () => {
         }));
     };
 
-    const handleTitleSearch = (e, data) => {
+    const handleOnSuccessfulDeletion = () => {
+        setValues(forms => ({
+            ...forms,
+            searchTitle: '<>'
+        }));
+    };
 
+    const handleTitleSearch = (e, data) => {
         setValues(forms=> ({
             ...forms,
             searchTitle: data.value
@@ -94,7 +100,8 @@ const useGetForms = () => {
         status,
         response,
         handleTitleSearch,
-        handlePaginationChange
+        handlePaginationChange,
+        handleOnSuccessfulDeletion
     }
 };
 

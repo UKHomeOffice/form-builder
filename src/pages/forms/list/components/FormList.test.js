@@ -4,7 +4,7 @@ import {mount} from "enzyme";
 import FormList from "./FormList";
 
 jest.mock('../../../../core/api/index');
-jest.mock('../../common/DeleteFormButton', () => {
+jest.mock('../../common/components/DeleteFormButton', () => {
     const DeleteButton = () => (
         <div>Delete button</div>
     );

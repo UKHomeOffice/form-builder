@@ -4,7 +4,7 @@ import useApiRequest from "../../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
 import {ApplicationContext} from "../../../../core/Main";
 
-const DeleteFormButton = ({form}) => {
+const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const {setState} = useContext(ApplicationContext);
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
@@ -19,8 +19,9 @@ const DeleteFormButton = ({form}) => {
             ...state, notification: {
                 header: `${form.title}`,
                 content: `${form.name} has been successfully deleted`
-            }
+            },
         }));
+        onSuccessfulDeletion()
     };
 
     useEffect(() => {
@@ -47,7 +48,13 @@ const DeleteFormButton = ({form}) => {
                 <Message.Header>Error</Message.Header>
                 {`Failed to delete ${form.name} due to ${JSON.stringify(response.data)}`}
             </Message.Content>
-        </Message> : null)}</Container>;
+        </Message> : (status === SUCCESS ? <Message icon positive>
+            <Icon name='check circle outline'/>
+            <Message.Content>
+                <Message.Header>Success</Message.Header>
+                {`Successfully deleted ${form.name}`}
+            </Message.Content>
+        </Message>: null))}</Container>;
 
     return (<React.Fragment>
         <Button onClick={() => setOpen(true)} negative>Delete</Button>
