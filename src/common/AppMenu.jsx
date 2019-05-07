@@ -11,16 +11,16 @@ const AppMenu = () => {
     const [keycloak] = useKeycloak();
 
     const path = route.url.pathname;
-    const [activeItem, setActiveItem] = useState(path === '/' ? "/home": path);
+    const [activeItem, setActiveItem] = useState(path === '/' ? t('menu.home'): path);
 
     return <Menu stackable pointing>
-        <Menu.Item name={t('menu.home')} active={activeItem === "/home"} onClick={(e, {name}) => {
+        <Menu.Item name={t('menu.home')} active={activeItem === t('menu.home')} onClick={(e, {name}) => {
             setActiveItem(name);
             navigation.navigate("/");
         }}/>
         <Menu.Item
             name={t('menu.forms')}
-            active={ activeItem.startsWith("/form")}
+            active={ activeItem.startsWith(t('menu.forms'))}
             onClick={(e, {name}) => {
                 setActiveItem(name);
                 navigation.navigate(name);
