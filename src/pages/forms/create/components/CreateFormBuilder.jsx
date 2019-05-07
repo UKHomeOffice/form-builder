@@ -20,7 +20,7 @@ const formChoices = [{
 }];
 
 const CreateFormBuilder = () => {
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
 
     const {
         backToForms,
@@ -93,9 +93,7 @@ const CreateFormBuilder = () => {
                 </Form.Field>
             </Form.Group>
             <Divider clearing/>
-            <FormBuilder form={{display: form.display}} options={{
-                i18n: i18n
-            }} onChange={(jsonSchema) => {
+            <FormBuilder form={{display: form.display}}  onChange={(jsonSchema) => {
                 setValues({
                     ...form,
                     'json': jsonSchema

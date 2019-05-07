@@ -1,6 +1,3 @@
-import i18n from 'formiojs/i18n'
-import _ from 'lodash';
-
 const messages = {
     "environment": {
         "label" : "Environment"
@@ -85,4 +82,4 @@ const messages = {
         }
     }
 };
-export default _.merge(messages, i18n.resources.en.translation);
+export default messages;

@@ -39,8 +39,7 @@ const PreviewForm = ({formId}) => {
 
             <Form form={form.data} onSubmit={(submission) => previewSubmission(submission)} options={
                 {
-                    noAlerts: true,
-                    i18n: i18n
+                    noAlerts: true
                 }}/>
             <Divider horizontal>
                 <Header as='h4'>

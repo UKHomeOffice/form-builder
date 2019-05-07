@@ -4,7 +4,9 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import translations from './translation'
 
-i18n
+const instance = i18n.createInstance();
+
+instance
     .use(initReactI18next)
     .use(LanguageDetector)
     .init({
@@ -20,4 +22,4 @@ i18n
         }
     });
 
-export default i18n;
+export default instance;
