@@ -23,7 +23,7 @@ const PreviewForm = ({formId}) => {
             <Icon name='exclamation circle' />
             <Message.Content>
                 <Message.Header>Submission is not persisted</Message.Header>
-                Data submitted is held in the context of this page and lost when you navigate away from this preview page.
+                Data submitted is held in the context of this page and lost when you navigate away.
             </Message.Content>
         </Message>
         <Segment basic loading={!status || status === EXECUTING}>
