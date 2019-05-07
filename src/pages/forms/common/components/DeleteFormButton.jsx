@@ -3,6 +3,7 @@ import {Button, Confirm, Container, Icon, Message} from "semantic-ui-react";
 import useApiRequest from "../../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
 import {ApplicationContext} from "../../../../core/Main";
+import {useTranslation} from "react-i18next";
 
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const {setState} = useContext(ApplicationContext);
@@ -10,6 +11,7 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const [{status, response}, makeRequest] = useApiRequest(
         `${process.env.REACT_APP_FORMIO_URL}/form/${form._id}`, {verb: 'delete'}
     );
+    const { t } = useTranslation();
 
     const savedCallback = useRef();
 
@@ -60,7 +62,7 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
         <Button onClick={() => setOpen(true)} negative>Delete</Button>
         <Confirm
             confirmButton={<Button loading={status === EXECUTING} disabled={status === EXECUTING}
-                                   negative>Delete</Button>}
+                                   negative>{t('form.list.delete-label')}</Button>}
             open={open}
             header={`Are you sure you wish to delete ${form.name}?`}
             content={content}
