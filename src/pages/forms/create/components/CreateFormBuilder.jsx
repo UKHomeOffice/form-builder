@@ -9,20 +9,8 @@ import PreviewFormModal from "./PreviewFormModal";
 
 Formio.Templates.framework = 'semantic';
 
-
-const formChoices = [{
-    key: 'form',
-    text: 'Form',
-    value: 'form'
-}, {
-    key: 'wizard',
-    text: 'Wizard',
-    value: 'wizard'
-}];
-
 const CreateFormBuilder = () => {
     const {t} = useTranslation();
-
     const {
         backToForms,
         status,
@@ -36,6 +24,15 @@ const CreateFormBuilder = () => {
         closePreview
     } = useCreateForm();
 
+    const formChoices = [{
+        key: 'form',
+        text: t('form.create.form-type.form'),
+        value: 'form'
+    }, {
+        key: 'wizard',
+        text: t('form.create.form-type.wizard'),
+        value: 'wizard'
+    }];
 
     return <div style={{paddingBottom: '10px'}}>
         {status === ERROR ? <Message icon negative>

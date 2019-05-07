@@ -23,7 +23,9 @@ const messages = {
             },
             "form-type" : {
                 "select": "Select form type",
-                "select-placeholder": "Form type"
+                "select-placeholder": "Form type",
+                "wizard": "Wizard",
+                "form": "Form"
             },
             "form-name": {
                 "placeholder": "Form title",
