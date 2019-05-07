@@ -17,7 +17,7 @@ const messages = {
                 "form-upload-label" : "Form upload"
             },
             "label": "Create form",
-            "creating-label" :"Creating...",
+            "creating-label" : "Creating...",
             "failure": {
                 "failed-to-create": "Failed to create form due to {{error}}"
             },

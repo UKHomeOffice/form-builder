@@ -15,6 +15,17 @@ const keycloak = new Keycloak({
     "clientId": process.env.REACT_APP_AUTH_CLIENT_ID
 });
 
+const removeFormioToken = () => {
+    localStorage.removeItem("FORMIO_TOKEN");
+};
+keycloak.onAuthLogout = () => {
+    removeFormioToken();
+};
+
+keycloak.onTokenExpired = () => {
+    removeFormioToken();
+};
+
 export const App = () => (
     <KeycloakProvider keycloak={keycloak} initConfig={{
         onLoad: 'login-required',

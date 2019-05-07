@@ -26,7 +26,16 @@ const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}, env = 'dev') 
         if (token != null) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        config.headers['x-jwt-token'] = await getToken(process.env.REACT_APP_FORMIO_USER, process.env.REACT_APP_FORMIO_PASSWORD);
+
+        if (!localStorage.getItem("FORMIO_TOKEN")) {
+            const formioToken = await getToken(process.env.REACT_APP_FORMIO_USER, process.env.REACT_APP_FORMIO_PASSWORD);
+            localStorage.setItem("FORMIO_TOKEN", formioToken);
+            config.headers['x-jwt-token'] = formioToken;
+        } else {
+            config.headers['x-jwt-token'] = localStorage.getItem("FORMIO_TOKEN");
+        }
+
+
         return Promise.resolve(config)
     }, (err) => {
         return Promise.reject(err);

@@ -30,6 +30,7 @@ const AppMenu = () => {
             <Menu.Item
                 name={t('menu.logout')}
                 onClick={() => {
+                    localStorage.removeItem("FORMIO_TOKEN");
                     keycloak.logout()
                 }}/>
         </Menu.Menu>
