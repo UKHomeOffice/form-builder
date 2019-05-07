@@ -2,22 +2,24 @@ import React, {useState} from 'react';
 import {Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useCurrentRoute, useNavigation} from "react-navi";
+import {useTranslation} from "react-i18next";
 
 const AppMenu = () => {
     const route = useCurrentRoute();
     const navigation = useNavigation();
+    const {t} = useTranslation();
     const [keycloak] = useKeycloak();
 
     const path = route.url.pathname;
     const [activeItem, setActiveItem] = useState(path === '/' ? "/home": path);
 
     return <Menu stackable pointing>
-        <Menu.Item name='/home' active={activeItem === "/home"} onClick={(e, {name}) => {
+        <Menu.Item name={t('menu.home')} active={activeItem === "/home"} onClick={(e, {name}) => {
             setActiveItem(name);
             navigation.navigate("/");
         }}/>
         <Menu.Item
-            name='/forms'
+            name={t('menu.forms')}
             active={ activeItem.startsWith("/form")}
             onClick={(e, {name}) => {
                 setActiveItem(name);
@@ -26,7 +28,7 @@ const AppMenu = () => {
         />
         <Menu.Menu position='right'>
             <Menu.Item
-                name='logout'
+                name={t('menu.logout')}
                 onClick={() => {
                     keycloak.logout()
                 }}/>

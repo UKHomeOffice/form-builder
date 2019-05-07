@@ -2,6 +2,14 @@ import i18n from 'formiojs/i18n'
 import _ from 'lodash';
 
 const messages = {
+    "environment": {
+        "label" : "Environment"
+    },
+    "menu" : {
+        "home" : "/home",
+        "forms" : "/forms",
+        "logout" : "logout"
+    },
     "error" : {
         "general" : "An error occurred"
     },
