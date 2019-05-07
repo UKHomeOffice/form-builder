@@ -39,6 +39,11 @@ const messages = {
                 "placeholder" : "Form title",
                 "label": "Title",
                 "missing": "Form title is required for creating a form"
+            },
+            "preview" : {
+                "modal" : {
+                    "missing-title": "No title defined for form"
+                }
             }
 
         },
@@ -59,7 +64,7 @@ const messages = {
         "preview" : {
             "label" : "Preview",
             "form-submission-label" : "Form submission",
-            "submission-warning-title": "Submission is not persisted",
+            "submission-warning-title": "Submission is not persisted in preview mode",
             "submission-warning-description": "Data submitted is held in the context of this page and lost when you navigate away."
         },
         "edit": {

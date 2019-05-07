@@ -5,6 +5,7 @@ import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import useCreateForm from "../useCreateForm";
 import './CreateFormBuilder.scss';
 import {useTranslation} from "react-i18next";
+import PreviewFormModal from "./PreviewFormModal";
 
 Formio.Templates.framework = 'semantic';
 
@@ -31,6 +32,8 @@ const CreateFormBuilder = () => {
         form,
         setValues,
         updateField,
+        openPreview,
+        closePreview
     } = useCreateForm();
 
 
@@ -100,14 +103,15 @@ const CreateFormBuilder = () => {
                 });
             }}/>
             <Divider clearing/>
+            <PreviewFormModal form={form.json} title={form.title} open={form.displayPreview} onClosePreview={closePreview}/>
             <div style={{paddingTop: '10px'}}>
                 <Button.Group size='large'>
                     <Button onClick={() => {
                         backToForms();
                     }}>{t('form.cancel.label')}</Button>
                     <Button.Or/>
-                    <Button onClick={() => {
-
+                        <Button onClick={() => {
+                            openPreview()
                     }} secondary>{t('form.preview.label')}</Button>
                     <Button.Or/>
                     <Button primary

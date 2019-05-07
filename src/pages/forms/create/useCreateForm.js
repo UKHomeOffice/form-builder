@@ -15,6 +15,7 @@ const useCreateForm = () => {
         path: '',
         display: 'form',
         formName: '',
+        displayPreview: false,
         missing: {
             path: false,
             title: false,
@@ -96,6 +97,20 @@ const useCreateForm = () => {
         }
     };
 
+    const openPreview = () =>{
+        setValues({
+            ...form,
+            displayPreview: true
+        });
+    };
+
+    const closePreview = () =>{
+        setValues({
+            ...form,
+            displayPreview: false
+        });
+    };
+
     const formInvalid = () => {
         const {path, title, formName, missing} = form;
         return (path === '' || title === '' || formName === '')
@@ -110,7 +125,9 @@ const useCreateForm = () => {
         response,
         setValues,
         form,
-        updateField
+        updateField,
+        openPreview,
+        closePreview
     }
 };
 

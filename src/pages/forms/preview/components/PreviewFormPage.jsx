@@ -1,18 +1,14 @@
 import React from 'react';
-import './PreviewForm.scss';
 import usePreviewForm from "../usePreviewForm";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import {Divider, Header, Icon, Message, Segment} from "semantic-ui-react";
-import {Form, Formio} from 'react-formio';
-import ReactJson from 'react-json-view'
 import {useTranslation} from 'react-i18next';
+import PreviewFormPanel from "./PreviewFormPanel";
 
-Formio.Templates.framework = 'semantic';
+const PreviewFormPage = ({formId}) => {
 
-const PreviewForm = ({formId}) => {
-
-    const {t, i18n} = useTranslation();
-    const {status, response, form, backToForms, previewSubmission} = usePreviewForm(formId);
+    const {t} = useTranslation();
+    const {status, response, form, previewSubmission} = usePreviewForm(formId);
 
     if (status === ERROR) {
         return <Message negative>
@@ -29,6 +25,7 @@ const PreviewForm = ({formId}) => {
                 {t('form.preview.submission-warning-description')}
             </Message.Content>
         </Message>
+        <Divider hidden/>
         <Segment basic loading={!status || status === EXECUTING}>
             {form.data ? <Header
                 as='h2'
@@ -36,20 +33,9 @@ const PreviewForm = ({formId}) => {
                 subheader={form.data.name}
                 dividing
             /> : null}
-
-            <Form form={form.data} onSubmit={(submission) => previewSubmission(submission)} options={
-                {
-                    noAlerts: true
-                }}/>
-            <Divider horizontal>
-                <Header as='h4'>
-                    <Icon name='database'/>
-                    {t('form.preview.form-submission-label')}
-                </Header>
-            </Divider>
-            <ReactJson src={form.submission ? form.submission : {}} theme="monokai" name={null}/>
+            <PreviewFormPanel form={form.data} formSubmission={form.submission} previewSubmission={previewSubmission}/>
         </Segment>
     </React.Fragment>
 };
 
-export default PreviewForm;
+export default PreviewFormPage;
