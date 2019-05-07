@@ -26,6 +26,10 @@ keycloak.onTokenExpired = () => {
     removeFormioToken();
 };
 
+keycloak.onAuthError = () => {
+    removeFormioToken();
+};
+
 export const App = () => (
     <KeycloakProvider keycloak={keycloak} initConfig={{
         onLoad: 'login-required',
