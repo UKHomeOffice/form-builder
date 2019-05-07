@@ -2,13 +2,14 @@ import React from 'react';
 import './PreviewForm.scss';
 import usePreviewForm from "../usePreviewForm";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
-import {Message, Segment} from "semantic-ui-react";
+import {Divider, Header, Icon, Message, Segment} from "semantic-ui-react";
 import {Form, Formio} from 'react-formio';
+import ReactJson from 'react-json-view'
 
 Formio.Templates.framework = 'semantic';
 
 const PreviewForm = ({formId}) => {
-    const {status, response, form, backToForms} = usePreviewForm(formId);
+    const {status, response, form, backToForms, previewSubmission} = usePreviewForm(formId);
 
     if (status === ERROR) {
         return  <Message negative>
@@ -16,10 +17,24 @@ const PreviewForm = ({formId}) => {
             {JSON.stringify(response.data)}
         </Message>
     }
-
     return <Segment basic loading={!status || status === EXECUTING}>
-        <Form form={form.data} />
-    </Segment>
+        {form.data ? <Header
+            as='h2'
+            content={form.data.title}
+            subheader={form.data.name}
+            dividing
+        /> : null}
+        <Form form={form.data} onSubmit={(submission) => previewSubmission(submission)} options={{
+            noAlerts: true
+        }}/>
+        <Divider horizontal>
+            <Header as='h4'>
+                <Icon name='database' />
+                Form submission
+            </Header>
+        </Divider>
+        <ReactJson src={form.submission ? form.submission: {}} theme="monokai" name={null}  />
+        </Segment>
 };
 
 export default PreviewForm;

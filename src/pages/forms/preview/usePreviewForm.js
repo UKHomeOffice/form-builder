@@ -8,7 +8,8 @@ const usePreviewForm = (formId) => {
     const navigation = useNavigation();
     const [form, setValue] = useState({
         data: null,
-        formId: formId
+        formId: formId,
+        submission: null
     });
     const [{status, response}, makeRequest] = useApiRequest(
         `${process.env.REACT_APP_FORMIO_URL}/form/${formId}`, {
@@ -48,8 +49,17 @@ const usePreviewForm = (formId) => {
         navigation.navigate("/forms", {replace: true});
     };
 
+    const previewSubmission = (submission) => {
+        setValue(form => ({
+            ...form,
+            submission: submission
+        }));
+    };
+
+
 
     return {
+        previewSubmission,
         status,
         form,
         response,
