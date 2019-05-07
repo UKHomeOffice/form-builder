@@ -20,7 +20,7 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
         setState(state => ({
             ...state, notification: {
                 header: `${form.title}`,
-                content: `${form.name} has been successfully deleted`
+                content: t('form.delete.successful', {formName: form.name})
             },
         }));
         onSuccessfulDeletion()
@@ -40,21 +40,21 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
         <Message icon>
             <Icon name='circle notched' loading/>
             <Message.Content>
-                <Message.Header>Just one second</Message.Header>
-                Deleting form...
+                <Message.Header>{t('form.delete.message.header')}</Message.Header>
+                {t('form.delete.message.content')}
             </Message.Content>
         </Message>
         : (status === ERROR ? <Message icon negative>
             <Icon name='warning circle'/>
             <Message.Content>
-                <Message.Header>Error</Message.Header>
-                {`Failed to delete ${form.name} due to ${JSON.stringify(response.data)}`}
+                <Message.Header>{t('error.general')}</Message.Header>
+                {t('form.delete.failure.failed-to-delete', {formName: form.name, error: JSON.stringify(response.data)})}
             </Message.Content>
         </Message> : (status === SUCCESS ? <Message icon positive>
             <Icon name='check circle outline'/>
             <Message.Content>
                 <Message.Header>Success</Message.Header>
-                {`Successfully deleted ${form.name}`}
+                {t('form.delete.successful', {formName: form.name})}
             </Message.Content>
         </Message>: null))}</Container>;
 
@@ -64,7 +64,7 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
             confirmButton={<Button loading={status === EXECUTING} disabled={status === EXECUTING}
                                    negative>{t('form.list.delete-label')}</Button>}
             open={open}
-            header={`Are you sure you wish to delete ${form.name}?`}
+            header={t('form.delete.confirm', {formName: form.name})}
             content={content}
             onCancel={() => setOpen(false)}
             onConfirm={makeRequest}

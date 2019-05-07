@@ -17,7 +17,7 @@ const PreviewForm = ({formId}) => {
     if (status === ERROR) {
         return <Message negative>
             <Message.Header>{t('error.general')}</Message.Header>
-            {JSON.stringify(response.data)}
+            {t('form.list.failure.forms-load', {error: JSON.stringify(response.data)})}
         </Message>
     }
     return <React.Fragment>

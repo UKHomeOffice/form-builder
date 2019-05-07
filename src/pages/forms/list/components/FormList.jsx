@@ -68,9 +68,9 @@ const FormList = () => {
                                 <Button.Group>
                                     <DeleteFormButton form={form} onSuccessfulDeletion={handleOnSuccessfulDeletion}/>
                                     <Button.Or/>
-                                    <Button positive>{t('form.list.edit-label')}</Button>
+                                    <Button positive>{t('form.edit.label')}</Button>
                                     <Button.Or/>
-                                    <Button primary onClick={() => handlePreview(form)}>{t('form.list.preview-label')}</Button>
+                                    <Button primary onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
                                 </Button.Group>
                             </Table.Cell>
 
