@@ -1,10 +1,14 @@
 const messages = {
+    "home": {
+        "environments" :"Environments",
+        "reports" : "Reports"
+    },
     "environment": {
-        "label" : "Environment"
+        "label" : "Current environment context"
     },
     "menu" : {
         "home" : "/home",
-        "forms" : "/forms",
+        "forms" : "Forms",
         "logout" : "logout"
     },
     "error" : {

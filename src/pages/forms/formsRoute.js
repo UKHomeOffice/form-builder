@@ -2,11 +2,13 @@ import React from 'react';
 import {lazy, mount, route} from 'navi'
 import FormList from "./list/components/FormList";
 
+
 export default mount({
-    '/': route({
-        "title" : "Forms",
+    '/:env': route({
+        "title": "Forms",
+
         "view": <FormList/>
     }),
-    '/create': lazy(() => import('../forms/create/createFormRoutes')),
-    '/:formId/preview':lazy(() => import('../forms/preview/previewFormRoutes'))
-})
+    '/:env/create': lazy(() => import('../forms/create/createFormRoutes')),
+    '/:env/:formId/preview': lazy(() => import('../forms/preview/previewFormRoutes'))
+});

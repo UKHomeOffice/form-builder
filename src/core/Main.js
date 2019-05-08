@@ -12,7 +12,7 @@ export const ApplicationContext = React.createContext([{}, () => {
 
 export const Main = ({children}) => {
     const [state, setState] = useState({});
-    return <div>
+    return <React.Fragment>
         <ApplicationContext.Provider value={{state, setState}}>
             <AppMenu/>
             <Container>
@@ -24,5 +24,5 @@ export const Main = ({children}) => {
             </Container>
             <Footer/>
         </ApplicationContext.Provider>
-    </div>
+    </React.Fragment>
 };

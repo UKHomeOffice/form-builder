@@ -5,7 +5,7 @@ import {error, executing, success} from './actionCreators';
 import {useKeycloak} from "react-keycloak";
 import secureLS from '../storage';
 
-const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}, env = 'dev') => {
+const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const [keycloak] = useKeycloak();
     const instance = axios.create();
