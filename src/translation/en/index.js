@@ -74,6 +74,7 @@ const messages = {
         },
         "list": {
             "failure": {
+                "unknown-error" : "connectivity issues with form server",
                 "forms-load": "Failed to load forms due to {{error}}"
             },
             "delete-label": "Delete",
