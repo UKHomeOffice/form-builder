@@ -3,6 +3,7 @@ import axios from 'axios';
 import reducer, {initialState} from './reducer';
 import {error, executing, success} from './actionCreators';
 import {useKeycloak} from "react-keycloak";
+import secureLS from '../storage';
 
 const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}, env = 'dev') => {
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -29,10 +30,10 @@ const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}, env = 'dev') 
 
         if (!localStorage.getItem("FORMIO_TOKEN")) {
             const formioToken = await getToken(process.env.REACT_APP_FORMIO_USER, process.env.REACT_APP_FORMIO_PASSWORD);
-            localStorage.setItem("FORMIO_TOKEN", formioToken);
+            secureLS.set("FORMIO_TOKEN", formioToken);
             config.headers['x-jwt-token'] = formioToken;
         } else {
-            config.headers['x-jwt-token'] = localStorage.getItem("FORMIO_TOKEN");
+            config.headers['x-jwt-token'] = secureLS.get("FORMIO_TOKEN");
         }
 
 

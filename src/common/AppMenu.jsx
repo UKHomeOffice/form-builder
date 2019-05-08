@@ -3,6 +3,7 @@ import {Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useCurrentRoute, useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
+import secureLS from '../core/storage';
 
 const AppMenu = () => {
     const route = useCurrentRoute();
@@ -30,7 +31,7 @@ const AppMenu = () => {
             <Menu.Item
                 name={t('menu.logout')}
                 onClick={() => {
-                    localStorage.removeItem("FORMIO_TOKEN");
+                    secureLS.remove("FORMIO_TOKEN");
                     keycloak.logout()
                 }}/>
         </Menu.Menu>

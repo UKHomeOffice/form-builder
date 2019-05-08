@@ -47,5 +47,5 @@ describe('useCreateForm', () => {
 
         expect(result.current.form.formName).toBe("testTitle");
         expect(result.current.form.path).toBe("testtitle");
-    })
+    });
 });

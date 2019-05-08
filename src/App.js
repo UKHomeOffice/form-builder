@@ -6,6 +6,7 @@ import {KeycloakProvider} from 'react-keycloak';
 import {Provider} from "react-redux";
 import configureStore from './core/configureStore'
 import {Loader} from "semantic-ui-react";
+import secureLS from './core/storage';
 
 const store = configureStore();
 
@@ -16,7 +17,7 @@ const keycloak = new Keycloak({
 });
 
 const removeFormioToken = () => {
-    localStorage.removeItem("FORMIO_TOKEN");
+    secureLS.remove("FORMIO_TOKEN");
 };
 keycloak.onAuthLogout = () => {
     removeFormioToken();
