@@ -4,7 +4,7 @@ import {ApplicationContext} from "../Main";
 
 const useEnvContext = () => {
     const navigation = useNavigation();
-    const {setState} = useContext(ApplicationContext);
+    const {state, setState} = useContext(ApplicationContext);
 
     const changeContext = (environment) => {
         setState(state => ({
@@ -19,9 +19,14 @@ const useEnvContext = () => {
         }));
     };
 
+    const envContext = () => {
+        return state.environment
+    };
+
     return {
         changeContext,
-        clearEnvContext
+        clearEnvContext,
+        envContext
     }
 };
 

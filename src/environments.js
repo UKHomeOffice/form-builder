@@ -9,7 +9,6 @@ const environments = [
             "password": "secret"
         },
         "editable": true,
-        "default": true,
         "promotion-preconditions": []
     },
     {

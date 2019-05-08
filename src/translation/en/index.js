@@ -12,10 +12,16 @@ const messages = {
         "logout" : "logout"
     },
     "error" : {
-        "general" : "An error occurred"
+        "general" : "An error occurred",
+        "no-context": "An environment context has not been selected",
+        "no-context-message": "You need to select an environment context in order to create forms"
     },
     "form": {
         "create": {
+            "not-allowed": {
+                "title": "Not allowed",
+                "message": "Environment context does not allow creation of forms directly"
+            },
             "choice": {
                 "form-builder-label" : "Use builder",
                 "form-upload-label" : "Form upload"
