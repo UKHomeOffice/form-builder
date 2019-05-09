@@ -5,6 +5,10 @@ import {ApplicationContext, Main} from "./Main";
 import {Router, View} from "react-navi";
 import {useKeycloak} from 'react-keycloak';
 import {Loader} from "semantic-ui-react";
+import secureLS from '../core/storage';
+import {useTranslation} from "react-i18next";
+import environments from '../environments';
+import _ from 'lodash';
 
 const routes = mount({
     '/': route({
@@ -16,14 +20,19 @@ const routes = mount({
 
 export const AppRouter = () => {
     const [keycloak, initialised] = useKeycloak();
-    const [state, setState] = useState({});
+    const {t} = useTranslation();
+
+    const [state, setState] = useState({
+        environment: _.find(environments, {id: secureLS.get('ENVIRONMENT')}),
+        activeMenuItem:  secureLS.get('ENVIRONMENT') ? t('menu.forms') : "/"
+    });
 
     if (!initialised) {
         return <div className="center"><Loader active inline='centered' size='large'>Loading</Loader></div>;
     }
 
     return (<ApplicationContext.Provider value={{state, setState}}>
-            <Router routes={routes} context={{isAuthenticated: keycloak.authenticated}}>
+            <Router routes={routes} context={{isAuthenticated: keycloak.authenticated, environment: state.environment}}>
                 <Main>
                     <Suspense fallback={null}>
                         <View/>

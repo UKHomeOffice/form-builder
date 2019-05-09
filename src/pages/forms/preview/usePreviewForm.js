@@ -12,7 +12,7 @@ const usePreviewForm = (formId) => {
         submission: null
     });
     const [{status, response}, makeRequest] = useApiRequest(
-        `${process.env.REACT_APP_FORMIO_URL}/form/${formId}`, {
+        `/form/${formId}`, {
             verb: 'get', params: {}
         }
     );

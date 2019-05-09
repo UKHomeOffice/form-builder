@@ -4,14 +4,20 @@ import reducer, {initialState} from './reducer';
 import {error, executing, success} from './actionCreators';
 import {useKeycloak} from "react-keycloak";
 import secureLS from '../storage';
+import useEnvContext from "../context/useEnvContext";
 
-const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}) => {
+const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const [keycloak] = useKeycloak();
     const instance = axios.create();
+    const {envContext} = useEnvContext();
+
+    const baseUrl = envContext.url;
+    const username = envContext.service.username;
+    const password = envContext.service.password;
 
     const getToken = async (username, password) => {
-        const tokenResponse = await axios.post(`${process.env.REACT_APP_FORMIO_URL}/user/login`, {
+        const tokenResponse = await axios.post(`${baseUrl}/user/login`, {
             data: {
                 email: username,
                 password: password
@@ -29,7 +35,7 @@ const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}) => {
         }
 
         if (!localStorage.getItem("FORMIO_TOKEN")) {
-            const formioToken = await getToken(process.env.REACT_APP_FORMIO_USER, process.env.REACT_APP_FORMIO_PASSWORD);
+            const formioToken = await getToken(username, password);
             secureLS.set("FORMIO_TOKEN", formioToken);
             config.headers['x-jwt-token'] = formioToken;
         } else {
@@ -45,7 +51,7 @@ const useApiRequest = (endpoint, {verb = 'get', params = {}} = {}) => {
     const makeRequest = async () => {
         dispatch(executing());
         try {
-            const response = await instance[verb](endpoint, params);
+            const response = await instance[verb](`${baseUrl}${path}`, params);
             dispatch(success(response));
         } catch ({response = null, ...exception}) {
             dispatch(error(response, exception));

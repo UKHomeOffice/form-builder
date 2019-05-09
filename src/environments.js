@@ -47,6 +47,18 @@ const environments = [
         },
         "create": false,
         "promotion-preconditions": ["dev", "demo", "staging"]
+    },
+    {
+        "id": "testing",
+        "label": "Testing",
+        "url": "http://formio.lodev.xyz",
+        "description": "Testing environment",
+        "service": {
+            "username": "me@lodev.xyz",
+            "password": "secret"
+        },
+        "create": false,
+        "promotion-preconditions": ["dev"]
     }
 ];
 

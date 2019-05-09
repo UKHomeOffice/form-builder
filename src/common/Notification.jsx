@@ -6,7 +6,7 @@ const Notification = () => {
     const {state, setState} = useContext(ApplicationContext);
     const close = () => {
         setState(state => ({
-            state, notification: null
+            ...state, notification: null
         }));
     };
     if (state && (state.notification)) {

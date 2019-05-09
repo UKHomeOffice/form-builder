@@ -36,7 +36,7 @@ const useCreateForm = () => {
     };
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `${process.env.REACT_APP_FORMIO_URL}/form`, {
+        `/form`, {
             verb: 'post', params: createPayload()
         }
     );

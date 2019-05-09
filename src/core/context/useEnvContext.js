@@ -11,6 +11,7 @@ const useEnvContext = () => {
         setState(state => ({
             ...state, environment: environment
         }));
+        secureLS.set("ENVIRONMENT", environment.id);
     };
 
     const clearEnvContext = () => {
@@ -18,11 +19,12 @@ const useEnvContext = () => {
             ...state, environment: null
         }));
         secureLS.remove("FORMIO_TOKEN");
+        secureLS.remove("ENVIRONMENT");
     };
 
     const defaultEnv = _.find(environments, {default: true});
 
-    const envContext = state.environment;
+    const envContext = state.environment ? state.environment : _.find(environments, {id: secureLS.get("ENVIRONMENT")});
 
 
     return {

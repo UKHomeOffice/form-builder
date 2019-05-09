@@ -20,7 +20,7 @@ const useGetForms = () => {
 
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `${process.env.REACT_APP_FORMIO_URL}/form?select=title,path,name,display${forms.activePage !== 1 ?`&skip=${((forms.activePage - 1) * forms.limit)}`: ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/^${forms.searchTitle}/i`: '' }`, {
+        `/form?select=title,path,name,display${forms.activePage !== 1 ?`&skip=${((forms.activePage - 1) * forms.limit)}`: ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/^${forms.searchTitle}/i`: '' }`, {
             verb: 'get', params:{}
         }
     );
