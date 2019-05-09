@@ -1,7 +1,9 @@
 const messages = {
     "home": {
         "environments" :"Environments",
-        "reports" : "Reports"
+        "reports" : "Reports",
+        "types-of-forms" : "Types of forms in each environment",
+        "forms-per-environment": "Number of forms in each environment"
     },
     "environment": {
         "label" : "Current environment context"

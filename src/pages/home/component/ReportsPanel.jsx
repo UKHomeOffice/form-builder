@@ -1,12 +1,13 @@
-import {Segment} from "semantic-ui-react";
+import {Header, Segment} from "semantic-ui-react";
 import {Bar, BarChart, CartesianGrid, Legend, Pie, PieChart, Sector, Tooltip, XAxis, YAxis} from "recharts";
 import React from "react";
 import useReports from "../useReports";
 import {EXECUTING} from "../../../core/api/actionTypes";
+import {useTranslation} from "react-i18next";
 
 const ReportsPanel = () => {
     const {onPieEnter, reports} = useReports();
-
+    const {t} = useTranslation();
 
     const renderActiveShape = (props) => {
         const RADIAN = Math.PI / 180;
@@ -54,7 +55,11 @@ const ReportsPanel = () => {
 
 
     return <Segment.Group horizontal>
+
         <Segment basic loading={reports.statusFormsPerEnvCount === EXECUTING}>
+            <Header as='h3' dividing>
+                {t('home.forms-per-environment')}
+            </Header>
             <PieChart width={500} height={400}>
                 <Pie
                     activeIndex={reports.activeIndex}
@@ -71,6 +76,9 @@ const ReportsPanel = () => {
             </PieChart>
         </Segment>
         <Segment basic loading={reports.statusTypeData === EXECUTING}>
+            <Header as='h3' dividing>
+                {t('home.types-of-forms')}
+            </Header>
             <BarChart
                 width={500}
                 height={400}
