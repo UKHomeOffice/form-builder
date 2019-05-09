@@ -22,6 +22,7 @@ const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionIn
                 </Header>
             </Divider>
                 <ReactJson src={formSubmission ? formSubmission : {}} theme="monokai" name={null}
+                           collapseStringsAfterLength={150}
                            collapsed={submissionInfoCollapsed}/></React.Fragment>
             : null}
     </React.Fragment>
