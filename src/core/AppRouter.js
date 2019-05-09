@@ -24,7 +24,7 @@ export const AppRouter = () => {
 
     const [state, setState] = useState({
         environment: _.find(environments, {id: secureLS.get('ENVIRONMENT')}),
-        activeMenuItem:  secureLS.get('ENVIRONMENT') ? t('menu.forms') : "/"
+        activeMenuItem:  secureLS.get('ENVIRONMENT') ? t('menu.forms') : t('menu.home')
     });
 
     if (!initialised) {
