@@ -13,7 +13,7 @@ const AppMenu = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
     const [keycloak] = useKeycloak();
-    const {clearEnvContext, changeContext} = useEnvContext();
+    const {clearEnvContext, changeContext, envContext} = useEnvContext();
     const {state, setState} = useContext(ApplicationContext);
 
     const handleEnvChange = (environment) => {
@@ -37,7 +37,7 @@ const AppMenu = () => {
         <Dropdown item text={t('menu.forms')}>
             <Dropdown.Menu>
                 {_.map(environments, (env) => (
-                    <Dropdown.Item key={env.id} icon='cog' text={env.label ? env.label : env.id}  onClick={() => {
+                    <Dropdown.Item key={env.id} icon='cog' text={env.label ? env.label : env.id} active={envContext? envContext.id === env.id : false} onClick={() => {
                         setActiveMenuItem(t('menu.forms'));
                         handleEnvChange(env)
                     }}/>

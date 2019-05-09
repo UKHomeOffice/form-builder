@@ -18,17 +18,17 @@ const CreateFormChoice = () => {
         </Message>
     }
     if (envContext.editable) {
-        return <Segment placeholder>
+        return <Segment placeholder size="large" color="teal" raised>
             <Grid columns={2} relaxed='very' stackable>
                 <Grid.Column>
-                    <Button content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
+                    <Button primary content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
                             onClick={() => {
                                 navigation.navigate(`/forms/${envContext.id}/create/builder`);
                             }}/>
                 </Grid.Column>
 
                 <Grid.Column verticalAlign='middle'>
-                    <Button content={t('form.create.choice.form-upload-label')} icon='upload' size='big'
+                    <Button secondary content={t('form.create.choice.form-upload-label')} icon='upload' size='big'
                             onClick={() => {
                                 navigation.navigate(`/forms/${envContext.id}/create/file-upload`);
                             }}/>
