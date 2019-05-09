@@ -4,6 +4,7 @@ import {Divider, Header, Icon} from "semantic-ui-react";
 import ReactJson from "react-json-view";
 import {useTranslation} from "react-i18next";
 import {Form, Formio} from 'react-formio';
+import "formiojs/dist/formio.full.css";
 
 Formio.Templates.framework = 'semantic';
 

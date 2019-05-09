@@ -8,8 +8,7 @@ const CreateFormChoice = () => {
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {t} = useTranslation();
-    const context = envContext();
-    if (!context) {
+    if (!envContext) {
         return <Message icon negative>
             <Icon name='exclamation circle'  />
             <Message.Content>
@@ -18,20 +17,20 @@ const CreateFormChoice = () => {
             </Message.Content>
         </Message>
     }
-    if (context.editable) {
+    if (envContext.editable) {
         return <Segment placeholder>
             <Grid columns={2} relaxed='very' stackable>
                 <Grid.Column>
                     <Button content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
                             onClick={() => {
-                                navigation.navigate(`/forms/${context.id}/create/builder`);
+                                navigation.navigate(`/forms/${envContext.id}/create/builder`);
                             }}/>
                 </Grid.Column>
 
                 <Grid.Column verticalAlign='middle'>
                     <Button content={t('form.create.choice.form-upload-label')} icon='upload' size='big'
                             onClick={() => {
-                                navigation.navigate(`/forms/${context.id}/create/file-upload`);
+                                navigation.navigate(`/forms/${envContext.id}/create/file-upload`);
                             }}/>
                 </Grid.Column>
             </Grid>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import AppMenu from "../common/AppMenu";
 import Footer from "../common/Footer";
 import {NavNotFoundBoundary} from "react-navi";
@@ -11,18 +11,15 @@ export const ApplicationContext = React.createContext([{}, () => {
 }]);
 
 export const Main = ({children}) => {
-    const [state, setState] = useState({});
     return <React.Fragment>
-        <ApplicationContext.Provider value={{state, setState}}>
-            <AppMenu/>
-            <Container>
-                <AppHeader/>
-                <Notification/>
-                <NavNotFoundBoundary render={PageNotFound}>
-                    {children || null}
-                </NavNotFoundBoundary>
-            </Container>
-            <Footer/>
-        </ApplicationContext.Provider>
+        <AppMenu/>
+        <Container>
+            <AppHeader/>
+            <Notification/>
+            <NavNotFoundBoundary render={PageNotFound}>
+                {children || null}
+            </NavNotFoundBoundary>
+        </Container>
+        <Footer/>
     </React.Fragment>
 };

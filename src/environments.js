@@ -9,16 +9,17 @@ const environments = [
             "password": "secret"
         },
         "editable": true,
+        "default": true,
         "promotion-preconditions": []
     },
     {
         "id": "demo",
         "label" : "Demo",
-        "url": "",
+        "url": "http://formio.lodev.xyz",
         "description": "UAT environment",
         "service": {
-            "username": "",
-            "password": ""
+            "username": "me@lodev.xyz",
+            "password": "secret"
         },
         "create": false,
         "promotion-preconditions": ["dev"]
@@ -26,11 +27,11 @@ const environments = [
     {
         "id": "staging",
         "label": "Staging",
-        "url": "",
+        "url": "http://formio.lodev.xyz",
         "description": "Staging environment",
         "service": {
-            "username": "",
-            "password": ""
+            "username": "me@lodev.xyz",
+            "password": "secret"
         },
         "create": false,
         "promotion-preconditions": ["dev", "demo"]
@@ -38,11 +39,11 @@ const environments = [
     {
         "id": "prod",
         "label": "Production",
-        "url": "",
+        "url": "http://formio.lodev.xyz",
         "description": "Prod environment",
         "service": {
-            "username": "",
-            "password": ""
+            "username": "me@lodev.xyz",
+            "password": "secret"
         },
         "create": false,
         "promotion-preconditions": ["dev", "demo", "staging"]

@@ -1,12 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Header, Icon} from 'semantic-ui-react'
 import {useTranslation} from "react-i18next";
-import {ApplicationContext} from "../core/Main";
+import useEnvContext from "../core/context/useEnvContext";
 
 const AppHeader = () => {
     const {t} = useTranslation();
-    const {state} = useContext(ApplicationContext);
-    const environment = state.environment;
+    const {envContext} = useEnvContext();
+
+    const environment = envContext;
     if (environment) {
         const label = environment.label;
         return <Header as='h2'>

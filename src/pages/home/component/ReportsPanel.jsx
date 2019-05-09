@@ -1,36 +1,12 @@
 import {Segment} from "semantic-ui-react";
 import {Bar, BarChart, CartesianGrid, Legend, Pie, PieChart, Sector, Tooltip, XAxis, YAxis} from "recharts";
-import React, {useState} from "react";
+import React from "react";
+import useReports from "../useReports";
+import {EXECUTING} from "../../../core/api/actionTypes";
 
 const ReportsPanel = () => {
-    const [activeIndex, setActiveIndex] = useState(0);
+    const {onPieEnter, reports} = useReports();
 
-    const onPieEnter = (data, index) => {
-        setActiveIndex(index);
-    };
-    const data = [
-        {name: 'dev', value: 400},
-        {name: 'demo', value: 300},
-        {name: 'staging', value: 300},
-        {name: 'prod', value: 200},
-    ];
-
-
-    const formTypes = [
-        {
-            name: 'dev', wizard: 10, form: 10
-        },
-        {
-            name: 'demo', wizard: 110, form: 10
-        },
-        {
-            name: 'staging', wizard: 140, form: 10
-        },
-        {
-            name: 'prod', wizard: 10, form: 100
-        },
-
-    ];
 
     const renderActiveShape = (props) => {
         const RADIAN = Math.PI / 180;
@@ -71,18 +47,19 @@ const ReportsPanel = () => {
                 <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none"/>
                 <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
                 <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor}
-                      fill="#333">{`${value} forms`}</text>
+                      fill="#333">{`${value} ${value > 1 || value === 0 ? 'forms' : 'form'}`}</text>
             </g>
         );
     };
 
-    return  <Segment.Group horizontal basic>
-        <Segment basic>
+
+    return <Segment.Group horizontal>
+        <Segment basic loading={reports.statusFormsPerEnvCount === EXECUTING}>
             <PieChart width={500} height={400}>
                 <Pie
-                    activeIndex={activeIndex}
+                    activeIndex={reports.activeIndex}
                     activeShape={renderActiveShape}
-                    data={data}
+                    data={reports.formsPerEnvCount}
                     cx={200}
                     cy={200}
                     innerRadius={60}
@@ -93,11 +70,11 @@ const ReportsPanel = () => {
                 />
             </PieChart>
         </Segment>
-        <Segment basic>
+        <Segment basic loading={reports.statusTypeData === EXECUTING}>
             <BarChart
                 width={500}
                 height={400}
-                data={formTypes}
+                data={reports.typeData}
                 margin={{
                     top: 20, right: 30, left: 20, bottom: 5,
                 }}>

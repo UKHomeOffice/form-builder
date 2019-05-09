@@ -3,9 +3,11 @@ import {useEffect, useRef, useState} from "react";
 import _ from "lodash";
 import useApiRequest from "../../../core/api";
 import {SUCCESS} from "../../../core/api/actionTypes";
+import useEnvContext from "../../../core/context/useEnvContext";
 
 const useGetForms = () => {
     const navigation = useNavigation();
+    const {envContext} = useEnvContext();
     const [forms, setValues] = useState({
         column: null,
         direction: null,
@@ -25,16 +27,14 @@ const useGetForms = () => {
 
     const savedCallback = useRef();
 
-    const callback = () => {
-        setValues(forms => ({
-            ...forms,
-            data: null
-        }));
-        makeRequest();
-    };
-
     useEffect(() => {
-        savedCallback.current = callback;
+        savedCallback.current = () => {
+            setValues(forms => ({
+                ...forms,
+                data: null
+            }));
+            makeRequest();
+        };
     });
 
     useEffect(() => {
@@ -94,7 +94,7 @@ const useGetForms = () => {
     };
 
     const handlePreview = (form) => {
-        navigation.navigate(`/forms/${form._id}/preview`, {replace: true});
+        navigation.navigate(`/forms/${envContext.id}/${form._id}/preview`, {replace: true});
     };
 
     return {

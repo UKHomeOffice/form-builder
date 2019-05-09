@@ -5,10 +5,13 @@ import useApiRequest from "../../../core/api";
 import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 
 import _ from 'lodash';
+import useEnvContext from "../../../core/context/useEnvContext";
 
 const useCreateForm = () => {
     const {setState} = useContext(ApplicationContext);
     const navigation = useNavigation();
+    const {envContext} = useEnvContext();
+
     const [form, setValues] = useState({
         json: null,
         title: '',
@@ -38,7 +41,7 @@ const useCreateForm = () => {
         }
     );
     const success = () => {
-        navigation.navigate("/forms", {replace: true});
+        navigation.navigate(`/forms/${envContext.id}`, {replace: true});
         setState(state => ({
             ...state, notification: {
                 header: `${form.title} created`,

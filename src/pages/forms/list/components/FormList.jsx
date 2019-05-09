@@ -6,6 +6,7 @@ import useGetForms from "../useGetForms";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import "../../create/components/CreateFormBuilder.scss"
 import {useTranslation} from "react-i18next";
+import useEnvContext from "../../../../core/context/useEnvContext";
 
 const FormList = () => {
     const {
@@ -21,6 +22,7 @@ const FormList = () => {
     } = useGetForms();
 
     const { t } = useTranslation();
+    const {envContext} = useEnvContext();
 
     const {direction, column, data, total, activePage, limit} = forms;
 
@@ -92,7 +94,7 @@ const FormList = () => {
                         </Table.HeaderCell> : <Table.HeaderCell colSpan='3' />}
                         <Table.HeaderCell colSpan={6}>
                             <Button floated='right' icon labelPosition='left' primary size='small'
-                                    onClick={() => navigation.navigate('/forms/create')}>
+                                    onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}>
                                 <Icon name='wpforms'/>{t('form.create.label')}
                             </Button>
                         </Table.HeaderCell>

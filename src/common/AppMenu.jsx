@@ -1,39 +1,45 @@
-import React, {useState} from 'react';
+import React, {useContext} from 'react';
 import {Dropdown, Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
-import {useCurrentRoute, useNavigation} from "react-navi";
+import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
 import secureLS from '../core/storage';
 import _ from 'lodash';
 import environments from '../environments';
 import useEnvContext from "../core/context/useEnvContext";
+import {ApplicationContext} from "../core/Main";
 
 const AppMenu = () => {
-    const route = useCurrentRoute();
     const navigation = useNavigation();
     const {t} = useTranslation();
     const [keycloak] = useKeycloak();
-    const {changeContext, clearEnvContext} = useEnvContext();
+    const {clearEnvContext, changeContext} = useEnvContext();
+    const {state, setState} = useContext(ApplicationContext);
 
-    const handleClick = (environment) => {
+    const handleEnvChange = (environment) => {
         changeContext(environment);
+        navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
 
-    const path = route.url.pathname;
-    const [activeItem, setActiveItem] = useState(path === '/' ? t('menu.home') : path);
+    const setActiveMenuItem = (name) => {
+        setState(state => ({
+            ...state,
+            activeMenuItem : name
+        }))
+    };
 
     return <Menu stackable pointing>
-        <Menu.Item name={t('menu.home')} active={activeItem === t('menu.home')} onClick={(e, {name}) => {
-            setActiveItem(name);
+        <Menu.Item name={t('menu.home')} active={!state.activeMenuItem || state.activeMenuItem === t('menu.home')} onClick={(e, {name}) => {
+            setActiveMenuItem(name)
             clearEnvContext();
             navigation.navigate("/");
         }}/>
         <Dropdown item text={t('menu.forms')}>
             <Dropdown.Menu>
                 {_.map(environments, (env) => (
-                    <Dropdown.Item icon='cog' text={env.label ? env.label : env.id} onClick={(e, {name}) => {
-                        setActiveItem(name);
-                        handleClick(env)
+                    <Dropdown.Item key={env.id} icon='cog' text={env.label ? env.label : env.id}  onClick={() => {
+                        setActiveMenuItem(t('menu.forms'));
+                        handleEnvChange(env)
                     }}/>
                 ))}
             </Dropdown.Menu>
@@ -42,6 +48,7 @@ const AppMenu = () => {
             <Menu.Item
                 name={t('menu.logout')}
                 onClick={() => {
+                    clearEnvContext();
                     secureLS.remove("FORMIO_TOKEN");
                     keycloak.logout()
                 }}/>
