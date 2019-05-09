@@ -3,6 +3,14 @@ import useGetForms from "./useGetForms";
 import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 
 describe('useGetForms', () => {
+    beforeEach(() => {
+        const contextModule = require('../../../core/context/useEnvContext');
+        contextModule.default = () => {
+            return {
+                envContext: {}
+            }
+        }
+    });
     it('gets forms and status EXECUTING', () => {
         const naviModule = require('react-navi');
         naviModule.useNavigation = jest.fn(()=>{ return 'fake bar'});

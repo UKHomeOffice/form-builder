@@ -34,6 +34,14 @@ jest.mock('../../common/components/DeleteFormButton', () => {
 });
 
 describe('FormList', () => {
+    beforeEach(() => {
+        const contextModule = require('../../../../core/context/useEnvContext');
+        contextModule.default = () => {
+            return {
+                envContext: {}
+            }
+        }
+    });
     it('renders a semantic ui table of forms', async () => {
 
         const {forms} = useGetForms();

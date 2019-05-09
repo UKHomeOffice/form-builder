@@ -3,7 +3,14 @@ import React from "react";
 import {mount} from "enzyme";
 
 describe("Environments panel", () => {
-
+    beforeEach(() => {
+        const contextModule = require('../../../core/context/useEnvContext');
+        contextModule.default = () => {
+            return {
+                envContext: {}
+            }
+        }
+    });
     it('renders enviroments', async () => {
 
         const data = [

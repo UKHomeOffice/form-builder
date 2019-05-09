@@ -11,6 +11,14 @@ describe('useCreateForm', () => {
         apiModule.default = () => {
             return [{}, jest.fn()]
         };
+
+
+        const contextModule = require('../../../core/context/useEnvContext');
+        contextModule.default = () => {
+            return {
+                envContext: {}
+            }
+        }
     });
     it('check if form is invalid', () => {
         const {result} = renderHook(() => useCreateForm());
