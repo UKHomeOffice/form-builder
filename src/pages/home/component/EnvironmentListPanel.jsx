@@ -22,18 +22,18 @@ const EnvironmentListPanel = ({environments}) => {
         navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
 
-    return <Item.Group divided relaxed link compact>
+    return <Item.Group divided relaxed link>
         {
             _.map(environments, (environment) => (
                 <Item onClick={() => {
                     handleClick(environment);
-                }}>
+                }} key={environment.id}>
                     <Item.Image size='tiny' src="/cog-solid.svg" />
                     <Item.Content>
                         <Item.Header as="a">{environment.label ? environment.label : environment.id}</Item.Header>
                         <Item.Description>{environment.description}</Item.Description>
                         <Item.Extra>
-                            <Label>{t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</Label>
+                            <Label color={environment.editable? 'teal': 'red'}>{t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</Label>
                             <Label icon='globe' content={t('environment.url', {url: environment.url})} />
                         </Item.Extra>
 

@@ -17,5 +17,6 @@ export default mount({
         "view": <FormList/>
     })),
     '/:env/create': withEnvContext(lazy(() => import('../forms/create/createFormRoutes'))),
+    '/:env/:formId/edit': withEnvContext(lazy(() => import('../forms/edit/editFormRoutes'))),
     '/:env/:formId/preview': withEnvContext(lazy(() => import('../forms/preview/previewFormRoutes')))
 });

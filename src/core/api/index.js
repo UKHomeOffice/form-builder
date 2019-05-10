@@ -13,8 +13,8 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const {envContext} = useEnvContext();
 
     const baseUrl = envContext.url;
-    const username = envContext.service.username;
-    const password = envContext.service.password;
+    const username = envContext.service.formio.username;
+    const password = envContext.service.formio.password;
 
     const getToken = async (username, password) => {
         const tokenResponse = await axios.post(`${baseUrl}/user/login`, {

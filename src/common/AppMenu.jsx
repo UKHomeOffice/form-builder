@@ -41,7 +41,7 @@ const AppMenu = () => {
             <Dropdown.Menu>
 
                 {_.map(environments, (env) => (
-                    <Dropdown.Item icon="cog" key={env.id} text={ envContext ? (envContext.id === env.id ? <Label color='teal' horizontal>
+                    <Dropdown.Item icon="cog" key={env.id} text={ envContext ? (envContext.id === env.id ? <Label color={envContext ? (envContext.editable ? 'teal': 'red') : 'teal'} horizontal>
                             {env.label ? env.label : env.id}
                     </Label>: env.label ? env.label : env.id):  env.label ? env.label : env.id} active={envContext? envContext.id === env.id : false} onClick={() => {
                         setActiveMenuItem(t('menu.forms.name'));

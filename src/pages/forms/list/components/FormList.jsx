@@ -18,7 +18,8 @@ const FormList = () => {
         handlePaginationChange,
         handleTitleSearch,
         handleOnSuccessfulDeletion,
-        handlePreview
+        handlePreview,
+        handleEditForm
     } = useGetForms();
 
     const {t} = useTranslation();
@@ -27,13 +28,13 @@ const FormList = () => {
     const {direction, column, data, total, activePage, limit} = forms;
 
     if (status === ERROR) {
-        return <Message icon negative>
+        return <Container><Message icon negative>
             <Icon name='warning circle'/>
             <Message.Content>
                 <Message.Header>{t('error.general')}</Message.Header>
                 {t('form.list.failure.forms-load', {error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
             </Message.Content>
-        </Message>
+        </Message></Container>
     }
     return <Container><Segment.Group>
         <Segment basic>
@@ -72,7 +73,7 @@ const FormList = () => {
                                 <Button.Group>
                                     <DeleteFormButton form={form} onSuccessfulDeletion={handleOnSuccessfulDeletion}/>
                                     <Button.Or/>
-                                    <Button positive>{t('form.edit.label')}</Button>
+                                    <Button positive onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>
                                     <Button.Or/>
                                     <Button primary
                                             onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>

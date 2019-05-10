@@ -97,6 +97,11 @@ const useGetForms = () => {
         navigation.navigate(`/forms/${envContext.id}/${form._id}/preview`, {replace: true});
     };
 
+    const handleEditForm = (form) => {
+        navigation.navigate(`/forms/${envContext.id}/${form._id}/edit`, {replace: true});
+
+    }
+
     return {
         handleSort,
         navigation,
@@ -106,7 +111,8 @@ const useGetForms = () => {
         handleTitleSearch,
         handlePaginationChange,
         handleOnSuccessfulDeletion,
-        handlePreview
+        handlePreview,
+        handleEditForm
     }
 };
 

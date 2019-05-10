@@ -1,5 +1,5 @@
 import React from 'react';
-import {Header, Icon} from 'semantic-ui-react'
+import {Header, Icon, Label} from 'semantic-ui-react'
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../core/context/useEnvContext";
 
@@ -13,7 +13,7 @@ const AppHeader = () => {
         return <div style={{paddingBottom: "20px"}}><Header as='h2'>
             <Icon name='settings'/>
             <Header.Content>
-                {t('environment.label')} : {label ? label : environment.id}
+                {t('environment.label')} : <Label color={environment.editable? 'teal': 'red'} size="large">{label ? label : environment.id}</Label>
             </Header.Content>
         </Header></div>
     }

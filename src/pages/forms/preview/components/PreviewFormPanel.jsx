@@ -5,13 +5,15 @@ import ReactJson from "react-json-view";
 import {useTranslation} from "react-i18next";
 import {Form, Formio} from 'react-formio';
 import "formiojs/dist/formio.full.css";
+import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 
 Formio.Templates.framework = 'semantic';
 
 const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
     const {t} = useTranslation();
+    const {parseForm} = useFormDataReplacer();
     return <React.Fragment>
-        <Form form={form} onSubmit={(submission) => previewSubmission(submission)} options={
+        <Form form={parseForm(form)} onSubmit={(submission) => previewSubmission(submission)} options={
             {
                 noAlerts: true
             }}/>

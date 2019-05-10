@@ -1,6 +1,6 @@
 import React from 'react';
 import {FormBuilder, Formio} from 'react-formio';
-import {Button, Container, Divider, Form, Icon, Label, Message, Modal} from 'semantic-ui-react'
+import {Button, Container, Divider, Form, Icon, Label, Message} from 'semantic-ui-react'
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import useCreateForm from "../useCreateForm";
 import './CreateFormBuilder.scss';

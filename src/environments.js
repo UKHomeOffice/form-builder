@@ -5,12 +5,33 @@ const environments = [
         "url": "http://formio.lodev.xyz",
         "description": "development environment",
         "service": {
-            "username": "me@lodev.xyz",
-            "password": "secret"
+            "formio": {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            },
+            "keycloak" : {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            }
         },
         "editable": true,
-        "default": true,
-        "promotion-preconditions": []
+        "promotion-preconditions": [
+
+        ],
+        "variable-replacements" : [
+            {
+              "{$.environmentContext.platformDataUrl}" : "http://www.google.co.uk"
+            },
+            {
+                "{$.staffDetailsContext.staffId}" : "{{guid}}"
+            },
+            {
+                "{$.keycloakContext.givenName}" : "{{firstName}}"
+            },
+            {
+                "{$.keycloakContext.familyName}" : "{{lastName}}"
+            }
+        ]
     },
     {
         "id": "demo",
@@ -18,8 +39,14 @@ const environments = [
         "url": "http://formio.lodev.xyz",
         "description": "UAT environment",
         "service": {
-            "username": "me@lodev.xyz",
-            "password": "secret"
+            "formio": {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            },
+            "keycloak" : {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            }
         },
         "editable": false,
         "promotion-preconditions": ["dev"]
@@ -30,8 +57,14 @@ const environments = [
         "url": "http://formio.lodev.xyz",
         "description": "Staging environment",
         "service": {
-            "username": "me@lodev.xyz",
-            "password": "secret"
+            "formio": {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            },
+            "keycloak" : {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            }
         },
         "editable": false,
         "promotion-preconditions": ["dev", "demo"]
@@ -42,8 +75,14 @@ const environments = [
         "url": "http://formio.lodev.xyz",
         "description": "Prod environment",
         "service": {
-            "username": "me@lodev.xyz",
-            "password": "secret"
+            "formio": {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            },
+            "keycloak" : {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            }
         },
         "editable": false,
         "promotion-preconditions": ["dev", "demo", "staging"]
@@ -54,8 +93,14 @@ const environments = [
         "url": "http://formio.lodev.xyz",
         "description": "Testing environment",
         "service": {
-            "username": "me@lodev.xyz",
-            "password": "secret"
+            "formio": {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            },
+            "keycloak" : {
+                "username": "me@lodev.xyz",
+                "password": "secret"
+            }
         },
         "editable": false,
         "promotion-preconditions": ["dev"]
