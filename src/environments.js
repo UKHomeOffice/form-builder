@@ -21,7 +21,7 @@ const environments = [
             "username": "me@lodev.xyz",
             "password": "secret"
         },
-        "create": false,
+        "editable": false,
         "promotion-preconditions": ["dev"]
     },
     {
@@ -33,7 +33,7 @@ const environments = [
             "username": "me@lodev.xyz",
             "password": "secret"
         },
-        "create": false,
+        "editable": false,
         "promotion-preconditions": ["dev", "demo"]
     },
     {
@@ -45,7 +45,7 @@ const environments = [
             "username": "me@lodev.xyz",
             "password": "secret"
         },
-        "create": false,
+        "editable": false,
         "promotion-preconditions": ["dev", "demo", "staging"]
     },
     {
@@ -57,7 +57,7 @@ const environments = [
             "username": "me@lodev.xyz",
             "password": "secret"
         },
-        "create": false,
+        "editable": false,
         "promotion-preconditions": ["dev"]
     }
 ];

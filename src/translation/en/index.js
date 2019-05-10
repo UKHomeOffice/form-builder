@@ -1,17 +1,35 @@
 const messages = {
+    "yes" : "Yes",
+    "no": "No",
     "home": {
         "environments" :"Environments",
         "reports" : "Reports",
         "types-of-forms" : "Types of forms in each environment",
-        "forms-per-environment": "Number of forms in each environment"
+        "forms-per-environment": "Number of forms in each environment",
+        "heading": {
+            "title" : "Dashboard",
+            "sub-heading" : "Central form management tool"
+        }
     },
     "environment": {
-        "label" : "Current environment context"
+        "label" : "Current environment context",
+        "create" : "Form builder allowed: {{editable}}",
+        "url" : "Server:{{url}}"
+
     },
     "menu" : {
-        "home" : "/home",
-        "forms" : "Forms",
-        "logout" : "logout"
+        "home" : {
+            "label" : "Home",
+            "name" : "/home"
+        },
+        "forms" : {
+            "label" : "Forms",
+            "name" : "/forms"
+        },
+        "logout" : {
+            "label" : "Logout",
+            "name" : "logout"
+        }
     },
     "error" : {
         "general" : "An error occurred",
@@ -56,7 +74,11 @@ const messages = {
             },
             "preview" : {
                 "modal" : {
-                    "missing-title": "No title defined for form"
+                    "missing-title": "No title defined for form",
+                    "missing-form" : {
+                        "title" : "No form",
+                        "message": "You have not created a form to preview"
+                    }
                 }
             }
 

@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Dropdown, Menu} from 'semantic-ui-react';
+import {Dropdown, Icon, Label, Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
@@ -28,17 +28,23 @@ const AppMenu = () => {
         }))
     };
 
-    return <Menu stackable pointing>
-        <Menu.Item name={t('menu.home')} active={!state.activeMenuItem || state.activeMenuItem === t('menu.home')} onClick={(e, {name}) => {
+    return <Menu stackable pointing icon='labeled'>
+        <Menu.Item name={t('menu.home.name')} active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')} onClick={(e, {name}) => {
             setActiveMenuItem(name)
             clearEnvContext();
             navigation.navigate("/");
-        }}/>
-        <Dropdown item text={t('menu.forms')}>
+        }}>
+            {t('menu.home.label')}
+            <Icon name="home"/>
+        </Menu.Item>
+        <Dropdown item text={t('menu.forms.label')} icon="wpforms">
             <Dropdown.Menu>
+
                 {_.map(environments, (env) => (
-                    <Dropdown.Item key={env.id} icon='cog' text={env.label ? env.label : env.id} active={envContext? envContext.id === env.id : false} onClick={() => {
-                        setActiveMenuItem(t('menu.forms'));
+                    <Dropdown.Item icon="cog" key={env.id} text={ envContext ? (envContext.id === env.id ? <Label color='teal' horizontal>
+                            {env.label ? env.label : env.id}
+                    </Label>: env.label ? env.label : env.id):  env.label ? env.label : env.id} active={envContext? envContext.id === env.id : false} onClick={() => {
+                        setActiveMenuItem(t('menu.forms.name'));
                         handleEnvChange(env)
                     }}/>
                 ))}
@@ -46,12 +52,15 @@ const AppMenu = () => {
         </Dropdown>
         <Menu.Menu position='right'>
             <Menu.Item
-                name={t('menu.logout')}
+                name={t('menu.logout.name')}
                 onClick={() => {
                     clearEnvContext();
                     secureLS.remove("FORMIO_TOKEN");
                     keycloak.logout()
-                }}/>
+                }}>
+                {t('menu.logout.label')}
+                <Icon name='log out' />
+            </Menu.Item>
         </Menu.Menu>
     </Menu>
 };

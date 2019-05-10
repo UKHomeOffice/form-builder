@@ -3,9 +3,9 @@ import AppMenu from "../common/AppMenu";
 import Footer from "../common/Footer";
 import {NavNotFoundBoundary} from "react-navi";
 import PageNotFound from "../common/PageNotFound";
-import {Container} from 'semantic-ui-react';
 import Notification from "../common/Notification";
 import AppHeader from "../common/AppHeader";
+import {Container} from "semantic-ui-react";
 
 export const ApplicationContext = React.createContext([{}, () => {
 }]);
@@ -13,13 +13,14 @@ export const ApplicationContext = React.createContext([{}, () => {
 export const Main = ({children}) => {
     return <React.Fragment>
         <AppMenu/>
+
         <Container>
             <AppHeader/>
             <Notification/>
-            <NavNotFoundBoundary render={PageNotFound}>
-                {children || null}
-            </NavNotFoundBoundary>
         </Container>
+        <NavNotFoundBoundary render={PageNotFound}>
+            {children || null}
+        </NavNotFoundBoundary>
         <Footer/>
     </React.Fragment>
 };

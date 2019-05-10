@@ -10,12 +10,12 @@ const AppHeader = () => {
     const environment = envContext;
     if (environment) {
         const label = environment.label;
-        return <Header as='h2'>
+        return <div style={{paddingBottom: "20px"}}><Header as='h2'>
             <Icon name='settings'/>
             <Header.Content>
                 {t('environment.label')} : {label ? label : environment.id}
             </Header.Content>
-        </Header>
+        </Header></div>
     }
     return null;
 };

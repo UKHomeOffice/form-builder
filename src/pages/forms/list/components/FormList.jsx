@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Icon, Input, Message, Pagination, Segment, Table} from 'semantic-ui-react'
+import {Button, Container, Icon, Input, Message, Pagination, Segment, Table} from 'semantic-ui-react'
 import _ from 'lodash'
 import DeleteFormButton from "../../common/components/DeleteFormButton";
 import useGetForms from "../useGetForms";
@@ -21,7 +21,7 @@ const FormList = () => {
         handlePreview
     } = useGetForms();
 
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const {envContext} = useEnvContext();
 
     const {direction, column, data, total, activePage, limit} = forms;
@@ -35,9 +35,10 @@ const FormList = () => {
             </Message.Content>
         </Message>
     }
-    return <Segment.Group>
+    return <Container><Segment.Group>
         <Segment basic>
-            <Input icon='search' placeholder={t('form.list.search-label')} size='large' onChange={handleTitleSearch} fluid focus/>
+            <Input icon='search' placeholder={t('form.list.search-label')} size='large' onChange={handleTitleSearch}
+                   fluid focus/>
         </Segment>
         <Segment basic loading={!status || status === EXECUTING}>
             <Table columns={6} sortable celled stackable>
@@ -46,7 +47,8 @@ const FormList = () => {
                         <Table.HeaderCell>{t('form.list.table.formIdentifierCellLabel')}</Table.HeaderCell>
                         <Table.HeaderCell sorted={column === 'title' ? direction : null}
                                           onClick={
-                                              handleSort('title')} width={10}>{t('form.list.table.formTitleCellLabel')}</Table.HeaderCell>
+                                              handleSort('title')}
+                                          width={10}>{t('form.list.table.formTitleCellLabel')}</Table.HeaderCell>
                         <Table.HeaderCell sorted={column === 'name' ? direction : null}
                                           onClick={handleSort('name')}>{t('form.list.table.formNameCellLabel')}</Table.HeaderCell>
                         <Table.HeaderCell sorted={column === 'path' ? direction : null}
@@ -72,7 +74,8 @@ const FormList = () => {
                                     <Button.Or/>
                                     <Button positive>{t('form.edit.label')}</Button>
                                     <Button.Or/>
-                                    <Button primary onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
+                                    <Button primary
+                                            onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
                                 </Button.Group>
                             </Table.Cell>
 
@@ -85,13 +88,13 @@ const FormList = () => {
                         {total > limit ? <Table.HeaderCell colSpan='3'>
                             <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                         activePage={activePage}
-                                        ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
-                                        firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-                                        lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-                                        prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                                        nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                                        ellipsisItem={{content: <Icon name='ellipsis horizontal'/>, icon: true}}
+                                        firstItem={{content: <Icon name='angle double left'/>, icon: true}}
+                                        lastItem={{content: <Icon name='angle double right'/>, icon: true}}
+                                        prevItem={{content: <Icon name='angle left'/>, icon: true}}
+                                        nextItem={{content: <Icon name='angle right'/>, icon: true}}
                                         onPageChange={handlePaginationChange}/>
-                        </Table.HeaderCell> : <Table.HeaderCell colSpan='3' />}
+                        </Table.HeaderCell> : <Table.HeaderCell colSpan='3'/>}
                         <Table.HeaderCell colSpan={6}>
                             <Button floated='right' icon labelPosition='left' primary size='small'
                                     onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}>
@@ -102,7 +105,7 @@ const FormList = () => {
                 </Table.Footer>
             </Table>
         </Segment>
-    </Segment.Group>
+    </Segment.Group></Container>
 };
 
 

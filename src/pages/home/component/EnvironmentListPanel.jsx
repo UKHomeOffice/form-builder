@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Header, List} from "semantic-ui-react";
+import {Item, Label} from "semantic-ui-react";
 import _ from 'lodash';
 import useEnvContext from "../../../core/context/useEnvContext";
 import {useNavigation} from "react-navi";
@@ -22,21 +22,26 @@ const EnvironmentListPanel = ({environments}) => {
         navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
 
-    return <List divided relaxed>
+    return <Item.Group divided relaxed link compact>
         {
             _.map(environments, (environment) => (
-                <List.Item key={environment.id}>
-                    <List.Icon name='cog' size='large' verticalAlign='middle'/>
-                    <List.Content>
-                        <Header as='h5'><a href="#" onClick={() => {
-                            handleClick(environment);
-                        }}>{environment.label ? environment.label : environment.id}</a></Header>
-                        <List.Description>{environment.description}</List.Description>
-                    </List.Content>
-                </List.Item>
+                <Item onClick={() => {
+                    handleClick(environment);
+                }}>
+                    <Item.Image size='tiny' src="/cog-solid.svg" />
+                    <Item.Content>
+                        <Item.Header as="a">{environment.label ? environment.label : environment.id}</Item.Header>
+                        <Item.Description>{environment.description}</Item.Description>
+                        <Item.Extra>
+                            <Label>{t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</Label>
+                            <Label icon='globe' content={t('environment.url', {url: environment.url})} />
+                        </Item.Extra>
+
+                    </Item.Content>
+                </Item>
             ))
         }
-    </List>
+    </Item.Group>
 };
 
 export default EnvironmentListPanel;

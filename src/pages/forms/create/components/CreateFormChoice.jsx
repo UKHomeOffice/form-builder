@@ -1,6 +1,6 @@
 import {useNavigation} from "react-navi";
 import React from 'react';
-import {Button, Divider, Grid, Icon, Message, Segment} from 'semantic-ui-react'
+import {Button, Container, Divider, Grid, Icon, Message, Segment} from 'semantic-ui-react'
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../../../core/context/useEnvContext";
 
@@ -18,7 +18,7 @@ const CreateFormChoice = () => {
         </Message>
     }
     if (envContext.editable) {
-        return <Segment placeholder size="large" color="teal" raised>
+        return <Container><Segment placeholder size="large" color="teal" raised>
             <Grid columns={2} relaxed='very' stackable>
                 <Grid.Column>
                     <Button primary content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
@@ -36,15 +36,15 @@ const CreateFormChoice = () => {
             </Grid>
 
             <Divider vertical>Or</Divider>
-        </Segment>
+        </Segment></Container>
     } else {
-        return <Message icon negative>
+        return <Container><Message icon negative>
             <Icon name='exclamation circle'  />
             <Message.Content>
                 <Message.Header>{t('form.create.not-allowed.title')}</Message.Header>
                 {t('form.create.not-allowed.message')}
             </Message.Content>
-        </Message>
+        </Message></Container>
     }
 
 

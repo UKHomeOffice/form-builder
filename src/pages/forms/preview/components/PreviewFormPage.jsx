@@ -1,7 +1,7 @@
 import React from 'react';
 import usePreviewForm from "../usePreviewForm";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
-import {Divider, Header, Icon, Message, Segment} from "semantic-ui-react";
+import {Container, Divider, Header, Icon, Message, Segment} from "semantic-ui-react";
 import {useTranslation} from 'react-i18next';
 import PreviewFormPanel from "./PreviewFormPanel";
 
@@ -17,7 +17,7 @@ const PreviewFormPage = ({formId}) => {
         </Message>
     }
     return <React.Fragment>
-        <Message icon
+        <Container><Message icon
                  warning>
             <Icon name='exclamation circle'/>
             <Message.Content>
@@ -34,7 +34,7 @@ const PreviewFormPage = ({formId}) => {
                 dividing
             /> : null}
             <PreviewFormPanel form={form.data} formSubmission={form.submission} previewSubmission={previewSubmission}/>
-        </Segment>
+        </Segment></Container>
     </React.Fragment>
 };
 
