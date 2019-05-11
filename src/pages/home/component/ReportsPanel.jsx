@@ -1,101 +1,133 @@
-import {Header, Segment} from "semantic-ui-react";
-import {Bar, BarChart, CartesianGrid, Legend, Pie, PieChart, Sector, Tooltip, XAxis, YAxis} from "recharts";
-import React from "react";
-import useReports from "../useReports";
+import {Grid, Header, Segment} from "semantic-ui-react";
 import {EXECUTING} from "../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
+import React from "react";
+import useReports from "../useReports";
+import {ResponsivePie} from '@nivo/pie'
+import {ResponsiveBar} from "@nivo/bar";
+import './ReportsPanel.scss';
 
 const ReportsPanel = () => {
-    const {onPieEnter, reports} = useReports();
+    const {reports} = useReports();
     const {t} = useTranslation();
+    return  <Grid stackable>
+        <Grid.Row>
+            <Grid.Column width={8}>
+                <Segment className="chart-container" loading={reports.statusFormsPerEnvCount === EXECUTING}>
+                    <Header as='h3' dividing>
+                        {t('home.forms-per-environment')}
+                    </Header>
+                    <div style={{height: '500px'}}><ResponsivePie
+                        data={reports.formsPerEnvCount}
+                        margin={{top: 40, right: 80, bottom: 80, left: 80}}
+                        innerRadius={0.5}
+                        padAngle={0.7}
+                        cornerRadius={3}
+                        colors={{scheme: 'nivo'}}
+                        borderWidth={1}
+                        borderColor={{from: 'color', modifiers: [['darker', 0.2]]}}
+                        radialLabelsSkipAngle={10}
+                        radialLabelsTextXOffset={6}
+                        radialLabelsTextColor="#333333"
+                        radialLabelsLinkOffset={0}
+                        radialLabelsLinkDiagonalLength={16}
+                        radialLabelsLinkHorizontalLength={24}
+                        radialLabelsLinkStrokeWidth={1}
+                        radialLabelsLinkColor={{from: 'color'}}
+                        slicesLabelsSkipAngle={10}
+                        slicesLabelsTextColor="#333333"
+                        animate={true}
+                        motionStiffness={90}
+                        motionDamping={15}
+                        legends={[
+                            {
+                                anchor: 'bottom',
+                                direction: 'row',
+                                translateY: 56,
+                                itemWidth: 100,
+                                itemHeight: 18,
+                                itemTextColor: '#999',
+                                symbolSize: 18,
+                                symbolShape: 'circle',
+                                effects: [
+                                    {
+                                        on: 'hover',
+                                        style: {
+                                            itemTextColor: '#000'
+                                        }
+                                    }
+                                ]
+                            }
+                        ]}
+                    /></div>
+                </Segment>
+            </Grid.Column>
+            <Grid.Column width={8}>
+                <Segment className="chart-container">
+                    <Header as='h3' dividing>
+                        {t('home.types-of-forms')}
+                    </Header>
+                    <div style={{height: '500px'}}><ResponsiveBar
+                        data={reports.typeData}
+                        keys={['wizard', 'form']}
+                        indexBy="name"
+                        margin={{top: 50, right: 130, bottom: 50, left: 60}}
+                        padding={0.3}
+                        colors={{scheme: 'nivo'}}
+                        axisTop={null}
+                        axisRight={null}
+                        axisBottom={{
+                            tickSize: 5,
+                            tickPadding: 5,
+                            tickRotation: 0,
+                            legend: 'environment',
+                            legendPosition: 'middle',
+                            legendOffset: 32
+                        }}
+                        axisLeft={{
+                            tickSize: 5,
+                            tickPadding: 5,
+                            tickRotation: 0,
+                            legend: 'forms',
+                            legendPosition: 'middle',
+                            legendOffset: -40
+                        }}
+                        labelSkipWidth={12}
+                        labelSkipHeight={12}
+                        labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+                        legends={[
+                            {
+                                dataFrom: 'keys',
+                                anchor: 'bottom-right',
+                                direction: 'column',
+                                justify: false,
+                                translateX: 120,
+                                translateY: 0,
+                                itemsSpacing: 2,
+                                itemWidth: 100,
+                                itemHeight: 20,
+                                itemDirection: 'left-to-right',
+                                itemOpacity: 0.85,
+                                symbolSize: 20,
+                                effects: [
+                                    {
+                                        on: 'hover',
+                                        style: {
+                                            itemOpacity: 1
+                                        }
+                                    }
+                                ]
+                            }
+                        ]}
 
-    const renderActiveShape = (props) => {
-        const RADIAN = Math.PI / 180;
-        const {
-            cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
-            fill, payload, value,
-        } = props;
-        const sin = Math.sin(-RADIAN * midAngle);
-        const cos = Math.cos(-RADIAN * midAngle);
-        const sx = cx + (outerRadius + 10) * cos;
-        const sy = cy + (outerRadius + 10) * sin;
-        const mx = cx + (outerRadius + 30) * cos;
-        const my = cy + (outerRadius + 30) * sin;
-        const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-        const ey = my;
-        const textAnchor = cos >= 0 ? 'start' : 'end';
-        return (
-            <g>
-                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>{payload.name}</text>
-                <Sector
-                    cx={cx}
-                    cy={cy}
-                    innerRadius={innerRadius}
-                    outerRadius={outerRadius}
-                    startAngle={startAngle}
-                    endAngle={endAngle}
-                    fill={fill}
-                />
-                <Sector
-                    cx={cx}
-                    cy={cy}
-                    startAngle={startAngle}
-                    endAngle={endAngle}
-                    innerRadius={outerRadius + 6}
-                    outerRadius={outerRadius + 10}
-                    fill={fill}
-                />
-                <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none"/>
-                <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
-                <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor}
-                      fill="#333">{`${value} ${value > 1 || value === 0 ? 'forms' : 'form'}`}</text>
-            </g>
-        );
-    };
-
-
-    return <Segment.Group horizontal>
-
-        <Segment basic loading={reports.statusFormsPerEnvCount === EXECUTING}>
-            <Header as='h3' dividing>
-                {t('home.forms-per-environment')}
-            </Header>
-            <PieChart width={500} height={400}>
-                <Pie
-                    activeIndex={reports.activeIndex}
-                    activeShape={renderActiveShape}
-                    data={reports.formsPerEnvCount}
-                    cx={200}
-                    cy={200}
-                    innerRadius={60}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    onMouseEnter={onPieEnter}
-                />
-            </PieChart>
-        </Segment>
-        <Segment basic loading={reports.statusTypeData === EXECUTING}>
-            <Header as='h3' dividing>
-                {t('home.types-of-forms')}
-            </Header>
-            <BarChart
-                width={500}
-                height={400}
-                data={reports.typeData}
-                margin={{
-                    top: 20, right: 30, left: 20, bottom: 5,
-                }}>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name"/>
-                <YAxis/>
-                <Tooltip/>
-                <Legend/>
-                <Bar dataKey="wizard" stackId="a" fill="#8884d8"/>
-                <Bar dataKey="form" stackId="a" fill="#82ca9d"/>
-            </BarChart>
-        </Segment>
-    </Segment.Group>
-}
+                        animate={true}
+                        motionStiffness={90}
+                        motionDamping={15}
+                    /></div>
+                </Segment>
+            </Grid.Column>
+        </Grid.Row>
+    </Grid>
+};
 
 export default ReportsPanel;

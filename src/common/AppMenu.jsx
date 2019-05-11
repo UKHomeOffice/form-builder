@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Dropdown, Icon, Label, Menu} from 'semantic-ui-react';
+import {Dropdown, Icon, Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
@@ -21,35 +21,49 @@ const AppMenu = () => {
         navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
 
+    const iconStyle = {
+        margin: '0 10px 0 0'
+    };
+
     const setActiveMenuItem = (name) => {
         setState(state => ({
             ...state,
-            activeMenuItem : name
+            activeMenuItem: name
         }))
     };
 
-    return <Menu stackable pointing icon='labeled'>
-        <Menu.Item name={t('menu.home.name')} active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')} onClick={(e, {name}) => {
-            setActiveMenuItem(name)
-            clearEnvContext();
-            navigation.navigate("/");
-        }}>
-            {t('menu.home.label')}
-            <Icon name="home"/>
+    return <Menu pointing secondary>
+        <Menu.Item name={t('menu.home.name')}
+                   active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')}
+                   onClick={(e, {name}) => {
+                       setActiveMenuItem(name);
+                       clearEnvContext();
+                       navigation.navigate("/");
+                   }}>
+            <Icon name="home" size="large" style={iconStyle}/>
+            <span>{t('menu.home.label')}</span>
         </Menu.Item>
-        <Dropdown item text={t('menu.forms.label')} icon="wpforms">
-            <Dropdown.Menu>
 
-                {_.map(environments, (env) => (
-                    <Dropdown.Item icon="cog" key={env.id} text={ envContext ? (envContext.id === env.id ? <Label color={envContext ? (envContext.editable ? 'teal': 'red') : 'teal'} horizontal>
-                            {env.label ? env.label : env.id}
-                    </Label>: env.label ? env.label : env.id):  env.label ? env.label : env.id} active={envContext? envContext.id === env.id : false} onClick={() => {
-                        setActiveMenuItem(t('menu.forms.name'));
-                        handleEnvChange(env)
-                    }}/>
-                ))}
-            </Dropdown.Menu>
-        </Dropdown>
+        <Menu.Item
+            name={t('menu.forms.name')}
+            active={state.activeMenuItem === t('menu.form.name')}>
+            <Icon name="wpforms" size="large" style={iconStyle}/>
+            <span>{t('menu.forms.label')}</span>
+            <Dropdown>
+                <Dropdown.Menu>
+                    <Dropdown.Header>{t('home.environments')}</Dropdown.Header>
+                    {_.map(environments, (env) => (
+                        <Dropdown.Item key={env.id}
+                                       active={envContext ? envContext.id === env.id : false} onClick={() => {
+                            setActiveMenuItem(t('menu.forms.name'));
+                            handleEnvChange(env)
+                        }}>
+                            <Icon name="cog"/><span>{env.label ? env.label : env.id}</span>
+                        </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+            </Dropdown>
+        </Menu.Item>
         <Menu.Menu position='right'>
             <Menu.Item
                 name={t('menu.logout.name')}
@@ -58,8 +72,9 @@ const AppMenu = () => {
                     secureLS.remove("FORMIO_TOKEN");
                     keycloak.logout()
                 }}>
-                {t('menu.logout.label')}
-                <Icon name='log out' />
+
+                <Icon name='log out' size="large" style={iconStyle}/>
+                <span>{t('menu.logout.label')}</span>
             </Menu.Item>
         </Menu.Menu>
     </Menu>

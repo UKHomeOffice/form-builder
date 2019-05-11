@@ -12,20 +12,26 @@ const useReports = () => {
         typeData: [],
         statusTypeData: EXECUTING
     });
+    const number = () => {
+        const numbers = [276, 273, 171, 42, 185];
+        return numbers[Math.floor(Math.random() * numbers.length)];
+    };
 
     useEffect(() => {
         const fetchReportData = async () => {
             await axios.all(environments.map(async (environment) => {
                 const response = await axios(`${environment.url}/form?select=_id&display__in=form,wizard&limit=1&type__ne=resource`);
                 return {
-                    environment: environment.id,
+                    environment: environment,
                     response: response
                 }
             })).then((results) => {
                 const formsCountData = _.map(results, (result) => {
                     return {
-                        "name": result.environment,
-                        "value": parseInt(result.response.headers['content-range'].split('/')[1])
+                        "id": result.environment.id,
+                        "label": result.environment.label,
+                        "value": parseInt(result.response.headers['content-range'].split('/')[1]),
+                        "color": `hsl(${number()}, 70%, 50%)`
                     }
                 });
                 setReports(reports => ({
@@ -52,7 +58,9 @@ const useReports = () => {
                     return {
                         name: env,
                         wizard: wizards,
-                        form: forms
+                        wizardColour: "hsl(72, 70%, 50%)",
+                        form: forms,
+                        formColour: "hsl(236, 70%, 50%)"
                     }
                 });
                 setReports(reports => ({

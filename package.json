@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@nivo/bar": "^0.57.0",
+    "@nivo/core": "^0.57.0",
+    "@nivo/pie": "^0.57.0",
     "axios": "^0.18.0",
+    "concurrently": "^4.1.0",
     "core-js": "^2.6.5",
     "dummy-json": "^2.0.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
+    "express": "^4.16.4",
     "font-awesome": "^4.7.0",
     "formiojs": "^4.0.0-beta.30",
     "i18next": "^15.1.0",
@@ -31,19 +36,21 @@
     "react-scripts": "3.0.0",
     "react-test-renderer": "^16.8.6",
     "react-testing-library": "^7.0.0",
-    "recharts": "^1.5.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "secure-ls": "^1.2.5",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.86.0"
+    "semantic-ui-react": "^0.86.0",
+    "uuid4": "^1.1.4",
+    "winston": "^3.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache"
+    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
+    "start-both": "concurrently \"node server\" \"npm start .env\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -63,5 +70,6 @@
   "devDependencies": {
     "eslint-plugin-react-hooks": "^1.6.0",
     "react-hooks-testing-library": "^0.5.0"
-  }
+  },
+  "proxy": "http://localhost:8101"
 }

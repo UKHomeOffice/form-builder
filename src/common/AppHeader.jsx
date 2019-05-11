@@ -11,7 +11,7 @@ const AppHeader = () => {
     if (environment) {
         const label = environment.label;
         return <div style={{paddingBottom: "20px"}}><Header as='h2'>
-            <Icon name='settings'/>
+            <Icon name='cog'/>
             <Header.Content>
                 {t('environment.label')} : <Label color={environment.editable? 'teal': 'red'} size="large">{label ? label : environment.id}</Label>
             </Header.Content>

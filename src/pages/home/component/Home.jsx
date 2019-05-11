@@ -9,20 +9,27 @@ import environments from "../../../environments";
 const Home = () => {
     const {t} = useTranslation();
     return <React.Fragment>
-        <Grid.Row>
-            <Grid padded columns='equal' divided>
-                <Grid.Column centered>
-                    <Divider horizontal>
-                        <Header as='h1'>
-                            <Icon name='dashboard'/>
-                            {t('home.heading.title')}
-                        </Header>
-                    </Divider>
+        <Divider horizontal>
+            <Header as='h1'>
+                <Icon name='dashboard'/>
+                {t('home.heading.title')}
+            </Header>
+        </Divider>
+        <Grid>
+            <Grid.Row stretched>
+                <Grid.Column>
+                    <Segment basic>
+                        <Divider horizontal>
+                            <Header as='h2'>
+                                <Icon name='chart line'/>
+                                {t('home.reports')}
+                            </Header>
+                        </Divider>
+                        <ReportsPanel/>
+                    </Segment>
                 </Grid.Column>
-            </Grid>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid padded columns='equal' divided celled>
+            </Grid.Row>
+            <Grid.Row stretched>
                 <Grid.Column>
                     <Segment basic>
                         <Divider horizontal>
@@ -34,19 +41,8 @@ const Home = () => {
                         <EnvironmentListPanel environments={environments}/>
                     </Segment>
                 </Grid.Column>
-                <Grid.Column>
-                    <Segment basic>
-                        <Divider horizontal>
-                            <Header as='h2'>
-                                <Icon name='bar chart'/>
-                                {t('home.reports')}
-                            </Header>
-                        </Divider>
-                        <ReportsPanel/>
-                    </Segment>
-                </Grid.Column>
-            </Grid>
-        </Grid.Row>
+            </Grid.Row>
+        </Grid>
     </React.Fragment>
 };
 
