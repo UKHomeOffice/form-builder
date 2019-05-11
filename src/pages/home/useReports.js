@@ -30,6 +30,7 @@ const useReports = () => {
                         "value": parseInt(result.response.headers['content-range'].split('/')[1]),
                     }
                 });
+
                 setReports(reports => ({
                     ...reports,
                     statusFormsPerEnvCount: SUCCESS,
@@ -69,18 +70,8 @@ const useReports = () => {
         fetchReportData();
     }, []);
 
-
-    const onPieEnter = (data, index) => {
-        setReports(reports => ({
-            ...reports,
-            activeIndex: index
-        }));
-    };
-
-
     return {
-        reports,
-        onPieEnter
+        reports
     }
 };
 

@@ -5,7 +5,6 @@ const http = require('http');
 const winston = require('winston');
 const {createLogger, format, transports} = winston;
 const { combine, timestamp, json, splat} = format;
-
 const port = process.env.PORT || 8101;
 
 const logger = createLogger({

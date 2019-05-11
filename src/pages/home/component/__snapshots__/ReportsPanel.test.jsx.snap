@@ -1,0 +1,338 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReportsPanel renders pie and bar chart 1`] = `
+<ReportsPanel>
+  <Grid
+    stackable={true}
+  >
+    <div
+      className="ui stackable grid"
+    >
+      <GridRow>
+        <div
+          className="row"
+        >
+          <GridColumn
+            width={8}
+          >
+            <div
+              className="eight wide column"
+            >
+              <Segment
+                className="chart-container"
+                loading={false}
+              >
+                <div
+                  className="ui segment chart-container"
+                >
+                  <Header
+                    as="h3"
+                    dividing={true}
+                  >
+                    <h3
+                      className="ui dividing header"
+                    >
+                      home.forms-per-environment
+                    </h3>
+                  </Header>
+                  <div
+                    style={
+                      Object {
+                        "height": "500px",
+                      }
+                    }
+                  >
+                    <ResponsivePie
+                      animate={true}
+                      borderColor={
+                        Object {
+                          "from": "color",
+                          "modifiers": Array [
+                            Array [
+                              "darker",
+                              0.2,
+                            ],
+                          ],
+                        }
+                      }
+                      borderWidth={1}
+                      colors={
+                        Object {
+                          "scheme": "nivo",
+                        }
+                      }
+                      cornerRadius={3}
+                      data={
+                        Array [
+                          Object {
+                            "id": "dev",
+                            "label": "Development",
+                            "value": 10,
+                          },
+                          Object {
+                            "id": "demo",
+                            "label": "Demo",
+                            "value": 12,
+                          },
+                        ]
+                      }
+                      innerRadius={0.5}
+                      legends={
+                        Array [
+                          Object {
+                            "anchor": "bottom",
+                            "direction": "row",
+                            "effects": Array [
+                              Object {
+                                "on": "hover",
+                                "style": Object {
+                                  "itemTextColor": "#000",
+                                },
+                              },
+                            ],
+                            "itemHeight": 18,
+                            "itemTextColor": "#999",
+                            "itemWidth": 100,
+                            "symbolShape": "circle",
+                            "symbolSize": 18,
+                            "translateY": 56,
+                          },
+                        ]
+                      }
+                      margin={
+                        Object {
+                          "bottom": 80,
+                          "left": 80,
+                          "right": 80,
+                          "top": 40,
+                        }
+                      }
+                      motionDamping={15}
+                      motionStiffness={90}
+                      padAngle={0.7}
+                      radialLabelsLinkColor={
+                        Object {
+                          "from": "color",
+                        }
+                      }
+                      radialLabelsLinkDiagonalLength={16}
+                      radialLabelsLinkHorizontalLength={24}
+                      radialLabelsLinkOffset={0}
+                      radialLabelsLinkStrokeWidth={1}
+                      radialLabelsSkipAngle={10}
+                      radialLabelsTextColor="#333333"
+                      radialLabelsTextXOffset={6}
+                      slicesLabelsSkipAngle={10}
+                      slicesLabelsTextColor="#333333"
+                    >
+                      <ResponsiveWrapper>
+                        <Measure
+                          bounds={true}
+                          onResize={[Function]}
+                        >
+                          <Component
+                            bounds={true}
+                            contentRect={
+                              Object {
+                                "bounds": Object {},
+                                "client": Object {},
+                                "entry": Object {},
+                                "margin": Object {},
+                                "offset": Object {},
+                                "scroll": Object {},
+                              }
+                            }
+                            measure={[Function]}
+                            measureRef={[Function]}
+                          >
+                            <div
+                              style={
+                                Object {
+                                  "height": "100%",
+                                  "width": "100%",
+                                }
+                              }
+                            />
+                          </Component>
+                        </Measure>
+                      </ResponsiveWrapper>
+                    </ResponsivePie>
+                  </div>
+                </div>
+              </Segment>
+            </div>
+          </GridColumn>
+          <GridColumn
+            width={8}
+          >
+            <div
+              className="eight wide column"
+            >
+              <Segment
+                className="chart-container"
+                loading={false}
+              >
+                <div
+                  className="ui segment chart-container"
+                >
+                  <Header
+                    as="h3"
+                    dividing={true}
+                  >
+                    <h3
+                      className="ui dividing header"
+                    >
+                      home.types-of-forms
+                    </h3>
+                  </Header>
+                  <div
+                    style={
+                      Object {
+                        "height": "500px",
+                      }
+                    }
+                  >
+                    <ResponsiveBar
+                      animate={true}
+                      axisBottom={
+                        Object {
+                          "legend": "Environments",
+                          "legendOffset": 32,
+                          "legendPosition": "middle",
+                          "tickPadding": 5,
+                          "tickRotation": 0,
+                          "tickSize": 5,
+                        }
+                      }
+                      axisLeft={
+                        Object {
+                          "legend": "Total",
+                          "legendOffset": -40,
+                          "legendPosition": "middle",
+                          "tickPadding": 5,
+                          "tickRotation": 0,
+                          "tickSize": 5,
+                        }
+                      }
+                      axisRight={null}
+                      axisTop={null}
+                      colors={
+                        Object {
+                          "scheme": "nivo",
+                        }
+                      }
+                      data={
+                        Array [
+                          Object {
+                            "form": 12,
+                            "name": "dev",
+                            "wizard": 10,
+                          },
+                          Object {
+                            "form": 12,
+                            "name": "demo",
+                            "wizard": 10,
+                          },
+                        ]
+                      }
+                      indexBy="name"
+                      keys={
+                        Array [
+                          "wizard",
+                          "form",
+                        ]
+                      }
+                      labelSkipHeight={12}
+                      labelSkipWidth={12}
+                      labelTextColor={
+                        Object {
+                          "from": "color",
+                          "modifiers": Array [
+                            Array [
+                              "darker",
+                              1.6,
+                            ],
+                          ],
+                        }
+                      }
+                      legends={
+                        Array [
+                          Object {
+                            "anchor": "bottom-right",
+                            "dataFrom": "keys",
+                            "direction": "column",
+                            "effects": Array [
+                              Object {
+                                "on": "hover",
+                                "style": Object {
+                                  "itemOpacity": 1,
+                                },
+                              },
+                            ],
+                            "itemDirection": "left-to-right",
+                            "itemHeight": 20,
+                            "itemOpacity": 0.85,
+                            "itemWidth": 100,
+                            "itemsSpacing": 2,
+                            "justify": false,
+                            "symbolSize": 20,
+                            "translateX": 120,
+                            "translateY": 0,
+                          },
+                        ]
+                      }
+                      margin={
+                        Object {
+                          "bottom": 50,
+                          "left": 60,
+                          "right": 130,
+                          "top": 50,
+                        }
+                      }
+                      motionDamping={15}
+                      motionStiffness={90}
+                      padding={0.3}
+                    >
+                      <ResponsiveWrapper>
+                        <Measure
+                          bounds={true}
+                          onResize={[Function]}
+                        >
+                          <Component
+                            bounds={true}
+                            contentRect={
+                              Object {
+                                "bounds": Object {},
+                                "client": Object {},
+                                "entry": Object {},
+                                "margin": Object {},
+                                "offset": Object {},
+                                "scroll": Object {},
+                              }
+                            }
+                            measure={[Function]}
+                            measureRef={[Function]}
+                          >
+                            <div
+                              style={
+                                Object {
+                                  "height": "100%",
+                                  "width": "100%",
+                                }
+                              }
+                            />
+                          </Component>
+                        </Measure>
+                      </ResponsiveWrapper>
+                    </ResponsiveBar>
+                  </div>
+                </div>
+              </Segment>
+            </div>
+          </GridColumn>
+        </div>
+      </GridRow>
+    </div>
+  </Grid>
+</ReportsPanel>
+`;
