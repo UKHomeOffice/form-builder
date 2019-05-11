@@ -16,19 +16,20 @@ const keycloak = new Keycloak({
     "clientId": process.env.REACT_APP_AUTH_CLIENT_ID
 });
 
-const removeFormioToken = () => {
+const clearSecureLocalStorage = () => {
     secureLS.remove("FORMIO_TOKEN");
+    secureLS.remove("ENVIRONMENT");
 };
 keycloak.onAuthLogout = () => {
-    removeFormioToken();
+    clearSecureLocalStorage();
 };
 
 keycloak.onTokenExpired = () => {
-    removeFormioToken();
+    clearSecureLocalStorage();
 };
 
 keycloak.onAuthError = () => {
-    removeFormioToken();
+    clearSecureLocalStorage();
 };
 
 export const App = () => (
