@@ -12,10 +12,7 @@ const useReports = () => {
         typeData: [],
         statusTypeData: EXECUTING
     });
-    const number = () => {
-        const numbers = [276, 273, 171, 42, 185];
-        return numbers[Math.floor(Math.random() * numbers.length)];
-    };
+
 
     useEffect(() => {
         const fetchReportData = async () => {
@@ -31,7 +28,6 @@ const useReports = () => {
                         "id": result.environment.id,
                         "label": result.environment.label,
                         "value": parseInt(result.response.headers['content-range'].split('/')[1]),
-                        "color": `hsl(${number()}, 70%, 50%)`
                     }
                 });
                 setReports(reports => ({
@@ -58,9 +54,7 @@ const useReports = () => {
                     return {
                         name: env,
                         wizard: wizards,
-                        wizardColour: "hsl(72, 70%, 50%)",
                         form: forms,
-                        formColour: "hsl(236, 70%, 50%)"
                     }
                 });
                 setReports(reports => ({

@@ -63,7 +63,7 @@ const ReportsPanel = () => {
                 </Segment>
             </Grid.Column>
             <Grid.Column width={8}>
-                <Segment className="chart-container">
+                <Segment className="chart-container" loading={reports.statusTypeData === EXECUTING}>
                     <Header as='h3' dividing>
                         {t('home.types-of-forms')}
                     </Header>
@@ -80,7 +80,7 @@ const ReportsPanel = () => {
                             tickSize: 5,
                             tickPadding: 5,
                             tickRotation: 0,
-                            legend: 'environment',
+                            legend: 'Environments',
                             legendPosition: 'middle',
                             legendOffset: 32
                         }}
@@ -88,7 +88,7 @@ const ReportsPanel = () => {
                             tickSize: 5,
                             tickPadding: 5,
                             tickRotation: 0,
-                            legend: 'forms',
+                            legend: 'Total',
                             legendPosition: 'middle',
                             legendOffset: -40
                         }}

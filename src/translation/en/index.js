@@ -14,7 +14,7 @@ const messages = {
     "environment": {
         "label" : "Current environment context",
         "create" : "Form builder allowed: {{editable}}",
-        "url" : "Server:{{url}}"
+        "url" : "{{url}}"
 
     },
     "menu" : {
