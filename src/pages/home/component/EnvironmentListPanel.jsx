@@ -28,7 +28,7 @@ const EnvironmentListPanel = ({environments}) => {
                 return <Grid.Row key={uuid4()}>
                     {
                         _.map(environments, (environment) => {
-                            return <Grid.Column id={uuid4()}>
+                            return <Grid.Column key={uuid4()}>
                                 <Item.Group link divided relaxed key={uuid4()}>
                                     <Item onClick={() => {
                                         handleClick(environment);
