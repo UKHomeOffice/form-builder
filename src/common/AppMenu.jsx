@@ -33,7 +33,7 @@ const AppMenu = () => {
     };
 
     return <Menu pointing secondary>
-        <Menu.Item name={t('menu.home.name')}
+        <Menu.Item data-cy={`home-menu`} name={t('menu.home.name')}
                    active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')}
                    onClick={(e, {name}) => {
                        setActiveMenuItem(name);
@@ -53,7 +53,7 @@ const AppMenu = () => {
                 <Dropdown.Menu>
                     <Dropdown.Header>{t('home.environments')}</Dropdown.Header>
                     {_.map(environments, (env) => (
-                        <Dropdown.Item key={env.id}
+                        <Dropdown.Item data-cy={`${env.id}-form-menu`} key={env.id}
                                        active={envContext ? envContext.id === env.id : false} onClick={() => {
                             setActiveMenuItem(t('menu.forms.name'));
                             handleEnvChange(env)
