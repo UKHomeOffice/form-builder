@@ -2,7 +2,15 @@ describe("Home page", () => {
     const username = 'dev1@lodev.xyz';
     const password = 'secret';
 
-    it('Go to home page and be presented with keycloak', () => {
+    beforeEach(() => {
+
+    })
+
+    afterEach(() => {
+       cy.clearLocalStorage();
+    });
+
+    it('Go to home page', () => {
         cy.visit("http://localhost:3000");
 
         cy.get('input[name=username]').type(username);
@@ -15,7 +23,7 @@ describe("Home page", () => {
         cy.get('h2').should('contain', 'Reports');
         cy.get('h2').should('contain', 'Environments');
 
-        cy.contains('Logout').click();
+        cy.get('[data-cy=logout]').click();
 
         cy.get('input[name=username]').should('exist');
         cy.get('input[name=password]').should('exist');

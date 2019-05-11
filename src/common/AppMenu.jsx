@@ -71,7 +71,7 @@ const AppMenu = () => {
                     clearEnvContext();
                     secureLS.remove("FORMIO_TOKEN");
                     keycloak.logout()
-                }}>
+                }} data-cy="logout">
 
                 <Icon name='log out' size="large" style={iconStyle}/>
                 <span>{t('menu.logout.label')}</span>
