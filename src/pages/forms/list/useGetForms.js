@@ -101,7 +101,7 @@ const useGetForms = () => {
     const handleEditForm = (form) => {
         navigation.navigate(`/forms/${envContext.id}/${form._id}/edit`, {replace: true});
 
-    }
+    };
 
     return {
         handleSort,

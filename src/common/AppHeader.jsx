@@ -13,7 +13,9 @@ const AppHeader = () => {
         return <div style={{paddingBottom: "20px"}}><Header as='h2'>
             <Icon name='cog'/>
             <Header.Content>
-                {t('environment.label')} : <Label color={environment.editable? 'teal': 'red'} size="large">{label ? label : environment.id}</Label>
+                {t('environment.label')} : <Label color={environment.editable? 'teal': 'red'} size="large">
+                <div data-cy="context-label">{label ? label : environment.id}</div>
+            </Label>
             </Header.Content>
         </Header></div>
     }

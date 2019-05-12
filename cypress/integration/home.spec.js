@@ -2,7 +2,7 @@ describe("Home page", () => {
     const username = 'dev1@lodev.xyz';
     const password = 'secret';
 
-    afterEach(() => {
+    after(() => {
         cy.get('[data-cy=logout]').click();
 
         cy.get('input[name=username]').should('exist');

@@ -8,10 +8,10 @@ const useEnvContext = () => {
     const {state, setState} = useContext(ApplicationContext);
     const changeContext = (environment) => {
         secureLS.remove("FORMIO_TOKEN");
+        secureLS.set("ENVIRONMENT", environment.id);
         setState(state => ({
             ...state, environment: environment
         }));
-        secureLS.set("ENVIRONMENT", environment.id);
     };
 
     const clearEnvContext = () => {

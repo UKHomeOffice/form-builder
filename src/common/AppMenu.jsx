@@ -3,11 +3,11 @@ import {Dropdown, Icon, Menu} from 'semantic-ui-react';
 import {useKeycloak} from 'react-keycloak';
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
-import secureLS from '../core/storage';
 import _ from 'lodash';
 import environments from '../environments';
 import useEnvContext from "../core/context/useEnvContext";
 import {ApplicationContext} from "../core/Main";
+import secureLS from "../core/storage";
 
 const AppMenu = () => {
     const navigation = useNavigation();
@@ -45,6 +45,7 @@ const AppMenu = () => {
         </Menu.Item>
 
         <Menu.Item
+            data-cy={`forms-menu`}
             name={t('menu.forms.name')}
             active={state.activeMenuItem === t('menu.form.name')}>
             <Icon name="wpforms" size="large" style={iconStyle}/>
@@ -68,9 +69,9 @@ const AppMenu = () => {
             <Menu.Item
                 name={t('menu.logout.name')}
                 onClick={() => {
-                    clearEnvContext();
                     secureLS.remove("FORMIO_TOKEN");
-                    keycloak.logout()
+                    secureLS.remove("ENVIRONMENT");
+                    keycloak.logout();
                 }} data-cy="logout">
 
                 <Icon name='log out' size="large" style={iconStyle}/>
