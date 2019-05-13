@@ -36,13 +36,14 @@ const FormList = () => {
             </Message.Content>
         </Message></Container>
     }
-    return <Container><Segment.Group>
+    return <Container>
+        <Segment.Group>
         <Segment basic>
-            <Input icon='search' placeholder={t('form.list.search-label')} size='large' onChange={handleTitleSearch}
+            <Input data-cy="search-title" icon='search' placeholder={t('form.list.search-label')} size='large' onChange={handleTitleSearch}
                    fluid focus/>
         </Segment>
         <Segment basic loading={!status || status === EXECUTING}>
-            <Table columns={6} sortable celled stackable>
+            <Table columns={6} sortable celled stackable data-cy="forms-table">
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>{t('form.list.table.formIdentifierCellLabel')}</Table.HeaderCell>
@@ -61,7 +62,7 @@ const FormList = () => {
                     </Table.Row>
                 </Table.Header>
 
-                <Table.Body>
+                <Table.Body data-cy="form-table-data">
                     {_.map(data, (form) => (
                         <Table.Row key={form._id}>
                             <Table.Cell>{form._id}</Table.Cell>

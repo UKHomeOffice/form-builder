@@ -1,13 +1,12 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useNavigation} from "react-navi";
 import useApiRequest from "../../../core/api";
 import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
 import useEnvContext from "../../../core/context/useEnvContext";
-import {ApplicationContext} from "../../../core/AppRouter";
+import {toast} from "react-semantic-toasts";
 
 const useCreateForm = () => {
-    const {setState} = useContext(ApplicationContext);
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
 
@@ -41,12 +40,14 @@ const useCreateForm = () => {
     );
     const success = () => {
         navigation.navigate(`/forms/${envContext.id}`, {replace: true});
-        setState(state => ({
-            ...state, notification: {
-                header: `${form.title} created`,
-                content: `${form.formName} has been successfully created`
-            }
-        }));
+        toast({
+            type: 'success',
+            icon: 'check circle',
+            title: `${form.title} created`,
+            description: `${form.formName} has been successfully created`,
+            animation: 'scale',
+            time: 10000
+        });
     };
 
     const savedCallback = useRef();
@@ -78,15 +79,15 @@ const useCreateForm = () => {
                 form.missing["formName"] = false;
                 setValues({
                     ...form,
-                    "title" : value,
+                    "title": value,
                     "path": _.toLower(value).replace(/\s/g, ''),
-                    "formName":  _.camelCase(value)
+                    "formName": _.camelCase(value)
                 });
             } else {
                 form.missing['title'] = true;
                 setValues({
                     ...form,
-                    "title" : '',
+                    "title": '',
                 });
             }
 
@@ -99,14 +100,14 @@ const useCreateForm = () => {
         }
     };
 
-    const openPreview = () =>{
+    const openPreview = () => {
         setValues({
             ...form,
             displayPreview: true
         });
     };
 
-    const closePreview = () =>{
+    const closePreview = () => {
         setValues({
             ...form,
             displayPreview: false

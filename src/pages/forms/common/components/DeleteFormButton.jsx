@@ -1,12 +1,11 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Button, Confirm, Container, Icon, Message} from "semantic-ui-react";
 import useApiRequest from "../../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
-import {ApplicationContext} from "../../../../core/AppRouter";
+import {toast} from "react-semantic-toasts";
 
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
-    const {setState} = useContext(ApplicationContext);
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${form._id}`, {verb: 'delete'}
@@ -17,12 +16,14 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
 
     const callback = () => {
         setOpen(false);
-        setState(state => ({
-            ...state, notification: {
-                header: `${form.title}`,
-                content: t('form.delete.successful', {formName: form.name})
-            },
-        }));
+        toast({
+            type: 'success',
+            icon: 'check circle',
+            title: `${form.title}`,
+            description: t('form.delete.successful', {formName: form.name}),
+            animation: 'scale',
+            time: 10000
+        });
         onSuccessfulDeletion()
     };
 
