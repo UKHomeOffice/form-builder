@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useRef, useState} from "react";
 import {Button, Confirm, Container, Icon, Message} from "semantic-ui-react";
 import useApiRequest from "../../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
-import {ApplicationContext} from "../../../../core/Main";
 import {useTranslation} from "react-i18next";
+import {ApplicationContext} from "../../../../core/AppRouter";
 
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const {setState} = useContext(ApplicationContext);

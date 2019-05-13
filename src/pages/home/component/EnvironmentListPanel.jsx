@@ -2,10 +2,10 @@ import React, {useContext} from 'react';
 import {Grid, Item, Label} from "semantic-ui-react";
 import useEnvContext from "../../../core/context/useEnvContext";
 import {useNavigation} from "react-navi";
-import {ApplicationContext} from "../../../core/Main";
 import {useTranslation} from "react-i18next";
 import _ from 'lodash';
 import uuid4 from 'uuid4';
+import {ApplicationContext} from "../../../core/AppRouter";
 
 const EnvironmentListPanel = ({environments}) => {
     const {changeContext} = useEnvContext();

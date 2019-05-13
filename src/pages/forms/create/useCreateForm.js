@@ -1,10 +1,10 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import {ApplicationContext} from "../../../core/Main";
 import {useNavigation} from "react-navi";
 import useApiRequest from "../../../core/api";
 import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
 import useEnvContext from "../../../core/context/useEnvContext";
+import {ApplicationContext} from "../../../core/AppRouter";
 
 const useCreateForm = () => {
     const {setState} = useContext(ApplicationContext);

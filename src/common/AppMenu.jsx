@@ -6,14 +6,13 @@ import {useTranslation} from "react-i18next";
 import _ from 'lodash';
 import environments from '../environments';
 import useEnvContext from "../core/context/useEnvContext";
-import {ApplicationContext} from "../core/Main";
-import secureLS from "../core/storage";
+import {ApplicationContext} from "../core/AppRouter";
 
 const AppMenu = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
     const [keycloak] = useKeycloak();
-    const {clearEnvContext, changeContext, envContext} = useEnvContext();
+    const {clearEnvContext, changeContext, envContext, clearLocalStorage} = useEnvContext();
     const {state, setState} = useContext(ApplicationContext);
 
     const handleEnvChange = (environment) => {
@@ -47,7 +46,7 @@ const AppMenu = () => {
         <Menu.Item
             data-cy={`forms-menu`}
             name={t('menu.forms.name')}
-            active={state.activeMenuItem === t('menu.form.name')}>
+            active={state.activeMenuItem === t('menu.forms.name')}>
             <Icon name="wpforms" size="large" style={iconStyle}/>
             <span>{t('menu.forms.label')}</span>
             <Dropdown>
@@ -69,8 +68,7 @@ const AppMenu = () => {
             <Menu.Item
                 name={t('menu.logout.name')}
                 onClick={() => {
-                    secureLS.remove("FORMIO_TOKEN");
-                    secureLS.remove("ENVIRONMENT");
+                    clearLocalStorage();
                     keycloak.logout();
                 }} data-cy="logout">
 

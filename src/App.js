@@ -20,9 +20,6 @@ const clearSecureLocalStorage = () => {
     secureLS.remove("FORMIO_TOKEN");
     secureLS.remove("ENVIRONMENT");
 };
-keycloak.onAuthLogout = () => {
-    clearSecureLocalStorage();
-};
 
 keycloak.onTokenExpired = () => {
     clearSecureLocalStorage();
@@ -34,8 +31,7 @@ keycloak.onAuthError = () => {
 
 export const App = () => (
     <KeycloakProvider keycloak={keycloak} initConfig={{
-        onLoad: 'login-required',
-        checkLoginIframe: false,
+        onLoad: 'login-required'
     }} LoadingComponent={() => <Loader active inline='centered' size='large'>Loading</Loader>}>
         <Provider store={store}>
             <AppRouter/>

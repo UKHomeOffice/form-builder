@@ -7,13 +7,10 @@ import Notification from "../common/Notification";
 import AppHeader from "../common/AppHeader";
 import {Container} from "semantic-ui-react";
 
-export const ApplicationContext = React.createContext([{}, () => {
-}]);
 
 export const Main = ({children}) => {
     return <React.Fragment>
         <AppMenu/>
-
         <Container>
             <AppHeader/>
             <Notification/>

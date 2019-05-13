@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import {ApplicationContext} from '../core/Main';
 import {Message} from "semantic-ui-react";
+import {ApplicationContext} from "../core/AppRouter";
 
 const Notification = () => {
     const {state, setState} = useContext(ApplicationContext);
