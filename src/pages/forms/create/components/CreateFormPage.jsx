@@ -2,7 +2,6 @@ import React from 'react';
 import {Container, Divider, Header, Icon, Message} from 'semantic-ui-react'
 import {ERROR} from "../../../../core/api/actionTypes";
 import useCreateForm from "../useCreateForm";
-import './CreateFormPage.scss';
 import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";

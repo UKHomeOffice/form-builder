@@ -4,7 +4,7 @@ import _ from 'lodash'
 import DeleteFormButton from "../../common/components/DeleteFormButton";
 import useGetForms from "../useGetForms";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
-import "../../create/components/CreateFormPage.scss"
+import "../../common/components/FormBuilderComponent.scss"
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../../../core/context/useEnvContext";
 
