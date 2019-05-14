@@ -47,7 +47,7 @@ const useEditForm = (formId) => {
             animation: 'scale',
             time: 10000
         });
-    }
+    };
 
     const callback = () => {
         setValues(form => ({

@@ -1,4 +1,5 @@
 const messages = {
+    "loading" : "Loading",
     "yes" : "Yes",
     "no": "No",
     "home": {
@@ -37,6 +38,7 @@ const messages = {
         "no-context-message": "You need to select an environment context in order to create forms"
     },
     "form": {
+        "loading-form" : "Loading form",
         "create": {
             "not-allowed": {
                 "title": "Not allowed",
@@ -103,7 +105,8 @@ const messages = {
             "label" : "Preview",
             "form-submission-label" : "Form submission",
             "submission-warning-title": "Submission is not persisted in preview mode",
-            "submission-warning-description": "Data submitted is held in the context of this page and lost when you navigate away."
+            "submission-warning-description": "Data submitted is held in the context of this page and lost when you navigate away.",
+            "parsing-form" : "Parsing form fields"
         },
         "edit": {
             "label" : "Edit",

@@ -10,8 +10,9 @@ const environments = [
                 "password": "secret"
             },
             "keycloak" : {
-                "username": "me@lodev.xyz",
-                "password": "secret"
+                "tokenUrl" : "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
+                "clientId": "service-account",
+                "secret" : "ed041195-fdf8-424b-a061-2081ea5067f1",
             }
         },
         "editable": true,
@@ -60,10 +61,6 @@ const environments = [
             "formio": {
                 "username": "me@lodev.xyz",
                 "password": "secret"
-            },
-            "keycloak" : {
-                "username": "me@lodev.xyz",
-                "password": "secret"
             }
         },
         "editable": false,
@@ -78,10 +75,6 @@ const environments = [
             "formio": {
                 "username": "me@lodev.xyz",
                 "password": "secret"
-            },
-            "keycloak" : {
-                "username": "me@lodev.xyz",
-                "password": "secret"
             }
         },
         "editable": false,
@@ -94,10 +87,6 @@ const environments = [
         "description": "Testing environment",
         "service": {
             "formio": {
-                "username": "me@lodev.xyz",
-                "password": "secret"
-            },
-            "keycloak" : {
                 "username": "me@lodev.xyz",
                 "password": "secret"
             }

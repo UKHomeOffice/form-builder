@@ -24,7 +24,7 @@ const EditFormPage = ({formId}) => {
     const {formChoices} = useCommonFormUtils();
 
     if (!status || status === EXECUTING) {
-        return <div className="center"><Loader active inline='centered' size='large'>Loading form</Loader></div>
+        return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader></div>
     }
 
     if (status === ERROR) {

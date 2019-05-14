@@ -10,7 +10,7 @@ const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {status, response, form, previewSubmission} = usePreviewForm(formId);
     if (!status || status === EXECUTING) {
-        return <div className="center"><Loader active inline='centered' size='large'>Loading form</Loader></div>
+        return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader></div>
     }
     if (status === ERROR) {
         return <Message negative>
@@ -20,7 +20,7 @@ const PreviewFormPage = ({formId}) => {
     }
     return <React.Fragment>
         <Divider horizontal>
-            <Header as='h4'>
+            <Header as='h3'>
                 <Icon name='eye'/>
                 Preview
             </Header>

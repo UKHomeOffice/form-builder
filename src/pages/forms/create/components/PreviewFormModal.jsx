@@ -8,7 +8,7 @@ const PreviewFormModal = ({form, title, open, onClosePreview}) => {
     const [submission, setSubmission] = useState(null);
     const {t} = useTranslation();
 
-    return <Modal open={open} onClose={onClosePreview} closeOnEscape={true} size="fullscreen" closeIcon>
+    return <Modal open={open} onClose={onClosePreview} closeOnEscape={true} closeIcon>
         {!form ? <Message warning>
                 <Message.Header>{t('form.create.preview.modal.missing-form.title')}</Message.Header>
                 <p>{t('form.create.preview.modal.missing-form.message')}</p>
@@ -16,9 +16,9 @@ const PreviewFormModal = ({form, title, open, onClosePreview}) => {
             <React.Fragment>
                 <Modal.Header>
                     <Icon name='eye'/>
-                    Preview
+                    {t('form.preview.label')}
                 </Modal.Header>
-                <Modal.Content scrolling>
+                <Modal.Content>
                     <PreviewFormComponent form={form} submission={submission} handlePreview={(submission) => {
                         setSubmission(submission)
                     }}/>

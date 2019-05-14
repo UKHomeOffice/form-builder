@@ -1,5 +1,5 @@
-import React from 'react';
-import {Container, Divider, Header, Icon, Message, Segment} from "semantic-ui-react";
+import React, {useEffect, useState, useRef} from 'react';
+import {Container, Divider, Header, Icon, Message, Placeholder, Segment} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 import ReactJson from "react-json-view";
@@ -37,13 +37,54 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
 
 
 const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
+
     const {t} = useTranslation();
-    const {parseForm} = useFormDataReplacer();
+    const {performFormParse} = useFormDataReplacer();
+
+    const [parsedForm, setParsedForm] = useState({
+        isParsing: true,
+        form: null
+
+    });
+
+    const parseCallBack = useRef();
+
+    const callback = () => {
+        performFormParse(form).then((result) => {
+            setParsedForm({
+                isParsing: false,
+                form: result
+            })
+        });
+    };
+
+    useEffect(() => {
+        parseCallBack.current = callback;
+    });
+
+    useEffect(() => {
+        parseCallBack.current();
+    }, [form]);
+
+
     if (!form) {
-        return null
+        return null;
     }
+
+    if (parsedForm.isParsing) {
+        return <Placeholder fluid>
+            <Placeholder.Paragraph>
+                <Placeholder.Line length='full'/>
+                <Placeholder.Line length='full'/>
+                <Placeholder.Line length='full'/>
+                <Placeholder.Line length='full'/>
+                <Placeholder.Line length='full'/>
+            </Placeholder.Paragraph>
+        </Placeholder>
+    }
+
     return <React.Fragment>
-        <Form form={parseForm(form)} onSubmit={(submission) => previewSubmission(submission)}
+        <Form form={parsedForm.form} onSubmit={(submission) => previewSubmission(submission)}
               options={
                   {
                       noAlerts: true

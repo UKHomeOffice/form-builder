@@ -32,7 +32,7 @@ export const AppRouter = () => {
     });
 
     if (!initialised) {
-        return <div className="center"><Loader active inline='centered' size='large'>Loading</Loader></div>;
+        return <div className="center"><Loader active inline='centered' size='large'>{t('loading')}</Loader></div>;
     }
     return (<ApplicationContext.Provider value={{state, setState}}>
             <Router routes={routes} context={{isAuthenticated: keycloak.authenticated, environment: state.environment}}>
