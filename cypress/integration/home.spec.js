@@ -2,14 +2,6 @@ describe("Home page", () => {
     const username = 'dev1@lodev.xyz';
     const password = 'secret';
 
-    after(() => {
-        cy.get('[data-cy=logout]').click();
-
-        cy.get('input[name=username]').should('exist');
-        cy.get('input[name=password]').should('exist');
-        cy.clearLocalStorage();
-    });
-
     it('Go to home page', () => {
         cy.visit("/");
 

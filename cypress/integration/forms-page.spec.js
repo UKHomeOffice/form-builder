@@ -2,11 +2,6 @@ describe('Forms Page', () => {
     const username = 'dev1@lodev.xyz';
     const password = 'secret';
 
-    afterEach(() => {
-        cy.get('[data-cy=logout]').click();
-        cy.clearLocalStorage();
-        cy.wait(500);
-    });
     it('displays forms for dev environment', () => {
         cy.visit("/");
 
@@ -15,20 +10,20 @@ describe('Forms Page', () => {
         cy.get('form').submit();
 
 
-        cy.get('[data-cy="forms-menu"]').should('exist');
+        cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy="dev-form-menu"]').should('exist');
-        cy.get('[data-cy="dev-form-menu"]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
         cy.url().should('include', '/forms/dev');
 
         cy.get('h2').should('contain', 'Current environment context');
-        cy.get('[data-cy="context-label"]').should('contain', 'Development');
+        cy.get('[data-cy=context-label]').should('contain', 'Development');
 
-        cy.get('[data-cy="forms-table"]').should('exist');
-        cy.get('[data-cy="form-table-data"]').should('exist');
-        cy.get('[data-cy="form-table-data"]').find('tr').its('length').should('be.gte', 0)
+        cy.get('[data-cy=forms-table]').should('exist');
+        cy.get('[data-cy=form-table-data]').should('exist');
+        cy.get('[data-cy=form-table-data]').find('tr').its('length').should('be.gte', 0)
 
     });
 
@@ -40,20 +35,20 @@ describe('Forms Page', () => {
         cy.get('form').submit();
 
 
-        cy.get('[data-cy="forms-menu"]').should('exist');
+        cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy="dev-form-menu"]').should('exist');
-        cy.get('[data-cy="dev-form-menu"]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
         cy.url().should('include', '/forms/dev');
 
         cy.get('input').type("User");
 
         cy.wait(500);
-        cy.get('[data-cy="forms-table"]').should('exist');
-        cy.get('[data-cy="form-table-data"]').should('exist');
-        cy.get('[data-cy="form-table-data"]').find('tr').its('length').should('be.gte', 1)
+        cy.get('[data-cy=forms-table]').should('exist');
+        cy.get('[data-cy=form-table-data]').should('exist');
+        cy.get('[data-cy=form-table-data]').find('tr').its('length').should('be.gte', 1)
 
     });
 
@@ -65,11 +60,11 @@ describe('Forms Page', () => {
         cy.get('form').submit();
 
 
-        cy.get('[data-cy="forms-menu"]').should('exist');
+        cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy="dev-form-menu"]').should('exist');
-        cy.get('[data-cy="dev-form-menu"]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
         cy.url().should('include', '/forms/dev');
 

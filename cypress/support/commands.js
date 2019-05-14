@@ -27,3 +27,9 @@
 // Cypress.on('uncaught:exception', (err, runnable) => {
 //     return false
 // });
+
+
+afterEach(() => {
+    cy.get('[data-cy=logout]').click();
+    cy.clearLocalStorage();
+});
