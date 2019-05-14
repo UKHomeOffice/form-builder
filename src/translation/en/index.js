@@ -51,6 +51,8 @@ const messages = {
             "failure": {
                 "failed-to-create": "Failed to create form due to {{error}}"
             },
+            "updating-label" :"Creating form....",
+            "update-label" : "Create form",
             "form-type" : {
                 "select": "Select form type",
                 "select-placeholder": "Form type",
@@ -58,7 +60,7 @@ const messages = {
                 "form": "Form"
             },
             "form-name": {
-                "placeholder": "Form title",
+                "placeholder": "Form name",
                 "label": "Name",
                 "missing": "Form name is required for creating a form"
             },
@@ -104,9 +106,40 @@ const messages = {
             "submission-warning-description": "Data submitted is held in the context of this page and lost when you navigate away."
         },
         "edit": {
-            "label" : "Edit"
+            "label" : "Edit",
+            "failure" : {
+                "form-load": "Failed to load form due to {{error}}",
+                "missing-form" : "Form {{formId}} does not exist",
+                "unknown-error": "Failed to load form due to connectivity issues"
+            },
+            "form-type" : {
+                "select": "Select form type",
+                "select-placeholder": "Form type",
+                "wizard": "Wizard",
+                "form": "Form"
+            },
+            "form-name": {
+                "placeholder": "Form name",
+                "label": "Name",
+                "missing": "Form name is required for creating a form"
+            },
+            "form-path": {
+                "placeholder": "Form path",
+                "label": "Path",
+                "missing": "Form path is required for creating a form"
+            },
+            "form-title": {
+                "placeholder" : "Form title",
+                "label": "Title",
+                "missing": "Form title is required for creating a form"
+            },
+            "updating-label" :"Updating form....",
+            "update-label" : "Update form"
         },
         "list": {
+            "total-forms": "Forms in {{env}}",
+            "total-form-type": "form types",
+            "total-wizard-type": "wizard types",
             "failure": {
                 "unknown-error" : "connectivity issues with form server",
                 "forms-load": "Failed to load forms due to {{error}}"

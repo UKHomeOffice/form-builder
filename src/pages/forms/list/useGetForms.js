@@ -15,12 +15,27 @@ const useGetForms = () => {
         total: 0,
         activePage: 1,
         limit: 10,
-        searchTitle: ''
+        searchTitle: '',
+        numberOfWizards: 0,
+        numberOfForms: 0
     });
 
 
     const [{status, response}, makeRequest] = useApiRequest(
         `/form?select=title,path,name,display${forms.activePage !== 1 ?`&skip=${((forms.activePage - 1) * forms.limit)}`: ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/^${forms.searchTitle}/i`: '' }`, {
+            verb: 'get', params:{}
+        }
+    );
+
+
+    const [wizardCountState, wizardStatsRequest] = useApiRequest(
+        `/form?select=_id&display=wizard&limit=1&type__ne=resource`, {
+            verb: 'get', params:{}
+        }
+    );
+
+    const [formCountState, formStatsRequest] = useApiRequest(
+        `/form?select=_id&display=form&limit=1&type__ne=resource`, {
             verb: 'get', params:{}
         }
     );
@@ -34,6 +49,8 @@ const useGetForms = () => {
                 data: null
             }));
             makeRequest();
+            wizardStatsRequest();
+            formStatsRequest();
         };
     });
 
@@ -50,6 +67,26 @@ const useGetForms = () => {
             }));
         }
     }, [response, status, setValues]);
+
+
+    useEffect(() => {
+        if (wizardCountState.status === SUCCESS) {
+            setValues(forms => ({
+                ...forms,
+                numberOfWizards: parseInt(wizardCountState.response.headers['content-range'].split('/')[1])
+            }));
+        }
+    }, [wizardCountState, setValues]);
+
+    useEffect(() => {
+        if (formCountState.status === SUCCESS) {
+            setValues(forms => ({
+                ...forms,
+                numberOfForms: parseInt(formCountState.response.headers['content-range'].split('/')[1])
+            }));
+        }
+    }, [formCountState, setValues]);
+
 
     const handlePaginationChange = (e, {activePage}) => {
         setValues(forms => ({

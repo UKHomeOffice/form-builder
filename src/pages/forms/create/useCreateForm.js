@@ -11,31 +11,23 @@ const useCreateForm = () => {
     const {envContext} = useEnvContext();
 
     const [form, setValues] = useState({
-        json: null,
-        title: '',
-        path: '',
-        display: 'form',
-        formName: '',
+        data: {
+            title: '',
+            path: '',
+            display: 'form',
+            name: ''
+        },
         displayPreview: false,
         missing: {
             path: false,
             title: false,
-            formName: false
+            name: false
         }
     });
-    const createPayload = () => {
-        if (form.json) {
-            form.json['title'] = form.title;
-            form.json['path'] = form.path;
-            form.json['name'] = form.formName;
-            return form.json;
-        }
-        return null;
-    };
 
     const [{status, response}, makeRequest] = useApiRequest(
         `/form`, {
-            verb: 'post', params: createPayload()
+            verb: 'post', params: form.data
         }
     );
     const success = () => {
@@ -43,8 +35,8 @@ const useCreateForm = () => {
         toast({
             type: 'success',
             icon: 'check circle',
-            title: `${form.title} created`,
-            description: `${form.formName} has been successfully created`,
+            title: `${form.data.title} created`,
+            description: `${form.data.name} has been successfully created`,
             animation: 'scale',
             time: 10000
         });
@@ -67,7 +59,7 @@ const useCreateForm = () => {
     }, [status]);
 
     const backToForms = () => {
-        navigation.navigate("/forms");
+        navigation.navigate(`/forms/${envContext.id}`);
     };
 
     const updateField = (target, value) => {
@@ -77,25 +69,27 @@ const useCreateForm = () => {
                 form.missing['title'] = false;
                 form.missing["path"] = false;
                 form.missing["formName"] = false;
+
+                form.data.title = value;
+                form.data.path = _.toLower(value).replace(/\s/g, '')
+                form.data.name = _.camelCase(value);
+
                 setValues({
-                    ...form,
-                    "title": value,
-                    "path": _.toLower(value).replace(/\s/g, ''),
-                    "formName": _.camelCase(value)
+                    ...form
                 });
             } else {
                 form.missing['title'] = true;
+                form.data.title = '';
                 setValues({
-                    ...form,
-                    "title": '',
+                    ...form
                 });
             }
 
         } else {
             form.missing[target] = !hasValue;
+            form.data[target] = value;
             setValues({
-                ...form,
-                [target]: value
+                ...form
             });
         }
     };
@@ -115,9 +109,10 @@ const useCreateForm = () => {
     };
 
     const formInvalid = () => {
-        const {path, title, formName, missing} = form;
-        return (path === '' || title === '' || formName === '')
-            || (missing.path || missing.title || missing.formName) || status === EXECUTING;
+        const { missing} = form;
+        const {path, title, name}= form.data;
+        return (path === '' || title === '' || name === '')
+            || (missing.path || missing.title || missing.name) || status === EXECUTING;
     };
 
     return {

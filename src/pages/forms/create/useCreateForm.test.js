@@ -5,7 +5,9 @@ import useCreateForm from "./useCreateForm";
 describe('useCreateForm', () => {
     beforeEach(() => {
         const naviModule = require('react-navi');
-        naviModule.useNavigation = jest.fn(()=>{ return 'fake bar'});
+        naviModule.useNavigation = jest.fn(() => {
+            return 'fake bar'
+        });
 
         const apiModule = require('../../../core/api/index');
         apiModule.default = () => {
@@ -29,13 +31,15 @@ describe('useCreateForm', () => {
         const {result} = renderHook(() => useCreateForm());
         act(() => result.current.setValues({
             ...result.current.form,
-            'path': 'path',
-            'title': 'title',
-            'formName': 'formName',
+            data: {
+                'path': 'path',
+                'title': 'title',
+                'name': 'formName',
+            },
             'missing': {
                 'path': false,
                 'title': false,
-                'formName': false
+                'name': false
             }
         }));
         expect(result.current.formInvalid()).toBe(false);
@@ -44,8 +48,8 @@ describe('useCreateForm', () => {
     it('updates path and formName if title is set', () => {
         const {result} = renderHook(() => useCreateForm());
         act(() => result.current.updateField("title", "test Title"));
-        expect(result.current.form.formName).toBe("testTitle");
-        expect(result.current.form.path).toBe("testtitle");
+        expect(result.current.form.data.name).toBe("testTitle");
+        expect(result.current.form.data.path).toBe("testtitle");
     });
     it('leaves path and form name if title removed', () => {
         const {result} = renderHook(() => useCreateForm());
@@ -53,7 +57,7 @@ describe('useCreateForm', () => {
         act(() => result.current.updateField("title", "test Title"));
         act(() => result.current.updateField("title", ""));
 
-        expect(result.current.form.formName).toBe("testTitle");
-        expect(result.current.form.path).toBe("testtitle");
+        expect(result.current.form.data.name).toBe("testTitle");
+        expect(result.current.form.data.path).toBe("testtitle");
     });
 });

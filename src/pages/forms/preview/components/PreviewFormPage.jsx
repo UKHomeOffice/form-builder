@@ -1,15 +1,17 @@
 import React from 'react';
 import usePreviewForm from "../usePreviewForm";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
-import {Container, Divider, Header, Icon, Message, Segment} from "semantic-ui-react";
+import {Divider, Header, Icon, Loader, Message} from "semantic-ui-react";
 import {useTranslation} from 'react-i18next';
-import PreviewFormPanel from "./PreviewFormPanel";
+import PreviewFormComponent from "../../common/components/PreviewFormComponent";
 
 const PreviewFormPage = ({formId}) => {
 
     const {t} = useTranslation();
     const {status, response, form, previewSubmission} = usePreviewForm(formId);
-
+    if (!status || status === EXECUTING) {
+        return <div className="center"><Loader active inline='centered' size='large'>Loading form</Loader></div>
+    }
     if (status === ERROR) {
         return <Message negative>
             <Message.Header>{t('error.general')}</Message.Header>
@@ -17,24 +19,13 @@ const PreviewFormPage = ({formId}) => {
         </Message>
     }
     return <React.Fragment>
-        <Container><Message icon
-                 warning>
-            <Icon name='exclamation circle'/>
-            <Message.Content>
-                <Message.Header>{t('form.preview.submission-warning-title')}</Message.Header>
-                {t('form.preview.submission-warning-description')}
-            </Message.Content>
-        </Message>
-        <Divider hidden/>
-        <Segment basic loading={!status || status === EXECUTING}>
-            {form.data ? <Header
-                as='h2'
-                content={form.data.title}
-                subheader={form.data.name}
-                dividing
-            /> : null}
-            <PreviewFormPanel form={form.data} formSubmission={form.submission} previewSubmission={previewSubmission}/>
-        </Segment></Container>
+        <Divider horizontal>
+            <Header as='h4'>
+                <Icon name='eye'/>
+                Preview
+            </Header>
+        </Divider>
+        {form.data ? <PreviewFormComponent form={form.data} submission={form.submission} handlePreview={previewSubmission}/> : null}
     </React.Fragment>
 };
 

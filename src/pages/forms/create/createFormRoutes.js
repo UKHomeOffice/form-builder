@@ -1,24 +1,26 @@
 import {mount, route} from 'navi'
 
-import CreateFormBuilder from "./components/CreateFormBuilder";
+import CreateFormPage from "./components/CreateFormPage";
 import CreateFormFileUpload from "./components/CreateFormFileUpload";
 import React from "react";
 import CreateFormChoice from "./components/CreateFormChoice";
+import EditableEnvironmentChecker from "../common/components/EditableEnvironmentChecker";
+import {withEnvContext} from "../formsRoute";
 
 
 export default mount({
-    '/': route({
+    '/': withEnvContext(route({
         title: 'Create Form',
-        view: <CreateFormChoice/>
-    }),
-    '/builder': route({
+        view: <EditableEnvironmentChecker><CreateFormChoice/></EditableEnvironmentChecker>
+    })),
+    '/builder': withEnvContext(route({
         title: 'Create form with builder',
-        view: <CreateFormBuilder/>
-    }),
-    '/file-upload': route({
+        view: <EditableEnvironmentChecker><CreateFormPage/></EditableEnvironmentChecker>
+    })),
+    '/file-upload': withEnvContext(route({
         title: 'Create form via file upload',
-        view: <CreateFormFileUpload/>
-    })
+        view: <EditableEnvironmentChecker><CreateFormFileUpload/></EditableEnvironmentChecker>
+    }))
 });
 
 

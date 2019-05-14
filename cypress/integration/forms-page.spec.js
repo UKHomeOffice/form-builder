@@ -4,12 +4,11 @@ describe('Forms Page', () => {
 
     afterEach(() => {
         cy.get('[data-cy=logout]').click();
-        cy.get('input[name=username]').should('exist');
-        cy.get('input[name=password]').should('exist');
         cy.clearLocalStorage();
+        cy.wait(500);
     });
     it('displays forms for dev environment', () => {
-        cy.visit("http://localhost:3000");
+        cy.visit("/");
 
         cy.get('input[name=username]').type(username);
         cy.get('input[name=password]').type(password);
@@ -34,7 +33,7 @@ describe('Forms Page', () => {
     });
 
     it('can search for form title', () => {
-        cy.visit("http://localhost:3000");
+        cy.visit("/");
 
         cy.get('input[name=username]').type(username);
         cy.get('input[name=password]').type(password);
@@ -59,7 +58,7 @@ describe('Forms Page', () => {
     });
 
     it('redirect to / if environment context not set', () => {
-        cy.visit("http://localhost:3000");
+        cy.visit("/");
 
         cy.get('input[name=username]').type(username);
         cy.get('input[name=password]').type(password);

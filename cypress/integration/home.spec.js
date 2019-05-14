@@ -11,7 +11,7 @@ describe("Home page", () => {
     });
 
     it('Go to home page', () => {
-        cy.visit("http://localhost:3000");
+        cy.visit("/");
 
         cy.get('input[name=username]').type(username);
         cy.get('input[name=password]').type(password);
