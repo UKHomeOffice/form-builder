@@ -2,7 +2,7 @@ describe('Forms Page', () => {
     const username = 'dev1@lodev.xyz';
     const password = 'secret';
 
-    it('displays forms for dev environment', () => {
+    it('displays forms for local environment', () => {
         cy.visit("/");
 
         cy.get('input[name=username]').type(username);
@@ -13,10 +13,10 @@ describe('Forms Page', () => {
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy=dev-form-menu]').should('exist');
-        cy.get('[data-cy=dev-form-menu]').click();
+        cy.get('[data-cy=local-form-menu]').should('exist');
+        cy.get('[data-cy=local-form-menu]').click();
 
-        cy.url().should('include', '/forms/dev');
+        cy.url().should('include', '/forms/local');
 
         cy.get('h2').should('contain', 'Current environment context');
         cy.get('[data-cy=context-label]').should('contain', 'Development');
@@ -38,10 +38,10 @@ describe('Forms Page', () => {
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy=dev-form-menu]').should('exist');
-        cy.get('[data-cy=dev-form-menu]').click();
+        cy.get('[data-cy=local-form-menu]').should('exist');
+        cy.get('[data-cy=local-form-menu]').click();
 
-        cy.url().should('include', '/forms/dev');
+        cy.url().should('include', '/forms/local');
 
         cy.get('input[name=search-title]').type("User");
 
@@ -63,10 +63,10 @@ describe('Forms Page', () => {
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy=dev-form-menu]').should('exist');
-        cy.get('[data-cy=dev-form-menu]').click();
+        cy.get('[data-cy=local-form-menu]').should('exist');
+        cy.get('[data-cy=local-form-menu]').click();
 
-        cy.url().should('include', '/forms/dev');
+        cy.url().should('include', '/forms/local');
 
         cy.get('[data-cy=logout]').click();
 
