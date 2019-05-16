@@ -83,7 +83,9 @@ const FormList = () => {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
-                    <Input data-cy="search-title" icon='search' placeholder={t('form.list.search-label')}
+                    <Input data-cy="search-title" icon='search'
+                           name="search-title"
+                           placeholder={t('form.list.search-label')}
                            size='large'
                            onChange={handleTitleSearch}
                            fluid focus/>
@@ -184,7 +186,7 @@ const FormList = () => {
                                     </Table.HeaderCell> : <Table.HeaderCell/>}
                                     <Table.HeaderCell colSpan={2}>
                                         <Button floated='right' icon labelPosition='left' primary size='small'
-                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}>
+                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)} data-cy="create-form">
                                             <Icon name='wpforms'/>{t('form.create.label')}
                                         </Button>
                                     </Table.HeaderCell>

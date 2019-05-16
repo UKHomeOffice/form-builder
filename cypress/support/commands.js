@@ -28,6 +28,8 @@
 //     return false
 // });
 
+import 'cypress-file-upload';
+import uuid from 'uuid4';
 
 afterEach(() => {
     cy.get('[data-cy=logout]').click();

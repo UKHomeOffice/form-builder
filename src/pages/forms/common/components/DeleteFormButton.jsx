@@ -60,9 +60,9 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
         </Message>: null))}</Container>;
 
     return (<React.Fragment>
-        <Button onClick={() => setOpen(true)} negative>Delete</Button>
+        <Button data-cy="delete-form" onClick={() => setOpen(true)} negative>Delete</Button>
         <Confirm
-            confirmButton={<Button loading={status === EXECUTING} disabled={status === EXECUTING}
+            confirmButton={<Button data-cy="confirm-delete" loading={status === EXECUTING} disabled={status === EXECUTING}
                                    negative>{t('form.list.delete-label')}</Button>}
             open={open}
             header={t('form.delete.confirm', {formName: form.name})}

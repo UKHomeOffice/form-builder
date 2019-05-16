@@ -8,6 +8,7 @@ const useFormDataReplacer = () => {
     const variableReplacer = new VariableReplacer();
     const keycloakTokenProvider = new KeycloakTokenProvider();
 
+
     const performFormParse = async (form) => {
         const variableReplacements = envContext ? envContext['variable-replacements'] : null;
         if (!variableReplacements) {
@@ -31,7 +32,7 @@ const useFormDataReplacer = () => {
     };
 
     return {
-        performFormParse
+        performFormParse,
     }
 };
 

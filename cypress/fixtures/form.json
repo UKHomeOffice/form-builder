@@ -1,0 +1,63 @@
+{
+  "_id": "5cd400e4e710540010ba9075",
+  "type": "form",
+  "tags": [],
+  "owner": "5cc81f51da279a001101e29c",
+  "components": [
+    {
+      "label": "Text Field",
+      "widget": {
+        "type": "input"
+      },
+      "tableView": true,
+      "inputFormat": "plain",
+      "key": "textField",
+      "type": "textfield",
+      "input": true
+    },
+    {
+      "label": "Text Field",
+      "widget": {
+        "type": "input"
+      },
+      "tableView": true,
+      "inputFormat": "plain",
+      "key": "textField1",
+      "type": "textfield",
+      "input": true
+    },
+    {
+      "label": "Checkbox",
+      "tableView": false,
+      "key": "checkbox",
+      "type": "checkbox",
+      "input": true
+    },
+    {
+      "type": "button",
+      "label": "Submit",
+      "key": "submit",
+      "disableOnInvalid": true,
+      "input": true,
+      "tableView": false
+    }
+  ],
+  "display": "form",
+  "title": "Apples and Oranges",
+  "path": "applesandoranges",
+  "name": "applesAndOranges",
+  "access": [
+    {
+      "roles": [
+        "5cc81f51da279a001101e28e",
+        "5cc81f51da279a001101e28f",
+        "5cc81f51da279a001101e290"
+      ],
+      "type": "read_all"
+    }
+  ],
+  "submissionAccess": [],
+  "created": "2019-05-09T10:28:52.187Z",
+  "modified": "2019-05-09T10:28:52.248Z",
+  "machineName": "applesAndOranges"
+}

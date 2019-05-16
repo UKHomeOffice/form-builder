@@ -90,7 +90,7 @@ const FormBuilderComponent = ({   form,
                         openPreview();
                     }} secondary>{t('form.preview.label')}</Button>
                     <Button.Or/>
-                    <Button
+                    <Button data-cy="persist-form"
                         onClick={() => save()}
                         primary
                         disabled={formInvalid()}

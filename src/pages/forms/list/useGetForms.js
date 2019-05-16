@@ -23,6 +23,7 @@ const useGetForms = () => {
         numberOfWizards: 0,
         numberOfForms: 0,
         activeIndex: -1,
+        refresh: false,
         downloadFile: {
             formId: null,
             formName: null
@@ -113,13 +114,14 @@ const useGetForms = () => {
 
     useEffect(() => {
         savedCallback.current();
-    }, [forms.activePage, forms.searchTitle]);
+    }, [forms.activePage, forms.searchTitle, forms.refresh]);
 
 
     useEffect(() => {
         if (status === SUCCESS) {
             setValues(forms => ({
                 ...forms,
+                refresh: false,
                 data: response.data,
                 total: parseInt(response.headers['content-range'].split('/')[1])
             }));
@@ -188,7 +190,7 @@ const useGetForms = () => {
     const handleOnSuccessfulDeletion = () => {
         setValues(forms => ({
             ...forms,
-            searchTitle: '<>'
+            refresh: true
         }));
     };
 

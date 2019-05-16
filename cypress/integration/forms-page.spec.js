@@ -43,7 +43,7 @@ describe('Forms Page', () => {
 
         cy.url().should('include', '/forms/dev');
 
-        cy.get('input').type("User");
+        cy.get('input[name=search-title]').type("User");
 
         cy.wait(500);
         cy.get('[data-cy=forms-table]').should('exist');

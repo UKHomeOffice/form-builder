@@ -6,12 +6,17 @@ import _ from 'lodash';
 import useEnvContext from "../../../core/context/useEnvContext";
 import {toast} from "react-semantic-toasts";
 
-const useCreateForm = () => {
+const useCreateForm = (formContent = null) => {
+
+    const sanitize = (form) => {
+        return _.omit(form, ['_id', 'access','owner', 'created', 'modified', 'machineName'])
+    };
+
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
 
     const [form, setValues] = useState({
-        data: {
+        data: formContent && formContent !== '' ? sanitize(JSON.parse(formContent)) : {
             title: '',
             path: '',
             display: 'form',
@@ -109,8 +114,8 @@ const useCreateForm = () => {
     };
 
     const formInvalid = () => {
-        const { missing} = form;
-        const {path, title, name}= form.data;
+        const {missing} = form;
+        const {path, title, name} = form.data;
         return (path === '' || title === '' || name === '')
             || (missing.path || missing.title || missing.name) || status === EXECUTING;
     };

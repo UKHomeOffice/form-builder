@@ -13,8 +13,14 @@ const CreateFormFileUpload = ({formContent}) => {
         backToForms,
         status,
         response,
+        makeRequest,
         formInvalid,
-    } = useCreateForm();
+        form,
+        setValues,
+        updateField,
+        openPreview,
+        closePreview
+    } = useCreateForm(formContent);
 
     if (!formContent) {
         return <Container><Message icon negative>
@@ -25,11 +31,12 @@ const CreateFormFileUpload = ({formContent}) => {
             </Message.Content>
         </Message></Container>
     }
+
     return <div style={{paddingBottom: '10px'}}>
         <Divider horizontal>
             <Header as='h4'>
                 <Icon name='add'/>
-                Create
+                Create from existing source
             </Header>
         </Divider>
         <Container>
@@ -41,14 +48,23 @@ const CreateFormFileUpload = ({formContent}) => {
                 </Message.Content>
             </Message> : null}
             <FormBuilderComponent
-                form={JSON.parse(formContent)}
+                form={form}
                 t={t}
+                updateField={updateField}
+                openPreview={openPreview}
+                closePreview={closePreview}
+                status={status}
+                save={makeRequest}
                 formChoices={formChoices}
                 messageKeyPrefix={"form.create"}
                 backToForms={backToForms}
                 formInvalid={formInvalid}
-                updateForm={(jsonSchema) => {
-                }}
+                updateForm={ (jsonSchema) =>
+                    setValues({
+                        ...form,
+                        data: Object.assign(jsonSchema, form.data)
+                    })
+                }
             />
         </Container>
     </div>

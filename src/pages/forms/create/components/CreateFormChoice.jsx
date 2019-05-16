@@ -43,9 +43,10 @@ const CreateFormChoice = () => {
                     secondary content={t('form.create.choice.form-upload-label')} icon='upload' size='big'
                         />
                 <input
+                    data-cy="file-upload-input"
                     hidden
                     id={id}
-                    multiple
+                    multiple={false}
                     type="file"
                     accept='.json'
                     onChange={(event) =>handleFileChosen(event.target.files[0])} />
