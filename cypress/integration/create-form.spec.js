@@ -34,6 +34,8 @@ describe('Create Form', () => {
 
         cy.get('input[name=search-title]').type(formTitle);
 
+        cy.wait(1000);
+
         cy.get('[data-cy=forms-table]').should('exist');
         cy.get('[data-cy=form-table-data]').should('exist');
         cy.get('[data-cy=form-table-data]').find('tr').its('length').should('be.gte', 1)
@@ -41,7 +43,7 @@ describe('Create Form', () => {
         cy.get('[data-cy="delete-form"]').click();
         cy.get('[data-cy="confirm-delete"]').click();
 
-        cy.wait(500);
+        cy.wait(1000);
         cy.get('input[name=search-title]').clear();
         cy.get('input[name=search-title]').type(formTitle);
 

@@ -7,6 +7,7 @@ import useEnvContext from "../../../core/context/useEnvContext";
 import fileDownload from 'js-file-download';
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
+import {useDebouncedCallback} from "use-debounce";
 
 const useGetForms = () => {
     const navigation = useNavigation();
@@ -30,6 +31,18 @@ const useGetForms = () => {
         }
     });
 
+
+    const [searchTitle] = useDebouncedCallback(
+        (value) => {
+            setValues(forms => ({
+                ...forms,
+                activePage: 1,
+                searchTitle: value
+            }))
+        },
+        500,
+        { maxWait: 2000 }
+    );
 
     const [{status, response}, makeRequest] = useApiRequest(
         `/form?select=title,path,name,display,created,modified${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/^${forms.searchTitle}/i` : ''}`, {
@@ -195,11 +208,12 @@ const useGetForms = () => {
     };
 
     const handleTitleSearch = (e, data) => {
-        setValues(forms => ({
-            ...forms,
-            activePage: 1,
-            searchTitle: data.value
-        }))
+        searchTitle(data.value);
+        // setValues(forms => ({
+        //     ...forms,
+        //     activePage: 1,
+        //     searchTitle: data.value
+        // }))
     };
 
     const handlePreview = (form) => {

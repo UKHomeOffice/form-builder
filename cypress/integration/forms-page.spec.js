@@ -19,7 +19,7 @@ describe('Forms Page', () => {
         cy.url().should('include', '/forms/local');
 
         cy.get('h2').should('contain', 'Current environment context');
-        cy.get('[data-cy=context-label]').should('contain', 'Development');
+        cy.get('[data-cy=context-label]').should('contain', 'Local');
 
         cy.get('[data-cy=forms-table]').should('exist');
         cy.get('[data-cy=form-table-data]').should('exist');
@@ -45,7 +45,7 @@ describe('Forms Page', () => {
 
         cy.get('input[name=search-title]').type("User");
 
-        cy.wait(500);
+        cy.wait(1000);
         cy.get('[data-cy=forms-table]').should('exist');
         cy.get('[data-cy=form-table-data]').should('exist');
         cy.get('[data-cy=form-table-data]').find('tr').its('length').should('be.gte', 1)

@@ -33,11 +33,13 @@ describe("Create form using upload", () => {
 
             cy.get('[data-cy=persist-form]').click();
 
-            cy.wait(500);
+            cy.wait(1000);
 
             cy.url().should('include', '/forms/local');
 
             cy.get('input[name=search-title]').type("Apples and Oranges new form for testing");
+
+            cy.wait(1000);
 
             cy.get('[data-cy=forms-table]').should('exist');
             cy.get('[data-cy=form-table-data]').should('exist');
@@ -47,7 +49,6 @@ describe("Create form using upload", () => {
 
             cy.get('[data-cy="confirm-delete"]').click();
 
-            cy.wait(500);
             cy.get('input[name=search-title]').clear();
             cy.get('input[name=search-title]').type("Apples and Oranges new form for testing");
 
