@@ -17,10 +17,10 @@ export default mount({
         title: 'Create form with builder',
         view: <EditableEnvironmentChecker><CreateFormPage/></EditableEnvironmentChecker>
     })),
-    '/file-upload': withEnvContext(route({
+    '/file-upload': withEnvContext(route((req) => ({
         title: 'Create form via file upload',
-        view: <EditableEnvironmentChecker><CreateFormFileUpload/></EditableEnvironmentChecker>
-    }))
+        view: <EditableEnvironmentChecker><CreateFormFileUpload formContent={req.body}/></EditableEnvironmentChecker>
+    })))
 });
 
 

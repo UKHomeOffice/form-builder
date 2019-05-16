@@ -62,10 +62,8 @@ describe('FormList', () => {
 
         rows.forEach((tr, rowIndex) => {
             const cells = tr.find('td');
-            expect(cells.at(0).text()).toEqual(data[rowIndex]._id);
-            expect(cells.at(1).text()).toEqual(data[rowIndex].title);
-            expect(cells.at(2).text()).toEqual(data[rowIndex].name);
-            expect(cells.at(3).text()).toEqual(data[rowIndex].path);
+            expect(cells.at(0).text()).toEqual(`formTitle${rowIndex}Identifier: form${rowIndex}Path: /formPath${rowIndex}Created a few seconds agoUpdated a few seconds ago`);
+            expect(cells.at(1).text()).toEqual(data[rowIndex].name);
 
         });
     });

@@ -5,6 +5,7 @@ import {error, executing, success} from './actionCreators';
 import {useKeycloak} from "react-keycloak";
 import secureLS from '../storage';
 import useEnvContext from "../context/useEnvContext";
+import jwt_decode from 'jwt-decode';
 
 const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -34,15 +35,20 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             config.headers.Authorization = `Bearer ${token}`;
         }
 
-        if (!localStorage.getItem("FORMIO_TOKEN")) {
-            const formioToken = await getToken(username, password);
+        const jwtTokenFromSecureLS = secureLS.get("FORMIO_TOKEN");
+        let formioToken;
+        if (!jwtTokenFromSecureLS) {
+            formioToken = await getToken(username, password);
             secureLS.set("FORMIO_TOKEN", formioToken);
-            config.headers['x-jwt-token'] = formioToken;
         } else {
-            config.headers['x-jwt-token'] = secureLS.get("FORMIO_TOKEN");
+            if (jwt_decode(jwtTokenFromSecureLS).exp < new Date().getTime() / 1000) {
+                formioToken = await getToken(username, password);
+                secureLS.set("FORMIO_TOKEN", formioToken);
+            } else {
+                formioToken = jwtTokenFromSecureLS;
+            }
         }
-
-
+        config.headers['x-jwt-token'] = formioToken;
         return Promise.resolve(config)
     }, (err) => {
         return Promise.reject(err);

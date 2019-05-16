@@ -39,7 +39,16 @@ const messages = {
     },
     "form": {
         "loading-form" : "Loading form",
+        "download": {
+            "successful" : "Download successful",
+            "successful-message" : "{{formName}} successfully downloaded to your local machine",
+            "failed": "Download failed",
+            "failed-message" : "Please try again"
+        },
         "create": {
+            "file-upload" : {
+                "no-form-content" : "No form content found"
+            },
             "not-allowed": {
                 "title": "Not allowed",
                 "message": "Environment context does not allow creation of forms directly"
@@ -140,7 +149,8 @@ const messages = {
             "update-label" : "Update form"
         },
         "list": {
-            "total-forms": "Forms in {{env}}",
+            "loading" : "Loading forms...",
+            "total-forms": "User created forms in {{env}}",
             "total-form-type": "form types",
             "total-wizard-type": "wizard types",
             "failure": {

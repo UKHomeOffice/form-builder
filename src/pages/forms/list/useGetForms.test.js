@@ -1,9 +1,12 @@
-import {renderHook, act} from "react-hooks-testing-library";
+import {act, renderHook} from "react-hooks-testing-library";
 import useGetForms from "./useGetForms";
 import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 
+
 describe('useGetForms', () => {
     beforeEach(() => {
+        window.URL.createObjectURL = jest.fn();
+        window.URL.revokeObjectURL = jest.fn();
         const contextModule = require('../../../core/context/useEnvContext');
         contextModule.default = () => {
             return {
@@ -47,6 +50,7 @@ describe('useGetForms', () => {
                 }
             }, jest.fn()]
         };
+
 
         const {result} = renderHook(() => useGetForms());
 

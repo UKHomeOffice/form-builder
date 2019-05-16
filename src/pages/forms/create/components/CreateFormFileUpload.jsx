@@ -1,14 +1,57 @@
 import React from 'react';
-import { Button, Header, Icon, Segment } from 'semantic-ui-react'
+import {Container, Divider, Header, Icon, Message} from 'semantic-ui-react'
+import {useTranslation} from "react-i18next";
+import useCommonFormUtils from "../../common/useCommonFormUtils";
+import useCreateForm from "../useCreateForm";
+import {ERROR} from "../../../../core/api/actionTypes";
+import FormBuilderComponent from "../../common/components/FormBuilderComponent";
 
-const CreateFormFileUpload = () => {
-    return <Segment placeholder>
-        <Header icon>
-            <Icon name='file code outline' />
-            Use to upload an existing JSON form
-        </Header>
-        <Button primary>Add form</Button>
-    </Segment>
+const CreateFormFileUpload = ({formContent}) => {
+    const {t} = useTranslation();
+    const {formChoices} = useCommonFormUtils();
+    const {
+        backToForms,
+        status,
+        response,
+        formInvalid,
+    } = useCreateForm();
+
+    if (!formContent) {
+        return <Container><Message icon negative>
+            <Icon name='warning circle'/>
+            <Message.Content>
+                <Message.Header>{t('error.general')}</Message.Header>
+                {t('form.create.file-upload.no-form-content')}
+            </Message.Content>
+        </Message></Container>
+    }
+    return <div style={{paddingBottom: '10px'}}>
+        <Divider horizontal>
+            <Header as='h4'>
+                <Icon name='add'/>
+                Create
+            </Header>
+        </Divider>
+        <Container>
+            {status === ERROR ? <Message icon negative>
+                <Icon name='warning circle'/>
+                <Message.Content>
+                    <Message.Header>{t('error.general')}</Message.Header>
+                    {t('form.create.failure.failed-to-create', {error: JSON.stringify(response.data)})}
+                </Message.Content>
+            </Message> : null}
+            <FormBuilderComponent
+                form={JSON.parse(formContent)}
+                t={t}
+                formChoices={formChoices}
+                messageKeyPrefix={"form.create"}
+                backToForms={backToForms}
+                formInvalid={formInvalid}
+                updateForm={(jsonSchema) => {
+                }}
+            />
+        </Container>
+    </div>
 };
 
 export default CreateFormFileUpload;

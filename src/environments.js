@@ -1,9 +1,9 @@
 const environments = [
     {
-        "id": "dev",
-        "label": "Development",
+        "id": "local",
+        "label": "Local",
         "url": "http://formio.lodev.xyz",
-        "description": "development environment",
+        "description": "local development environment",
         "service": {
             "formio": {
                 "username": "me@lodev.xyz",
