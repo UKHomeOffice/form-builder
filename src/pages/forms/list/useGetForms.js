@@ -209,11 +209,6 @@ const useGetForms = () => {
 
     const handleTitleSearch = (e, data) => {
         searchTitle(data.value);
-        // setValues(forms => ({
-        //     ...forms,
-        //     activePage: 1,
-        //     searchTitle: data.value
-        // }))
     };
 
     const handlePreview = (form) => {
