@@ -150,9 +150,9 @@ const FormList = () => {
                                         <Table.Cell>
                                             <Button.Group>
                                                 <DeleteFormButton form={form}
-                                                                  onSuccessfulDeletion={handleOnSuccessfulDeletion}/>
+                                                                  onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form._id)}/>
                                                 <Button.Or/>
-                                                <Button positive
+                                                <Button data-cy="edit-form" positive
                                                         onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>
                                                 <Button.Or/>
                                                 <Button primary

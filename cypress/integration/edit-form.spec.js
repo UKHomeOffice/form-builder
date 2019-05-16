@@ -1,9 +1,10 @@
 const username = 'dev1@lodev.xyz';
 const password = 'secret';
 
-describe('Create Form', () => {
-    const formTitle = "Random new form";
-    it('can create a new form', () => {
+describe("Edit form", () => {
+    const formTitle = `Random form ${Cypress._.random(0, 10000)}`;
+
+    it('can edit a form', () => {
         cy.visit("/");
 
         cy.get('input[name=username]').type(username);
@@ -24,13 +25,48 @@ describe('Create Form', () => {
         cy.url().should('include', '/forms/local/create/builder');
 
         cy.get('input[name=title]').type(formTitle);
-        cy.get("[data-type=textfield]").trigger("mousedown", { which: 1 })
-        cy.get(".drag-container").trigger("mousemove").trigger("mouseup");
-        cy.get("button[ref=saveButton]").click();
         cy.get('[data-cy=persist-form]').click();
 
 
         cy.url().should('include', '/forms/local');
+
+        cy.get('input[name=search-title]').type(formTitle);
+
+        cy.wait(1000);
+
+        cy.get('[data-cy=forms-table]').should('exist');
+        cy.get('[data-cy=form-table-data]').should('exist');
+        cy.get('[data-cy=form-table-data]').find('tr').its('length').should('be.gte', 1);
+
+
+        cy.request({
+            url: `http://formio.lodev.xyz/form?title=${formTitle}`,
+        }).then((resp) => {
+            expect(resp.status).to.eq(200);
+            expect(resp.body.length).to.eq(1);
+            expect(resp.body[0].components.length).to.eq(1);
+        });
+
+
+        cy.get('[data-cy="edit-form"]').click();
+
+        cy.url().should('contains', '/edit');
+
+        cy.get("[data-type=textfield]").trigger("mousedown", {which: 1});
+        cy.get(".drag-container").trigger("mousemove").trigger("mouseup");
+        cy.get("button[ref=saveButton]").click();
+
+        cy.get('[data-cy=persist-form]').click();
+
+        cy.url().should('include', '/forms/local');
+
+        cy.request({
+            url: `http://formio.lodev.xyz/form?title=${formTitle}`,
+        }).then((resp) => {
+            expect(resp.status).to.eq(200);
+            expect(resp.body.length).to.eq(1);
+            expect(resp.body[0].components.length).to.eq(2);
+        });
 
         cy.get('input[name=search-title]').type(formTitle);
 
