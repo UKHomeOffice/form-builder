@@ -30,7 +30,9 @@ const CreateFormChoice = () => {
     return <Container><Segment placeholder size="large" color="teal" raised>
         <Grid columns={2} relaxed='very' stackable>
             <Grid.Column>
-                <Button primary content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
+                <Button
+                    data-cy="form-builder"
+                    primary content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
                         onClick={() => {
                             navigation.navigate(`/forms/${envContext.id}/create/builder`);
                         }}/>
