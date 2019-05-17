@@ -4,7 +4,8 @@ import {useKeycloak} from 'react-keycloak';
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
 import _ from 'lodash';
-import environments from '../environments';
+import config from 'react-global-configuration';
+
 import useEnvContext from "../core/context/useEnvContext";
 import {ApplicationContext} from "../core/AppRouter";
 
@@ -30,6 +31,7 @@ const AppMenu = () => {
             activeMenuItem: name
         }))
     };
+    const environments = config.get('environments');
 
     return <Menu pointing secondary>
         <Menu.Item data-cy={`home-menu`} name={t('menu.home.name')}

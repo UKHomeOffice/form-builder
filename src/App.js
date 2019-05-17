@@ -7,13 +7,19 @@ import {Provider} from "react-redux";
 import configureStore from './core/configureStore'
 import {Loader} from "semantic-ui-react";
 import secureLS from './core/storage';
+import config from 'react-global-configuration';
+import configuration from './config';
+
+window.ENVIRONMENT_CONFIG = configuration;
+
+config.set(window.ENVIRONMENT_CONFIG);
 
 const store = configureStore();
 
 const keycloak = new Keycloak({
-    "realm": process.env.REACT_APP_AUTH_REALM,
-    "url": process.env.REACT_APP_AUTH_URL,
-    "clientId": process.env.REACT_APP_AUTH_CLIENT_ID
+    "realm": config.get("keycloak.realm"),
+    "url": config.get("keycloak.authUrl"),
+    "clientId": config.get("keycloak.clientId")
 });
 
 const clearSecureLocalStorage = () => {
@@ -28,6 +34,7 @@ keycloak.onTokenExpired = () => {
 keycloak.onAuthError = () => {
     clearSecureLocalStorage();
 };
+
 
 export const App = () => (
     <KeycloakProvider keycloak={keycloak} initConfig={{

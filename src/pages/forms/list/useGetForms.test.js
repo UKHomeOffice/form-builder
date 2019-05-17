@@ -2,7 +2,7 @@ import {act, renderHook} from "react-hooks-testing-library";
 import useGetForms from "./useGetForms";
 import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 
-
+jest.useFakeTimers();
 describe('useGetForms', () => {
     beforeEach(() => {
         window.URL.createObjectURL = jest.fn();
@@ -70,7 +70,7 @@ describe('useGetForms', () => {
         };
         const {result} = renderHook(() => useGetForms());
 
-        act(() => result.current.handlePaginationChange(null, {activePage: 2}))
+        act(() => result.current.handlePaginationChange(null, {activePage: 2}));
 
         expect(makeRequest).toBeCalled();
         expect(result.current.forms.activePage).toBe(2);
@@ -84,11 +84,17 @@ describe('useGetForms', () => {
         apiModule.default = () => {
             return [{}, makeRequest]
         };
+
         const {result} = renderHook(() => useGetForms());
 
-        act(() => result.current.handleTitleSearch(null, {value: 'text'}));
+        act(() => {
+            result.current.handleTitleSearch(null, {value: 'text'});
+            
+            jest.runTimersToTime(1000);
+        });
 
         expect(makeRequest).toBeCalled();
+
         expect(result.current.forms.searchTitle).toBe('text')
     })
 });

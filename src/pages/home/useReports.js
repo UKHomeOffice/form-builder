@@ -1,8 +1,9 @@
 import {useEffect, useState} from "react";
 import {EXECUTING, SUCCESS} from "../../core/api/actionTypes";
 import axios from "axios";
-import environments from '../../environments';
 import _ from 'lodash';
+import config from "react-global-configuration"
+
 
 const useReports = () => {
     const [reports, setReports] = useState({
@@ -12,7 +13,7 @@ const useReports = () => {
         typeData: [],
         statusTypeData: EXECUTING
     });
-
+    const environments = config.get('environments');
 
     useEffect(() => {
         const fetchReportData = async () => {

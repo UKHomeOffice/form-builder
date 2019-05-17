@@ -3,10 +3,11 @@ import {Divider, Grid, Header, Icon, Segment} from "semantic-ui-react";
 import EnvironmentListPanel from "./EnvironmentListPanel";
 import ReportsPanel from "./ReportsPanel";
 import {useTranslation} from "react-i18next";
-import environments from "../../../environments";
+import config from "react-global-configuration"
 
 
 const Home = () => {
+    const environments = config.get('environments');
     const {t} = useTranslation();
     return <React.Fragment>
         <Divider horizontal>

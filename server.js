@@ -6,6 +6,7 @@ const winston = require('winston');
 const {createLogger, format, transports} = winston;
 const { combine, timestamp, json, splat} = format;
 const port = process.env.PORT || 8101;
+const fs = require("fs");
 
 const logger = createLogger({
     format: combine(
@@ -24,7 +25,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    const indexPath = path.join(__dirname, 'build', 'index.html');
+    res.sendFile(indexPath);
 });
 
 app.post('/log', (req, res) => {

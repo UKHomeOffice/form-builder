@@ -1,11 +1,15 @@
 import {useContext} from "react";
-import environments from '../../environments';
-import _ from 'lodash';
+
 import secureLS from '../storage';
 import {ApplicationContext} from "../AppRouter";
+import config from "react-global-configuration"
+import _ from 'lodash';
+
+
 
 const useEnvContext = () => {
     const {state, setState} = useContext(ApplicationContext);
+    const environments = config.get('environments');
 
     const clearLocalStorage = () => {
         secureLS.remove("FORMIO_TOKEN");

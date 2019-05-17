@@ -7,8 +7,9 @@ import {useKeycloak} from 'react-keycloak';
 import {Loader} from "semantic-ui-react";
 import secureLS from '../core/storage';
 import {useTranslation} from "react-i18next";
-import environments from '../environments';
+import config from "react-global-configuration"
 import _ from 'lodash';
+
 
 const routes = mount({
     '/': route({
@@ -23,6 +24,8 @@ export const ApplicationContext = React.createContext([{}, () => {
 export const AppRouter = () => {
     const [keycloak, initialised] = useKeycloak();
     const {t} = useTranslation();
+
+    const environments = config.get('environments');
 
     const environmentLocalStorage = secureLS.get('ENVIRONMENT');
 
