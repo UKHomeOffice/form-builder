@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -7,6 +9,10 @@ const {createLogger, format, transports} = winston;
 const { combine, timestamp, json, splat} = format;
 const port = process.env.PORT || 8101;
 const fs = require("fs");
+const axios = require('axios');
+
+
+const appConfig = JSON.parse(fs.readFileSync("/config/appConfig.json"));
 
 const logger = createLogger({
     format: combine(
@@ -20,9 +26,58 @@ const logger = createLogger({
     exitOnError: false,
 });
 app.set('port', port);
+
+app.use(express.urlencoded());
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'build')));
+
+
+const asyncMiddleware = fn =>
+    (req, res, next) => {
+        Promise.resolve(fn(req, res, next))
+            .catch(next);
+    };
+
+
+app.post("/formio-token/:env" , asyncMiddleware(async (req, res, next) => {
+    const environment = _.find(appConfig.environments, {id: req.params.env});
+    try {
+        const tokenResponse = await axios.post(`${environment.url}/user/login`, {
+            data: {
+                email: req.body.email,
+                password: req.body.password
+            }
+        });
+        res.set('x-jwt-token', tokenResponse.headers['x-jwt-token']);
+        res.sendStatus(200);
+    } catch (e) {
+        next(e)
+    }
+}));
+
+app.post("/keycloak-token/:env" , asyncMiddleware(async(req, res, next) => {
+    const environment = _.find(appConfig.environments, {id: req.params.env});
+     try {
+         const tokenResponse = await axios({
+             method: 'POST',
+             url: `${environment.service.keycloak.tokenUrl}`,
+             auth: {
+                 username: environment.service.keycloak.clientId,
+                 password: environment.service.keycloak.secret
+             },
+             withCredentials: true,
+             headers: {
+                 "Content-Type": "application/x-www-form-urlencoded"
+             },
+             data: "grant_type=client_credentials"
+         });
+         res.json(tokenResponse.data);
+         res.sendStatus(200);
+    } catch (e) {
+        next(e)
+    }
+}));
 
 app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, 'build', 'index.html');

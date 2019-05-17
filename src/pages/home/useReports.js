@@ -69,7 +69,7 @@ const useReports = () => {
 
         };
         fetchReportData();
-    }, []);
+    }, [environments]);
 
     return {
         reports

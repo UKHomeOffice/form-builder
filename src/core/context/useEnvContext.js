@@ -1,5 +1,4 @@
 import {useContext} from "react";
-
 import secureLS from '../storage';
 import {ApplicationContext} from "../AppRouter";
 import config from "react-global-configuration"

@@ -8,11 +8,15 @@ import configureStore from './core/configureStore'
 import {Loader} from "semantic-ui-react";
 import secureLS from './core/storage';
 import config from 'react-global-configuration';
-import configuration from './config';
+import configuration from './config/appConfig';
 
-window.ENVIRONMENT_CONFIG = configuration;
-
-config.set(window.ENVIRONMENT_CONFIG);
+if (window.ENVIRONMENT_CONFIG) {
+    console.log("Using built version of application");
+    config.set(window.ENVIRONMENT_CONFIG);
+} else {
+    console.log("Using non-built version of application");
+    config.set(configuration);
+}
 
 const store = configureStore();
 
