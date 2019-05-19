@@ -10,9 +10,17 @@ const { combine, timestamp, json, splat} = format;
 const port = process.env.PORT || 8101;
 const fs = require("fs");
 const axios = require('axios');
+const replace = require('replace-in-file');
 
 
 const appConfig = JSON.parse(fs.readFileSync("/config/appConfig.json"));
+
+const sanitizedConfig = _.cloneDeep(appConfig);
+sanitizedConfig.environments.forEach((environment) => {
+    delete environment.service;
+});
+
+const indexPath = path.join(__dirname, 'build', 'index.html');
 
 const logger = createLogger({
     format: combine(
@@ -25,13 +33,23 @@ const logger = createLogger({
     ],
     exitOnError: false,
 });
+
+
+const processIndex = ()  => {
+    const options = {
+        files: indexPath,
+        from: '__ENVIRONMENT_CONFIG__',
+        to: JSON.stringify(sanitizedConfig),
+    };
+    const results = replace.sync(options);
+    logger.info(`Replacement results`, results);
+};
+
+processIndex();
+
 app.set('port', port);
 
-app.use(express.urlencoded());
 app.use(express.json());
-
-app.use(express.static(path.join(__dirname, 'build')));
-
 
 const asyncMiddleware = fn =>
     (req, res, next) => {
@@ -40,13 +58,13 @@ const asyncMiddleware = fn =>
     };
 
 
-app.post("/formio-token/:env" , asyncMiddleware(async (req, res, next) => {
+app.get("/formio-token/:env" , asyncMiddleware(async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
     try {
         const tokenResponse = await axios.post(`${environment.url}/user/login`, {
             data: {
-                email: req.body.email,
-                password: req.body.password
+                email: environment.service.formio.username,
+                password: environment.service.formio.password
             }
         });
         res.set('x-jwt-token', tokenResponse.headers['x-jwt-token']);
@@ -56,7 +74,7 @@ app.post("/formio-token/:env" , asyncMiddleware(async (req, res, next) => {
     }
 }));
 
-app.post("/keycloak-token/:env" , asyncMiddleware(async(req, res, next) => {
+app.get("/keycloak-token/:env" , asyncMiddleware(async(req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
      try {
          const tokenResponse = await axios({
@@ -79,11 +97,6 @@ app.post("/keycloak-token/:env" , asyncMiddleware(async(req, res, next) => {
     }
 }));
 
-app.get('/', (req, res) => {
-    const indexPath = path.join(__dirname, 'build', 'index.html');
-    res.sendFile(indexPath);
-});
-
 app.post('/log', (req, res) => {
     const logStatements = req.body;
     logStatements.forEach((log) => {
@@ -98,6 +111,12 @@ const respond = (req, res) => {
 
 app.get('/healthz', respond);
 app.get('/readiness', respond);
+
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('*', (req, res) => {
+    res.sendFile(indexPath);
+});
+
 
 const server = http.createServer(app).listen(app.get('port'),  () => {
     logger.info('Form tool running ' + app.get('port'));

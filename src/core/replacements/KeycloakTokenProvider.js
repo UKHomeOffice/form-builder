@@ -7,22 +7,9 @@ export class KeycloakTokenProvider {
     }
 
     getToken = async (environment) => {
-        const keycloakService = environment.service.keycloak;
-        if (!keycloakService) {
-            return null;
-        }
         const tokenResponse = await axios({
-            method: 'POST',
-            url: `${keycloakService.tokenUrl}`,
-            auth: {
-                username: keycloakService.clientId,
-                password: keycloakService.secret
-            },
-            withCredentials: true,
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            data: "grant_type=client_credentials"
+            method: 'GET',
+            url: `/keycloak-token/${environment.id}`,
         });
         if (tokenResponse.status !== 200) {
             return Error("Failed to get access token");

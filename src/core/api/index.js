@@ -13,17 +13,9 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const instance = axios.create();
     const {envContext} = useEnvContext();
 
-    const baseUrl = envContext.url;
-    const username = envContext.service.formio.username;
-    const password = envContext.service.formio.password;
 
-    const getToken = async (username, password) => {
-        const tokenResponse = await axios.post(`${baseUrl}/user/login`, {
-            data: {
-                email: username,
-                password: password
-            }
-        });
+    const getToken = async () => {
+        const tokenResponse = await axios.get(`/formio-token/${envContext.id}`);
         return tokenResponse.headers['x-jwt-token'];
     };
 
@@ -38,11 +30,11 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
         const jwtTokenFromSecureLS = secureLS.get("FORMIO_TOKEN");
         let formioToken;
         if (!jwtTokenFromSecureLS) {
-            formioToken = await getToken(username, password);
+            formioToken = await getToken();
             secureLS.set("FORMIO_TOKEN", formioToken);
         } else {
             if (jwt_decode(jwtTokenFromSecureLS).exp < new Date().getTime() / 1000) {
-                formioToken = await getToken(username, password);
+                formioToken = await getToken();
                 secureLS.set("FORMIO_TOKEN", formioToken);
             } else {
                 formioToken = jwtTokenFromSecureLS;
@@ -57,7 +49,7 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const makeRequest = async () => {
         dispatch(executing());
         try {
-            const response = await instance[verb](`${baseUrl}${path}`, params);
+            const response = await instance[verb](`${envContext.url}${path}`, params);
             dispatch(success(response));
         } catch ({response = null, ...exception}) {
             dispatch(error(response, exception));
