@@ -1,8 +1,12 @@
+const Chance = require('chance');
+
 const username = 'dev1@lodev.xyz';
 const password = 'secret';
 
+const chance = new Chance();
+
 describe('Create Form', () => {
-    const formTitle = "Random new form";
+
     it('can create a new form', () => {
         cy.visit("/");
 
@@ -23,6 +27,7 @@ describe('Create Form', () => {
         cy.get('[data-cy=form-builder]').click();
         cy.url().should('include', '/forms/local/create/builder');
 
+        const formTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
         cy.get('input[name=title]').type(formTitle);
         cy.get("[data-type=textfield]").trigger("mousedown", { which: 1 })
         cy.get(".drag-container").trigger("mousemove").trigger("mouseup");

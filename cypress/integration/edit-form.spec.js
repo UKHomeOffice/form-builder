@@ -1,8 +1,11 @@
+const Chance = require('chance');
+
 const username = 'dev1@lodev.xyz';
 const password = 'secret';
 
+const chance = new Chance();
+
 describe("Edit form", () => {
-    const formTitle = `Random form ${Cypress._.random(0, 10000)}`;
 
     it('can edit a form', () => {
         cy.visit("/");
@@ -24,6 +27,8 @@ describe("Edit form", () => {
         cy.get('[data-cy=form-builder]').click();
         cy.url().should('include', '/forms/local/create/builder');
 
+
+        const formTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
         cy.get('input[name=title]').type(formTitle);
         cy.get('[data-cy=persist-form]').click();
 
