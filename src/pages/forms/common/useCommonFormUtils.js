@@ -12,8 +12,61 @@ const useCommonFormUtils = () => {
         value: 'wizard'
     }];
 
+    const submissionAccess = (id) => {
+        return [
+            {
+                "roles": [
+                    id
+                ],
+                "type": "create_all"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "read_all"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "update_all"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "delete_all"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "create_own"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "read_own"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "update_own"
+            },
+            {
+                "roles": [
+                    id
+                ],
+                "type": "delete_own"
+            }
+        ];
+    };
     return {
-        formChoices
+        formChoices,
+        submissionAccess
     }
 };
 

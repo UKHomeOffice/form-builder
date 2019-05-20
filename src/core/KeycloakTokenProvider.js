@@ -7,9 +7,12 @@ export class KeycloakTokenProvider {
     }
 
     getToken = async (environment) => {
+        if (!environment) {
+            throw Error("No environment provided");
+        }
         const tokenResponse = await axios({
             method: 'GET',
-            url: `/keycloak-token/${environment.id}`,
+            url: `/keycloak/${environment.id}/token`,
         });
         if (tokenResponse.status !== 200) {
             return Error("Failed to get access token");

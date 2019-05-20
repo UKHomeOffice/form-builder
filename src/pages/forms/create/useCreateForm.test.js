@@ -1,26 +1,33 @@
 import {act, renderHook} from 'react-hooks-testing-library'
 import useCreateForm from "./useCreateForm";
 
-
 describe('useCreateForm', () => {
     beforeEach(() => {
-        const naviModule = require('react-navi');
-        naviModule.useNavigation = jest.fn(() => {
-            return 'fake bar'
-        });
-
-        const apiModule = require('../../../core/api/index');
-        apiModule.default = () => {
-            return [{}, jest.fn()]
-        };
-
 
         const contextModule = require('../../../core/context/useEnvContext');
         contextModule.default = () => {
             return {
                 envContext: {}
             }
-        }
+        };
+
+        const naviModule = require('react-navi');
+        naviModule.useNavigation = jest.fn(() => {
+            return 'fake bar'
+        });
+
+        const loggingModule = require('../../../core/logging/useLogger');
+        loggingModule.default = () => {
+            return {
+                log: jest.fn()
+            }
+        };
+
+        const apiModule = require('../../../core/api');
+        apiModule.useMultipleApiCallbackRequest = () => {
+            return [{}, jest.fn()]
+        };
+
     });
     it('check if form is invalid', () => {
         const {result} = renderHook(() => useCreateForm());

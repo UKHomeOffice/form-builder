@@ -6,7 +6,7 @@ const app = express();
 const http = require('http');
 const winston = require('winston');
 const {createLogger, format, transports} = winston;
-const { combine, timestamp, json, splat} = format;
+const {combine, timestamp, json, splat} = format;
 const port = process.env.PORT || 8101;
 const fs = require("fs");
 const axios = require('axios');
@@ -35,7 +35,7 @@ const logger = createLogger({
 });
 
 
-const processIndex = ()  => {
+const processIndex = () => {
     const options = {
         files: indexPath,
         from: '__ENVIRONMENT_CONFIG__',
@@ -57,8 +57,7 @@ const asyncMiddleware = fn =>
             .catch(next);
     };
 
-
-app.get("/formio-token/:env" , asyncMiddleware(async (req, res, next) => {
+app.get("/formio/:env/token", asyncMiddleware(async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
     try {
         const tokenResponse = await axios.post(`${environment.url}/user/login`, {
@@ -74,24 +73,23 @@ app.get("/formio-token/:env" , asyncMiddleware(async (req, res, next) => {
     }
 }));
 
-app.get("/keycloak-token/:env" , asyncMiddleware(async(req, res, next) => {
+app.get("/keycloak/:env/token", asyncMiddleware(async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
-     try {
-         const tokenResponse = await axios({
-             method: 'POST',
-             url: `${environment.service.keycloak.tokenUrl}`,
-             auth: {
-                 username: environment.service.keycloak.clientId,
-                 password: environment.service.keycloak.secret
-             },
-             withCredentials: true,
-             headers: {
-                 "Content-Type": "application/x-www-form-urlencoded"
-             },
-             data: "grant_type=client_credentials"
-         });
-         res.json(tokenResponse.data);
-         res.sendStatus(200);
+    try {
+        const tokenResponse = await axios({
+            method: 'POST',
+            url: `${environment.service.keycloak.tokenUrl}`,
+            auth: {
+                username: environment.service.keycloak.clientId,
+                password: environment.service.keycloak.secret
+            },
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            data: "grant_type=client_credentials"
+        });
+        res.json(tokenResponse.data);
     } catch (e) {
         next(e)
     }
@@ -118,7 +116,7 @@ app.get('*', (req, res) => {
 });
 
 
-const server = http.createServer(app).listen(app.get('port'),  () => {
+const server = http.createServer(app).listen(app.get('port'), () => {
     logger.info('Form tool running ' + app.get('port'));
 });
 

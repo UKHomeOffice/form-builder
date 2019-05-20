@@ -17,29 +17,28 @@ const useReports = () => {
 
     useEffect(() => {
         const fetchReportData = async () => {
-            await axios.all(environments.map(async (environment) => {
+            const perEnvResults = await axios.all(environments.map(async (environment) => {
                 const response = await axios(`${environment.url}/form?select=_id&display__in=form,wizard&limit=1&type__ne=resource`);
                 return {
                     environment: environment,
                     response: response
                 }
-            })).then((results) => {
-                const formsCountData = _.map(results, (result) => {
-                    return {
-                        "id": result.environment.id,
-                        "label": result.environment.label,
-                        "value": parseInt(result.response.headers['content-range'].split('/')[1]),
-                    }
-                });
-
-                setReports(reports => ({
-                    ...reports,
-                    statusFormsPerEnvCount: SUCCESS,
-                    formsPerEnvCount: formsCountData
-                }));
+            }));
+            const formsCountData = _.map(perEnvResults, (result) => {
+                return {
+                    "id": result.environment.id,
+                    "label": result.environment.label,
+                    "value": parseInt(result.response.headers['content-range'].split('/')[1]),
+                }
             });
 
-            await axios.all(environments.map(async (environment) => {
+            setReports(reports => ({
+                ...reports,
+                statusFormsPerEnvCount: SUCCESS,
+                formsPerEnvCount: formsCountData
+            }));
+
+            const formTypeResults = await axios.all(environments.map(async (environment) => {
                 const formTypes = await axios(`${environment.url}/form?select=_id&display=form&limit=1&type__ne=resource`);
                 const wizardTypes = await axios(`${environment.url}/form?select=_id&display=wizard&limit=1&type__ne=resource`);
                 return {
@@ -47,25 +46,23 @@ const useReports = () => {
                     formTypes: formTypes,
                     wizardTypes: wizardTypes
                 }
-            })).then((results) => {
-                const typeData = _.map(results, (result) => {
-                    const env = result.environment;
-                    const wizards = parseInt(result.wizardTypes.headers['content-range'].split('/')[1]);
-                    const forms = parseInt(result.formTypes.headers['content-range'].split('/')[1]);
+            }));
+            const typeData = _.map(formTypeResults, (result) => {
+                const env = result.environment;
+                const wizards = parseInt(result.wizardTypes.headers['content-range'].split('/')[1]);
+                const forms = parseInt(result.formTypes.headers['content-range'].split('/')[1]);
 
-                    return {
-                        name: env,
-                        wizard: wizards,
-                        form: forms,
-                    }
-                });
-                setReports(reports => ({
-                    ...reports,
-                    statusTypeData: SUCCESS,
-                    typeData: typeData
-                }));
+                return {
+                    name: env,
+                    wizard: wizards,
+                    form: forms,
+                }
             });
-
+            setReports(reports => ({
+                ...reports,
+                statusTypeData: SUCCESS,
+                typeData: typeData
+            }));
 
         };
         fetchReportData();

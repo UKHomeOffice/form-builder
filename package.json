@@ -33,7 +33,7 @@
     "react-helmet": "^5.2.1",
     "react-i18next": "^10.9.0",
     "react-json-view": "^1.19.1",
-    "react-keycloak": "^6.0.0",
+    "react-keycloak": "^6.0.4",
     "react-navi": "^0.12.6",
     "react-redux": "^7.0.3",
     "react-router": "^5.0.0",

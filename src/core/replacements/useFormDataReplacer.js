@@ -1,6 +1,6 @@
 import useEnvContext from "../context/useEnvContext";
 import VariableReplacer from "./VariableReplacer";
-import {KeycloakTokenProvider} from "./KeycloakTokenProvider";
+import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
 import FormioUtils from "formiojs/utils";
 
 const useFormDataReplacer = () => {

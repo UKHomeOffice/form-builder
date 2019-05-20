@@ -31,19 +31,16 @@ const clearSecureLocalStorage = () => {
     secureLS.remove("ENVIRONMENT");
 };
 
-keycloak.onTokenExpired = () => {
-    clearSecureLocalStorage();
-};
-
-keycloak.onAuthError = () => {
-    clearSecureLocalStorage();
-};
-
-
 export const App = () => (
-    <KeycloakProvider keycloak={keycloak} initConfig={{
-        onLoad: 'login-required'
-    }} LoadingComponent={() => <Loader active inline='centered' size='large'>Loading</Loader>}>
+    <KeycloakProvider keycloak={keycloak}
+                      onEvent={(event) => {
+                          if (event === 'onAuthLogout' || event === 'onAuthError') {
+                              clearSecureLocalStorage();
+                          }
+                      }}
+                      initConfig={{
+                          onLoad: 'login-required'
+                      }} LoadingComponent={() => <Loader active inline='centered' size='large'>Loading</Loader>}>
         <Provider store={store}>
             <AppRouter/>
         </Provider>
