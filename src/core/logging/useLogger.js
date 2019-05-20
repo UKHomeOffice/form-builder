@@ -23,6 +23,9 @@ const useLogger = () => {
     const loggingInstance = createInstance();
 
     const log = (loggingStatements) => {
+        loggingStatements.forEach((log) => {
+            log['user'] = keycloak.tokenParsed.email
+        });
         loggingInstance.post("/log", loggingStatements);
     };
 

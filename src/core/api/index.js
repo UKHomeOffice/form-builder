@@ -78,22 +78,15 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
         (err) => {
             return Promise.reject(err);
         });
-    const user = keycloak.tokenParsed.email;
 
     const execute = async () => {
         if (logBefore) {
-            logBefore.forEach((log) => {
-                log['user'] = user
-            });
             log(logBefore);
         }
         dispatch(executing());
         try {
             const response = await apiCallback(instance);
             if (logAfter) {
-                logAfter.forEach((log) => {
-                    log['user'] = user;
-                });
                 log(logAfter);
             }
             dispatch(success(response));
