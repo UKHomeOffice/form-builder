@@ -12,10 +12,11 @@ const FormToPromote = ({form, setValue, backToForms}) => {
         return null;
     }
     return <React.Fragment>
-        <Grid>
-            <Grid.Row>
-                <Grid.Column>
-                    <Container>
+        <Container>
+            <Grid>
+                <Grid.Row>
+                    <Grid.Column>
+
                         <Header
                             as='h2'
                             content={form.data.title}
@@ -24,25 +25,27 @@ const FormToPromote = ({form, setValue, backToForms}) => {
                         />
                         <Form form={form.data} options={{
                             readOnly: true
-                        }}/> </Container>
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column textAlign="right">
-                    <Button  size='large' onClick={() => {
-                        backToForms()
-                    }} content={t('form.cancel.label')} />
-                    <Button primary size='large' icon labelPosition='right' onClick={() => {
-                        setValue(form => ({
-                            ...form,
-                            step: "environment"
-                        }))}}>
-                        {t('form.promote.next')}
-                        <Icon name='right arrow'/>
-                    </Button>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+                        }}/>
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column textAlign="right">
+                        <Button size='large' onClick={() => {
+                            backToForms()
+                        }} content={t('form.cancel.label')}/>
+                        <Button primary size='large' icon labelPosition='right' onClick={() => {
+                            setValue(form => ({
+                                ...form,
+                                step: "environment"
+                            }))
+                        }}>
+                            {t('form.promote.next')}
+                            <Icon name='right arrow'/>
+                        </Button>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </Container>
     </React.Fragment>
 };
 

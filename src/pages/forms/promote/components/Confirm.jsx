@@ -14,10 +14,10 @@ const Confirm = ({form, setValue, backToForms, promote, status}) => {
 
     const environment = getEnvDetails(form.environment);
     return <React.Fragment>
-        <Grid>
-            <Grid.Row>
-                <Grid.Column>
-                    <Container>
+        <Container>
+            <Grid>
+                <Grid.Row>
+                    <Grid.Column>
                         <Divider horizontal>
                             <Header as='h4'>
                                 {t('form.promote.confirm')}
@@ -54,32 +54,33 @@ const Confirm = ({form, setValue, backToForms, promote, status}) => {
                                 </Table.Row>
                             </Table.Footer>
                         </Table>
-                    </Container>
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column textAlign="right">
-                    <Button size='large' secondary icon labelPosition='left' onClick={() => {
-                        setValue(form => ({
-                            ...form,
-                            step: "environment"
-                        }));
-                    }}>
-                        <Icon name='left arrow'/>
-                        {t('form.promote.previous')}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column textAlign="right">
+                        <Button size='large' secondary icon labelPosition='left' onClick={() => {
+                            setValue(form => ({
+                                ...form,
+                                step: "environment"
+                            }));
+                        }}>
+                            <Icon name='left arrow'/>
+                            {t('form.promote.previous')}
 
-                    </Button>
-                    <Button size='large' onClick={() => {
-                        backToForms()
-                    }}>
-                        {t('form.cancel.label')}
-                    </Button>
-                    <Button size='large' positive onClick={() => {
-                        promote()
-                    }}  loading={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+                        </Button>
+                        <Button size='large' onClick={() => {
+                            backToForms()
+                        }}>
+                            {t('form.cancel.label')}
+                        </Button>
+                        <Button size='large' positive onClick={() => {
+                            promote()
+                        }}
+                                loading={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </Container>
     </React.Fragment>;
 };
 

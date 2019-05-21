@@ -1,5 +1,5 @@
 import React from 'react';
-import {Divider, Grid, Header, Icon, Loader, Step} from 'semantic-ui-react'
+import {Container, Divider, Grid, Header, Icon, Loader, Step} from 'semantic-ui-react'
 import {EXECUTING} from "../../../../core/api/actionTypes";
 import usePromotion from "../usePromotion";
 import {useTranslation} from "react-i18next";
@@ -79,7 +79,7 @@ const FormPromotionPage = ({formId}) => {
                         {t('form.promote.header')}
                     </Header>
                 </Divider>
-                {steps}
+                <Container>{steps}</Container>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
