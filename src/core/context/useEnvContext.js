@@ -23,6 +23,11 @@ const useEnvContext = () => {
         }));
     };
 
+    const changeContextById = (id) => {
+        const env = _.find(environments, {id: id});
+        changeContext(env);
+    };
+
     const clearEnvContext = () => {
         setState(state => ({
             ...state, environment: null
@@ -36,7 +41,8 @@ const useEnvContext = () => {
         changeContext,
         clearEnvContext,
         envContext,
-        clearLocalStorage
+        clearLocalStorage,
+        changeContextById
     }
 };
 

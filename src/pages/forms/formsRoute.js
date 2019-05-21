@@ -12,9 +12,11 @@ export const withEnvContext = (matcher) => {
 };
 
 export default mount({
-    '/:env': withEnvContext(route({
-        "title": "Forms",
-        "view": <FormList/>
+    '/:env': withEnvContext(route(req => {
+        return {
+            "title": "Forms",
+            "view": <FormList env={req.params.env}/>
+        };
     })),
     '/:env/create': lazy(() => import('../forms/create/createFormRoutes')),
     '/:env/:formId/edit': lazy(() => import('../forms/edit/editFormRoutes')),

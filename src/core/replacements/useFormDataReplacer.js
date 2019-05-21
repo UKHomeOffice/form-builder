@@ -2,9 +2,11 @@ import useEnvContext from "../context/useEnvContext";
 import VariableReplacer from "./VariableReplacer";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
 import FormioUtils from "formiojs/utils";
+import {useKeycloak} from "react-keycloak";
 
 const useFormDataReplacer = () => {
     const {envContext} = useEnvContext();
+    const [keycloak] = useKeycloak();
     const variableReplacer = new VariableReplacer();
     const keycloakTokenProvider = new KeycloakTokenProvider();
 
@@ -16,7 +18,7 @@ const useFormDataReplacer = () => {
         }
         const updatedForm = variableReplacer.replace(form, variableReplacements);
         const components = updatedForm.components;
-        const token = await keycloakTokenProvider.getToken(envContext);
+        const token = await keycloakTokenProvider.getToken(envContext, keycloak.token);
         if (token) {
             FormioUtils.eachComponent(components, (component) => {
                 if (component.data && component.dataSrc === 'url') {

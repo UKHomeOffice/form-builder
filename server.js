@@ -11,6 +11,8 @@ const port = process.env.PORT || 8101;
 const fs = require("fs");
 const axios = require('axios');
 const replace = require('replace-in-file');
+const Keycloak = require('keycloak-connect');
+const cors = require('cors');
 
 
 const appConfig = JSON.parse(fs.readFileSync("/config/appConfig.json"));
@@ -48,32 +50,48 @@ const processIndex = () => {
 processIndex();
 
 app.set('port', port);
-
+app.use(cors());
 app.use(express.json());
 
-const asyncMiddleware = fn =>
-    (req, res, next) => {
-        Promise.resolve(fn(req, res, next))
-            .catch(next);
-    };
 
-app.get("/formio/:env/token", asyncMiddleware(async (req, res, next) => {
+const kcConfig = {
+    clientId: appConfig['keycloak'].clientId,
+    serverUrl: appConfig['keycloak'].authUrl,
+    realm: appConfig['keycloak'].realm,
+    bearerOnly: true,
+};
+
+
+const keycloak = new Keycloak({}, kcConfig);
+app.use(keycloak.middleware());
+
+app.get("/formio/:env/token", keycloak.protect(), async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
     try {
-        const tokenResponse = await axios.post(`${environment.url}/user/login`, {
+        const tokenResponse = await axios({
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: 'POST',
+            url: `${environment.url}/user/login`,
             data: {
-                email: environment.service.formio.username,
-                password: environment.service.formio.password
+                data: {
+                    email: environment.service.formio.username,
+                    password: environment.service.formio.password
+                }
             }
         });
-        res.set('x-jwt-token', tokenResponse.headers['x-jwt-token']);
-        res.sendStatus(200);
+        res.set("Content-Type", "application/json");
+        res.json({
+            "x-jwt-token": tokenResponse.headers['x-jwt-token']
+        });
     } catch (e) {
+        logger.error(e);
         next(e)
     }
-}));
+});
 
-app.get("/keycloak/:env/token", asyncMiddleware(async (req, res, next) => {
+app.get("/keycloak/:env/token",  keycloak.protect(), async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
     try {
         const tokenResponse = await axios({
@@ -89,19 +107,20 @@ app.get("/keycloak/:env/token", asyncMiddleware(async (req, res, next) => {
             },
             data: "grant_type=client_credentials"
         });
+        res.set("Content-Type", "application/json");
         res.json(tokenResponse.data);
     } catch (e) {
         next(e)
     }
-}));
+});
 
-app.post('/log', (req, res) => {
+app.post('/log', [keycloak.protect(), (req, res) => {
     const logStatements = req.body;
     logStatements.forEach((log) => {
         logger.log(log);
     });
     res.sendStatus(200);
-});
+}]);
 
 const respond = (req, res) => {
     res.send('OK');

@@ -9,9 +9,16 @@ import jwt_decode from 'jwt-decode';
 import useLogger from "../logging/useLogger";
 
 
-const getToken = async (envContext) => {
-    const tokenResponse = await axios.get(`/formio/${envContext.id}/token`);
-    return tokenResponse.headers['x-jwt-token'];
+const getFormioToken = async (envContext, keycloakToken) => {
+    const tokenResponse = await axios({
+        url: `/formio/${envContext.id}/token`,
+        method: 'GET',
+        headers: {
+            "Authorization": `Bearer ${keycloakToken}`,
+            "Content-Type": "application/json"
+        }
+    });
+    return tokenResponse.data['x-jwt-token'];
 };
 
 const configureAxios = async (envContext, config, keycloak) => {
@@ -25,11 +32,11 @@ const configureAxios = async (envContext, config, keycloak) => {
     const jwtTokenFromSecureLS = secureLS.get("FORMIO_TOKEN");
     let formioToken;
     if (!jwtTokenFromSecureLS) {
-        formioToken = await getToken(envContext);
+        formioToken = await getFormioToken(envContext, token);
         secureLS.set("FORMIO_TOKEN", formioToken);
     } else {
         if (jwt_decode(jwtTokenFromSecureLS).exp < new Date().getTime() / 1000) {
-            formioToken = await getToken(envContext);
+            formioToken = await getFormioToken(envContext, token);
             secureLS.set("FORMIO_TOKEN", formioToken);
         } else {
             formioToken = jwtTokenFromSecureLS;
