@@ -24,7 +24,7 @@ const useEnvContext = () => {
     };
 
     const changeContextById = (id) => {
-        const env = _.find(environments, {id: id});
+        const env = getEnvDetails(id);
         changeContext(env);
     };
 
@@ -35,14 +35,24 @@ const useEnvContext = () => {
         clearLocalStorage();
     };
 
-    const envContext = state.environment ? state.environment : _.find(environments, {id: secureLS.get("ENVIRONMENT")});
+    const getEnvDetails = (id) => {
+        return _.find(environments, {id: id});
+    };
+
+    const availableEnvironments = (env) => {
+        return _.filter(environments, (environment) => environment.id !== env);
+    };
+
+    const envContext = state.environment ? state.environment : getEnvDetails(secureLS.get("ENVIRONMENT"));
 
     return {
         changeContext,
         clearEnvContext,
         envContext,
         clearLocalStorage,
-        changeContextById
+        changeContextById,
+        availableEnvironments,
+        getEnvDetails
     }
 };
 

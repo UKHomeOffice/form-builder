@@ -39,7 +39,8 @@ const FormList = ({env}) => {
         handleEditForm,
         handleAccordionClick,
         download,
-        downloadFormState
+        downloadFormState,
+        handlePromotion
     } = useGetForms(env);
 
     const {t} = useTranslation();
@@ -157,6 +158,9 @@ const FormList = ({env}) => {
                                                 <Button.Or/>
                                                 <Button primary
                                                         onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
+                                                <Button.Or/>
+                                                <Button secondary
+                                                        onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button>
                                             </Button.Group>
                                         </Table.Cell>
                                     </Table.Row>

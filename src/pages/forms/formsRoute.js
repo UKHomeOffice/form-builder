@@ -20,5 +20,7 @@ export default mount({
     })),
     '/:env/create': lazy(() => import('../forms/create/createFormRoutes')),
     '/:env/:formId/edit': lazy(() => import('../forms/edit/editFormRoutes')),
-    '/:env/:formId/preview': lazy(() => import('../forms/preview/previewFormRoutes'))
+    '/:env/:formId/preview': lazy(() => import('../forms/preview/previewFormRoutes')),
+    '/:env/:formId/promote': lazy(() => import('../forms/promote/formPromotionRoutes'))
+
 });

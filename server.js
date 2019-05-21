@@ -110,6 +110,7 @@ app.get("/keycloak/:env/token",  keycloak.protect(), async (req, res, next) => {
         res.set("Content-Type", "application/json");
         res.json(tokenResponse.data);
     } catch (e) {
+        logger.error(e);
         next(e)
     }
 });

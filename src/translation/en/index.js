@@ -45,6 +45,15 @@ const messages = {
             "failed": "Download failed",
             "failed-message" : "Please try again"
         },
+        "promote" : {
+            "confirm" : "Confirm form promotion",
+            "header" : "Form promotion",
+            "label": "Promote",
+            "environment" : "Promote to {{env}}",
+            "previous" : "Previous",
+            "next" : "Next",
+            "promote-action" : "Promote"
+        },
         "create": {
             "file-upload" : {
                 "no-form-content" : "No form content found"

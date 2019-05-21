@@ -243,6 +243,10 @@ const useGetForms = (env) => {
         }));
     };
 
+    const handlePromotion = (form) => {
+        navigation.navigate(`/forms/${envContext.id}/${form._id}/promote`, {replace: true});
+    };
+
     return {
         handleSort,
         navigation,
@@ -256,7 +260,8 @@ const useGetForms = (env) => {
         handleEditForm,
         handleAccordionClick,
         download,
-        downloadFormState
+        downloadFormState,
+        handlePromotion
     }
 };
 

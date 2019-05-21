@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Container, Divider, Header, Icon, Message, Placeholder, Segment} from "semantic-ui-react";
+import {Container, Divider, Grid, Header, Icon, Message, Placeholder} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 import ReactJson from "react-json-view";
@@ -11,27 +11,35 @@ Formio.Templates.framework = 'semantic';
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
     return <Container>
-        <Message icon
-                 warning>
-            <Icon name='exclamation circle'/>
-            <Message.Content>
-                <Message.Header>{t('form.preview.submission-warning-title')}</Message.Header>
-                {t('form.preview.submission-warning-description')}
-            </Message.Content>
-        </Message>
-        <Divider hidden/>
-        <Segment>
-            {form ? <Header
-                as='h2'
-                content={form.title ? form.title : 'No form title'}
-                subheader={form.name ? form.name : 'No form name'}
-                dividing
-            /> : null}
-            <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
-                              previewSubmission={(submission) => {
-                                  handlePreview(submission)
-                              }}/>
-        </Segment>
+        <Grid>
+            <Grid.Row>
+                <Grid.Column>
+                    <Message icon
+                             warning>
+                        <Icon name='exclamation circle'/>
+                        <Message.Content>
+                            <Message.Header>{t('form.preview.submission-warning-title')}</Message.Header>
+                            {t('form.preview.submission-warning-description')}
+                        </Message.Content>
+                    </Message>
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column>
+                    {form ? <Header
+                        as='h2'
+                        content={form.title ? form.title : 'No form title'}
+                        subheader={form.name ? form.name : 'No form name'}
+                        dividing
+                    /> : null}
+                    <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
+                                      previewSubmission={(submission) => {
+                                          handlePreview(submission)
+                                      }}/>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+
     </Container>
 };
 
