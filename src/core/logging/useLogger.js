@@ -1,9 +1,12 @@
 import {useKeycloak} from "react-keycloak";
 import axios from "axios";
+import {useCurrentRoute} from "react-navi";
+import useEnvContext from "../context/useEnvContext";
 
 const useLogger = () => {
     const [keycloak] = useKeycloak();
-
+    const route = useCurrentRoute();
+    const {envContext} = useEnvContext();
     const createInstance = () => {
         const loggingInstance = axios.create();
         loggingInstance.interceptors.request.use(async (config) => {
@@ -24,7 +27,13 @@ const useLogger = () => {
 
     const log = (loggingStatements) => {
         loggingStatements.forEach((log) => {
-            log['user'] = keycloak.tokenParsed.email
+            log['user'] = keycloak.tokenParsed.email;
+            log['path'] = route.url.pathname;
+            log['envContext'] = envContext ? {
+                id: envContext.id,
+                url: envContext.url,
+                label: envContext.label
+            }: null;
         });
         loggingInstance.post("/log", loggingStatements);
     };

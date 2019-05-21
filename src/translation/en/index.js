@@ -46,13 +46,16 @@ const messages = {
             "failed-message" : "Please try again"
         },
         "promote" : {
+            "promoting-label": "Promoting form...",
             "confirm" : "Confirm form promotion",
             "header" : "Form promotion",
             "label": "Promote",
             "environment" : "Promote to {{env}}",
             "previous" : "Previous",
             "next" : "Next",
-            "promote-action" : "Promote"
+            "promote-action" : "Promote",
+            "successful-title" : "{{formName}} successfully promoted",
+            "successful-description": "{{formName}} has been successfully promoted to {{env}}"
         },
         "create": {
             "file-upload" : {

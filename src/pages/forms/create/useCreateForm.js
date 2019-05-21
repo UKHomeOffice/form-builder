@@ -7,6 +7,7 @@ import useEnvContext from "../../../core/context/useEnvContext";
 import {toast} from "react-semantic-toasts";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import useLogger from "../../../core/logging/useLogger";
+import createForm from "../../../core/form/createForm";
 
 const useCreateForm = (formContent = null) => {
 
@@ -36,39 +37,7 @@ const useCreateForm = (formContent = null) => {
 
     const formName = form.data.name;
     const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
-            const anonymous = await axios({
-                method: 'GET',
-                url: `${envContext.url}/role?machineName=anonymous`,
-            });
-            form.data['submissionAccess'] = submissionAccess(anonymous.data[0]._id);
-
-            const response = await axios({
-                url: `${envContext.url}/form`,
-                method: 'POST',
-                data: form.data
-            });
-
-            const formId = response.data._id;
-            const actions = await axios({
-                url: `${envContext.url}/form/${formId}/action`,
-                method: 'GET'
-            });
-
-            const deleteAction =(action) => {
-                return axios({
-                    url: `${envContext.url}/form/${response.data._id}/action/${action._id}`,
-                    method: 'DELETE'
-                });
-            };
-
-            if (actions.data.length >= 1) {
-                await Promise.all(actions.data.map((action) => deleteAction(action)));
-                log([{
-                    message: `Deleted actions for ${formId}`,
-                    level: 'info'
-                }]);
-            }
-            return response;
+        return await createForm(axios, envContext, form.data, submissionAccess, log);
         }, [{
             message: `Creating form ${formName}`,
             level: 'info'

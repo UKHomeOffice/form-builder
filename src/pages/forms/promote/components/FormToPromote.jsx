@@ -2,7 +2,6 @@ import React from 'react';
 import {Button, Container, Grid, Header, Icon} from "semantic-ui-react";
 import {Form, Formio} from 'react-formio';
 import "formiojs/dist/formio.full.css";
-import {Message} from "semantic-ui-react/dist/commonjs/collections/Message";
 import {useTranslation} from "react-i18next";
 
 Formio.Templates.framework = 'semantic';

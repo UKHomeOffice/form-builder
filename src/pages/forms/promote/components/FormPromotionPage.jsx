@@ -8,19 +8,14 @@ import Confirm from "./Confirm";
 import FormToPromote from "./FormToPromote";
 
 const FormPromotionPage = ({formId}) => {
-    const {status, form, setValue, backToForms, isDisabled, promoteState, promote} = usePromotion(formId);
+    const {fetchState, form, setValue, backToForms, isDisabled, status, execute} = usePromotion(formId);
     const {t} = useTranslation();
 
-    if (!status || status === EXECUTING ) {
+    if (!fetchState.status || fetchState.status === EXECUTING ) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
         </div>
     }
 
-
-    if (promoteState && promoteState.status === EXECUTING) {
-        return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
-        </div>
-    }
 
     const toRender = () => {
         switch (form.step) {
@@ -33,7 +28,7 @@ const FormPromotionPage = ({formId}) => {
                                     isDisabled={isDisabled}/>;
             case 'confirm' :
                 return <Confirm form={form} backToForms={backToForms}
-                                setValue={setValue} promote={promote}/>;
+                                setValue={setValue} promote={execute} status={status}/>;
             default:
                 return null;
         }

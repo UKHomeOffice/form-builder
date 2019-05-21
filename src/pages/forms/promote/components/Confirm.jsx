@@ -3,8 +3,9 @@ import {Button, Container, Divider, Grid, Header, Icon, Label, Table} from "sema
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import _ from 'lodash';
+import {EXECUTING} from "../../../../core/api/actionTypes";
 
-const Confirm = ({form, setValue, backToForms, promote}) => {
+const Confirm = ({form, setValue, backToForms, promote, status}) => {
     const {t} = useTranslation();
     const {getEnvDetails} = useEnvContext();
     if (!form.data) {
@@ -74,10 +75,8 @@ const Confirm = ({form, setValue, backToForms, promote}) => {
                         {t('form.cancel.label')}
                     </Button>
                     <Button size='large' positive onClick={() => {
-                        promote();
-                    }}>
-                        {t('form.promote.promote-action')}
-                    </Button>
+                        promote()
+                    }}  loading={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
