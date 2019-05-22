@@ -1,6 +1,6 @@
 import React from 'react';
-import {Container, Divider, Grid, Header, Icon, Loader, Step} from 'semantic-ui-react'
-import {EXECUTING} from "../../../../core/api/actionTypes";
+import {Container, Divider, Grid, Header, Icon, Loader, Message, Step} from 'semantic-ui-react'
+import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import usePromotion from "../usePromotion";
 import {useTranslation} from "react-i18next";
 import Environment from "./Environment";
@@ -8,14 +8,13 @@ import Confirm from "./Confirm";
 import FormToPromote from "./FormToPromote";
 
 const FormPromotionPage = ({formId}) => {
-    const {fetchState, form, setValue, backToForms, isDisabled, status, execute} = usePromotion(formId);
+    const {fetchState, form, setValue, backToForms, isDisabled, status, execute, response} = usePromotion(formId);
     const {t} = useTranslation();
 
-    if (!fetchState.status || fetchState.status === EXECUTING ) {
+    if (!fetchState.status || fetchState.status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
         </div>
     }
-
 
     const toRender = () => {
         switch (form.step) {
@@ -57,12 +56,13 @@ const FormPromotionPage = ({formId}) => {
                 <Step.Title>Environment</Step.Title>
             </Step.Content>
         </Step>
-        <Step id="confirm" link disabled={isDisabled()} active={form.step === "confirm"} onClick={(event, titleProps) => {
-            setValue(form => ({
-                ...form,
-                step: titleProps.id
-            }));
-        }}>
+        <Step id="confirm" link disabled={isDisabled()} active={form.step === "confirm"}
+              onClick={(event, titleProps) => {
+                  setValue(form => ({
+                      ...form,
+                      step: titleProps.id
+                  }));
+              }}>
             <Icon name='info'/>
             <Step.Content>
                 <Step.Title>Confirm </Step.Title>
@@ -71,6 +71,20 @@ const FormPromotionPage = ({formId}) => {
     </Step.Group>;
 
     return <Grid>
+        <Grid.Row>
+            <Grid.Column>
+                <Container>{status === ERROR ? <Message icon negative>
+                    <Icon name='warning circle'/>
+                    <Message.Content>
+                        <Message.Header>{t('error.general')}</Message.Header>
+                        {t('form.promote.failed-to-promote', {
+                            formName: form.data.name,
+                            error: JSON.stringify(response.data)
+                        })}
+                    </Message.Content>
+                </Message> : null}</Container>
+            </Grid.Column>
+        </Grid.Row>
         <Grid.Row>
             <Grid.Column>
                 <Divider horizontal>

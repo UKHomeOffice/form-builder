@@ -55,7 +55,8 @@ const messages = {
             "next" : "Next",
             "promote-action" : "Promote",
             "successful-title" : "{{formName}} successfully promoted",
-            "successful-description": "{{formName}} has been successfully promoted to {{env}}"
+            "successful-description": "{{formName}} has been successfully promoted to {{env}}",
+            "failed-to-promote" : "Failed to promote {{formName}} due to {{error}}"
         },
         "create": {
             "file-upload" : {

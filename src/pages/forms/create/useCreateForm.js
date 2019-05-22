@@ -37,7 +37,15 @@ const useCreateForm = (formContent = null) => {
 
     const formName = form.data.name;
     const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
-        return await createForm(axios, envContext, form.data, submissionAccess, log);
+            try {
+                return await createForm(axios, envContext, form.data, submissionAccess, log);
+            } catch (error) {
+               throw {
+                   response: {
+                       data: error.toString()
+                   }
+               }
+            }
         }, [{
             message: `Creating form ${formName}`,
             level: 'info'

@@ -30,30 +30,39 @@ const usePromotion = (formId) => {
     );
 
     const [{status, response}, execute] = useMultipleApiCallbackRequest(async (axios) => {
-        const envDetails = getEnvDetails(form.environment);
-        const formResponse = await axios({
-            method: 'GET',
-            url: `${envDetails.url}/form?name=${form.data.name}&path=${form.data.path}&limit=1`
-        });
-        if (formResponse.data.length === 0) {
-            log([{
-                message: `Form ${form.data.name} does not exists in ${envDetails.id}, so creating`,
-                level: 'info'
-            }]);
-            return await createForm(axios, envDetails, form.data, submissionAccess, log);
-        } else {
-            log([{
-                message: `Form ${form.data.name} does exists in ${envDetails.id}, so updating`,
-                level: 'info'
-            }]);
-            const formLoaded = formResponse.data[0];
-            delete formLoaded.components;
-            formLoaded['components'] = form.data.components;
-            return await axios({
-                "method": "PUT",
-                "url": `${envContext.url}/form/${formLoaded._id}`,
-                "data": formLoaded
+        try {
+            const envDetails = getEnvDetails(form.environment);
+            const formResponse = await axios({
+                method: 'GET',
+                url: `${envDetails.url}/forasdasdm?name=${form.data.name}&path=${form.data.path}&limit=1`
             });
+            if (formResponse.data.length === 0) {
+                log([{
+                    message: `Form ${form.data.name} does not exists in ${envDetails.id}, so creating`,
+                    level: 'info'
+                }]);
+                return await createForm(axios, envDetails, form.data, submissionAccess, log);
+            } else {
+                log([{
+                    message: `Form ${form.data.name} does exists in ${envDetails.id}, so updating`,
+                    level: 'info'
+                }]);
+                const formLoaded = formResponse.data[0];
+                delete formLoaded.components;
+                formLoaded['components'] = form.data.components;
+                return await axios({
+                    "method": "PUT",
+                    "url": `${envContext.url}/form/${formLoaded._id}`,
+                    "data": formLoaded
+                });
+            }
+        } catch (error) {
+            throw {
+                response: {
+                    data: error.toString()
+                },
+                exception: error
+            }
         }
     }, [{
         message: `Initiating form ${form.data ? form.data.name : ''} promotion to ${form.environment}`,
