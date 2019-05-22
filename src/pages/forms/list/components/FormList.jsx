@@ -152,9 +152,9 @@ const FormList = ({env}) => {
                                             <Button.Group>
                                                 <DeleteFormButton form={form}
                                                                   onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form._id)}/>
-                                                <Button.Or/>
-                                                <Button data-cy="edit-form" positive
-                                                        onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>
+                                                {envContext.editable ? <React.Fragment><Button.Or/>
+                                                    <Button data-cy="edit-form" positive
+                                                            onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button></React.Fragment> : null}
                                                 <Button.Or/>
                                                 <Button primary data-cy="preview-form"
                                                         onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
@@ -189,10 +189,11 @@ const FormList = ({env}) => {
                                                     onPageChange={handlePaginationChange}/>
                                     </Table.HeaderCell> : <Table.HeaderCell/>}
                                     <Table.HeaderCell colSpan={2}>
-                                        <Button floated='right' icon labelPosition='left' primary size='small'
-                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)} data-cy="create-form">
+                                        {envContext.editable ? <Button floated='right' icon labelPosition='left' primary size='small'
+                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
+                                                data-cy="create-form">
                                             <Icon name='wpforms'/>{t('form.create.label')}
-                                        </Button>
+                                        </Button> : null}
                                     </Table.HeaderCell>
                                 </Table.Row>
                             </Table.Footer>

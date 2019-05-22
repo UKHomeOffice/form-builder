@@ -34,7 +34,7 @@ const usePromotion = (formId) => {
             const envDetails = getEnvDetails(form.environment);
             const formResponse = await axios({
                 method: 'GET',
-                url: `${envDetails.url}/forasdasdm?name=${form.data.name}&path=${form.data.path}&limit=1`
+                url: `${envDetails.url}/form?name=${form.data.name}&path=${form.data.path}&limit=1`
             });
             if (formResponse.data.length === 0) {
                 log([{
