@@ -156,10 +156,10 @@ const FormList = ({env}) => {
                                                 <Button data-cy="edit-form" positive
                                                         onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>
                                                 <Button.Or/>
-                                                <Button primary
+                                                <Button primary data-cy="preview-form"
                                                         onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
                                                 <Button.Or/>
-                                                <Button secondary
+                                                <Button secondary data-cy="promote-form"
                                                         onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button>
                                             </Button.Group>
                                         </Table.Cell>
