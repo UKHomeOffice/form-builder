@@ -46,8 +46,7 @@
           "password": "secret"
         }
       },
-      "editable": false,
-      "promotion-preconditions": ["dev"]
+      "editable": false
     },
     {
       "id": "staging",
@@ -60,8 +59,7 @@
           "password": "secret"
         }
       },
-      "editable": false,
-      "promotion-preconditions": ["dev", "demo"]
+      "editable": false
     },
     {
       "id": "prod",
