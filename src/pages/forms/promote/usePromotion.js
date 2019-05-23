@@ -8,10 +8,14 @@ import createForm from "../../../core/form/createForm";
 import useLogger from "../../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
+import {KeycloakTokenProvider} from "../../../core/KeycloakTokenProvider";
+import {useKeycloak} from "react-keycloak";
+import FormioTokenProvider from "../../../core/form/FormioTokenProvider";
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
     const navigation = useNavigation();
+    const [keycloak] = useKeycloak();
     const {getEnvDetails, envContext} = useEnvContext();
     const {t} = useTranslation();
     const [form, setValue] = useState({
@@ -23,6 +27,9 @@ const usePromotion = (formId) => {
     });
     const {submissionAccess} = useCommonFormUtils();
 
+    const keycloakTokenProvider = new KeycloakTokenProvider();
+    const formioTokenProvider = new FormioTokenProvider();
+
     const [fetchState, makeRequest] = useApiRequest(
         `/form/${formId}`, {
             verb: 'get', params: {}
@@ -31,30 +38,50 @@ const usePromotion = (formId) => {
 
     const [{status, response}, execute] = useMultipleApiCallbackRequest(async (axios) => {
         try {
-            const envDetails = getEnvDetails(form.environment);
+            const promotionEnvironment = getEnvDetails(form.environment);
+            const token = await keycloakTokenProvider.fetchKeycloakToken(promotionEnvironment, keycloak.token);
+            const formioToken = await formioTokenProvider.fetchToken(promotionEnvironment, keycloak.token);
+
+            const headers = {
+                "x-promote-kc-token": `Bearer ${token}`,
+                "x-promote-formio-token" : formioToken
+            };
             const formResponse = await axios({
                 method: 'GET',
-                url: `${envDetails.url}/form?name=${form.data.name}&path=${form.data.path}&limit=1`
+                headers: headers,
+                url: `${promotionEnvironment.url}/form?name=${form.data.name}&path=${form.data.path}&limit=1`
             });
             if (formResponse.data.length === 0) {
                 log([{
-                    message: `Form ${form.data.name} does not exists in ${envDetails.id}, so creating`,
+                    message: `Form ${form.data.name} does not exists in ${promotionEnvironment.id}, so creating`,
                     level: 'info'
                 }]);
-                return await createForm(axios, envDetails, form.data, submissionAccess, log);
+                return await createForm(axios, promotionEnvironment, form.data, submissionAccess, log, headers);
             } else {
                 log([{
-                    message: `Form ${form.data.name} does exists in ${envDetails.id}, so updating`,
+                    message: `Form ${form.data.name} does exists in ${promotionEnvironment.id}, so updating`,
                     level: 'info'
                 }]);
                 const formLoaded = formResponse.data[0];
                 delete formLoaded.components;
                 formLoaded['components'] = form.data.components;
-                return await axios({
-                    "method": "PUT",
-                    "url": `${envContext.url}/form/${formLoaded._id}`,
-                    "data": formLoaded
-                });
+
+                if (promotionEnvironment.approvalUrl) {
+                    return await axios({
+                        "method": "POST",
+                        "url": `${promotionEnvironment.approvalUrl}`,
+                        "data": formLoaded,
+                        headers: headers,
+                    });
+                } else {
+                    return await axios({
+                        "method": "PUT",
+                        "url": `${promotionEnvironment.url}/form/${formLoaded._id}`,
+                        "data": formLoaded,
+                        headers: headers,
+                    });
+                }
+
             }
         } catch (error) {
             throw {
@@ -62,7 +89,7 @@ const usePromotion = (formId) => {
                     data: error.toString()
                 },
                 exception: error
-            }
+            };
         }
     }, [{
         message: `Initiating form ${form.data ? form.data.name : ''} promotion to ${form.environment}`,
@@ -87,12 +114,19 @@ const usePromotion = (formId) => {
     };
 
     const successCallback = () => {
+        const promotionEnvironment = getEnvDetails(form.environment);
         navigation.navigate(`/forms/${envContext.id}`, {replace: true});
         toast({
             type: 'success',
             icon: 'check circle',
-            title: t('form.promote.successful-title', {formName: form.data.name}),
-            description: t('form.promote.successful-description', {formName: form.data.name, env: form.environment}),
+            title: promotionEnvironment.approvalUrl ? t('form.promote.approval.successful-title', {formName: form.data.name}) : t('form.promote.successful-title', {
+                formName: form.data.name,
+                env: promotionEnvironment.label
+            }),
+            description: promotionEnvironment.approvalUrl ? t('form.promote.approval.successful-description', {
+                formName: form.data.name,
+                env: promotionEnvironment.label
+            }) : t('form.promote.successful-description', {formName: form.data.name, env: promotionEnvironment.label}),
             animation: 'scale',
             time: 10000
         });

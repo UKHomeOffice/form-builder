@@ -1,5 +1,5 @@
 import React from 'react';
-import {lazy, map, mount, route, redirect} from 'navi'
+import {lazy, map, mount, redirect, route} from 'navi'
 import FormList from "./list/components/FormList";
 
 export const withEnvContext = (matcher) => {
@@ -12,11 +12,9 @@ export const withEnvContext = (matcher) => {
 };
 
 export default mount({
-    '/:env': withEnvContext(route(req => {
-        return {
-            "title": "Forms",
-            "view": <FormList env={req.params.env}/>
-        };
+    '/:env': withEnvContext(route({
+        "title": "Forms",
+        "view": <FormList/>
     })),
     '/:env/create': lazy(() => import('../forms/create/createFormRoutes')),
     '/:env/:formId/edit': lazy(() => import('../forms/edit/editFormRoutes')),

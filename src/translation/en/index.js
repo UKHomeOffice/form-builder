@@ -10,6 +10,9 @@ const messages = {
         "heading": {
             "title" : "Dashboard",
             "sub-heading" : "Central form management tool"
+        },
+        "failure" : {
+            "reports" : "Failed to get report data from {{url}} due to {{error}}"
         }
     },
     "environment": {
@@ -56,7 +59,11 @@ const messages = {
             "promote-action" : "Promote",
             "successful-title" : "{{formName}} successfully promoted",
             "successful-description": "{{formName}} has been successfully promoted to {{env}}",
-            "failed-to-promote" : "Failed to promote {{formName}} due to {{error}}"
+            "failed-to-promote" : "Failed to promote {{formName}} due to {{error}}",
+            "approval": {
+                "successful-title" : "{{formName}} successfully submitted for approval",
+                "successful-description": "{{formName}} has been successfully sent for approval. Form to be promoted to {{env}}",
+            }
         },
         "create": {
             "file-upload" : {
@@ -135,7 +142,8 @@ const messages = {
             "failure" : {
                 "form-load": "Failed to load form due to {{error}}",
                 "missing-form" : "Form {{formId}} does not exist",
-                "unknown-error": "Failed to load form due to connectivity issues"
+                "unknown-error": "Failed to load form due to connectivity issues",
+                "non-editable-environment" : "You cannot edit this form directly. Use promotion process"
             },
             "form-type" : {
                 "select": "Select form type",

@@ -11,13 +11,14 @@ const useEnvContext = () => {
     const environments = config.get('environments');
 
     const clearLocalStorage = () => {
-        secureLS.remove("FORMIO_TOKEN");
-        secureLS.remove("ENVIRONMENT");
+        secureLS.removeAll();
     };
 
     const changeContext = (environment) => {
-        clearLocalStorage();
-        secureLS.set("ENVIRONMENT", environment.id);
+        const envId = environment.id;
+        if (envId) {
+            secureLS.set("ENVIRONMENT", envId);
+        }
         setState(state => ({
             ...state, environment: environment
         }));
@@ -29,10 +30,10 @@ const useEnvContext = () => {
     };
 
     const clearEnvContext = () => {
+        secureLS.remove("ENVIRONMENT");
         setState(state => ({
             ...state, environment: null
         }));
-        clearLocalStorage();
     };
 
     const getEnvDetails = (id) => {

@@ -31,6 +31,7 @@ describe('Create new form with correct configuration', () => {
         cy.get("button[ref=saveButton]").click();
         cy.get('[data-cy=persist-form]').click();
 
+        cy.wait(1000);
 
         cy.request({
             method: 'POST', url: `http://formio.lodev.xyz/user/login`,
@@ -64,8 +65,8 @@ describe('Create new form with correct configuration', () => {
                     },
                     url: `http://formio.lodev.xyz/form/${formId}/action`
                 }).then((actionsResponse) => {
-                    //validate no actions associated with form
                     expect(actionsResponse.status).to.eq(200);
+                    console.log(JSON.stringify(actionsResponse.body));
                     expect(actionsResponse.body.length).to.eq(0);
                 });
             });

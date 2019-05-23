@@ -27,8 +27,7 @@ const keycloak = new Keycloak({
 });
 
 const clearSecureLocalStorage = () => {
-    secureLS.remove("FORMIO_TOKEN");
-    secureLS.remove("ENVIRONMENT");
+    secureLS.removeAll();
 };
 
 export const App = () => (

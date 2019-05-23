@@ -25,7 +25,7 @@ import DeleteFormButton from "../../common/components/DeleteFormButton";
 import _ from 'lodash';
 import moment from "moment";
 
-const FormList = ({env}) => {
+const FormList = () => {
     const {
         handleSort,
         forms,
@@ -41,7 +41,7 @@ const FormList = ({env}) => {
         download,
         downloadFormState,
         handlePromotion
-    } = useGetForms(env);
+    } = useGetForms();
 
     const {t} = useTranslation();
     const {envContext} = useEnvContext();

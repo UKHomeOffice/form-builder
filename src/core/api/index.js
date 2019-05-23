@@ -3,46 +3,32 @@ import axios from 'axios';
 import reducer, {initialState} from './reducer';
 import {error, executing, success} from './actionCreators';
 import {useKeycloak} from "react-keycloak";
-import secureLS from '../storage';
 import useEnvContext from "../context/useEnvContext";
-import jwt_decode from 'jwt-decode';
 import useLogger from "../logging/useLogger";
+import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
+import FormioTokenProvider from "../form/FormioTokenProvider";
+
+const keycloakTokenProvider = new KeycloakTokenProvider();
+const formioTokenProvider = new FormioTokenProvider();
 
 
-const getFormioToken = async (envContext, keycloakToken) => {
-    const tokenResponse = await axios({
-        url: `/formio/${envContext.id}/token`,
-        method: 'GET',
-        headers: {
-            "Authorization": `Bearer ${keycloakToken}`,
-            "Content-Type": "application/json"
-        }
-    });
-    return tokenResponse.data['x-jwt-token'];
-};
-
-const configureAxios = async (envContext, config, keycloak) => {
-    const token = keycloak.token;
-    config.headers['accept'] = 'application/json';
-    config.headers['content-type'] = 'application/json';
-    if (token != null) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    const jwtTokenFromSecureLS = secureLS.get("FORMIO_TOKEN");
-    let formioToken;
-    if (!jwtTokenFromSecureLS) {
-        formioToken = await getFormioToken(envContext, token);
-        secureLS.set("FORMIO_TOKEN", formioToken);
+const configureAxios = async (envContext, config, token) => {
+    config.headers['Accept'] = 'application/json';
+    config.headers['Content-Type'] = 'application/json';
+    if (config.headers['x-promote-kc-token']) {
+        config.headers.Authorization = config.headers['x-promote-kc-token'];
+        delete config.headers['x-promote-kc-token'];
     } else {
-        if (jwt_decode(jwtTokenFromSecureLS).exp < new Date().getTime() / 1000) {
-            formioToken = await getFormioToken(envContext, token);
-            secureLS.set("FORMIO_TOKEN", formioToken);
-        } else {
-            formioToken = jwtTokenFromSecureLS;
-        }
+        const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(envContext, token);
+        config.headers['Authorization'] = `Bearer ${jwtToken}`;
     }
-    config.headers['x-jwt-token'] = formioToken;
+
+    if (config.headers['x-promote-formio-token']) {
+        config.headers['x-jwt-token'] = config.headers['x-promote-formio-token'];
+        delete config.headers['x-promote-formio-token'];
+    } else {
+        config.headers['x-jwt-token'] = await formioTokenProvider.fetchToken(envContext, token);
+    }
     return Promise.resolve(config);
 };
 
@@ -54,7 +40,7 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const {envContext} = useEnvContext();
 
 
-    instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak),
+    instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak.token),
         (err) => {
             return Promise.reject(err);
         });
@@ -81,7 +67,7 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
     const {log} = useLogger();
 
     instance.interceptors.request.use(async (config) =>
-            configureAxios(envContext, config, keycloak),
+            configureAxios(envContext, config, keycloak.token),
         (err) => {
             return Promise.reject(err);
         });

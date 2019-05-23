@@ -1,3 +1,10 @@
+const Chance = require('chance');
+
+const username = 'dev1@lodev.xyz';
+const password = 'secret';
+
+const chance = new Chance();
+
 describe("Promote form", () => {
    it('can promote a form from one environment to another', () => {
       cy.visit("/");
@@ -20,12 +27,13 @@ describe("Promote form", () => {
       cy.url().should('include', '/forms/local/create/builder');
 
       const formTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
+      cy.setCookie("formTitle", formTitle);
+
       cy.get('input[name=title]').type(formTitle);
       cy.get("[data-type=textfield]").trigger("mousedown", { which: 1 })
       cy.get(".drag-container").trigger("mousemove").trigger("mouseup");
       cy.get("button[ref=saveButton]").click();
       cy.get('[data-cy=persist-form]').click();
-
 
 
    });

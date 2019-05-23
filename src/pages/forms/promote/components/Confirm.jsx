@@ -76,7 +76,7 @@ const Confirm = ({form, setValue, backToForms, promote, status}) => {
                         <Button size='large' positive onClick={() => {
                             promote()
                         }}
-                                loading={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
+                                loading={status === EXECUTING} disabled={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

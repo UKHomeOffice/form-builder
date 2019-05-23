@@ -9,9 +9,9 @@ import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 
-const useGetForms = (env) => {
+const useGetForms = () => {
     const navigation = useNavigation();
-    const {envContext, changeContextById} = useEnvContext();
+    const {envContext} = useEnvContext();
     const {t} = useTranslation();
     const [forms, setValues] = useState({
         column: null,
@@ -82,9 +82,6 @@ const useGetForms = (env) => {
 
     useEffect(() => {
         savedCallback.current = () => {
-            if (envContext && envContext._id !== env) {
-                changeContextById(env);
-            }
             setValues(forms => ({
                 ...forms,
                 data: null
@@ -130,7 +127,7 @@ const useGetForms = (env) => {
 
     useEffect(() => {
         savedCallback.current();
-    }, [forms.activePage, forms.searchTitle, forms.refresh]);
+    }, [forms.activePage, forms.searchTitle, forms.refresh, envContext]);
 
 
     useEffect(() => {
