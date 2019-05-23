@@ -4,15 +4,13 @@ import axios from "axios";
 import _ from 'lodash';
 import config from "react-global-configuration"
 import {KeycloakTokenProvider} from "../../core/KeycloakTokenProvider";
-import {useKeycloak} from "react-keycloak";
 import useLogger from "../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
-
+import secureLS from '../../core/storage';
 
 const useReports = () => {
     const keycloakProvider = new KeycloakTokenProvider();
-    const [keycloak] = useKeycloak();
     const {t} = useTranslation();
     const {log} = useLogger();
     const [reports, setReports] = useState({
@@ -28,7 +26,8 @@ const useReports = () => {
 
     instance.interceptors.request.use(async (config) => {
             const environment = config.headers['x-environment'];
-            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, keycloak.token);
+            const token = secureLS.get("jwt-token");
+            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, token);
             config.headers['Authorization'] = `Bearer ${jwtToken}`;
             delete config.headers['x-environment'];
             return Promise.resolve(config);

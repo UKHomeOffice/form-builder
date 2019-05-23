@@ -37,6 +37,10 @@ export const App = () => (
                               clearSecureLocalStorage();
                           }
                       }}
+                      onTokens={(tokens) => {
+                          console.log("token refreshed");
+                          secureLS.set("jwt-token", tokens.token);
+                      }}
                       initConfig={{
                           onLoad: 'login-required'
                       }} LoadingComponent={() => <Loader active inline='centered' size='large'>Loading</Loader>}>
