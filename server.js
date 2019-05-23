@@ -14,15 +14,8 @@ const replace = require('replace-in-file');
 const Keycloak = require('keycloak-connect');
 const cors = require('cors');
 
-
-const appConfig = JSON.parse(fs.readFileSync("/config/appConfig.json"));
-
-const sanitizedConfig = _.cloneDeep(appConfig);
-sanitizedConfig.environments.forEach((environment) => {
-    delete environment.service;
-});
-
-const indexPath = path.join(__dirname, 'build', 'index.html');
+const Ajv = require('ajv');
+const ajv = new Ajv({allErrors: true});
 
 const logger = createLogger({
     format: combine(
@@ -35,6 +28,32 @@ const logger = createLogger({
     ],
     exitOnError: false,
 });
+
+
+const schema = fs.readFileSync("./configSchema.json");
+const validate = ajv.compile(JSON.parse(schema));
+
+const appConfig = JSON.parse(fs.readFileSync("/config/appConfig.json"));
+
+
+const valid = validate(appConfig);
+if (valid) {
+    logger.info("Application config schema valid");
+} else {
+    logger.error("Application config schema invalid");
+    validate.errors.forEach((error) => {
+        logger.error(error);
+    });
+    throw new Error("Invalid application config " + ajv.errorsText(validate.errors));
+}
+
+const sanitizedConfig = _.cloneDeep(appConfig);
+sanitizedConfig.environments.forEach((environment) => {
+    delete environment.service;
+});
+
+const indexPath = path.join(__dirname, 'build', 'index.html');
+
 
 
 const processIndex = () => {

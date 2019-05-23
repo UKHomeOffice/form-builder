@@ -1,0 +1,217 @@
+{
+  "required": [
+    "environments",
+    "keycloak"
+  ],
+  "properties": {
+    "environments": {
+      "$id": "#/properties/environments",
+      "type": "array",
+      "title": "The Environments Schema",
+      "items": {
+        "$id": "#/properties/environments/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "id",
+          "label",
+          "url",
+          "description",
+          "service"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#/properties/environments/items/properties/id",
+            "type": "string",
+            "title": "The Id Schema",
+            "default": "",
+            "examples": [
+              "local"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "label": {
+            "$id": "#/properties/environments/items/properties/label",
+            "type": "string",
+            "title": "The Label Schema",
+            "default": "",
+            "examples": [
+              "Local"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "url": {
+            "$id": "#/properties/environments/items/properties/url",
+            "type": "string",
+            "title": "The Url Schema",
+            "default": "",
+            "examples": [
+              "http://formio.lodev.xyz"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "description": {
+            "$id": "#/properties/environments/items/properties/description",
+            "type": "string",
+            "title": "The Description Schema",
+            "default": "",
+            "examples": [
+              "local development environment"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "service": {
+            "$id": "#/properties/environments/items/properties/service",
+            "type": "object",
+            "title": "The Service Schema",
+            "required": [
+              "formio",
+              "keycloak"
+            ],
+            "properties": {
+              "formio": {
+                "$id": "#/properties/environments/items/properties/service/properties/formio",
+                "type": "object",
+                "title": "The Formio Schema",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "$id": "#/properties/environments/items/properties/service/properties/formio/properties/username",
+                    "type": "string",
+                    "title": "The Username Schema",
+                    "default": "",
+                    "examples": [
+                      "me@lodev.xyz"
+                    ],
+                    "pattern": "^(.*)$"
+                  },
+                  "password": {
+                    "$id": "#/properties/environments/items/properties/service/properties/formio/properties/password",
+                    "type": "string",
+                    "title": "The Password Schema",
+                    "default": "",
+                    "examples": [
+                      "secret"
+                    ],
+                    "pattern": "^(.*)$"
+                  }
+                }
+              },
+              "keycloak": {
+                "$id": "#/properties/environments/items/properties/service/properties/keycloak",
+                "type": "object",
+                "title": "The Keycloak Schema",
+                "required": [
+                  "tokenUrl",
+                  "clientId",
+                  "secret"
+                ],
+                "properties": {
+                  "tokenUrl": {
+                    "$id": "#/properties/environments/items/properties/service/properties/keycloak/properties/tokenUrl",
+                    "type": "string",
+                    "title": "The Tokenurl Schema",
+                    "default": "",
+                    "examples": [
+                      "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token"
+                    ],
+                    "pattern": "^(.*)$"
+                  },
+                  "clientId": {
+                    "$id": "#/properties/environments/items/properties/service/properties/keycloak/properties/clientId",
+                    "type": "string",
+                    "title": "The Clientid Schema",
+                    "default": "",
+                    "examples": [
+                      "service-account"
+                    ],
+                    "pattern": "^(.*)$"
+                  },
+                  "secret": {
+                    "$id": "#/properties/environments/items/properties/service/properties/keycloak/properties/secret",
+                    "type": "string",
+                    "title": "The Secret Schema",
+                    "default": "",
+                    "examples": [
+                      "ed-fdf-b-a-eaf"
+                    ],
+                    "pattern": "^(.*)$"
+                  }
+                }
+              }
+            }
+          },
+          "editable": {
+            "$id": "#/properties/environments/items/properties/editable",
+            "type": "boolean",
+            "title": "The Editable Schema",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "variable-replacements": {
+            "$id": "#/properties/environments/items/properties/variable-replacements",
+            "type": "array",
+            "title": "The Variable-replacements Schema",
+            "items": {
+              "$ref" : "#/properties/variable-replacement"
+            }
+          }
+        }
+      }
+    },
+    "variable-replacement" : {
+      "$id": "#/properties/variable-replacement",
+      "type" : "object",
+      "examples" : [
+        {"{$.environmentContext.platformDataUrl}": "http://www.google.co.uk"}
+      ]
+    },
+    "keycloak": {
+      "$id": "#/properties/keycloak",
+      "type": "object",
+      "title": "The Keycloak Schema",
+      "required": [
+        "authUrl",
+        "clientId",
+        "realm"
+      ],
+      "properties": {
+        "authUrl": {
+          "$id": "#/properties/keycloak/properties/authUrl",
+          "type": "string",
+          "title": "The Authurl Schema",
+          "default": "",
+          "examples": [
+            "http://keycloak.lodev.xyz/auth"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "clientId": {
+          "$id": "#/properties/keycloak/properties/clientId",
+          "type": "string",
+          "title": "The Clientid Schema",
+          "default": "",
+          "examples": [
+            "platform-ui"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "realm": {
+          "$id": "#/properties/keycloak/properties/realm",
+          "type": "string",
+          "title": "The Realm Schema",
+          "default": "",
+          "examples": [
+            "dev"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    }
+  }
+}
