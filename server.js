@@ -44,7 +44,8 @@ if (valid) {
     validate.errors.forEach((error) => {
         logger.error(error);
     });
-    throw new Error("Invalid application config " + ajv.errorsText(validate.errors));
+    logger.error("Due to config validation errors application will not start up. Goodbye.");
+    process.exit(0);
 }
 
 const sanitizedConfig = _.cloneDeep(appConfig);
