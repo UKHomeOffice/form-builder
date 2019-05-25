@@ -3,10 +3,8 @@ import {Container, Divider, Grid, Header, Icon, Message, Placeholder} from "sema
 import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 import ReactJson from "react-json-view";
-import {Form, Formio} from 'react-formio';
+import {Form} from 'react-formio';
 import "formiojs/dist/formio.full.css";
-
-Formio.Templates.framework = 'semantic';
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();

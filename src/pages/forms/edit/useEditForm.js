@@ -116,9 +116,9 @@ const useEditForm = (formId) => {
     };
 
     const updateForm = (form) => {
+        editForm.data.components = _.cloneDeep(form.components);
         setValues({
-            ...editForm,
-            data: form
+            ...editForm
         });
     };
 
@@ -147,6 +147,13 @@ const useEditForm = (formId) => {
             || (missing.path || missing.title || missing.name)
             || state.status === EXECUTING;
     };
+    const changeDisplay = (value) => {
+        editForm.data.display = value;
+        setValues({
+            ...editForm
+        });
+    };
+
 
     return {
         status,
@@ -159,7 +166,8 @@ const useEditForm = (formId) => {
         openPreview,
         formInvalid,
         saveRequest,
-        state
+        state,
+        changeDisplay
     }
 };
 

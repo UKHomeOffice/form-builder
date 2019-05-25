@@ -4,10 +4,7 @@ import {EXECUTING} from "../../../../core/api/actionTypes";
 import {FormBuilder, Formio} from 'react-formio';
 import PreviewFormModal from "../../create/components/PreviewFormModal";
 
-Formio.Templates.framework = 'semantic';
-
-
-const FormBuilderComponent = ({   form,
+const FormBuilderComponent = ({ form,
                                   updateField,
                                   messageKeyPrefix,
                                   updateForm,
@@ -18,8 +15,10 @@ const FormBuilderComponent = ({   form,
                                   t,
                                   openPreview,
                                   save,
-                                  formInvalid
+                                  formInvalid,
+                                  changeDisplay
                               }) => {
+    Formio.Templates.framework = 'semantic';
     return <Container>
         <Form className='attached fluid segment'>
             <Form.Group widths='equal'>
@@ -69,14 +68,18 @@ const FormBuilderComponent = ({   form,
                                    options={formChoices}
                                    defaultValue={form.data.display}
                                    onChange={(e, {name, value}) => {
+                                       changeDisplay(value)
                                    }}
                     />
                 </Form.Field>
             </Form.Group>
             <Divider clearing/>
-            <FormBuilder form={form.data} onChange={(jsonSchema) => {
-                updateForm(jsonSchema);
-            }}/>
+            <FormBuilder form={{display: form.data.display,
+                                components: form.data.components,
+                                title:form.data.title,
+                                name: form.data.name,
+                                path:form.data.path
+                            }} onChange={updateForm}/>
             <Divider clearing/>
             <Container><PreviewFormModal form={form.data} title={form.title} open={form.displayPreview}
                                          onClosePreview={closePreview}/></Container>

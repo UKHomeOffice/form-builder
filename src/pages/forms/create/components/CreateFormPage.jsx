@@ -5,7 +5,7 @@ import useCreateForm from "../useCreateForm";
 import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
-
+import _ from 'lodash'
 const CreateFormPage = () => {
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
@@ -19,7 +19,8 @@ const CreateFormPage = () => {
         setValues,
         updateField,
         openPreview,
-        closePreview
+        closePreview,
+        changeDisplay
     } = useCreateForm();
 
 
@@ -50,13 +51,13 @@ const CreateFormPage = () => {
                 messageKeyPrefix={"form.create"}
                 backToForms={backToForms}
                 formInvalid={formInvalid}
-                updateForm={ (jsonSchema) =>
+                changeDisplay={changeDisplay}
+                updateForm={ (jsonSchema) => {
+                    form.data.components = _.cloneDeep(jsonSchema.components);
                     setValues({
-                        ...form,
-                        data: Object.assign(jsonSchema, form.data)
+                        ...form
                     })
-                }
-
+                }}
             />
         </Container>
     </div>

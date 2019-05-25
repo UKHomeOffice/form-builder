@@ -139,6 +139,13 @@ const useCreateForm = (formContent = null) => {
             || (missing.path || missing.title || missing.name) || status === EXECUTING;
     };
 
+    const changeDisplay = (value) => {
+        form.data.display = value;
+        setValues({
+            ...form
+        });
+    }
+
     return {
         formInvalid,
         backToForms,
@@ -149,7 +156,8 @@ const useCreateForm = (formContent = null) => {
         form,
         updateField,
         openPreview,
-        closePreview
+        closePreview,
+        changeDisplay
     }
 };
 

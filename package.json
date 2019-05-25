@@ -17,6 +17,7 @@
     "express": "^4.16.4",
     "font-awesome": "^4.7.0",
     "formiojs": "^4.0.0-beta.31",
+    "govuk-frontend": "^2.11.0",
     "i18next": "^15.1.0",
     "i18next-browser-languagedetector": "^3.0.1",
     "jest-dom": "^3.1.4",

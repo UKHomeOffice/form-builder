@@ -1,5 +1,5 @@
 import {renderHook} from "react-hooks-testing-library";
-import {SUCCESS} from "../../../core/api/actionTypes";
+import {SUCCESS} from "../../../../core/api/actionTypes";
 import usePreviewForm from "./usePreviewForm";
 
 describe('Use preview form', () => {
@@ -9,7 +9,7 @@ describe('Use preview form', () => {
             return 'fake bar'
         });
         const makeRequest = jest.fn();
-        const apiModule = require('../../../core/api/index');
+        const apiModule = require('../../../../core/api');
 
         const formData = {
             _id: 'formid',

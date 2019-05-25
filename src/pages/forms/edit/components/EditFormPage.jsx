@@ -19,7 +19,8 @@ const EditFormPage = ({formId}) => {
         openPreview,
         formInvalid,
         saveRequest,
-        state
+        state,
+        changeDisplay
     } = useEditForm(formId);
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
@@ -69,6 +70,7 @@ const EditFormPage = ({formId}) => {
             t={t}
             formInvalid={formInvalid}
             save={saveRequest}
+            changeDisplay={changeDisplay}
         /> : null}
     </div>
 };

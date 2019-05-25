@@ -131,6 +131,13 @@ const messages = {
             "label":"Cancel"
         },
         "preview" : {
+            "failure" : {
+                "gov-uk-not-configured" : "Gov UK styling is not configured"
+            },
+            "govuk" : {
+                "header" : "UK Gov styling preview",
+                "open" :"Preview in UK Gov styling"
+            },
             "label" : "Preview",
             "form-submission-label" : "Form submission",
             "submission-warning-title": "Submission is not persisted in preview mode",

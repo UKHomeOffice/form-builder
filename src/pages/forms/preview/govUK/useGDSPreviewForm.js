@@ -1,11 +1,13 @@
-import useApiRequest from "../../../core/api";
+import useApiRequest from "../../../../core/api";
 import {useNavigation} from "react-navi";
 import {useEffect, useRef, useState} from "react";
-import {SUCCESS} from "../../../core/api/actionTypes";
+import {SUCCESS} from "../../../../core/api/actionTypes";
+import {Formio} from "react-formio";
+import govukFormioTemplate from "./govuk-formio-template";
 
-const usePreviewForm = (formId) => {
-
+const useGDSPreviewForm = (formId) => {
     const navigation = useNavigation();
+
     const [form, setValue] = useState({
         data: null,
         formId: formId,
@@ -20,6 +22,7 @@ const usePreviewForm = (formId) => {
     const savedCallback = useRef();
 
     const callback = () => {
+        Formio.Templates.current = govukFormioTemplate;
         setValue(form => ({
             ...form,
             data: null
@@ -33,6 +36,9 @@ const usePreviewForm = (formId) => {
 
     useEffect(() => {
         savedCallback.current();
+        return () => {
+            Formio.Templates.framework = "semantic";
+        }
     }, [form.formId]);
 
 
@@ -57,7 +63,6 @@ const usePreviewForm = (formId) => {
     };
 
 
-
     return {
         previewSubmission,
         status,
@@ -67,4 +72,4 @@ const usePreviewForm = (formId) => {
     }
 };
 
-export default usePreviewForm;
+export default useGDSPreviewForm;

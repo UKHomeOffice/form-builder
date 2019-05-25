@@ -16,7 +16,7 @@ const routes = mount({
         title: 'Home',
         view: <Home/>
     }),
-    '/forms': lazy(() => import('../pages/forms/formsRoute')),
+    '/forms': lazy(() => import('../pages/forms/formsRoute'))
 });
 export const ApplicationContext = React.createContext([{}, () => {
 }]);

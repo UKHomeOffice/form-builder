@@ -3,8 +3,11 @@ import {Icon, Message, Modal} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import './PreviewFormModal.scss';
 import PreviewFormComponent from "../../common/components/PreviewFormComponent";
+import {Formio} from "react-formio";
+
 
 const PreviewFormModal = ({form, title, open, onClosePreview}) => {
+    Formio.Templates.framework = 'semantic';
     const [submission, setSubmission] = useState(null);
     const {t} = useTranslation();
 

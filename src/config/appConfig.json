@@ -105,6 +105,7 @@
       "editable": false
     }
   ],
+  "gov-uk-enabled" : true,
   "keycloak": {
     "authUrl": "http://keycloak.lodev.xyz/auth",
     "clientId": "platform-ui",

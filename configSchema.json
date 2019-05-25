@@ -4,6 +4,9 @@
     "keycloak"
   ],
   "properties": {
+    "gov-uk-enabled": {
+      "type" : "boolean"
+    },
     "environments": {
       "$id": "#/properties/environments",
       "type": "array",
