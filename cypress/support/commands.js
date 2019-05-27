@@ -29,6 +29,19 @@
 // });
 
 import 'cypress-file-upload';
+const username = 'dev1@lodev.xyz';
+const password = 'secret';
+
+beforeEach(() => {
+    cy.visit("/");
+
+    cy.get('input[name=username]').type(username);
+    cy.get('input[name=password]').type(password);
+    cy.get('form').submit();
+
+    cy.wait(500);
+
+});
 
 afterEach(() => {
     cy.getCookie("formTitle").then((cookie) => {

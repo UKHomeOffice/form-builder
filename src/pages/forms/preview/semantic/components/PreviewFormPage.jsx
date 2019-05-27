@@ -5,10 +5,12 @@ import {Button, Container, Divider, Grid, Header, Icon, Loader, Message} from "s
 import {useTranslation} from 'react-i18next';
 import PreviewFormComponent from "../../../common/components/PreviewFormComponent";
 import config from 'react-global-configuration';
+import useEnvContext from "../../../../../core/context/useEnvContext";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission, previewInGDS} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission} = usePreviewForm(formId);
+    const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
         </div>
@@ -31,7 +33,7 @@ const PreviewFormPage = ({formId}) => {
                 <Grid.Row>
                     <Grid.Column>
                         <Container><Button onClick={() => {
-                            previewInGDS()
+                            window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
                         }} color="teal">{t('form.preview.govuk.open')}</Button></Container>
                     </Grid.Column>
                 </Grid.Row> : null

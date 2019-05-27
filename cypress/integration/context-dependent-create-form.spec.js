@@ -4,23 +4,10 @@ const password = 'secret';
 describe("Non editable environment cannot create new forms", () => {
     it('redirected to home page if context not set and requested form builder', () => {
         cy.visit("/forms/dev/create/builder");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
-        cy.wait(500);
-
         cy.url().should('include', '/')
 
     });
     it('unable to create form in non editable environment', () => {
-        cy.visit("/");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
 
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
@@ -42,12 +29,6 @@ describe("Non editable environment cannot create new forms", () => {
     });
 
     it('unable to create form in non editable environment using builder URL', () => {
-        cy.visit("/");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
 
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
@@ -68,12 +49,6 @@ describe("Non editable environment cannot create new forms", () => {
     });
 
     it('unable to create form in non editable environment using file upload', () => {
-        cy.visit("/");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
 
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();

@@ -1,14 +1,6 @@
 describe('Forms Page', () => {
-    const username = 'dev1@lodev.xyz';
-    const password = 'secret';
 
     it('displays forms for local environment', () => {
-        cy.visit("/");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
 
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
@@ -28,12 +20,6 @@ describe('Forms Page', () => {
     });
 
     it('can search for form title', () => {
-        cy.visit("/");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
 
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
@@ -53,12 +39,6 @@ describe('Forms Page', () => {
     });
 
     it('redirect to / if environment context not set', () => {
-        cy.visit("/");
-
-        cy.get('input[name=username]').type(username);
-        cy.get('input[name=password]').type(password);
-        cy.get('form').submit();
-
 
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();

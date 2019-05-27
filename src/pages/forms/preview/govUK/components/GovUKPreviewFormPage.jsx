@@ -3,7 +3,7 @@ import {ERROR, EXECUTING} from "../../../../../core/api/actionTypes";
 import {Container, Divider, Header, Icon, Loader, Message} from "semantic-ui-react";
 import {useTranslation} from 'react-i18next';
 import PreviewFormComponent from "../../../common/components/PreviewFormComponent";
-import "govuk-frontend/all.scss";
+import "./GovUKPreviewFormPage.scss";
 import config from 'react-global-configuration'
 import useGDSPreviewForm from "../useGDSPreviewForm";
 
