@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {EXECUTING, SUCCESS} from "../../core/api/actionTypes";
 import axios from "axios";
 import _ from 'lodash';
@@ -8,6 +8,8 @@ import useLogger from "../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import secureLS from '../../core/storage';
+import useEnvContext from "../../core/context/useEnvContext";
+import {ApplicationContext} from "../../core/AppRouter";
 
 const useReports = () => {
     const keycloakProvider = new KeycloakTokenProvider();
@@ -20,6 +22,8 @@ const useReports = () => {
         typeData: [],
         statusTypeData: EXECUTING
     });
+    const {clearEnvContext} = useEnvContext();
+    const {state, setState} = useContext(ApplicationContext);
     const environments = config.get('environments');
 
     const instance = axios.create();
@@ -64,6 +68,13 @@ const useReports = () => {
 
 
     const callback = async () => {
+        clearEnvContext();
+        if (state.activeMenuItem) {
+            setState(state => ({
+                ...state,
+                activeMenuItem: null
+            }));
+        }
         const perEnvResults = await axios.all(environments.map(async (environment) => {
             const url = `${environment.url}/form?select=_id&display__in=form,wizard&limit=1&type__ne=resource`;
             const response = await instance({
@@ -141,7 +152,8 @@ const useReports = () => {
         fetch();
     }, []);
     return {
-        reports
+        reports,
+
     }
 };
 
