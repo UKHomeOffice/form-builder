@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/docker-node:master
+FROM quay.io/digitalpatterns/node:latest
 
 WORKDIR /app
 
