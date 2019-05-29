@@ -3,6 +3,14 @@ name: default
 
 ## Build Public Image
 steps:
+- name: test
+  image: plugins/docker
+  environment:
+    USERNAME:
+      from_secret: docker_username
+  commands:
+  - echo $USERNAME
+
 - name: image_to_docker_hub
   image: plugins/docker
   settings:
