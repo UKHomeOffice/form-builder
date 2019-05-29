@@ -1,4 +1,4 @@
-FROM quay.io/digitalpatterns/node:latest
+FROM digitalpatterns/node:latest
 
 WORKDIR /app
 
