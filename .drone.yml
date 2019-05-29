@@ -5,9 +5,11 @@ name: default
 steps:
 - name: image_to_docker_hub
   image: plugins/docker
-    secrets:
-      - DOCKER_USERNAME
-      - DOCKER_PASSWORD
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_password: docker_password
     repo: digitalpatterns/form-builder
     tags:
       - ${DRONE_BUILD_NUMBER}
