@@ -2,15 +2,20 @@ pipeline:
 
 ## Build Public Image
   image_to_docker_hub:
-    image: quay.io/ukhomeofficedigital/drone-docker
+    image: plugins/docker
     secrets:
       - DOCKER_USERNAME
       - DOCKER_PASSWORD
-    repo: digitalpatterns/form-builder
-    tags:
-      - ${DRONE_BUILD_NUMBER}
-      - ${DRONE_COMMIT_SHA}
-      - latest
+    settings:
+      repo: digitalpatterns/form-builder
+      username:
+        from_secret: docker_username
+      password:
+        from_password: docker_password
+      tags:
+        - ${DRONE_BUILD_NUMBER}
+        - ${DRONE_COMMIT_SHA}
+        - latest
     when:
       branch:
         - master
