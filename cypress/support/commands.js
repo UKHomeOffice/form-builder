@@ -29,6 +29,7 @@
 // });
 
 import 'cypress-file-upload';
+
 const username = 'dev1@lodev.xyz';
 const password = 'secret';
 
@@ -81,9 +82,15 @@ afterEach(() => {
                 });
             });
         }
-    })
+    });
 
-    cy.get('[data-cy=logout]').click();
+    cy.getCookie("skipLogout").then((cookie) => {
+       if (!cookie)  {
+           cy.get('[data-cy=logout]').click();
+       } else {
+           cy.visit("/logout")
+       }
+    });
     cy.clearLocalStorage();
     cy.clearCookies();
 });

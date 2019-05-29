@@ -32,7 +32,7 @@ const PreviewFormPage = ({formId}) => {
             {config.get('gov-uk-enabled', false) ?
                 <Grid.Row>
                     <Grid.Column>
-                        <Container><Button onClick={() => {
+                        <Container><Button data-cy="govUKPreview" onClick={() => {
                             window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
                         }} color="teal">{t('form.preview.govuk.open')}</Button></Container>
                     </Grid.Column>

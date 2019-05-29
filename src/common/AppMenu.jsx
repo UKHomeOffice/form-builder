@@ -70,8 +70,7 @@ const AppMenu = () => {
             <Menu.Item
                 name={t('menu.logout.name')}
                 onClick={() => {
-                    clearLocalStorage();
-                    keycloak.logout();
+                    navigation.navigate("/logout");
                 }} data-cy="logout">
 
                 <Icon name='log out' size="large" style={iconStyle}/>

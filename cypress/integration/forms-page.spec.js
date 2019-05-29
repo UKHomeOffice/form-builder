@@ -40,6 +40,9 @@ describe('Forms Page', () => {
 
     it('redirect to / if environment context not set', () => {
 
+        const username = 'dev1@lodev.xyz';
+        const password = 'secret';
+
         cy.get('[data-cy=forms-menu]').should('exist');
         cy.get('div[role="listbox"]').click();
 

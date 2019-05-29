@@ -33,13 +33,15 @@ describe("Edit form", () => {
         cy.get('[data-cy=form-table-data]').should('exist');
         cy.get('[data-cy=form-table-data]').find('tr').its('length').should('be.gte', 1);
 
+        cy.wait(500);
 
         cy.request({
             url: `http://formio.lodev.xyz/form?title=${formTitle}`,
         }).then((resp) => {
             expect(resp.status).to.eq(200);
             expect(resp.body.length).to.eq(1);
-            expect(resp.body[0].components.length).to.eq(1);
+            console.log(JSON.stringify(resp.body));
+            expect(resp.body[0].components.length).to.eq(0);
         });
 
 
