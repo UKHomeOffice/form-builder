@@ -1,4 +1,5 @@
-pipeline:
+kind: pipeline
+name: default
 
 ## Build Public Image
 steps:
