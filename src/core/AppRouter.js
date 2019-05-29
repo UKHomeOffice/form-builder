@@ -9,12 +9,17 @@ import secureLS from '../core/storage';
 import {useTranslation} from "react-i18next";
 import config from "react-global-configuration"
 import _ from 'lodash';
+import {Logout} from "../common/Logout";
 
 
 const routes = mount({
     '/': route({
         title: 'Home',
         view: <Home/>
+    }),
+    '/logout' : route({
+       title: 'Logout',
+       view: <Logout/>
     }),
     '/forms': lazy(() => import('../pages/forms/formsRoute'))
 });
