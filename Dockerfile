@@ -2,12 +2,14 @@ FROM digitalpatterns/node:latest
 
 WORKDIR /app
 
-RUN mkdir -p /app && \
-    chown -R node:node /app
+RUN mkdir -p /app
+
 
 ADD . /app/
 
 RUN npm ci && npm run build
+
+RUN chown -R node:node /app
 
 ENV NODE_ENV='production'
 
