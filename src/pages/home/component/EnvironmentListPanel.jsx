@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Grid, Item, Label} from "semantic-ui-react";
+import {Grid, Icon, Item, Label} from "semantic-ui-react";
 import useEnvContext from "../../../core/context/useEnvContext";
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
@@ -37,12 +37,14 @@ const EnvironmentListPanel = ({environments}) => {
                                         <Item.Content>
                                             <Item.Header
                                                 as="a">{environment.label ? environment.label : environment.id}</Item.Header>
+                                            <Item.Meta>
+                                                <Icon name='globe'/><span>{t('environment.url', {url: environment.url})}</span>
+                                            </Item.Meta>
                                             <Item.Description>{environment.description}</Item.Description>
                                             <Item.Extra>
                                                 <Label
                                                     color={environment.editable ? 'teal' : 'red'}>{t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</Label>
-                                                <Label icon='globe'
-                                                       content={t('environment.url', {url: environment.url})}/>
+
                                             </Item.Extra>
 
                                         </Item.Content>
