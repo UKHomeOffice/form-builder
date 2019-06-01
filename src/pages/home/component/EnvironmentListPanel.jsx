@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Grid, Icon, Item, Label} from "semantic-ui-react";
+import {Container, Grid, Icon, Item, Label} from "semantic-ui-react";
 import useEnvContext from "../../../core/context/useEnvContext";
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
@@ -22,13 +22,14 @@ const EnvironmentListPanel = ({environments}) => {
         changeContext(environment);
         navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
-    return <Grid columns={3} divided>
+    return <Grid columns={3} divided stackable>
         {
             _.map(_.chunk(environments, 3), (environments) => {
                 return <Grid.Row key={uuid4()}>
                     {
                         _.map(environments, (environment) => {
                             return <Grid.Column key={uuid4()}>
+                                <Container>
                                 <Item.Group link divided relaxed key={uuid4()}>
                                     <Item onClick={() => {
                                         handleClick(environment);
@@ -50,6 +51,7 @@ const EnvironmentListPanel = ({environments}) => {
                                         </Item.Content>
                                     </Item>
                                 </Item.Group>
+                                </Container>
                             </Grid.Column>
                         })
                     }
