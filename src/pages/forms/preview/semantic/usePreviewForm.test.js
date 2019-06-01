@@ -5,6 +5,14 @@ import usePreviewForm from "./usePreviewForm";
 describe('Use preview form', () => {
     it('fetches form for preview', () => {
         const naviModule = require('react-navi');
+        const envContextModule = require('../../../../core/context/useEnvContext');
+        envContextModule.default = () => {
+            return {
+                envContext: {
+                    id: 'test'
+                }
+            }
+        };
         naviModule.useNavigation = jest.fn(() => {
             return 'fake bar'
         });

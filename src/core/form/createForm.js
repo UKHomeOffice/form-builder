@@ -7,6 +7,7 @@ const createForm = async (axios,
 
     const anonymous = await axios({
         method: 'GET',
+        headers: headers,
         url: `${envContext.url}/role?machineName=anonymous`,
     });
     form['submissionAccess'] = submissionAccess(anonymous.data[0]._id);

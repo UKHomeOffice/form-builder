@@ -131,6 +131,7 @@ const messages = {
             "label":"Cancel"
         },
         "preview" : {
+            "back-to-forms" : "Back to {{env}} forms",
             "failure" : {
                 "gov-uk-not-configured" : "Gov UK styling is not configured"
             },

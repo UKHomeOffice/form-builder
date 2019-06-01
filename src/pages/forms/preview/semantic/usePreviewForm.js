@@ -55,7 +55,7 @@ const usePreviewForm = (formId) => {
     }, [response, status, setValue]);
 
     const backToForms = () => {
-        navigation.navigate("/forms", {replace: true});
+        navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
 
     const previewSubmission = (submission) => {

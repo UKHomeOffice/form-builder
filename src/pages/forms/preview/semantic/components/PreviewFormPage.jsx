@@ -9,7 +9,7 @@ import useEnvContext from "../../../../../core/context/useEnvContext";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission, backToForms} = usePreviewForm(formId);
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
@@ -21,31 +21,36 @@ const PreviewFormPage = ({formId}) => {
             {t('form.list.failure.forms-load', {error: JSON.stringify(response.data)})}
         </Message>
     }
-    return <React.Fragment>
-        <Divider horizontal>
-            <Header as='h3'>
-                <Icon name='eye'/>
-                Preview
-            </Header>
-        </Divider>
-        <Grid>
-            {config.get('gov-uk-enabled', false) ?
-                <Grid.Row>
-                    <Grid.Column>
-                        <Container><Button data-cy="govUKPreview" onClick={() => {
-                            window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
-                        }} color="teal">{t('form.preview.govuk.open')}</Button></Container>
-                    </Grid.Column>
-                </Grid.Row> : null
-            }
-            <Grid.Row>
-                <Grid.Column>
-                    {form.data ? <PreviewFormComponent form={form.data} submission={form.submission}
-                                                       handlePreview={previewSubmission}/> : null}
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
-    </React.Fragment>
+    return <Grid>
+
+        <Grid.Row>
+            <Grid.Column>
+                <Divider horizontal>
+                    <Header as='h3'>
+                        <Icon name='eye'/>
+                        Preview
+                    </Header>
+                </Divider>
+            </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row>
+            <Grid.Column>
+                <Container><Button data-cy="backToForms" onClick={() => {
+                    backToForms();
+                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button> {config.get('gov-uk-enabled', false) ?<Button data-cy="govUKPreview" onClick={() => {
+                    window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
+                }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
+            </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+            <Grid.Column>
+                {form.data ? <PreviewFormComponent form={form.data} submission={form.submission}
+                                                   handlePreview={previewSubmission}/> : null}
+            </Grid.Column>
+        </Grid.Row>
+    </Grid>
+
 };
 
 export default PreviewFormPage;

@@ -12,15 +12,19 @@ class FormioTokenProvider {
         const jwtTokenFromSecureLS = secureLS.get(key);
 
         const getFormioToken = async (envContext, keycloakToken) => {
-            const tokenResponse = await axios({
-                url: `/formio/${envContext.id}/token`,
-                method: 'GET',
-                headers: {
-                    "Authorization": `Bearer ${keycloakToken}`,
-                    "Content-Type": "application/json"
-                }
-            });
-            return tokenResponse.data['x-jwt-token'];
+            try {
+                const tokenResponse = await axios({
+                    url: `/formio/${envContext.id}/token`,
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${keycloakToken}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                return tokenResponse.data['x-jwt-token'];
+            } catch (e) {
+                throw new Error("Failed to get formio token from environment: "+ envContext.id);
+            }
         };
 
         let formioToken;

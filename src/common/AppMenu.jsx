@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
 import {Dropdown, Icon, Menu} from 'semantic-ui-react';
-import {useKeycloak} from 'react-keycloak';
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
 import _ from 'lodash';
@@ -12,8 +11,7 @@ import {ApplicationContext} from "../core/AppRouter";
 const AppMenu = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
-    const [keycloak] = useKeycloak();
-    const {clearEnvContext, changeContext, envContext, clearLocalStorage} = useEnvContext();
+    const {clearEnvContext, changeContext, envContext} = useEnvContext();
     const {state, setState} = useContext(ApplicationContext);
 
     const handleEnvChange = (environment) => {
@@ -32,7 +30,7 @@ const AppMenu = () => {
         }))
     };
     const environments = config.get('environments');
-
+    const formsMenu = <React.Fragment><Icon name="wpforms" size="large" style={iconStyle}/><span>{t('menu.forms.label')}</span></React.Fragment>;
     return <Menu pointing secondary>
         <Menu.Item data-cy={`home-menu`} name={t('menu.home.name')}
                    active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')}
@@ -49,9 +47,7 @@ const AppMenu = () => {
             data-cy={`forms-menu`}
             name={t('menu.forms.name')}
             active={state.activeMenuItem === t('menu.forms.name')}>
-            <Icon name="wpforms" size="large" style={iconStyle}/>
-            <span>{t('menu.forms.label')}</span>
-            <Dropdown>
+            <Dropdown trigger={formsMenu}>
                 <Dropdown.Menu>
                     <Dropdown.Header>{t('home.environments')}</Dropdown.Header>
                     {_.map(environments, (env) => (

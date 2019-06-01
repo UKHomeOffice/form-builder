@@ -84,7 +84,9 @@ const useGetForms = () => {
         savedCallback.current = () => {
             setValues(forms => ({
                 ...forms,
-                data: null
+                data: null,
+                numberOfWizards: 0,
+                numberOfForms: 0,
             }));
             makeRequest();
             wizardStatsRequest();
