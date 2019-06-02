@@ -94,6 +94,7 @@ const useEditForm = (formId) => {
                 editForm.data.title = value;
                 editForm.data.path = _.toLower(value).replace(/\s/g, '');
                 editForm.data.name = _.camelCase(value);
+                editForm.data.machineName = editForm.data.name;
 
                 setValues({
                     ...editForm

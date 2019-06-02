@@ -97,6 +97,7 @@ const useCreateForm = (formContent = null) => {
                 form.data.title = value;
                 form.data.path = _.toLower(value).replace(/\s/g, '');
                 form.data.name = _.camelCase(value);
+                form.data.machineName = form.data.name;
 
                 setValues({
                     ...form

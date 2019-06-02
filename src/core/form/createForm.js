@@ -5,6 +5,9 @@ const createForm = async (axios,
                           log,
                           headers = {}) => {
 
+    if (form.machineName !== form.name) {
+        form.machineName = form.name;
+    }
     const anonymous = await axios({
         method: 'GET',
         headers: headers,

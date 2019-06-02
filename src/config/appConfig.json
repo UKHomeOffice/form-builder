@@ -1,9 +1,10 @@
 {
-  "environments": [{
+  "environments": [
+    {
     "id": "local",
     "label": "Local",
     "url": "http://formio.lodev.xyz",
-    "description": "local development environment",
+    "description": "Local environment",
     "service": {
       "formio": {
         "username": "me@lodev.xyz",
@@ -31,6 +32,41 @@
       }
     ]
   },
+    {
+      "id": "dev",
+      "label": "Development",
+      "url": "https://formio.elf79.dev",
+      "description": "Elf Dev environment",
+      "service": {
+        "formio": {
+          "username": "me@lodev.xyz",
+          "password": "secret"
+        },
+        "keycloak": {
+          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "clientId": "form-builder",
+          "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
+        }
+      },
+      "editable": true,
+      "variable-replacements": [
+        {
+          "{$.environmentContext.operationalDataUrl}": "https://private-postgrest.dev.cop.homeoffice.gov.uk"
+        },
+        {
+          "{$.environmentContext.referenceDataUrl}": "https://api.refdata-dev.homeoffice.gov.uk"
+        },
+        {
+          "{$.staffDetailsContext.staffId}": "{{guid}}"
+        },
+        {
+          "{$.keycloakContext.givenName}": "{{firstName}}"
+        },
+        {
+          "{$.keycloakContext.familyName}": "{{lastName}}"
+        }
+      ]
+    },
     {
       "id": "demo",
       "label": "Demo",
