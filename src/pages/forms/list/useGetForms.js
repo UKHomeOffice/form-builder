@@ -52,13 +52,13 @@ const useGetForms = () => {
 
 
     const [wizardCountState, wizardStatsRequest] = useApiRequest(
-        `/form?select=_id&display=wizard&limit=1&type__ne=resource`, {
+        `/form?select=_id&display=wizard&type__ne=resource`, {
             verb: 'get', params: {}
         }
     );
 
     const [formCountState, formStatsRequest] = useApiRequest(
-        `/form?select=_id&display=form&limit=1&type__ne=resource`, {
+        `/form?select=_id&display=form&type__ne=resource`, {
             verb: 'get', params: {}
         }
     );
