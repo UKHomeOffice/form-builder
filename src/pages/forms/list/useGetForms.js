@@ -13,7 +13,7 @@ const useGetForms = () => {
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {t} = useTranslation();
-    const [forms, setValues] = useState({
+    const initialState = {
         column: null,
         direction: null,
         data: null,
@@ -29,7 +29,8 @@ const useGetForms = () => {
             formId: null,
             formName: null
         }
-    });
+    };
+    const [forms, setValues] = useState(initialState);
 
 
     const [searchTitle] = useDebouncedCallback(
@@ -45,7 +46,7 @@ const useGetForms = () => {
     );
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form?select=title,path,name,display,created,modified${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/^${forms.searchTitle}/i` : ''}`, {
+        `/form?select=title,path,name,display,created,modified&type__ne=resource&limit=${forms.limit}&${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
             verb: 'get', params: {}
         }
     );
@@ -58,7 +59,7 @@ const useGetForms = () => {
     );
 
     const [formCountState, formStatsRequest] = useApiRequest(
-        `/form?select=_id&display=form&type__ne=resource`, {
+        `/form?select=_id&type__ne=resource&display__ne=wizard`, {
             verb: 'get', params: {}
         }
     );
@@ -85,6 +86,7 @@ const useGetForms = () => {
             setValues(forms => ({
                 ...forms,
                 data: null,
+                total: 0,
                 numberOfWizards: 0,
                 numberOfForms: 0,
             }));
@@ -205,7 +207,8 @@ const useGetForms = () => {
     const handleOnSuccessfulDeletion = () => {
         setValues(forms => ({
             ...forms,
-            refresh: true
+            refresh: true,
+            activePage: 1
         }));
     };
 

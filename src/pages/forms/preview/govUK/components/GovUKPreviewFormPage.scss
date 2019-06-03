@@ -1,1 +1,26 @@
 @import "~govuk-frontend/all.scss";
+
+
+.button--secondary {
+  background-color: govuk-colour("grey-3");
+  box-shadow: 0 $govuk-border-width-form-element 0 darken(govuk-colour("grey-3"), 40%);
+
+  &,
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    color:  govuk-colour("black");
+  }
+
+  @include govuk-compatibility(govuk_template) {
+    &:link:focus {
+      color: darken( govuk-colour("grey-3"), 10%);
+    }
+  }
+
+  &:hover,
+  &:focus {
+    background-color: darken( govuk-colour("grey-3"), 10%);
+  }
+}

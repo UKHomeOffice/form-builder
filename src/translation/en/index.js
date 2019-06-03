@@ -179,7 +179,7 @@ const messages = {
         },
         "list": {
             "loading" : "Loading forms...",
-            "total-forms": "User created forms in {{env}}",
+            "total-forms": "Total forms in {{env}}",
             "total-form-type": "form types",
             "total-wizard-type": "wizard types",
             "failure": {

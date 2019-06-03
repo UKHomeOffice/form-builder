@@ -16,6 +16,7 @@ const configureAxios = async (envContext, config) => {
     const token = secureLS.get("jwt-token");
     config.headers['Accept'] = 'application/json';
     config.headers['Content-Type'] = 'application/json';
+    config.headers['Cache-Control'] = "no-cache";
     if (config.headers['x-promote-kc-token']) {
         config.headers.Authorization = config.headers['x-promote-kc-token'];
         delete config.headers['x-promote-kc-token'];
