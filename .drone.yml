@@ -1,8 +1,6 @@
-kind: pipeline
-name: default
 
 ## Build Public Image
-steps:
+pipeline:
 
   build_push_to_ecr:
     image: quay.io/ukhomeofficedigital/ecr:latest
