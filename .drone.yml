@@ -7,7 +7,7 @@ pipeline:
     secrets:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
-    repo: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/cop/find-mock
+    repo: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/cop/form-builder
     build_args:
       - APP_BUILD=${DRONE_COMMIT_SHA}
     tags:
