@@ -1,12 +1,93 @@
 const classes = {
     'has-error': 'govuk-form-group--error',
-    'form-control ui fluid selection dropdown': 'form-control ui fluid selection dropdown govuk-select',
+    'form-control ui fluid selection dropdown': 'form-control fluid selection dropdown govuk-select',
     'formio-day-component-month': 'formio-day-component-month govuk-date-input__input govuk-input--width-2',
     'formio-day-component-day': 'ormio-day-component-day govuk-date-input__input govuk-input--width-2',
     'formio-day-component-year': 'formio-day-component-year govuk-date-input__input govuk-input--width-4',
     'alert alert-danger': 'govuk-form-group--error'
 };
 const govukFormioTemplate = {
+    datagrid: {
+        form: `<table class="table datagrid-table table-bordered
+            {{ component.striped ? 'table-striped' : ''}}
+            {{ component.hover ? 'table-hover' : ''}}
+            {{ component.condensed ? 'table-sm' : ''}}
+            " {% if (component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
+          {% if (hasHeader) { %}
+          <thead>
+            <tr>
+              {% columns.forEach(function(col) { %}
+              {% if (visibleColumns[col.key]) { %}
+              <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+                {{ col.hideLabel ? '' : t(col.label || col.title) }}
+                {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{col.tooltip}}"></i>{% } %}
+              </th>
+              {% } %}
+              {% }) %}
+              {% if (hasExtraColumn) { %}
+              <th>
+                {% if (!builder && hasAddButton && hasTopSubmit) { %}
+                <button class="govuk-button formio-button-add-row" ref="{{datagridKey}}-addRow">
+                  <i class="{{iconClass('plus')}}"></i> Add Another
+                </button>
+                {% } %}
+              </th>
+              {% } %}
+            </tr>
+          </thead>
+          {% } %}
+          <tbody ref="{{datagridKey}}-tbody">
+            {% rows.forEach(function(row) { %}
+            {% if (hasGroups && groups[index]) { %}
+            <tr ref="{{datagridKey}}-group-header" class="datagrid-group-header{{hasToggle ? ' clickable' : ''}}">
+              <td
+                ref="{{datagridKey}}-group-label"
+                colspan="{{numColumns}}"
+                class="datagrid-group-label">{{groups[index].label}}</td>
+            </tr>
+            {% } %}
+            <tr ref="{{datagridKey}}-row">
+              {% columns.forEach(function(col) { %}
+              {% if (visibleColumns[col.key]) { %}
+              <td ref="{{datagridKey}}">
+                {{row[col.key]}}
+              </td>
+              {% } %}
+              {% }) %}
+              {% if (hasExtraColumn && (removePlacement === 'col')) { %}
+                {% if (!builder && hasRemoveButtons) { %}
+                <td>
+                  <button type="button" class="govuk-button btn button--secondary formio-button-remove-row" ref="{{datagridKey}}-removeRow">
+                    <i class="{{iconClass('remove-circle')}}"></i>
+                  </button>
+                </td>
+                {% } %}
+                {% if (builder) { %}
+                <td ref="{{key}}-container">
+                  {{placeholder}}
+                </td>
+                {% } %}
+              {% } else if (removePlacement === 'corner') { %}
+                <button type="button" tabindex="-1" class="govuk-button btn button--secondary formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
+                  <i class="{{ iconClass('remove') }}"></i>
+                </button>
+              {% } %}
+            </tr>
+            {% }) %}
+          </tbody>
+          {% if (!builder && hasAddButton && hasBottomSubmit) { %}
+          <tfoot>
+            <tr>
+              <td colspan="{{numColumns}}">
+                <button class="govuk-button formio-button-add-row" ref="{{datagridKey}}-addRow">
+                  <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+          {% } %}
+        </table>`
+    },
     button: {
         form: `
                   <{{input.type}}

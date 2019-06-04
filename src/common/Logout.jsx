@@ -1,4 +1,3 @@
-import React from 'react';
 import {useKeycloak} from "react-keycloak";
 import useEnvContext from "../core/context/useEnvContext";
 
