@@ -24,3 +24,21 @@
     background-color: darken( govuk-colour("grey-3"), 10%);
   }
 }
+
+.datagrid-table td {
+  vertical-align: top;
+  width: 100%;
+}
+
+.datagrid-table th  {
+  text-align: left;
+  @include govuk-font($size: 19);
+  @include govuk-text-colour;
+  display: block;
+}
+
+.formio-button-remove-row {
+  margin-left: 15px;
+  padding-bottom: 5px;
+  padding-top: 7px;
+}
