@@ -24,6 +24,7 @@ const useGetForms = () => {
         numberOfWizards: 0,
         numberOfForms: 0,
         activeIndex: -1,
+        numberOnPage: 0,
         refresh: false,
         downloadFile: {
             formId: null,
@@ -42,11 +43,11 @@ const useGetForms = () => {
             }))
         },
         500,
-        { maxWait: 2000 }
+        {maxWait: 2000}
     );
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form?select=title,path,name,display,created,modified&type__ne=resource&limit=${forms.limit}&${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
+        `/form?select=title,path,name,display,created,modified&type__ne=resource&limit=${forms.limit}${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
             verb: 'get', params: {}
         }
     );
@@ -89,6 +90,7 @@ const useGetForms = () => {
                 total: 0,
                 numberOfWizards: 0,
                 numberOfForms: 0,
+                numberOnPage: 0
             }));
             makeRequest();
             wizardStatsRequest();
@@ -140,6 +142,7 @@ const useGetForms = () => {
                 ...forms,
                 refresh: false,
                 data: response.data,
+                numberOnPage: response.data.length,
                 total: parseInt(response.headers['content-range'].split('/')[1])
             }));
         }
@@ -205,10 +208,12 @@ const useGetForms = () => {
     };
 
     const handleOnSuccessfulDeletion = () => {
+        const numberOnPage = forms.numberOnPage - 1;
         setValues(forms => ({
             ...forms,
             refresh: true,
-            activePage: 1
+            numberOnPage: numberOnPage,
+            activePage: numberOnPage === 0 ? forms.activePage - 1 : forms.activePage
         }));
     };
 
