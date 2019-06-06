@@ -26,6 +26,9 @@ const useGetForms = () => {
         activeIndex: -1,
         numberOnPage: 0,
         refresh: false,
+        filterIndex: -1,
+        filterValue: "all",
+        filter: "type__ne=resource",
         downloadFile: {
             formId: null,
             formName: null
@@ -47,7 +50,7 @@ const useGetForms = () => {
     );
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form?select=title,path,name,display,created,modified&type__ne=resource&limit=${forms.limit}${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
+        `/form?select=title,path,name,display,created,modified&${forms.filter}&limit=${forms.limit}${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
             verb: 'get', params: {}
         }
     );
@@ -80,7 +83,9 @@ const useGetForms = () => {
     const successfulFormDownloadCallback = useRef();
     const failedFormDownloadCallback = useRef();
     const executeDownloadCallback = useRef();
-
+    const wizardStatsCallback = useRef();
+    const formStatsCallback = useRef();
+    const resetCallback = useRef();
 
     useEffect(() => {
         savedCallback.current = () => {
@@ -88,13 +93,29 @@ const useGetForms = () => {
                 ...forms,
                 data: null,
                 total: 0,
-                numberOfWizards: 0,
-                numberOfForms: 0,
                 numberOnPage: 0
             }));
             makeRequest();
+        };
+
+        wizardStatsCallback.current = () => {
+
             wizardStatsRequest();
+        };
+
+        formStatsCallback.current = () => {
             formStatsRequest();
+        };
+
+        resetCallback.current = () => {
+            setValues(forms => ({
+                ...forms,
+                filterIndex: -1,
+                filterValue: "all",
+                filter: "type__ne=resource",
+                numberOfForms: 0,
+                numberOfWizards: 0
+            }));
         };
 
         successfulFormDownloadCallback.current = () => {
@@ -133,7 +154,13 @@ const useGetForms = () => {
 
     useEffect(() => {
         savedCallback.current();
-    }, [forms.activePage, forms.searchTitle, forms.refresh, envContext]);
+    }, [forms.activePage, forms.searchTitle, forms.refresh, envContext, forms.filter]);
+
+    useEffect(() => {
+        resetCallback.current();
+        wizardStatsCallback.current();
+        formStatsCallback.current();
+    }, [envContext, forms.refresh]);
 
 
     useEffect(() => {
@@ -221,13 +248,12 @@ const useGetForms = () => {
         searchTitle(data.value);
     };
 
-    const handlePreview = (form) => {
-        navigation.navigate(`/forms/${envContext.id}/${form._id}/preview`, {replace: true});
+    const handlePreview = async (form) => {
+        await navigation.navigate(`/forms/${envContext.id}/${form._id}/preview`, {replace: true});
     };
 
-    const handleEditForm = (form) => {
-        navigation.navigate(`/forms/${envContext.id}/${form._id}/edit`, {replace: true});
-
+    const handleEditForm = async (form) => {
+        await navigation.navigate(`/forms/${envContext.id}/${form._id}/edit`, {replace: true});
     };
 
     const handleAccordionClick = (e, titleProps) => {
@@ -250,9 +276,37 @@ const useGetForms = () => {
         }));
     };
 
-    const handlePromotion = (form) => {
-        navigation.navigate(`/forms/${envContext.id}/${form._id}/promote`, {replace: true});
+    const handlePromotion = async (form) => {
+        await navigation.navigate(`/forms/${envContext.id}/${form._id}/promote`, {replace: true});
     };
+
+    const filter = (e, {value}) => {
+        let filter = "";
+        if (value === 'wizard') {
+            filter = "display=wizard&type__ne=resource";
+        } else if (value === 'form') {
+            filter = "type__ne=resource&display__ne=wizard";
+        } else {
+            filter = "type__ne=resource";
+        }
+
+        setValues(forms => ({
+            ...forms,
+            filter: filter,
+            filterValue: value
+        }));
+    };
+
+    const handleFilterAccordion = (e, titleProps) => {
+        const {index} = titleProps;
+        const {filterIndex} = forms;
+        const newIndex = filterIndex === index ? -1 : index;
+        setValues(forms => ({
+            ...forms,
+            filterIndex: newIndex
+        }));
+    };
+
 
     return {
         handleSort,
@@ -268,7 +322,9 @@ const useGetForms = () => {
         handleAccordionClick,
         download,
         downloadFormState,
-        handlePromotion
+        handlePromotion,
+        filter,
+        handleFilterAccordion
     }
 };
 

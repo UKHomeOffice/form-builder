@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 import ReactJson from "react-json-view";
 import {Form} from 'react-formio';
-import "formiojs/dist/formio.full.css";
+import './PreviewFormComponent.scss';
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
