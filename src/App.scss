@@ -29,3 +29,24 @@
   animation: none !important
 }
 
+.govuk-form-group .govuk-details {
+  margin-top: 30px;
+}
+
+.full-width-field .datagrid-table td {
+  vertical-align: top;
+  width: 100%;
+}
+
+.datagrid-govuk-label .datagrid-table th  {
+  @include govuk-font($size: 19);
+  @include govuk-text-colour;
+  display: block;
+  margin-bottom: govuk-spacing(1);
+}
+
+.formio-button-remove-row {
+  margin-left: 15px;
+  padding-bottom: 5px;
+  padding-top: 7px;
+}
