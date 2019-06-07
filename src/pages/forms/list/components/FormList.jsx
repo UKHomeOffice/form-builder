@@ -4,12 +4,14 @@ import {
     Button,
     Container,
     Dimmer,
+    Form,
     Grid,
     Icon,
     Input,
     Item,
     Label,
     Loader,
+    Menu,
     Message,
     Pagination,
     Segment,
@@ -40,11 +42,53 @@ const FormList = () => {
         handleAccordionClick,
         download,
         downloadFormState,
-        handlePromotion
+        handlePromotion,
+        filter,
+        handleFilterAccordion
     } = useGetForms();
 
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
+
+
+    const FormType = (
+        <Form>
+            <Form.Group grouped>
+                <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
+                            checked={forms.filterValue === 'all'}/>
+                <Form.Radio label='Forms' name='form' type='radio' value='form' onChange={filter}
+                            checked={forms.filterValue === 'form'}/>
+                <Form.Radio label='Wizards' name='wizard' type='radio' value='wizard' onChange={filter}
+                            checked={forms.filterValue === 'wizard'}/>
+            </Form.Group>
+        </Form>
+    );
+
+    const UpdatedIn = (
+        <Form>
+            <Form.Group grouped>
+                <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
+                            checked={forms.filterValue === 'all'}/>
+                <Form.Radio label='Forms' name='form' type='radio' value='form' onChange={filter}
+                            checked={forms.filterValue === 'form'}/>
+                <Form.Radio label='Wizards' name='wizard' type='radio' value='wizard' onChange={filter}
+                            checked={forms.filterValue === 'wizard'}/>
+            </Form.Group>
+        </Form>
+    );
+
+    const CreatedIn = (
+        <Form>
+            <Form.Group grouped>
+                <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
+                            checked={forms.filterValue === 'all'}/>
+                <Form.Radio label='Forms' name='form' type='radio' value='form' onChange={filter}
+                            checked={forms.filterValue === 'form'}/>
+                <Form.Radio label='Wizards' name='wizard' type='radio' value='wizard' onChange={filter}
+                            checked={forms.filterValue === 'wizard'}/>
+            </Form.Group>
+        </Form>
+    );
 
     const {direction, column, data, total, activePage, limit} = forms;
     if (status === ERROR) {
@@ -64,17 +108,17 @@ const FormList = () => {
                 <Grid.Column>
                     <Segment raised>
                         <Statistic.Group widths='three'>
-                            <Statistic horizontal>
+                            <Statistic>
                                 <Statistic.Value>
                                     {forms.numberOfForms + forms.numberOfWizards}
                                 </Statistic.Value>
                                 <Statistic.Label>{t('form.list.total-forms', {env: envContext.label})}</Statistic.Label>
                             </Statistic>
-                            <Statistic horizontal>
+                            <Statistic>
                                 <Statistic.Value>{forms.numberOfForms}</Statistic.Value>
                                 <Statistic.Label>{t('form.list.total-form-type')}</Statistic.Label>
                             </Statistic>
-                            <Statistic horizontal>
+                            <Statistic>
                                 <Statistic.Value>{forms.numberOfWizards}</Statistic.Value>
                                 <Statistic.Label>{t('form.list.total-wizard-type')}</Statistic.Label>
                             </Statistic>
@@ -90,6 +134,21 @@ const FormList = () => {
                            size='large'
                            onChange={handleTitleSearch}
                            fluid focus/>
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column>
+                    <Accordion as={Menu} vertical>
+                        <Menu.Item>
+                            <Accordion.Title
+                                active={forms.filterIndex === 0}
+                                content='Types'
+                                index={0}
+                                onClick={handleFilterAccordion}
+                            />
+                            <Accordion.Content active={forms.filterIndex === 0} content={FormType}/>
+                        </Menu.Item>
+                    </Accordion>
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
@@ -189,11 +248,12 @@ const FormList = () => {
                                                     onPageChange={handlePaginationChange}/>
                                     </Table.HeaderCell> : <Table.HeaderCell/>}
                                     <Table.HeaderCell colSpan={2}>
-                                        {envContext.editable ? <Button floated='right' icon labelPosition='left' primary size='small'
-                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
-                                                data-cy="create-form">
-                                            <Icon name='wpforms'/>{t('form.create.label')}
-                                        </Button> : null}
+                                        {envContext.editable ?
+                                            <Button floated='right' icon labelPosition='left' primary size='small'
+                                                    onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
+                                                    data-cy="create-form">
+                                                <Icon name='wpforms'/>{t('form.create.label')}
+                                            </Button> : null}
                                     </Table.HeaderCell>
                                 </Table.Row>
                             </Table.Footer>
