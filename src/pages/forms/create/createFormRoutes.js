@@ -5,7 +5,7 @@ import CreateFormFileUpload from "./components/CreateFormFileUpload";
 import React from "react";
 import CreateFormChoice from "./components/CreateFormChoice";
 import EditableEnvironmentChecker from "../common/components/EditableEnvironmentChecker";
-import {withEnvContext} from "../formsRoute";
+import {withEnvContext} from "../../../core/AppRouter";
 
 
 export default mount({

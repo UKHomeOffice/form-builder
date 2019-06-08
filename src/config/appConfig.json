@@ -145,6 +145,9 @@
   "keycloak": {
     "authUrl": "http://keycloak.lodev.xyz/auth",
     "clientId": "platform-ui",
-    "realm": "dev"
+    "realm": "dev",
+    "access-roles" : ["platform"],
+    "promotion-roles" : ["platform"],
+    "edit-roles" : ["platform"]
   }
 }

@@ -44,7 +44,9 @@ const FormList = () => {
         downloadFormState,
         handlePromotion,
         filter,
-        handleFilterAccordion
+        handleFilterAccordion,
+        canPromote,
+        canEdit
     } = useGetForms();
 
     const {t} = useTranslation();
@@ -52,32 +54,6 @@ const FormList = () => {
 
 
     const FormType = (
-        <Form>
-            <Form.Group grouped>
-                <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
-                            checked={forms.filterValue === 'all'}/>
-                <Form.Radio label='Forms' name='form' type='radio' value='form' onChange={filter}
-                            checked={forms.filterValue === 'form'}/>
-                <Form.Radio label='Wizards' name='wizard' type='radio' value='wizard' onChange={filter}
-                            checked={forms.filterValue === 'wizard'}/>
-            </Form.Group>
-        </Form>
-    );
-
-    const UpdatedIn = (
-        <Form>
-            <Form.Group grouped>
-                <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
-                            checked={forms.filterValue === 'all'}/>
-                <Form.Radio label='Forms' name='form' type='radio' value='form' onChange={filter}
-                            checked={forms.filterValue === 'form'}/>
-                <Form.Radio label='Wizards' name='wizard' type='radio' value='wizard' onChange={filter}
-                            checked={forms.filterValue === 'wizard'}/>
-            </Form.Group>
-        </Form>
-    );
-
-    const CreatedIn = (
         <Form>
             <Form.Group grouped>
                 <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
@@ -101,7 +77,7 @@ const FormList = () => {
         </Message></Container>
     }
     const isLoading = !status || status === EXECUTING || downloadFormState.status === EXECUTING;
-
+    const isEditable = (canEdit() && envContext.editable);
     return <Container>
         <Grid>
             <Grid.Row>
@@ -172,7 +148,6 @@ const FormList = () => {
 
                                 </Table.Row>
                             </Table.Header>
-
                             <Table.Body data-cy="form-table-data">
                                 {_.map(data, (form, index) => (
                                     <Table.Row key={form._id}>
@@ -193,7 +168,7 @@ const FormList = () => {
                                                                     {envContext.editable ?
                                                                         <Button circular size='mini' primary
                                                                                 icon="download"
-                                                                                onClick={(event) => download(form._id, form.name)}/> : null}
+                                                                                onClick={() => download(form._id, form.name)}/> : null}
                                                                     <Label
                                                                         size="medium">Created {moment(form.created).fromNow()}</Label>
                                                                     <Label
@@ -209,17 +184,20 @@ const FormList = () => {
                                         <Table.Cell>{form.display ? form.display : 'form'}</Table.Cell>
                                         <Table.Cell>
                                             <Button.Group>
-                                                <DeleteFormButton form={form}
-                                                                  onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form._id)}/>
-                                                {envContext.editable ? <React.Fragment><Button.Or/>
-                                                    <Button data-cy="edit-form" positive
-                                                            onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button></React.Fragment> : null}
-                                                <Button.Or/>
+                                                {canEdit() ? <React.Fragment>
+                                                    <DeleteFormButton form={form}
+                                                                      onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form._id)}/>
+                                                    {envContext.editable ? <React.Fragment><Button.Or/>
+                                                        <Button data-cy="edit-form" positive
+                                                                onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button></React.Fragment> : null}
+                                                    <Button.Or/>
+                                                </React.Fragment> : null}
                                                 <Button primary data-cy="preview-form"
                                                         onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
-                                                <Button.Or/>
-                                                <Button secondary data-cy="promote-form"
-                                                        onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button>
+                                                {canPromote() ? <React.Fragment><Button.Or/>
+                                                        <Button secondary data-cy="promote-form"
+                                                                onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button></React.Fragment>
+                                                    : null}
                                             </Button.Group>
                                         </Table.Cell>
                                     </Table.Row>
@@ -228,7 +206,7 @@ const FormList = () => {
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.HeaderCell colSpan={1}>{total} forms</Table.HeaderCell>
-                                    {total > limit ? <Table.HeaderCell colSpan={2}>
+                                    {total > limit ? <Table.HeaderCell colSpan={isEditable ? 2 : 3}>
                                         <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                                     activePage={activePage}
                                                     ellipsisItem={{
@@ -247,14 +225,13 @@ const FormList = () => {
                                                     nextItem={{content: <Icon name='angle right'/>, icon: true}}
                                                     onPageChange={handlePaginationChange}/>
                                     </Table.HeaderCell> : <Table.HeaderCell/>}
-                                    <Table.HeaderCell colSpan={2}>
-                                        {envContext.editable ?
-                                            <Button floated='right' icon labelPosition='left' primary size='small'
-                                                    onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
-                                                    data-cy="create-form">
-                                                <Icon name='wpforms'/>{t('form.create.label')}
-                                            </Button> : null}
-                                    </Table.HeaderCell>
+                                    {isEditable ? <Table.HeaderCell colSpan={2}>
+                                        <Button floated='right' icon labelPosition='left' primary size='small'
+                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
+                                                data-cy="create-form">
+                                            <Icon name='wpforms'/>{t('form.create.label')}
+                                        </Button>
+                                    </Table.HeaderCell> : null}
                                 </Table.Row>
                             </Table.Footer>
                         </Table>

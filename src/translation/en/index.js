@@ -36,6 +36,8 @@ const messages = {
         }
     },
     "error" : {
+        "not-found" : "Sorry the url you requested does not exist",
+        "not-authorized": "Sorry you do not have the necessary privileges to access this application. Please contact your support team",
         "general" : "An error occurred",
         "no-context": "An environment context has not been selected",
         "no-context-message": "You need to select an environment context in order to create forms"

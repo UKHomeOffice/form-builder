@@ -1,8 +1,8 @@
 import {mount, route} from 'navi'
 import React from "react";
 import PreviewFormPage from "./semantic/components/PreviewFormPage";
-import {withEnvContext} from "../formsRoute";
 import GovUKPreviewFormPage from "./govUK/components/GovUKPreviewFormPage";
+import {withEnvContext} from "../../../core/AppRouter";
 
 export default mount({
     '/': withEnvContext(route(req => {

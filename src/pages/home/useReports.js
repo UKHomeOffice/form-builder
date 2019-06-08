@@ -41,7 +41,7 @@ const useReports = () => {
         });
 
     instance.interceptors.response.use(null, (error) => {
-        const url = error.config.url;
+        const url = error.config ? error.config.url : "";
         const errorMessage = error.message;
         toast({
             type: 'error',
