@@ -5,6 +5,7 @@ import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import useEnvContext from "../../../core/context/useEnvContext";
 import {toast} from "react-semantic-toasts";
 import _ from 'lodash';
+import axios from "axios";
 
 const useEditForm = (formId) => {
 
@@ -22,9 +23,17 @@ const useEditForm = (formId) => {
             name: false
         }
     });
+
+    const isMounted = useRef(true);
+    const CancelToken = axios.CancelToken;
+    const cancelEdit = useRef(CancelToken.source());
+
+
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${formId}`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: cancelEdit.current.token
+            }
         }
     );
     const [state, saveRequest] = useApiRequest(
@@ -64,16 +73,24 @@ const useEditForm = (formId) => {
 
     useEffect(() => {
         savedCallback.current();
+        const cancelEditRef = cancelEdit.current;
+
+        return () => {
+            cancelEditRef.cancel("Cancelling edit request");
+            isMounted.current = false;
+        }
     }, [editForm.formId]);
 
 
     useEffect(() => {
         if (status === SUCCESS) {
-            setValues(editForm => ({
-                ...editForm,
-                data: response.data,
-                original: response.data
-            }));
+            if (isMounted.current) {
+                setValues(editForm => ({
+                    ...editForm,
+                    data: response.data,
+                    original: response.data
+                }));
+            }
         }
     }, [response, status, setValues]);
 
@@ -123,8 +140,8 @@ const useEditForm = (formId) => {
         });
     };
 
-    const backToForms = () => {
-        navigation.navigate(`/forms/${envContext.id}`);
+    const backToForms = async () => {
+        await navigation.navigate(`/forms/${envContext.id}`);
     };
 
     const openPreview = () => {

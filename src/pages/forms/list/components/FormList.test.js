@@ -22,7 +22,9 @@ jest.mock('../useGetForms', () => () => {
         forms: {
             direction: null,
             data: formsData
-        }
+        },
+        canEdit: jest.fn,
+        canPromote: jest.fn,
     })
 });
 
