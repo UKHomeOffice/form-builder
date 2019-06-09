@@ -10,6 +10,7 @@ import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import {useKeycloak} from "react-keycloak";
 import config from "react-global-configuration"
+import axios from "axios";
 
 const useGetForms = () => {
     const navigation = useNavigation();
@@ -38,6 +39,10 @@ const useGetForms = () => {
             formName: null
         }
     };
+
+    const isMounted = useRef(true);
+
+
     const [forms, setValues] = useState(initialState);
 
 
@@ -53,22 +58,34 @@ const useGetForms = () => {
         {maxWait: 2000}
     );
 
+    const CancelToken = axios.CancelToken;
+
+    const wizardCountCancel = useRef(CancelToken.source());
+    const formsCountCancel = useRef(CancelToken.source());
+    const formsCancel = useRef(CancelToken.source());
+
     const [{status, response}, makeRequest] = useApiRequest(
         `/form?select=title,path,name,display,created,modified&${forms.filter}&limit=${forms.limit}${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: formsCancel.current.token
+            }
         }
     );
 
 
     const [wizardCountState, wizardStatsRequest] = useApiRequest(
         `/form?select=_id&display=wizard&type__ne=resource`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: wizardCountCancel.current.token
+            }
         }
     );
 
     const [formCountState, formStatsRequest] = useApiRequest(
         `/form?select=_id&type__ne=resource&display__ne=wizard`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: formsCountCancel.current.token
+            }
         }
     );
 
@@ -91,6 +108,7 @@ const useGetForms = () => {
     const formStatsCallback = useRef();
     const resetCallback = useRef();
 
+
     useEffect(() => {
         savedCallback.current = () => {
             setValues(forms => ({
@@ -103,7 +121,6 @@ const useGetForms = () => {
         };
 
         wizardStatsCallback.current = () => {
-
             wizardStatsRequest();
         };
 
@@ -159,43 +176,63 @@ const useGetForms = () => {
 
     useEffect(() => {
         savedCallback.current();
+        const formsLoad = formsCancel.current;
+        return () => {
+            formsLoad.cancel("Cancelling request to get forms");
+            isMounted.current = false;
+        }
     }, [forms.activePage, forms.searchTitle, forms.refresh, envContext, forms.filter]);
 
     useEffect(() => {
         resetCallback.current();
         wizardStatsCallback.current();
         formStatsCallback.current();
+        const wizard = wizardCountCancel.current;
+        const forms = formsCountCancel.current;
+
+        return () => {
+            wizard.cancel("cancelling wizard count stats");
+            forms.cancel("cancelling form count stats");
+            isMounted.current = false;
+        }
     }, [envContext, forms.refresh]);
 
 
     useEffect(() => {
         if (status === SUCCESS) {
-            setValues(forms => ({
-                ...forms,
-                refresh: false,
-                data: response.data,
-                numberOnPage: response.data.length,
-                total: parseInt(response.headers['content-range'].split('/')[1])
-            }));
+            if (isMounted.current) {
+                setValues(forms => ({
+                    ...forms,
+                    refresh: false,
+                    data: response.data,
+                    numberOnPage: response.data.length,
+                    total: parseInt(response.headers['content-range'].split('/')[1])
+                }));
+            }
+
         }
     }, [response, status, setValues]);
 
 
     useEffect(() => {
         if (wizardCountState.status === SUCCESS) {
-            setValues(forms => ({
-                ...forms,
-                numberOfWizards: parseInt(wizardCountState.response.headers['content-range'].split('/')[1])
-            }));
+            if (isMounted.current) {
+                setValues(forms => ({
+                    ...forms,
+                    numberOfWizards: parseInt(wizardCountState.response.headers['content-range'].split('/')[1])
+                }));
+            }
         }
     }, [wizardCountState, setValues]);
 
     useEffect(() => {
         if (formCountState.status === SUCCESS) {
-            setValues(forms => ({
-                ...forms,
-                numberOfForms: parseInt(formCountState.response.headers['content-range'].split('/')[1])
-            }));
+            if (isMounted.current) {
+                setValues(forms => ({
+                    ...forms,
+                    numberOfForms: parseInt(formCountState.response.headers['content-range'].split('/')[1])
+                }));
+            }
         }
     }, [formCountState, setValues]);
 
@@ -321,7 +358,7 @@ const useGetForms = () => {
     const canEdit = () => {
         const roles = keycloak.tokenParsed.realm_access.roles;
         return _.intersectionWith(config.get('keycloak.edit-roles'), roles).length >= 1;
-    }
+    };
 
     return {
         handleSort,

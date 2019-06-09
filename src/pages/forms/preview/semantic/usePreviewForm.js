@@ -4,7 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {SUCCESS} from "../../../../core/api/actionTypes";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import {Formio} from "react-formio";
-import govukFormioTemplate from "../govUK/govuk-formio-template";
+import axios from "axios";
 
 const usePreviewForm = (formId) => {
 
@@ -16,9 +16,14 @@ const usePreviewForm = (formId) => {
         formId: formId,
         submission: null
     });
+
+    const isMounted = useRef(true);
+    const CancelToken = axios.CancelToken;
+    const cancelPreview = useRef(CancelToken.source());
+
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${formId}`, {
-            verb: 'get', params: {}
+            verb: 'get', params: { cancelToken: cancelPreview.current.token}
         }
     );
 
@@ -39,7 +44,10 @@ const usePreviewForm = (formId) => {
 
     useEffect(() => {
         savedCallback.current();
+        const cancelPreviewRef = cancelPreview.current;
         return () => {
+            cancelPreviewRef.cancel("Cancelling preview request");
+            isMounted.current = false;
             Formio.Templates.framework="semantic";
         }
     }, [form.formId]);
@@ -47,15 +55,17 @@ const usePreviewForm = (formId) => {
 
     useEffect(() => {
         if (status === SUCCESS) {
-            setValue(form => ({
-                ...form,
-                data: response.data
-            }));
+            if (isMounted.current) {
+                setValue(form => ({
+                    ...form,
+                    data: response.data
+                }));
+            }
         }
     }, [response, status, setValue]);
 
-    const backToForms = () => {
-        navigation.navigate(`/forms/${envContext.id}`, {replace: true});
+    const backToForms = async () => {
+        await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
 
     const previewSubmission = (submission) => {
@@ -65,8 +75,8 @@ const usePreviewForm = (formId) => {
         }));
     };
 
-    const previewInGDS = () => {
-        navigation.navigate(`/forms/${envContext.id}/${formId}/preview/gov-uk`, {replace: true});
+    const previewInGDS = async () => {
+        await navigation.navigate(`/forms/${envContext.id}/${formId}/preview/gov-uk`, {replace: true});
     };
 
     return {

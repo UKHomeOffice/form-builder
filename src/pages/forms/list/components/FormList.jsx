@@ -72,7 +72,7 @@ const FormList = () => {
             <Icon name='warning circle'/>
             <Message.Content>
                 <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.list.failure.forms-load', {error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
+                {t('form.list.failure.forms-load', { error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
             </Message.Content>
         </Message></Container>
     }
