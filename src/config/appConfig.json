@@ -19,7 +19,7 @@
     "editable": true,
     "variable-replacements": [
       {
-        "{$.environmentContext.platformDataUrl}": "http://www.google.co.uk"
+        "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
       },
       {
         "{$.staffDetailsContext.staffId}": "{{guid}}"

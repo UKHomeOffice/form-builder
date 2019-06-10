@@ -176,11 +176,6 @@ const useGetForms = () => {
 
     useEffect(() => {
         savedCallback.current();
-        const formsLoad = formsCancel.current;
-        return () => {
-            formsLoad.cancel("Cancelling request to get forms");
-            isMounted.current = false;
-        }
     }, [forms.activePage, forms.searchTitle, forms.refresh, envContext, forms.filter]);
 
     useEffect(() => {
@@ -189,8 +184,9 @@ const useGetForms = () => {
         formStatsCallback.current();
         const wizard = wizardCountCancel.current;
         const forms = formsCountCancel.current;
-
+        const formsLoad = formsCancel.current;
         return () => {
+            formsLoad.cancel("Cancelling request to get forms");
             wizard.cancel("cancelling wizard count stats");
             forms.cancel("cancelling form count stats");
             isMounted.current = false;

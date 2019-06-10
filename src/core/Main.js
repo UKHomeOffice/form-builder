@@ -2,14 +2,22 @@ import React from 'react';
 import AppMenu from "../common/AppMenu";
 import Footer from "../common/Footer";
 import {NavNotFoundBoundary, useCurrentRoute} from "react-navi";
-import PageNotFound from "../common/PageNotFound";
 import Notification from "../common/Notification";
 import AppHeader from "../common/AppHeader";
-import {Container} from "semantic-ui-react";
+import {Container, Message} from "semantic-ui-react";
 import config from 'react-global-configuration'
+import {useTranslation} from "react-i18next";
 
 export const Main = ({children}) => {
     const route = useCurrentRoute();
+    const {t} = useTranslation();
+
+    const pageNotFound = () => {
+        return <Container><Message negative size='massive'>
+            <Message.Header>404</Message.Header>
+            <p>{t('error.not-found')}</p>
+        </Message></Container>
+    };
     if (!config.get('gov-uk-enabled', false)) {
         return <React.Fragment>
             <AppMenu/>
@@ -17,7 +25,7 @@ export const Main = ({children}) => {
                 <AppHeader/>
                 <Notification/>
             </Container>
-            <NavNotFoundBoundary render={PageNotFound}>
+            <NavNotFoundBoundary render={pageNotFound}>
                 {children || null}
             </NavNotFoundBoundary>
             <Footer/>
@@ -33,7 +41,7 @@ export const Main = ({children}) => {
                     <Notification/>
                 </Container></React.Fragment> : null
         }
-        <NavNotFoundBoundary render={PageNotFound}>
+        <NavNotFoundBoundary render={pageNotFound}>
             {children || null}
         </NavNotFoundBoundary>
         <Footer/>
