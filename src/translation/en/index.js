@@ -132,6 +132,10 @@ const messages = {
         "cancel": {
             "label":"Cancel"
         },
+        "schema": {
+          "label" : "Form schema view",
+          "view": "View form schema"
+        },
         "preview" : {
             "back-to-forms" : "Back to {{env}} forms",
             "failure" : {

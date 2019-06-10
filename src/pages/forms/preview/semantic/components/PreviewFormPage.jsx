@@ -6,10 +6,11 @@ import {useTranslation} from 'react-i18next';
 import PreviewFormComponent from "../../../common/components/PreviewFormComponent";
 import config from 'react-global-configuration';
 import useEnvContext from "../../../../../core/context/useEnvContext";
+import SchemaModal from "../../../schema/SchemaModal";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission, backToForms} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView} = usePreviewForm(formId);
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
@@ -33,14 +34,19 @@ const PreviewFormPage = ({formId}) => {
                 </Divider>
             </Grid.Column>
         </Grid.Row>
-
+        {form.data ? <SchemaModal form={form.data} open={form.openSchemaView} close={closeSchemaView}/> : null}
         <Grid.Row>
             <Grid.Column>
                 <Container><Button data-cy="backToForms" onClick={() => {
                     backToForms();
-                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button> {config.get('gov-uk-enabled', false) ?<Button data-cy="govUKPreview" onClick={() => {
-                    window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
-                }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
+                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button> <Button data-cy="viewSchema"
+                                                                                                    onClick={() => {
+                                                                                                        openSchemaView();
+                                                                                                    }}
+                                                                                                    secondary>{t('form.schema.view', {env: envContext.id})}</Button> {config.get('gov-uk-enabled', false) ?
+                    <Button data-cy="govUKPreview" onClick={() => {
+                        window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
+                    }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>

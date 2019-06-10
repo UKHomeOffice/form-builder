@@ -14,7 +14,8 @@ const usePreviewForm = (formId) => {
     const [form, setValue] = useState({
         data: null,
         formId: formId,
-        submission: null
+        submission: null,
+        openSchemaView: false
     });
 
     const isMounted = useRef(true);
@@ -23,14 +24,14 @@ const usePreviewForm = (formId) => {
 
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${formId}`, {
-            verb: 'get', params: { cancelToken: cancelPreview.current.token}
+            verb: 'get', params: {cancelToken: cancelPreview.current.token}
         }
     );
 
     const savedCallback = useRef();
 
     const callback = () => {
-        Formio.Templates.framework="semantic";
+        Formio.Templates.framework = "semantic";
         setValue(form => ({
             ...form,
             data: null
@@ -48,7 +49,7 @@ const usePreviewForm = (formId) => {
         return () => {
             cancelPreviewRef.cancel("Cancelling preview request");
             isMounted.current = false;
-            Formio.Templates.framework="semantic";
+            Formio.Templates.framework = "semantic";
         }
     }, [form.formId]);
 
@@ -79,13 +80,29 @@ const usePreviewForm = (formId) => {
         await navigation.navigate(`/forms/${envContext.id}/${formId}/preview/gov-uk`, {replace: true});
     };
 
+    const openSchemaView = () => {
+        setValue(form => ({
+            ...form,
+            openSchemaView: true
+        }));
+    };
+
+    const closeSchemaView = () => {
+        setValue(form => ({
+            ...form,
+            openSchemaView: false
+        }));
+    }
+
     return {
         previewSubmission,
         status,
         form,
         response,
         backToForms,
-        previewInGDS
+        previewInGDS,
+        openSchemaView,
+        closeSchemaView
     }
 };
 
