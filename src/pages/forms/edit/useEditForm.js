@@ -1,16 +1,18 @@
 import {useNavigation} from "react-navi";
 import {useEffect, useRef, useState} from "react";
 import useApiRequest from "../../../core/api";
-import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
+import {ERROR, EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import useEnvContext from "../../../core/context/useEnvContext";
 import {toast} from "react-semantic-toasts";
 import _ from 'lodash';
 import axios from "axios";
+import useCommonFormUtils from "../common/useCommonFormUtils";
 
 const useEditForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
+    const {handleForm} = useCommonFormUtils();
 
     const [editForm, setValues] = useState({
         data: null,
@@ -36,7 +38,7 @@ const useEditForm = (formId) => {
             }
         }
     );
-    const [state, saveRequest] = useApiRequest(
+    const [state, editRequest] = useApiRequest(
         `/form/${formId}`, {
             verb: 'put', params: editForm.data
         }
@@ -46,8 +48,10 @@ const useEditForm = (formId) => {
 
     const editSuccessCallback = useRef();
 
-    const onSuccessfulEdit = () => {
-        navigation.navigate(`/forms/${envContext.id}`, {replace: true});
+    const editFailedCallback = useRef();
+
+    const onSuccessfulEdit = async () => {
+        await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
         toast({
             type: 'success',
             icon: 'check circle',
@@ -69,6 +73,16 @@ const useEditForm = (formId) => {
     useEffect(() => {
         savedCallback.current = callback;
         editSuccessCallback.current = onSuccessfulEdit;
+        editFailedCallback.current = () => {
+            toast({
+                type: 'error',
+                icon: 'warning circle',
+                title: `${editForm.data.title} failed to update`,
+                description: JSON.stringify(state.response.data),
+                animation: 'scale',
+                time: 10000
+            });
+        }
     });
 
     useEffect(() => {
@@ -95,10 +109,17 @@ const useEditForm = (formId) => {
     }, [response, status, setValues]);
 
     useEffect(() => {
+        const onSuccessEdit = async () => {
+            await editSuccessCallback.current();
+        };
         if (state.status === SUCCESS) {
-            editSuccessCallback.current();
+            onSuccessEdit();
+            return;
         }
-    }, [state, navigation]);
+        if (state.status === ERROR) {
+            editFailedCallback.current();
+        }
+    }, [state]);
 
     const updateField = (target, value) => {
         const hasValue = value && value !== '';
@@ -167,6 +188,9 @@ const useEditForm = (formId) => {
     };
     const changeDisplay = (value) => {
         editForm.data.display = value;
+        if (value === 'form') {
+            handleForm(editForm.data);
+        }
         setValues({
             ...editForm
         });
@@ -183,7 +207,7 @@ const useEditForm = (formId) => {
         closePreview,
         openPreview,
         formInvalid,
-        saveRequest,
+        editRequest,
         state,
         changeDisplay
     }

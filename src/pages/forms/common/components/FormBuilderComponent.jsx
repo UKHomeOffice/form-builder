@@ -61,6 +61,7 @@ const FormBuilderComponent = ({ form,
                 </Form.Field>
                 <Form.Field>
                     <Form.Dropdown label={t(`${messageKeyPrefix}.form-type.select`)}
+                                   data-cy="displayType"
                                    placeholder={t(`${messageKeyPrefix}.form-type.select-placeholder`)}
                                    openOnFocus
                                    selection

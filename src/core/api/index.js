@@ -56,8 +56,7 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             if (axios.isCancel(err)) {
                 console.log(err.message);
             } else {
-
-                dispatch(error(response, err));
+                dispatch(error(err.response, err));
             }
         }
     };

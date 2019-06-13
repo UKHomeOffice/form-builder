@@ -1,4 +1,5 @@
 import {useTranslation} from "react-i18next";
+import FormioUtils from "formiojs/utils";
 
 const useCommonFormUtils = () => {
     const {t} = useTranslation();
@@ -64,9 +65,35 @@ const useCommonFormUtils = () => {
             }
         ];
     };
+
+    const handleForm = (form) => {
+        if (!form.components) {
+            form.components = [];
+        }
+        const submitButton = FormioUtils.getComponent(form.components, 'submit');
+        if (!submitButton) {
+            form.components.push({
+                "autofocus": false,
+                "input": true,
+                "label": "Submit",
+                "tableView": false,
+                "key": "submit",
+                "size": "md",
+                "leftIcon": "",
+                "rightIcon": "",
+                "block": false,
+                "action": "submit",
+                "disableOnInvalid": false,
+                "theme": "primary",
+                "type": "button"
+            });
+        }
+    };
+
     return {
         formChoices,
-        submissionAccess
+        submissionAccess,
+        handleForm
     }
 };
 

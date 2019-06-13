@@ -17,7 +17,7 @@ const useCreateForm = (formContent = null) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
-    const {submissionAccess} = useCommonFormUtils();
+    const {submissionAccess, handleForm} = useCommonFormUtils();
     const {log} = useLogger();
 
     const [form, setValues] = useState({
@@ -40,11 +40,11 @@ const useCreateForm = (formContent = null) => {
             try {
                 return await createForm(axios, envContext, form.data, submissionAccess, log);
             } catch (error) {
-               throw {
-                   response: {
-                       data: error.toString()
-                   }
-               }
+                throw {
+                    response: {
+                        data: error.toString()
+                    }
+                }
             }
         }, [{
             message: `Creating form ${formName}`,
@@ -142,6 +142,9 @@ const useCreateForm = (formContent = null) => {
 
     const changeDisplay = (value) => {
         form.data.display = value;
+        if (value === 'form') {
+            handleForm(form.data);
+        }
         setValues({
             ...form
         });
