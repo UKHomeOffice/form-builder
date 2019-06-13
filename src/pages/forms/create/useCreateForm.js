@@ -145,7 +145,7 @@ const useCreateForm = (formContent = null) => {
         setValues({
             ...form
         });
-    }
+    };
 
     return {
         formInvalid,

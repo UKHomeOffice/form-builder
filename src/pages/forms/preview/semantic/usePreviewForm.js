@@ -5,6 +5,7 @@ import {SUCCESS} from "../../../../core/api/actionTypes";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import {Formio} from "react-formio";
 import axios from "axios";
+import _ from 'lodash';
 
 const usePreviewForm = (formId) => {
 
@@ -92,7 +93,20 @@ const usePreviewForm = (formId) => {
             ...form,
             openSchemaView: false
         }));
-    }
+    };
+
+    const duplicate = async () => {
+        const copiedForm = _.cloneDeep(form.data);
+        delete copiedForm._id;
+        copiedForm.title = "Copy of " + form.data.title;
+        copiedForm.name = "Copy of " + form.data.name;
+        copiedForm.path = "Copy of " + form.data.path;
+
+        await navigation.navigate(`/forms/${envContext.id}/create/duplicate`, {
+            body: JSON.stringify(copiedForm),
+            replace: true
+        })
+    };
 
     return {
         previewSubmission,
@@ -102,7 +116,8 @@ const usePreviewForm = (formId) => {
         backToForms,
         previewInGDS,
         openSchemaView,
-        closeSchemaView
+        closeSchemaView,
+        duplicate
     }
 };
 

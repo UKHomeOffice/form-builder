@@ -71,6 +71,9 @@ const messages = {
             "file-upload" : {
                 "no-form-content" : "No form content found"
             },
+            "duplicate": {
+                "no-form-content" : "No form content found"
+            },
             "not-allowed": {
                 "title": "Not allowed",
                 "message": "Environment context does not allow creation of forms directly"
@@ -137,6 +140,7 @@ const messages = {
           "view": "View form schema"
         },
         "preview" : {
+            "duplicate" : "Duplicate form",
             "back-to-forms" : "Back to {{env}} forms",
             "failure" : {
                 "gov-uk-not-configured" : "Gov UK styling is not configured"

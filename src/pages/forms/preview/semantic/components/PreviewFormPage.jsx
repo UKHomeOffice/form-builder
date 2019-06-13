@@ -10,7 +10,7 @@ import SchemaModal from "../../../schema/SchemaModal";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate} = usePreviewForm(formId);
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
@@ -43,10 +43,17 @@ const PreviewFormPage = ({formId}) => {
                                                                                                     onClick={() => {
                                                                                                         openSchemaView();
                                                                                                     }}
-                                                                                                    secondary>{t('form.schema.view', {env: envContext.id})}</Button> {config.get('gov-uk-enabled', false) ?
-                    <Button data-cy="govUKPreview" onClick={() => {
-                        window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
-                    }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
+                                                                                                    secondary>{t('form.schema.view', {env: envContext.id})}</Button>
+
+                    <Button data-cy="duplicate"
+                            onClick={() => {
+                                duplicate()
+                            }}
+                            secondary>{t('form.preview.duplicate', {env: envContext.id})}</Button>
+                    {config.get('gov-uk-enabled', false) ?
+                        <Button data-cy="govUKPreview" onClick={() => {
+                            window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
+                        }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
