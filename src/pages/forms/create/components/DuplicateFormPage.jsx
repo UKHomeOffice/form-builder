@@ -19,7 +19,9 @@ const DuplicateFormPage = ({formContent}) => {
         setValues,
         updateField,
         openPreview,
-        closePreview
+        closePreview,
+        changeDisplay
+
     } = useCreateForm(formContent);
 
     if (!formContent) {
@@ -60,6 +62,7 @@ const DuplicateFormPage = ({formContent}) => {
                 messageKeyPrefix={"form.create"}
                 backToForms={backToForms}
                 formInvalid={formInvalid}
+                changeDisplay={changeDisplay}
                 updateForm={(jsonSchema) =>
                     setValues({
                         ...form,
