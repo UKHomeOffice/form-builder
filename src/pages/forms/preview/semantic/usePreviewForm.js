@@ -108,6 +108,10 @@ const usePreviewForm = (formId) => {
         })
     };
 
+    const edit = async () => {
+        await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`, {replace: true});
+    };
+
     return {
         previewSubmission,
         status,
@@ -117,7 +121,8 @@ const usePreviewForm = (formId) => {
         previewInGDS,
         openSchemaView,
         closeSchemaView,
-        duplicate
+        duplicate,
+        edit
     }
 };
 

@@ -51,7 +51,7 @@ const useEditForm = (formId) => {
     const editFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
+        await navigation.navigate(`/forms/${envContext.id}/${editForm.data._id}/preview`, {replace: true});
         toast({
             type: 'success',
             icon: 'check circle',

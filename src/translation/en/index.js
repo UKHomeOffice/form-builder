@@ -157,6 +157,7 @@ const messages = {
         },
         "edit": {
             "label" : "Edit",
+            "label-form" : "Edit form",
             "failure" : {
                 "form-load": "Failed to load form due to {{error}}",
                 "missing-form" : "Form {{formId}} does not exist",

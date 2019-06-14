@@ -11,7 +11,7 @@ import useRoles from "../../../common/useRoles";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit} = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
@@ -57,6 +57,12 @@ const PreviewFormPage = ({formId}) => {
                                     duplicate()
                                 }}
                                 secondary>{t('form.preview.duplicate', {env: envContext.id})}
+                        </Button>
+                        <Button data-cy="edit"
+                                onClick={() => {
+                                    edit()
+                                }}
+                                primary>{t('form.edit.label-form')}
                         </Button>
 
                     </React.Fragment> : null}
