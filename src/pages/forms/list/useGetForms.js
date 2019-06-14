@@ -8,7 +8,6 @@ import fileDownload from 'js-file-download';
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
-import config from "react-global-configuration"
 import axios from "axios";
 
 const useGetForms = () => {
@@ -105,6 +104,7 @@ const useGetForms = () => {
     const wizardStatsCallback = useRef();
     const formStatsCallback = useRef();
     const resetCallback = useRef();
+    const cancelRequests = useRef();
 
 
     useEffect(() => {
@@ -163,6 +163,16 @@ const useGetForms = () => {
 
         executeDownloadCallback.current = () => {
             executeDownload();
+        };
+
+        cancelRequests.current = () => {
+            const isFormsPath = navigation.getCurrentValue().url.href.startsWith("/forms/");
+            if (!isFormsPath) {
+                formsCancel.current.cancel("Cancelling request to get forms");
+                wizardCountCancel.current.cancel("cancelling wizard count stats");
+                formsCountCancel.current.cancel("cancelling form count stats");
+                isMounted.current = false;
+            }
         }
     });
 
@@ -180,14 +190,8 @@ const useGetForms = () => {
         resetCallback.current();
         wizardStatsCallback.current();
         formStatsCallback.current();
-        const wizard = wizardCountCancel.current;
-        const forms = formsCountCancel.current;
-        const formsLoad = formsCancel.current;
         return () => {
-            formsLoad.cancel("Cancelling request to get forms");
-            wizard.cancel("cancelling wizard count stats");
-            forms.cancel("cancelling form count stats");
-            isMounted.current = false;
+            cancelRequests.current();
         }
     }, [envContext, forms.refresh]);
 
