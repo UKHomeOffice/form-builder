@@ -16,7 +16,15 @@ describe('useGetForms', () => {
 
         const naviModule = require('react-navi');
         naviModule.useNavigation = jest.fn(() => {
-            return 'fake bar'
+            return {
+                getCurrentValue: () => {
+                    return {
+                        url: {
+                            href: '/forms'
+                        }
+                    }
+                }
+            }
         });
 
         const contextModule = require('../../../core/context/useEnvContext');
@@ -63,7 +71,15 @@ describe('useGetForms', () => {
     it('gets forms and status SUCCESS', () => {
         const naviModule = require('react-navi');
         naviModule.useNavigation = jest.fn(() => {
-            return 'fake bar'
+            return {
+                getCurrentValue: () => {
+                    return {
+                        url: {
+                            href: '/forms'
+                        }
+                    }
+                }
+            }
         });
 
         const apiModule = require('../../../core/api/index');
