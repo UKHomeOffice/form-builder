@@ -26,6 +26,7 @@ import useEnvContext from "../../../../core/context/useEnvContext";
 import DeleteFormButton from "../../common/components/DeleteFormButton";
 import _ from 'lodash';
 import moment from "moment";
+import useRoles from "../../common/useRoles";
 
 const FormList = () => {
     const {
@@ -45,13 +46,11 @@ const FormList = () => {
         handlePromotion,
         filter,
         handleFilterAccordion,
-        canPromote,
-        canEdit
     } = useGetForms();
 
+    const {canPromote, canEdit} = useRoles();
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
-
 
     const FormType = (
         <Form>
@@ -165,7 +164,7 @@ const FormList = () => {
                                                                 <Item.Meta>Identifier: {form._id}</Item.Meta>
                                                                 <Item.Meta>Path: {form.path}</Item.Meta>
                                                                 <Item.Extra>
-                                                                    {envContext.editable ?
+                                                                    {isEditable ?
                                                                         <Button circular size='mini' primary
                                                                                 icon="download"
                                                                                 onClick={() => download(form._id, form.name)}/> : null}

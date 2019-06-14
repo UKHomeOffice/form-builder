@@ -22,9 +22,7 @@ jest.mock('../useGetForms', () => () => {
         forms: {
             direction: null,
             data: formsData
-        },
-        canEdit: jest.fn,
-        canPromote: jest.fn,
+        }
     })
 });
 
@@ -42,7 +40,15 @@ describe('FormList', () => {
             return {
                 envContext: {}
             }
-        }
+        };
+        const useRoles = require('../../../forms/common/useRoles');
+        useRoles.default = () => {
+            return {
+                canEdit: () => {},
+                canPromote: () => {}
+            }
+        };
+
     });
     it('renders a semantic ui table of forms', async () => {
 

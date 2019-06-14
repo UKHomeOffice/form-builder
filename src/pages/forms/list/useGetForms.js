@@ -8,7 +8,6 @@ import fileDownload from 'js-file-download';
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
-import {useKeycloak} from "react-keycloak";
 import config from "react-global-configuration"
 import axios from "axios";
 
@@ -16,7 +15,6 @@ const useGetForms = () => {
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {t} = useTranslation();
-    const [keycloak] = useKeycloak();
 
     const initialState = {
         column: null,
@@ -346,16 +344,6 @@ const useGetForms = () => {
     };
 
 
-    const canPromote = () => {
-        const roles = keycloak.tokenParsed.realm_access.roles;
-        return _.intersectionWith(config.get('keycloak.promotion-roles'), roles).length >= 1;
-    };
-
-    const canEdit = () => {
-        const roles = keycloak.tokenParsed.realm_access.roles;
-        return _.intersectionWith(config.get('keycloak.edit-roles'), roles).length >= 1;
-    };
-
     return {
         handleSort,
         navigation,
@@ -372,9 +360,7 @@ const useGetForms = () => {
         downloadFormState,
         handlePromotion,
         filter,
-        handleFilterAccordion,
-        canEdit,
-        canPromote
+        handleFilterAccordion
     }
 };
 

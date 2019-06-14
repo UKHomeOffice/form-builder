@@ -7,10 +7,12 @@ import PreviewFormComponent from "../../../common/components/PreviewFormComponen
 import config from 'react-global-configuration';
 import useEnvContext from "../../../../../core/context/useEnvContext";
 import SchemaModal from "../../../schema/SchemaModal";
+import useRoles from "../../../common/useRoles";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate} = usePreviewForm(formId);
+    const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
@@ -39,17 +41,26 @@ const PreviewFormPage = ({formId}) => {
             <Grid.Column>
                 <Container><Button data-cy="backToForms" onClick={() => {
                     backToForms();
-                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button> <Button data-cy="viewSchema"
-                                                                                                    onClick={() => {
-                                                                                                        openSchemaView();
-                                                                                                    }}
-                                                                                                    secondary>{t('form.schema.view', {env: envContext.id})}</Button>
+                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
 
-                    <Button data-cy="duplicate"
-                            onClick={() => {
-                                duplicate()
-                            }}
-                            secondary>{t('form.preview.duplicate', {env: envContext.id})}</Button>
+
+                    {canEdit() ? <React.Fragment>
+                        <Button data-cy="viewSchema"
+                                onClick={() => {
+                                    openSchemaView();
+                                }}
+                                secondary>{t('form.schema.view', {env: envContext.id})}
+                        </Button>
+
+                        <Button data-cy="duplicate"
+                                onClick={() => {
+                                    duplicate()
+                                }}
+                                secondary>{t('form.preview.duplicate', {env: envContext.id})}
+                        </Button>
+
+                    </React.Fragment> : null}
+
                     {config.get('gov-uk-enabled', false) ?
                         <Button data-cy="govUKPreview" onClick={() => {
                             window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
