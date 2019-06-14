@@ -96,7 +96,15 @@ describe('useGetForms', () => {
     it('can handle title search', () => {
         const naviModule = require('react-navi');
         naviModule.useNavigation = jest.fn(() => {
-            return 'fake bar'
+            return {
+                getCurrentValue: () => {
+                    return {
+                        url: {
+                            href: '/forms'
+                        }
+                    }
+                }
+            }
         });
         const makeRequest = jest.fn();
         const apiModule = require('../../../core/api/index');
