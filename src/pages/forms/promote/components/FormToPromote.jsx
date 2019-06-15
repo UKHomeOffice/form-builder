@@ -29,7 +29,9 @@ const FormToPromote = ({form, setValue, backToForms}) => {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
+
                     <Grid.Column textAlign="right">
+                        <div className={'ui stackable two buttons'}>
                         <Button size='large' onClick={() => {
                             backToForms()
                         }} content={t('form.cancel.label')}/>
@@ -42,6 +44,7 @@ const FormToPromote = ({form, setValue, backToForms}) => {
                             {t('form.promote.next')}
                             <Icon name='right arrow'/>
                         </Button>
+                        </div>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

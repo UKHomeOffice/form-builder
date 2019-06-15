@@ -15,12 +15,12 @@ const Environment = ({form, setValue, isDisabled}) => {
         }));
     };
 
-    return <React.Fragment>
-        <Container>
-            <Grid>
-                <Grid.Row>
-                    <Grid.Column>
-                        <Grid columns={3} divided>
+    return <Container>
+        <Grid>
+            <Grid.Row>
+                <Grid.Column>
+                    <Container>
+                        <Grid columns={3} stackable divided>
                             {
                                 _.map(_.chunk(availableEnvironments(envContext.id), 3), (environments) => {
                                     return <Grid.Row key={uuid4()}>
@@ -53,10 +53,12 @@ const Environment = ({form, setValue, isDisabled}) => {
                                 })
                             }
                         </Grid>
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                    <Grid.Column textAlign="right">
+                    </Container>
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column textAlign="right">
+                    <div className={'ui stackable two buttons'}>
                         <Button size='large' secondary icon labelPosition='left' onClick={() => {
                             setValue(form => ({
                                 ...form,
@@ -76,11 +78,11 @@ const Environment = ({form, setValue, isDisabled}) => {
                             {t('form.promote.next')}
                             <Icon name='right arrow'/>
                         </Button>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-        </Container>
-    </React.Fragment>;
+                    </div>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+    </Container>
 };
 
 export default Environment;
