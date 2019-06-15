@@ -8,6 +8,7 @@ import config from 'react-global-configuration';
 import useEnvContext from "../../../../../core/context/useEnvContext";
 import SchemaModal from "../../../schema/SchemaModal";
 import useRoles from "../../../common/useRoles";
+import './PreviewFormPage.scss';
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
@@ -39,11 +40,11 @@ const PreviewFormPage = ({formId}) => {
         {form.data ? <SchemaModal form={form.data} open={form.openSchemaView} close={closeSchemaView}/> : null}
         <Grid.Row>
             <Grid.Column>
-                <Container><Button data-cy="backToForms" onClick={() => {
+                <Container>
+                <div className={canEdit() ? 'ui stackable five buttons' : 'ui stackable two buttons'}>
+                <Button data-cy="backToForms" onClick={() => {
                     backToForms();
                 }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
-
-
                     {canEdit() ? <React.Fragment>
                         <Button data-cy="viewSchema"
                                 onClick={() => {
@@ -66,11 +67,12 @@ const PreviewFormPage = ({formId}) => {
                         </Button>
 
                     </React.Fragment> : null}
-
                     {config.get('gov-uk-enabled', false) ?
                         <Button data-cy="govUKPreview" onClick={() => {
                             window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
-                        }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
+                        }} color="teal">{t('form.preview.govuk.open')}</Button> : null}
+                </div>
+                </Container>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
