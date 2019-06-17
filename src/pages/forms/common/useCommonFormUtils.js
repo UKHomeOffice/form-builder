@@ -90,7 +90,7 @@ const useCommonFormUtils = () => {
                 });
             }
         } else {
-            if (submitButton) {
+            if (submitButton && form.display === 'wizard') {
                 _.remove(form.components, (component) => {
                     return component.key === 'submit';
                 })
