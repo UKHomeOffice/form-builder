@@ -6,7 +6,7 @@ import {
     Dimmer,
     Form,
     Grid,
-    Icon,
+    Icon, Image,
     Input,
     Item,
     Label,
@@ -214,7 +214,7 @@ const FormList = () => {
                                                     onPageChange={handlePaginationChange}/>
                                     </Table.HeaderCell> : <Table.HeaderCell/>}
                                     {isEditable ? <Table.HeaderCell colSpan={2}>
-                                        <Button floated='right' icon labelPosition='left' primary size='small'
+                                        <Button floated={isMobile? null: 'right'} icon labelPosition='left' primary size='small'
                                                 onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
                                                 data-cy="create-form">
                                             <Icon name='wpforms'/>{t('form.create.label')}
