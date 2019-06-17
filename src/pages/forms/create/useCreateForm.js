@@ -120,6 +120,7 @@ const useCreateForm = (formContent = null) => {
     };
 
     const openPreview = () => {
+        handleForm(form.data);
         setValues({
             ...form,
             displayPreview: true
@@ -142,9 +143,7 @@ const useCreateForm = (formContent = null) => {
 
     const changeDisplay = (value) => {
         form.data.display = value;
-        if (value === 'form') {
-            handleForm(form.data);
-        }
+        handleForm(form.data);
         setValues({
             ...form
         });
