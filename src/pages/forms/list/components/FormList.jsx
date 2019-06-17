@@ -12,21 +12,21 @@ import {
     Label,
     Loader,
     Menu,
-    Message,
-    Pagination,
+    Message, Pagination,
     Segment,
     Statistic,
     Table
 } from 'semantic-ui-react'
+import {isMobile} from 'react-device-detect';
 import useGetForms from "../useGetForms";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import "../../common/components/FormBuilderComponent.scss"
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../../../core/context/useEnvContext";
-import DeleteFormButton from "../../common/components/DeleteFormButton";
 import _ from 'lodash';
 import moment from "moment";
 import useRoles from "../../common/useRoles";
+import ButtonGroup from "./ButtonGroup";
 
 const FormList = () => {
     const {
@@ -48,7 +48,7 @@ const FormList = () => {
         handleFilterAccordion,
     } = useGetForms();
 
-    const {canPromote, canEdit} = useRoles();
+    const { canEdit} = useRoles();
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
 
@@ -71,7 +71,7 @@ const FormList = () => {
             <Icon name='warning circle'/>
             <Message.Content>
                 <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.list.failure.forms-load', { error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
+                {t('form.list.failure.forms-load', {error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
             </Message.Content>
         </Message></Container>
     }
@@ -82,7 +82,7 @@ const FormList = () => {
             <Grid.Row>
                 <Grid.Column>
                     <Segment raised>
-                        <Statistic.Group widths='three'>
+                        <Statistic.Group widths={isMobile ? 'one' : 'three'}>
                             <Statistic>
                                 <Statistic.Value>
                                     {forms.numberOfForms + forms.numberOfWizards}
@@ -182,22 +182,11 @@ const FormList = () => {
                                         <Table.Cell>{form.name}</Table.Cell>
                                         <Table.Cell>{form.display ? form.display : 'form'}</Table.Cell>
                                         <Table.Cell>
-                                            <Button.Group>
-                                                {canEdit() ? <React.Fragment>
-                                                    <DeleteFormButton form={form}
-                                                                      onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form._id)}/>
-                                                    {envContext.editable ? <React.Fragment><Button.Or/>
-                                                        <Button data-cy="edit-form" positive
-                                                                onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button></React.Fragment> : null}
-                                                    <Button.Or/>
-                                                </React.Fragment> : null}
-                                                <Button primary data-cy="preview-form"
-                                                        onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
-                                                {canPromote() ? <React.Fragment><Button.Or/>
-                                                        <Button secondary data-cy="promote-form"
-                                                                onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button></React.Fragment>
-                                                    : null}
-                                            </Button.Group>
+                                            <ButtonGroup form={form}
+                                                         handlePreview={handlePreview}
+                                                         handleEditForm={handleEditForm}
+                                                         handlePromotion={handlePromotion}
+                                                         handleOnSuccessfulDeletion={handleOnSuccessfulDeletion}/>
                                         </Table.Cell>
                                     </Table.Row>
                                 ))}
@@ -208,15 +197,15 @@ const FormList = () => {
                                     {total > limit ? <Table.HeaderCell colSpan={isEditable ? 2 : 3}>
                                         <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                                     activePage={activePage}
-                                                    ellipsisItem={{
-                                                        content: <Icon name='ellipsis horizontal'/>,
-                                                        icon: true
-                                                    }}
-                                                    firstItem={{
+                                                    ellipsisItem={isMobile ? null : {
+                                                             content: <Icon name='ellipsis horizontal'/>,
+                                                             icon: true
+                                                         }}
+                                                    firstItem={isMobile ? null: {
                                                         content: <Icon name='angle double left'/>,
                                                         icon: true
                                                     }}
-                                                    lastItem={{
+                                                    lastItem={isMobile? null: {
                                                         content: <Icon name='angle double right'/>,
                                                         icon: true
                                                     }}

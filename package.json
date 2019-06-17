@@ -50,6 +50,7 @@
     "navi": "^0.12.6",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
+    "react-device-detect": "^1.6.2",
     "react-dom": "^16.8.6",
     "react-formio": "^4.0.0-beta.28",
     "react-global-configuration": "^1.3.0",
