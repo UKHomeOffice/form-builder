@@ -12,7 +12,7 @@ import './PreviewFormPage.scss';
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit, parseCss} = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
@@ -37,7 +37,7 @@ const PreviewFormPage = ({formId}) => {
                 </Divider>
             </Grid.Column>
         </Grid.Row>
-        {form.data ? <SchemaModal form={form.data} open={form.openSchemaView} close={closeSchemaView}/> : null}
+        {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView} close={closeSchemaView}/> : null}
         <Grid.Row>
             <Grid.Column>
                 <Container>
@@ -77,7 +77,7 @@ const PreviewFormPage = ({formId}) => {
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                {form.data ? <PreviewFormComponent form={form.data} submission={form.submission}
+                {form.data ? <PreviewFormComponent form={parseCss(form.data)} submission={form.submission}
                                                    handlePreview={previewSubmission}/> : null}
             </Grid.Column>
         </Grid.Row>

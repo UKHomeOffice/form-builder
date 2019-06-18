@@ -6,6 +6,7 @@ import useEnvContext from "../../../../core/context/useEnvContext";
 import {Formio} from "react-formio";
 import axios from "axios";
 import _ from 'lodash';
+import FormioUtils from 'formiojs/utils';
 
 const usePreviewForm = (formId) => {
 
@@ -112,6 +113,15 @@ const usePreviewForm = (formId) => {
         await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`, {replace: true});
     };
 
+    const parseCss = (form) => {
+        FormioUtils.eachComponent(form.components, (component) => {
+          if (component.customClass && component.customClass.indexOf('-govuk-') >=0 ) {
+            component.customClass = "";
+          }
+        });
+        return form;
+    };
+
     return {
         previewSubmission,
         status,
@@ -122,7 +132,8 @@ const usePreviewForm = (formId) => {
         openSchemaView,
         closeSchemaView,
         duplicate,
-        edit
+        edit,
+        parseCss
     }
 };
 
