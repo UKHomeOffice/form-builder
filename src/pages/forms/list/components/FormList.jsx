@@ -2,14 +2,15 @@ import React from 'react';
 import {
     Accordion,
     Button,
+    Card,
     Container,
     Dimmer,
     Form,
     Grid,
     Icon,
     Input,
-    Item,
     Label,
+    List,
     Loader,
     Menu,
     Message,
@@ -133,7 +134,7 @@ const FormList = () => {
                         <Dimmer active={isLoading} inverted>
                             <Loader active inline='centered' size='large'>{t('form.list.loading')}</Loader>
                         </Dimmer>
-                        <Table columns={4} sortable stackable data-cy="forms-table">
+                        <Table columns={4} sortable stackable data-cy="forms-table" striped>
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell sorted={column === 'title' ? direction : null}
@@ -159,29 +160,54 @@ const FormList = () => {
                                                     {form.title}
                                                 </Accordion.Title>
                                                 <Accordion.Content active={forms.activeIndex === index}>
-                                                    <Item.Group>
-                                                        <Item>
-                                                            <Item.Content>
-                                                                <Item.Meta>Identifier: {form._id}</Item.Meta>
-                                                                <Item.Meta>Path: {form.path}</Item.Meta>
-                                                                <Item.Extra>
-                                                                    {isEditable ?
-                                                                        <Button circular size='mini' primary
-                                                                                icon="download"
-                                                                                onClick={() => download(form._id, form.name)}/> : null}
-                                                                    <Label
-                                                                        size="medium">Created {moment(form.created).fromNow()}</Label>
-                                                                    <Label
-                                                                        size="medium">Updated {moment(form.modified).fromNow()}</Label>
-                                                                </Item.Extra>
-                                                            </Item.Content>
-                                                        </Item>
-                                                    </Item.Group>
+
+                                                    <Card>
+                                                        <Card.Content header={form.title}/>
+                                                        <Card.Content description={
+                                                            <List>
+                                                                <List.Item>
+                                                                    <List.Header>Name:</List.Header>
+                                                                    <List.Content>{form.name}</List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Header>Path:</List.Header>
+                                                                    <List.Content>{form.path}</List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Header>Identifier:</List.Header>
+                                                                    <List.Content>{form._id}</List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Header>Created:</List.Header>
+                                                                    <List.Content>{moment(form.created).fromNow()}</List.Content>
+                                                                </List.Item>
+                                                                <List.Item>
+                                                                    <List.Header>Updated:</List.Header>
+                                                                    <List.Content>{moment(form.updated).fromNow()}</List.Content>
+                                                                </List.Item>
+                                                            </List>
+                                                        }/>
+                                                        {isEditable ? <Card.Content extra>
+                                                            <Button size='tiny' color='blue' icon="download"
+                                                                    onClick={() => download(form._id, form.name)}>
+                                                                Download
+                                                            </Button>
+                                                        </Card.Content> : null}
+                                                    </Card>
                                                 </Accordion.Content>
                                             </Accordion>
                                         </Table.Cell>
                                         <Table.Cell>{form.name}</Table.Cell>
-                                        <Table.Cell>{form.display ? form.display : 'form'}</Table.Cell>
+                                        <Table.Cell>
+                                            <div style={{
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                display: 'flex'
+                                            }}><Label size='large'
+                                                      color={form.display === 'wizard' ? 'blue' : 'teal'}><Icon
+                                                name={(!form.display || form.display === 'form') ? 'wpforms' : form.display}/>{form.display ? form.display : 'form'}
+                                            </Label></div>
+                                        </Table.Cell>
                                         <Table.Cell>
                                             <ButtonGroup form={form}
                                                          handlePreview={handlePreview}
