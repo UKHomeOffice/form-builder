@@ -6,13 +6,14 @@ import {
     Dimmer,
     Form,
     Grid,
-    Icon, Image,
+    Icon,
     Input,
     Item,
     Label,
     Loader,
     Menu,
-    Message, Pagination,
+    Message,
+    Pagination,
     Segment,
     Statistic,
     Table
@@ -48,7 +49,7 @@ const FormList = () => {
         handleFilterAccordion,
     } = useGetForms();
 
-    const { canEdit} = useRoles();
+    const {canEdit} = useRoles();
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
 
@@ -198,14 +199,14 @@ const FormList = () => {
                                         <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                                     activePage={activePage}
                                                     ellipsisItem={isMobile ? null : {
-                                                             content: <Icon name='ellipsis horizontal'/>,
-                                                             icon: true
-                                                         }}
-                                                    firstItem={isMobile ? null: {
+                                                        content: <Icon name='ellipsis horizontal'/>,
+                                                        icon: true
+                                                    }}
+                                                    firstItem={isMobile ? null : {
                                                         content: <Icon name='angle double left'/>,
                                                         icon: true
                                                     }}
-                                                    lastItem={isMobile? null: {
+                                                    lastItem={isMobile ? null : {
                                                         content: <Icon name='angle double right'/>,
                                                         icon: true
                                                     }}
@@ -214,7 +215,8 @@ const FormList = () => {
                                                     onPageChange={handlePaginationChange}/>
                                     </Table.HeaderCell> : <Table.HeaderCell/>}
                                     {isEditable ? <Table.HeaderCell colSpan={2}>
-                                        <Button floated={isMobile? null: 'right'} icon labelPosition='left' primary size='small'
+                                        <Button floated={isMobile ? null : 'right'} icon labelPosition='left' primary
+                                                size='small'
                                                 onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
                                                 data-cy="create-form">
                                             <Icon name='wpforms'/>{t('form.create.label')}
