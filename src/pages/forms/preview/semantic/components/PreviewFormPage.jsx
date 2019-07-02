@@ -10,6 +10,7 @@ import SchemaModal from "../../../schema/SchemaModal";
 import useRoles from "../../../common/useRoles";
 import './PreviewFormPage.scss';
 import Comments from "../../../comment/components/Comments";
+import Versions from "../../../versions/components/Versions";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
@@ -93,9 +94,9 @@ const PreviewFormPage = ({formId}) => {
         },
         {
             menuItem: {key: 'versions', icon: 'copy outline', content: 'Versions'},
-            render: () => <Tab.Pane>Versions</Tab.Pane>,
+            render: () => <Tab.Pane><Versions formId={formId}/></Tab.Pane>,
         }
-    ]
+    ];
 
     return <Tab panes={panes}/>
 };

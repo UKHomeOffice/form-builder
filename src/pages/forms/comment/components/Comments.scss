@@ -1,7 +1,13 @@
-.commentAvatar {
+.ui.comments .comment .avatar {
   display: block;
   width: 2.5em;
   height: auto;
   float: left;
-  margin: .2em 0 0;
+  margin: .15em 0 0;
+}
+
+.center-comments {
+  display: flex;
+  justify-content: center;
+  align-items: center
 }

@@ -43,7 +43,11 @@ const messages = {
         "no-context-message": "You need to select an environment context in order to create forms"
     },
     "comments" : {
-        "loading": "Loading comments"
+        "loading": "Loading comments",
+        "failure" : {
+            "comments-load" : "Failed to load comments {{error}}",
+            "create-comment" : "Failed to create new comment due to {{error}}"
+        }
     },
     "form": {
         "loading-form" : "Loading form",

@@ -8,10 +8,11 @@ const useGetComments = (formId) => {
         limit: 10,
         activePage: 1,
         data: null,
-        total: 0
+        total: 0,
     };
     const isMounted = useRef(true);
     const [comments, setComments] = useState(initialState);
+    const [comment, setComment] = useState('');
 
     const CancelToken = axios.CancelToken;
 
@@ -24,6 +25,15 @@ const useGetComments = (formId) => {
             }
         }
     );
+
+    const [saveCommentRequestState, saveCommentRequest] = useApiRequest(
+        `/forms/${formId}/comments`, {
+            verb: 'post', params: {
+                comment: comment
+            }
+        }
+    );
+
     const savedCallback = useRef();
     const cancelRequests = useRef();
     useEffect(() => {
@@ -45,6 +55,30 @@ const useGetComments = (formId) => {
         }
     }, [formId]);
 
+
+    useEffect(() => {
+        if (saveCommentRequestState.status === SUCCESS) {
+            if (isMounted.current) {
+                const data = comments.data;
+                const savedComment = saveCommentRequestState.response.data;
+                const total = comments.total + 1;
+                if (savedComment) {
+                    setComment('');
+                    data.unshift(savedComment);
+                    if (total > 10) {
+                        data.pop();
+                    }
+                    setComments(comments => ({
+                        ...comments,
+                        data: data,
+                        total: total
+                    }));
+                }
+
+            }
+        }
+    }, [saveCommentRequestState, setComments]);
+
     useEffect(() => {
         if (status === SUCCESS) {
             if (isMounted.current) {
@@ -65,10 +99,19 @@ const useGetComments = (formId) => {
         }));
     };
 
+
+    const handleNewComment = () => {
+        saveCommentRequest();
+    };
     return {
+        saveCommentRequestState,
         status,
         handlePaginationChange,
-        comments
+        comments,
+        handleNewComment,
+        comment,
+        response,
+        setComment
     }
 };
 

@@ -87,15 +87,15 @@ describe('useGetForms', () => {
             return [{
                 status: SUCCESS,
                 response: {
-                    headers: {
-                        'content-range': '0-1/1'
-                    },
-                    data: [{
-                        _id: 'formid',
-                        name: 'formName',
-                        title: 'formTitle',
-                        path: 'formPath'
-                    }]
+                    data: {
+                        total: 1,
+                        forms: [{
+                            id: 'formid',
+                            name: 'formName',
+                            title: 'formTitle',
+                            path: 'formPath'
+                        }]
+                    }
                 }
             }, jest.fn()]
         };
