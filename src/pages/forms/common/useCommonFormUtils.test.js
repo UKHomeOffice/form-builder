@@ -37,11 +37,6 @@ describe('useCommonFormUtils', () => {
        expect(form.components.length).toBe(0);
    });
 
-   it('can get submission access', () => {
-       const {result} = renderHook(() => useCommonFormUtils());
-       const submissionAccess = result.current.submissionAccess('id');
-       expect(submissionAccess.length).toBe(8);
-   });
    it('provides form choices', () => {
        const {result} = renderHook(() => useCommonFormUtils());
        const formChoices = result.current.formChoices;

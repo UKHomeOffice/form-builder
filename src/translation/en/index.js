@@ -49,6 +49,12 @@ const messages = {
             "create-comment" : "Failed to create new comment due to {{error}}"
         }
     },
+    "versions" : {
+        "loading": "Loading versions",
+        "failure" : {
+            "versions-load" : "Failed to loaded versions {{error}}"
+        }
+    },
     "form": {
         "loading-form" : "Loading form",
         "download": {

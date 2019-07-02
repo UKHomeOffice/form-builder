@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Comment, Container, Form, Header, Icon, Loader, Pagination, Message} from 'semantic-ui-react'
+import {Button, Comment, Form, Header, Icon, Loader, Message, Pagination} from 'semantic-ui-react'
 import useGetComments from "../useGetComments";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
@@ -19,6 +19,7 @@ const Comments = ({formId}) => {
         response,
         setComment
     } = useGetComments(formId);
+
     const {activePage, data, total, limit} = comments;
     const {t} = useTranslation();
     if (!status || status === EXECUTING) {
@@ -38,50 +39,51 @@ const Comments = ({formId}) => {
         </Message>
     }
 
-    return <Container><div className="center-comments"><Comment.Group>
+    return <Comment.Group>
         <Header as='h3' dividing>
-            {total} comments
+            {total} {total === 1 ? 'comment' : 'comments'}
         </Header>
         {total !== 0 ? data.map((comment) => {
 
             return <Comment key={comment.id}>
                 <Comment>
-                    <Avatar className="avatar" size="35" name={comment.createdBy} />
+                    <Avatar className="avatar" size="35" name={comment.createdBy}/>
                     <Comment.Content>
                         <Comment.Author as='a'>{comment.createdBy}</Comment.Author>
                         <Comment.Metadata>
                             <span>{moment(comment.createdOn).fromNow()}</span>
                         </Comment.Metadata>
-                        <Comment.Text>{comment.comment?  <p>{comment.comment}</p> : <p>No comments</p>}</Comment.Text>
+                        <Comment.Text>{comment.comment ? <p>{comment.comment}</p> : <p>No comments</p>}</Comment.Text>
                     </Comment.Content>
                 </Comment>
             </Comment>
         }) : null}
 
-        {total > 10 ? <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
-                                  activePage={activePage}
-                                  ellipsisItem={isMobile ? null : {
-                                      content: <Icon name='ellipsis horizontal'/>,
-                                      icon: true
-                                  }}
-                                  firstItem={isMobile ? null : {
-                                      content: <Icon name='angle double left'/>,
-                                      icon: true
-                                  }}
-                                  lastItem={isMobile ? null : {
-                                      content: <Icon name='angle double right'/>,
-                                      icon: true
-                                  }}
-                                  prevItem={{content: <Icon name='angle left'/>, icon: true}}
-                                  nextItem={{content: <Icon name='angle right'/>, icon: true}}
-                                  onPageChange={handlePaginationChange}/>
+        {total > 10 ? <div style={{marginTop: '20px', textAlign: 'center'}}><Pagination
+                totalPages={Math.ceil(parseInt(total) / limit)}
+                activePage={activePage}
+                ellipsisItem={isMobile ? null : {
+                    content: <Icon name='ellipsis horizontal'/>,
+                    icon: true
+                }}
+                firstItem={isMobile ? null : {
+                    content: <Icon name='angle double left'/>,
+                    icon: true
+                }}
+                lastItem={isMobile ? null : {
+                    content: <Icon name='angle double right'/>,
+                    icon: true
+                }}
+                prevItem={{content: <Icon name='angle left'/>, icon: true}}
+                nextItem={{content: <Icon name='angle right'/>, icon: true}}
+                onPageChange={handlePaginationChange}/></div>
             : null}
         <Form reply loading={saveCommentRequestState.status === EXECUTING}>
             <Form.TextArea onChange={(e, {value}) => setComment(value)} value={comment}/>
             <Button content='Add comment' labelPosition='left' icon='edit' primary onClick={() => handleNewComment()}
                     disabled={comment === ''}/>
         </Form>
-    </Comment.Group></div></Container>
+    </Comment.Group>
 };
 
 export default Comments;

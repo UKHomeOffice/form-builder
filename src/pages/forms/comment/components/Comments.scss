@@ -6,8 +6,6 @@
   margin: .15em 0 0;
 }
 
-.center-comments {
-  display: flex;
-  justify-content: center;
-  align-items: center
+.ui.comments {
+  max-width: none;
 }

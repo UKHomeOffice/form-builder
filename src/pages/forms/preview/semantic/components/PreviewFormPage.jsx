@@ -90,7 +90,7 @@ const PreviewFormPage = ({formId}) => {
         },
         {
             menuItem: {key: 'comments', icon: 'comments outline', content: 'Comments'},
-            render: () => <Tab.Pane><Comments formId={formId}/></Tab.Pane>,
+            render: () => <Tab.Pane><Container><Comments formId={formId}/></Container></Tab.Pane>,
         },
         {
             menuItem: {key: 'versions', icon: 'copy outline', content: 'Versions'},
