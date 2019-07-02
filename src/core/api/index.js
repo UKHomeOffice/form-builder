@@ -5,12 +5,9 @@ import {error, executing, success} from './actionCreators';
 import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
-import FormioTokenProvider from "../form/FormioTokenProvider";
 import secureLS from "../storage";
 
 const keycloakTokenProvider = new KeycloakTokenProvider();
-const formioTokenProvider = new FormioTokenProvider();
-
 
 const configureAxios = async (envContext, config) => {
     const token = secureLS.get("jwt-token");
@@ -23,13 +20,6 @@ const configureAxios = async (envContext, config) => {
     } else {
         const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(envContext, token);
         config.headers['Authorization'] = `Bearer ${jwtToken}`;
-    }
-
-    if (config.headers['x-promote-formio-token']) {
-        config.headers['x-jwt-token'] = config.headers['x-promote-formio-token'];
-        delete config.headers['x-promote-formio-token'];
-    } else {
-        config.headers['x-jwt-token'] = await formioTokenProvider.fetchToken(envContext, token);
     }
     return Promise.resolve(config);
 };
@@ -53,6 +43,7 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             response = await instance[verb](`${envContext.url}${path}`, params);
             dispatch(success(response));
         } catch (err) {
+            console.log(err.stack);
             if (axios.isCancel(err)) {
                 console.log(err.message);
             } else {

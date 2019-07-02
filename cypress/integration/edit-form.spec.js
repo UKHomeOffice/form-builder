@@ -1,5 +1,8 @@
+import secureLS from "../../src/core/storage";
+
 const Chance = require('chance');
 const chance = new Chance();
+
 
 describe("Edit form", () => {
 
@@ -25,9 +28,12 @@ describe("Edit form", () => {
 
         cy.url().should('include', '/forms/local');
 
+        cy.wait(2000);
+
+
         cy.get('input[name=search-title]').type(formTitle);
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.get('[data-cy=forms-table]').should('exist');
         cy.get('[data-cy=form-table-data]').should('exist');
@@ -36,12 +42,15 @@ describe("Edit form", () => {
         cy.wait(500);
 
         cy.request({
-            url: `http://formio.lodev.xyz/form?title=${formTitle}`,
+            url: `http://localhost:4000/api/v1/forms?filter=title__eq__${formTitle}`,
+            headers: {
+                "Authorization" : `Bearer ${secureLS.get('kc-jwt-local')}`
+            }
         }).then((resp) => {
             expect(resp.status).to.eq(200);
-            expect(resp.body.length).to.eq(1);
-            console.log(JSON.stringify(resp.body));
-            expect(resp.body[0].components.length).to.eq(0);
+            console.log(resp.body);
+            expect(resp.body.forms.length).to.eq( 1);
+            expect(resp.body.forms[0].components).to.be.undefined;
         });
 
 
@@ -58,12 +67,17 @@ describe("Edit form", () => {
         cy.url().should('include', '/forms/local');
 
         cy.request({
-            url: `http://formio.lodev.xyz/form?title=${formTitle}`,
+            url: `http://localhost:4000/api/v1/forms?filter=title__eq__${formTitle}`,
+            headers: {
+                "Authorization" : `Bearer ${secureLS.get('kc-jwt-local')}`
+            }
         }).then((resp) => {
             expect(resp.status).to.eq(200);
-            expect(resp.body.length).to.eq(1);
-            expect(resp.body[0].components.length).to.eq(2);
+            expect(resp.body.forms.length).to.eq(1);
+            expect(resp.body.forms[0].components.length).to.eq(2);
         });
+
+        cy.visit("/forms/local");
 
         cy.get('input[name=search-title]').type(formTitle);
 

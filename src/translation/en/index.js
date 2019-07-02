@@ -42,6 +42,9 @@ const messages = {
         "no-context": "An environment context has not been selected",
         "no-context-message": "You need to select an environment context in order to create forms"
     },
+    "comments" : {
+        "loading": "Loading comments"
+    },
     "form": {
         "loading-form" : "Loading form",
         "download": {

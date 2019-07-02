@@ -25,7 +25,7 @@ const usePreviewForm = (formId) => {
     const cancelPreview = useRef(CancelToken.source());
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/forms/${formId}`, {
             verb: 'get', params: {cancelToken: cancelPreview.current.token}
         }
     );
@@ -98,7 +98,7 @@ const usePreviewForm = (formId) => {
 
     const duplicate = async () => {
         const copiedForm = _.cloneDeep(form.data);
-        delete copiedForm._id;
+        delete copiedForm.id;
         copiedForm.title = "Copy of " + form.data.title;
         copiedForm.name = "Copy of " + form.data.name;
         copiedForm.path = "Copy of " + form.data.path;

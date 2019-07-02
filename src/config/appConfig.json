@@ -3,7 +3,7 @@
     {
     "id": "local",
     "label": "Local",
-    "url": "http://formio.lodev.xyz",
+    "url": "http://localhost:4000/api/v1",
     "description": "Local environment",
     "service": {
       "formio": {
@@ -34,30 +34,26 @@
         "{$.someContext.id}" : 3
       }
     ]
-  },
-    {
+  }, {
       "id": "dev",
-      "label": "Development",
-      "url": "https://formio.elf79.dev",
-      "description": "Elf Dev environment",
+      "label": "Dev",
+      "url": "http://formapi.lodev.xyz/api/v1",
+      "description": "Dev environment",
       "service": {
         "formio": {
           "username": "me@lodev.xyz",
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
-          "clientId": "form-builder",
-          "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
+          "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
+          "clientId": "service-account",
+          "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
         }
       },
-      "editable": true,
+      "editable": false,
       "variable-replacements": [
         {
-          "{$.environmentContext.operationalDataUrl}": "https://private-postgrest.dev.cop.homeoffice.gov.uk"
-        },
-        {
-          "{$.environmentContext.referenceDataUrl}": "https://api.refdata-dev.homeoffice.gov.uk"
+          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
         },
         {
           "{$.staffDetailsContext.staffId}": "{{guid}}"
@@ -67,83 +63,12 @@
         },
         {
           "{$.keycloakContext.familyName}": "{{lastName}}"
+        },
+        {
+          "{$.someContext.id}" : 3
         }
       ]
-    },
-    {
-      "id": "demo",
-      "label": "Demo",
-      "url": "http://formio.lodev.xyz",
-      "description": "UAT environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
-          "clientId": "service-account",
-          "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
-        }
-      },
-      "editable": false
-    },
-    {
-      "id": "staging",
-      "label": "Staging",
-      "url": "http://formio.lodev.xyz",
-      "description": "Staging environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
-          "clientId": "service-account",
-          "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
-        }
-      },
-      "editable": false
-    },
-    {
-      "id": "prod",
-      "label": "Production",
-      "url": "http://formio.lodev.xyz",
-      "approvalUrl" : "http://localhost:8001/form",
-      "description": "Prod environment",
-      "service": {
-        "keycloak": {
-          "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
-          "clientId": "service-account",
-          "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
-        },
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        }
-      },
-      "editable": false
-    },
-    {
-      "id": "testing",
-      "label": "Testing",
-      "url": "http://formio.lodev.xyz",
-      "description": "Testing environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
-          "clientId": "service-account",
-          "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
-        }
-      },
-      "editable": false
-    }
-  ],
+    }],
   "gov-uk-enabled" : true,
   "keycloak": {
     "authUrl": "http://keycloak.lodev.xyz/auth",

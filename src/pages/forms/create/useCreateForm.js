@@ -17,7 +17,7 @@ const useCreateForm = (formContent = null) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
-    const {submissionAccess, handleForm} = useCommonFormUtils();
+    const {handleForm} = useCommonFormUtils();
     const {log} = useLogger();
 
     const [form, setValues] = useState({
@@ -38,11 +38,11 @@ const useCreateForm = (formContent = null) => {
     const formName = form.data.name;
     const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
             try {
-                return await createForm(axios, envContext, form.data, submissionAccess, log);
+                return await createForm(axios, envContext, form.data, log);
             } catch (error) {
                 throw {
                     response: {
-                        data: error.toString()
+                        data: error
                     }
                 }
             }

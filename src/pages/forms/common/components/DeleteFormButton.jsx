@@ -8,7 +8,7 @@ import {toast} from "react-semantic-toasts";
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form/${form._id}`, {verb: 'delete'}
+        `/forms/${form.id}`, {verb: 'delete'}
     );
     const { t } = useTranslation();
 

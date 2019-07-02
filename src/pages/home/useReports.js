@@ -42,12 +42,12 @@ const useReports = () => {
             return Promise.reject(err);
         });
 
-    instance.interceptors.response.use(null, (error) => {
+    instance.interceptors.response.use(null, async (error) => {
         if (axios.isCancel(error)) {
             console.log(error.message);
             return Promise.resolve({
-                headers: {
-                    'content-range': "0/0"
+                data: {
+                    total: 0
                 }
             });
         } else {
@@ -68,8 +68,8 @@ const useReports = () => {
                 reportUrl: url
             }]);
             return Promise.resolve({
-                headers: {
-                    'content-range': "0/0"
+                data: {
+                    total: 0
                 }
             })
         }
@@ -90,7 +90,7 @@ const useReports = () => {
         const perEnvResults = await axios.all(environments.map(async (environment) => {
             const source = CancelToken.source();
             cancelTokenRefs.current.push(source);
-            const url = `${environment.url}/form?select=_id&display__in=form,wizard&limit=1&type__ne=resource`;
+            const url = `${environment.url}/forms?countOnly=true`;
             const response = await instance({
                 url: url,
                 method: 'GET',
@@ -101,7 +101,7 @@ const useReports = () => {
             });
             return {
                 environment: environment,
-                response: response
+                response: response.data
             }
 
         }));
@@ -109,7 +109,7 @@ const useReports = () => {
             return {
                 "id": result.environment.id,
                 "label": result.environment.label,
-                "value": parseInt(result.response.headers['content-range'].split('/')[1]),
+                "value": result.response ? parseInt(result.response.total) : 0
             }
         });
         if (isMounted.current) {
@@ -124,7 +124,7 @@ const useReports = () => {
             const source = CancelToken.source();
             cancelTokenRefs.current.push(source);
             const formTypes = await instance({
-                url: `${environment.url}/form?select=_id&display=form&limit=1&type__ne=resource`,
+                url: `${environment.url}/forms?filter=display__eq__form&countOnly=true`,
                 method: 'GET',
                 headers: {
                     "x-environment": environment,
@@ -132,7 +132,7 @@ const useReports = () => {
                 cancelToken: source.token
             });
             const wizardTypes = await instance({
-                url: `${environment.url}/form?select=_id&display=wizard&limit=1&type__ne=resource`,
+                url: `${environment.url}/forms?filter=display__eq__wizard&countOnly=true`,
                 method: "GET",
                 headers: {
                     "x-environment": environment,
@@ -141,14 +141,14 @@ const useReports = () => {
             });
             return {
                 environment: environment.id,
-                formTypes: formTypes,
-                wizardTypes: wizardTypes
+                formTypes: formTypes.data,
+                wizardTypes: wizardTypes.data
             }
         }));
         const typeData = _.map(formTypeResults, (result) => {
             const env = result.environment;
-            const wizards = parseInt(result.wizardTypes.headers['content-range'].split('/')[1]);
-            const forms = parseInt(result.formTypes.headers['content-range'].split('/')[1]);
+            const wizards = parseInt(result.wizardTypes.total);
+            const forms = parseInt(result.formTypes.total);
 
             return {
                 name: env,
@@ -177,7 +177,7 @@ const useReports = () => {
         const tokens = cancelTokenRefs.current;
         return () => {
             isMounted.current = false;
-            tokens.forEach((source) =>{
+            tokens.forEach((source) => {
                 source.cancel("Cancelling API request");
             })
         }

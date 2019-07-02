@@ -10,7 +10,6 @@ import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {KeycloakTokenProvider} from "../../../core/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
-import FormioTokenProvider from "../../../core/form/FormioTokenProvider";
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
@@ -28,10 +27,9 @@ const usePromotion = (formId) => {
     const {submissionAccess} = useCommonFormUtils();
 
     const keycloakTokenProvider = new KeycloakTokenProvider();
-    const formioTokenProvider = new FormioTokenProvider();
 
     const [fetchState, makeRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/forms/${formId}`, {
             verb: 'get', params: {}
         }
     );
@@ -40,18 +38,16 @@ const usePromotion = (formId) => {
         try {
             const promotionEnvironment = getEnvDetails(form.environment);
             const token = await keycloakTokenProvider.fetchKeycloakToken(promotionEnvironment, keycloak.token);
-            const formioToken = await formioTokenProvider.fetchToken(promotionEnvironment, keycloak.token);
 
             const headers = {
                 "x-promote-kc-token": `Bearer ${token}`,
-                "x-promote-formio-token" : formioToken
             };
             const formResponse = await axios({
                 method: 'GET',
                 headers: headers,
-                url: `${promotionEnvironment.url}/form?name=${form.data.name}&path=${form.data.path}&limit=1`
+                url: `${promotionEnvironment.url}/forms?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`
             });
-            if (formResponse.data.length === 0) {
+            if (formResponse.data.total === 0) {
                 log([{
                     message: `Form ${form.data.name} does not exists in ${promotionEnvironment.id}, so creating`,
                     level: 'info'
@@ -62,7 +58,7 @@ const usePromotion = (formId) => {
                     message: `Form ${form.data.name} does exists in ${promotionEnvironment.id}, so updating`,
                     level: 'info'
                 }]);
-                const formLoaded = formResponse.data[0];
+                const formLoaded = formResponse.data.forms[0];
                 delete formLoaded.components;
                 formLoaded['components'] = form.data.components;
 
@@ -76,7 +72,7 @@ const usePromotion = (formId) => {
                 } else {
                     return await axios({
                         "method": "PUT",
-                        "url": `${promotionEnvironment.url}/form/${formLoaded._id}`,
+                        "url": `${promotionEnvironment.url}/forms/${formLoaded.id}`,
                         "data": formLoaded,
                         headers: headers,
                     });
@@ -86,7 +82,7 @@ const usePromotion = (formId) => {
         } catch (error) {
             throw {
                 response: {
-                    data: error.toString()
+                    data: error
                 },
                 exception: error
             };

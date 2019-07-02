@@ -1,6 +1,8 @@
 @import "~govuk-frontend/all.scss";
 
-
+.body {
+  font-family: "nta", Arial, sans-serif;
+}
 .button--secondary {
   background-color: govuk-colour("grey-3");
   box-shadow: 0 $govuk-border-width-form-element 0 darken(govuk-colour("grey-3"), 40%);

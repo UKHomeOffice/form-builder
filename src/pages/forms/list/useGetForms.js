@@ -30,7 +30,7 @@ const useGetForms = () => {
         refresh: false,
         filterIndex: -1,
         filterValue: "all",
-        filter: "type__ne=resource",
+        filter: null,
         downloadFile: {
             formId: null,
             formName: null
@@ -48,8 +48,9 @@ const useGetForms = () => {
             setValues(forms => ({
                 ...forms,
                 activePage: 1,
+                activeIndex: -1,
                 searchTitle: value
-            }))
+            }));
         },
         500,
         {maxWait: 2000}
@@ -61,8 +62,20 @@ const useGetForms = () => {
     const formsCountCancel = useRef(CancelToken.source());
     const formsCancel = useRef(CancelToken.source());
 
+    const resolveFilter = () => {
+        let baseFilter = "";
+        if (forms.searchTitle !== '' && forms.searchTitle !== '<>') {
+            baseFilter = `&filter=title__regexp__${forms.searchTitle}${forms.filter ? `,${forms.filter}` : ''}`
+        } else {
+            if (forms.filter) {
+                baseFilter = `&filter=${forms.filter}`
+            }
+        }
+        return baseFilter;
+    };
+
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form?select=title,path,name,display,created,modified&${forms.filter}&limit=${forms.limit}${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
+        `/forms?select=title,path,name,display,id&limit=${forms.limit}${forms.activePage !== 1 ? `&offset=${((forms.activePage - 1) * forms.limit)}` : ''}${resolveFilter()}`, {
             verb: 'get', params: {
                 cancelToken: formsCancel.current.token
             }
@@ -71,7 +84,7 @@ const useGetForms = () => {
 
 
     const [wizardCountState, wizardStatsRequest] = useApiRequest(
-        `/form?select=_id&display=wizard&type__ne=resource`, {
+        `/forms?filter=display__eq__wizard&countOnly=true`, {
             verb: 'get', params: {
                 cancelToken: wizardCountCancel.current.token
             }
@@ -79,7 +92,7 @@ const useGetForms = () => {
     );
 
     const [formCountState, formStatsRequest] = useApiRequest(
-        `/form?select=_id&type__ne=resource&display__ne=wizard`, {
+        `/forms?filter=display__eq__form&countOnly=true`, {
             verb: 'get', params: {
                 cancelToken: formsCountCancel.current.token
             }
@@ -88,7 +101,7 @@ const useGetForms = () => {
 
 
     const [downloadFormState, executeDownload] = useApiRequest(
-        `/form/${forms.downloadFile.formId}`, {
+        `/forms/${forms.downloadFile.formId}`, {
             verb: 'get', params: {
                 responseType: 'arraybuffer'
             }
@@ -132,7 +145,6 @@ const useGetForms = () => {
                 activePage: 1,
                 filterIndex: -1,
                 filterValue: "all",
-                filter: "type__ne=resource",
                 numberOfForms: 0,
                 numberOfWizards: 0
             }));
@@ -202,9 +214,9 @@ const useGetForms = () => {
                 setValues(forms => ({
                     ...forms,
                     refresh: false,
-                    data: response.data,
+                    data: response.data.forms,
                     numberOnPage: response.data.length,
-                    total: parseInt(response.headers['content-range'].split('/')[1])
+                    total: response.data.total
                 }));
             }
 
@@ -217,7 +229,7 @@ const useGetForms = () => {
             if (isMounted.current) {
                 setValues(forms => ({
                     ...forms,
-                    numberOfWizards: parseInt(wizardCountState.response.headers['content-range'].split('/')[1])
+                    numberOfWizards: wizardCountState.response.data.total
                 }));
             }
         }
@@ -228,7 +240,7 @@ const useGetForms = () => {
             if (isMounted.current) {
                 setValues(forms => ({
                     ...forms,
-                    numberOfForms: parseInt(formCountState.response.headers['content-range'].split('/')[1])
+                    numberOfForms: formCountState.response.data.total
                 }));
             }
         }
@@ -289,11 +301,11 @@ const useGetForms = () => {
     };
 
     const handlePreview = async (form) => {
-        await navigation.navigate(`/forms/${envContext.id}/${form._id}/preview`, {replace: true});
+        await navigation.navigate(`/forms/${envContext.id}/${form.id}/preview`, {replace: true});
     };
 
     const handleEditForm = async (form) => {
-        await navigation.navigate(`/forms/${envContext.id}/${form._id}/edit`, {replace: true});
+        await navigation.navigate(`/forms/${envContext.id}/${form.id}/edit`, {replace: true});
     };
 
     const handleAccordionClick = (e, titleProps) => {
@@ -317,21 +329,18 @@ const useGetForms = () => {
     };
 
     const handlePromotion = async (form) => {
-        await navigation.navigate(`/forms/${envContext.id}/${form._id}/promote`, {replace: true});
+        await navigation.navigate(`/forms/${envContext.id}/${form.id}/promote`, {replace: true});
     };
 
     const filter = (e, {value}) => {
-        let filter = "";
-        if (value === 'wizard') {
-            filter = "display=wizard&type__ne=resource";
-        } else if (value === 'form') {
-            filter = "type__ne=resource&display__ne=wizard";
-        } else {
-            filter = "type__ne=resource";
+        let filter = null;
+        if (value && value !== 'all') {
+            filter = `display__eq__${value}`;
         }
-
         setValues(forms => ({
             ...forms,
+            activePage: 1,
+            activeIndex: -1,
             filter: filter,
             filterValue: value
         }));
@@ -366,6 +375,8 @@ const useGetForms = () => {
         filter,
         handleFilterAccordion
     }
-};
+}
+
+;
 
 export default useGetForms;
