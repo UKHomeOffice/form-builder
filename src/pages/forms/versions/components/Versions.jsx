@@ -23,7 +23,7 @@ const Versions = ({formId}) => {
     }
 
     const panes = data ? data.map((version) => {
-        const item = version.latest ? `Latest (${moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")})`
+        const item = version.latest ? `${moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")} (Latest)`
             : `${moment(version.validTo).format("DD-MM-YYYY HH:mm:ss")} (${ moment(version.validTo).fromNow()})` ;
         return {
             menuItem: item,
