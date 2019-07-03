@@ -3,7 +3,6 @@ import {useNavigation} from "react-navi";
 import {useEffect, useRef, useState} from "react";
 import {SUCCESS} from "../../../core/api/actionTypes";
 import useEnvContext from "../../../core/context/useEnvContext";
-import useCommonFormUtils from "../common/useCommonFormUtils";
 import createForm from "../../../core/form/createForm";
 import useLogger from "../../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
@@ -24,7 +23,6 @@ const usePromotion = (formId) => {
         disabled: true,
         environment: null
     });
-    const {submissionAccess} = useCommonFormUtils();
 
     const keycloakTokenProvider = new KeycloakTokenProvider();
 
@@ -52,7 +50,7 @@ const usePromotion = (formId) => {
                     message: `Form ${form.data.name} does not exists in ${promotionEnvironment.id}, so creating`,
                     level: 'info'
                 }]);
-                return await createForm(axios, promotionEnvironment, form.data, submissionAccess, log, headers);
+                return await createForm(axios, promotionEnvironment, form.data, log, headers);
             } else {
                 log([{
                     message: `Form ${form.data.name} does exists in ${promotionEnvironment.id}, so updating`,

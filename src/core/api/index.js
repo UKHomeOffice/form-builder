@@ -6,14 +6,16 @@ import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
 import secureLS from "../storage";
+import {useKeycloak} from "react-keycloak";
 
 const keycloakTokenProvider = new KeycloakTokenProvider();
 
-const configureAxios = async (envContext, config) => {
+const configureAxios = async (envContext, config, keycloak) => {
     const token = secureLS.get("jwt-token");
     config.headers['Accept'] = 'application/json';
     config.headers['Content-Type'] = 'application/json';
     config.headers['Cache-Control'] = "no-cache";
+    config.headers['x-user-email'] = keycloak.tokenParsed.email;
     if (config.headers['x-promote-kc-token']) {
         config.headers.Authorization = config.headers['x-promote-kc-token'];
         delete config.headers['x-promote-kc-token'];
@@ -29,9 +31,9 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const instance = axios.create();
     const {envContext} = useEnvContext();
+    const [keycloak] = useKeycloak();
 
-
-    instance.interceptors.request.use(async (config) => configureAxios(envContext, config),
+    instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak),
         (err) => {
             return Promise.reject(err);
         });
@@ -61,9 +63,10 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
     const instance = axios.create();
     const {envContext} = useEnvContext();
     const {log} = useLogger();
+    const [keycloak] = useKeycloak();
 
     instance.interceptors.request.use(async (config) =>
-            configureAxios(envContext, config),
+            configureAxios(envContext, config, keycloak),
         (err) => {
             return Promise.reject(err);
         });

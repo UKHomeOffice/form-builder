@@ -1,7 +1,7 @@
 import React from 'react';
 import usePreviewForm from "../usePreviewForm";
 import {ERROR, EXECUTING} from "../../../../../core/api/actionTypes";
-import {Button, Container, Divider, Grid, Header, Icon, Loader, Message, Tab} from "semantic-ui-react";
+import {Button, Container, Divider, Grid, Header, Icon, Message, Tab} from "semantic-ui-react";
 import {useTranslation} from 'react-i18next';
 import PreviewFormComponent from "../../../common/components/PreviewFormComponent";
 import config from 'react-global-configuration';
@@ -14,8 +14,10 @@ import Versions from "../../../versions/components/Versions";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form,
-            previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit, parseCss} = usePreviewForm(formId);
+    const {
+        status, response, form,
+        previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit, parseCss
+    } = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
     if (status === ERROR) {
@@ -49,7 +51,7 @@ const PreviewFormPage = ({formId}) => {
                                     <Button data-cy="backToForms" onClick={() => {
                                         backToForms();
                                     }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
-                                    {canEdit() ? <React.Fragment>
+                                    <React.Fragment>
                                         <Button data-cy="viewSchema"
                                                 onClick={() => {
                                                     openSchemaView();
@@ -57,20 +59,20 @@ const PreviewFormPage = ({formId}) => {
                                                 secondary>{t('form.schema.view', {env: envContext.id})}
                                         </Button>
 
-                                        <Button data-cy="duplicate"
-                                                onClick={() => {
-                                                    duplicate()
-                                                }}
-                                                secondary>{t('form.preview.duplicate', {env: envContext.id})}
+                                        {canEdit() && envContext.editable ? <React.Fragment><Button data-cy="duplicate"
+                                                                                                    onClick={() => {
+                                                                                                        duplicate()
+                                                                                                    }}
+                                                                                                    secondary>{t('form.preview.duplicate', {env: envContext.id})}
                                         </Button>
-                                        <Button data-cy="edit"
-                                                onClick={() => {
-                                                    edit()
-                                                }}
-                                                primary>{t('form.edit.label-form')}
-                                        </Button>
+                                            <Button data-cy="edit"
+                                                    onClick={() => {
+                                                        edit()
+                                                    }}
+                                                    primary>{t('form.edit.label-form')}
+                                            </Button> </React.Fragment> : null}
 
-                                    </React.Fragment> : null}
+                                    </React.Fragment>
                                     {config.get('gov-uk-enabled', false) ?
                                         <Button data-cy="govUKPreview" onClick={() => {
                                             window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
@@ -89,14 +91,18 @@ const PreviewFormPage = ({formId}) => {
             </Tab.Pane>,
         },
         {
-            menuItem: {key: 'comments', icon: 'comments outline', content: 'Comments'},
-            render: () => <Tab.Pane><Container><Comments formId={formId}/></Container></Tab.Pane>,
-        },
-        {
             menuItem: {key: 'versions', icon: 'copy outline', content: 'Versions'},
             render: () => <Tab.Pane><Versions formId={formId}/></Tab.Pane>,
         }
     ];
+
+    if (envContext.editable) {
+        const last = panes.pop();
+        panes.push({
+            menuItem: {key: 'comments', icon: 'comments outline', content: 'Comments'},
+            render: () => <Tab.Pane><Container><Comments formId={formId}/></Container></Tab.Pane>,
+        }, last);
+    }
 
     return <Tab panes={panes}/>
 };

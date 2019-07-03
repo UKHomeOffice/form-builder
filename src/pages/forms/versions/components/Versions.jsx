@@ -1,10 +1,11 @@
 import React from 'react';
 import useGetVersions from "../useGetVersions";
-import {Icon, Item, Loader, Message, Pagination} from "semantic-ui-react";
+import {Icon, Label, Loader, Message, Pagination, Tab} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import {isMobile} from "react-device-detect";
-import {Comment} from "semantic-ui-react/dist/commonjs/views/Comment";
+import VersionPreview from "./VersionPreview";
+import moment from "moment";
 
 const Versions = ({formId}) => {
     const {versions, status, response, handlePaginationChange} = useGetVersions(formId);
@@ -20,18 +21,18 @@ const Versions = ({formId}) => {
             {t('versions.failure.versions-load', {error: JSON.stringify(response.data)})}
         </Message>
     }
-    return <React.Fragment><Item.Group divided>
-        {data ? data.map((version) => {
-            return <Item key={version.versionId}>
-                <Item.Content>
-                    <Item.Header as='a'>{version.schema.title}</Item.Header>
-                </Item.Content>
-            </Item>
 
-        }) : null}
-    </Item.Group>
+    const panes = data ? data.map((version) => {
+        const item = version.latest ? `Latest (${moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")})` : moment(version.validTo).format("DD-MM-YYYY HH:mm:ss");
+        return {
+            menuItem: item,
+            render: () => <Tab.Pane><VersionPreview version={version}/></Tab.Pane>
+        }
+    }) : [];
+
+    return <React.Fragment><Tab menu={{fluid: true, vertical: true, tabular: true}} panes={panes}/>
         <div style={{marginTop: '20px', textAlign: 'center'}}>
-            {total > 1 ? <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
+            {total > 10 ? <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                      activePage={activePage}
                                      ellipsisItem={isMobile ? null : {
                                          content: <Icon name='ellipsis horizontal'/>,

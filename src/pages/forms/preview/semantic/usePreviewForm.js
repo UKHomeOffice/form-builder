@@ -69,7 +69,7 @@ const usePreviewForm = (formId) => {
                 }));
             }
         }
-    }, [response, status, setValue]);
+    }, [response, status, setValue, handleForm]);
 
     const backToForms = async () => {
         await navigation.navigate(`/forms/${envContext.id}`, {replace: true});

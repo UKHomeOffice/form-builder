@@ -2,7 +2,6 @@ import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
 import {SUCCESS} from "../../../core/api/actionTypes";
-import {useKeycloak} from "react-keycloak";
 
 const useGetComments = (formId) => {
     const initialState = {
@@ -14,7 +13,6 @@ const useGetComments = (formId) => {
     const isMounted = useRef(true);
     const [comments, setComments] = useState(initialState);
     const [comment, setComment] = useState('');
-    const [keycloak] = useKeycloak();
 
     const CancelToken = axios.CancelToken;
 
@@ -31,8 +29,7 @@ const useGetComments = (formId) => {
     const [saveCommentRequestState, saveCommentRequest] = useApiRequest(
         `/forms/${formId}/comments`, {
             verb: 'post', params: {
-                comment: comment,
-                createdBy: keycloak.tokenParsed.email
+                comment: comment
             }
         }
     );
