@@ -46,7 +46,7 @@ const Versions = ({formId}) => {
         <Tab menu={{fluid: true, vertical: true, tabular: true}} panes={panes}/>
         <div style={{marginTop: '20px', textAlign: 'center'}}>
             <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
-                        disabled={total < limit}
+                        disabled={total <= limit}
                         activePage={activePage}
                         ellipsisItem={isMobile ? null : {
                             content: <Icon name='ellipsis horizontal'/>,

@@ -206,9 +206,9 @@ const FormList = () => {
                                                 justifyContent: 'center',
                                                 display: 'flex'
                                             }}><Label size='large'
-                                                     basic
-                                                     icon={!form.display || form.display === 'form' ? 'wpforms' : form.display}
-                                                     content={form.display ? form.display : 'form'} /></div>
+                                                      basic
+                                                      icon={!form.display || form.display === 'form' ? 'wpforms' : form.display}
+                                                      content={form.display ? form.display : 'form'}/></div>
                                         </Table.Cell>
                                         <Table.Cell>
                                             <ButtonGroup form={form}
@@ -223,9 +223,10 @@ const FormList = () => {
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.HeaderCell colSpan={1}>{total} forms</Table.HeaderCell>
-                                    {total > limit ? <Table.HeaderCell colSpan={isEditable ? 2 : 3}>
+                                    <Table.HeaderCell colSpan={isEditable ? 2 : 3}>
                                         <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                                     activePage={activePage}
+                                                    disabled={total <= limit}
                                                     ellipsisItem={isMobile ? null : {
                                                         content: <Icon name='ellipsis horizontal'/>,
                                                         icon: true
@@ -241,15 +242,16 @@ const FormList = () => {
                                                     prevItem={{content: <Icon name='angle left'/>, icon: true}}
                                                     nextItem={{content: <Icon name='angle right'/>, icon: true}}
                                                     onPageChange={handlePaginationChange}/>
-                                    </Table.HeaderCell> : <Table.HeaderCell/>}
+                                    </Table.HeaderCell>
                                     {isEditable ? <Table.HeaderCell colSpan={2}>
-                                        <Button floated={isMobile ? null : 'right'} icon labelPosition='left' primary
-                                                size='small'
-                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
-                                                data-cy="create-form">
-                                            <Icon name='wpforms'/>{t('form.create.label')}
-                                        </Button>
-                                    </Table.HeaderCell> : <React.Fragment><Table.HeaderCell/><Table.HeaderCell/></React.Fragment>}
+                                            <Button floated={isMobile ? null : 'right'} icon labelPosition='left' primary
+                                                    size='small'
+                                                    onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
+                                                    data-cy="create-form">
+                                                <Icon name='wpforms'/>{t('form.create.label')}
+                                            </Button>
+                                        </Table.HeaderCell> :
+                                        <React.Fragment><Table.HeaderCell/><Table.HeaderCell/></React.Fragment>}
                                 </Table.Row>
                             </Table.Footer>
                         </Table>

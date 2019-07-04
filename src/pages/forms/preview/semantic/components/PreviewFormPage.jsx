@@ -45,91 +45,89 @@ const PreviewFormPage = ({formId}) => {
                 {!status || status === EXECUTING ?
                     <div className="center"><Loader active inline='centered'
                                                     size='large'>{t('form.loading-form')}</Loader></div> :
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column>
-                                    <Divider horizontal>
-                                        <Header as='h3'>
-                                            <Icon name='eye'/>
-                                            Preview
-                                        </Header>
-                                    </Divider>
-                                </Grid.Column>
-                            </Grid.Row>
-                            {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView}
-                                                      close={closeSchemaView}/> : null}
-                            <Grid.Row>
-                                <Grid.Column>
-                                    <Container>
-                                        <div
-                                            className={canEdit() ? 'ui stackable five buttons' : 'ui stackable two buttons'}>
-                                            <Button data-cy="backToForms" onClick={() => {
-                                                backToForms();
-                                            }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
-                                            <React.Fragment>
-                                                <Button data-cy="viewSchema"
-                                                        onClick={() => {
-                                                            openSchemaView();
-                                                        }}
-                                                        secondary>{t('form.schema.view', {env: envContext.id})}
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column>
+                                <Divider horizontal>
+                                    <Header as='h3'>
+                                        <Icon name='eye'/>
+                                        Preview
+                                    </Header>
+                                </Divider>
+                            </Grid.Column>
+                        </Grid.Row>
+                        {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView}
+                                                  close={closeSchemaView}/> : null}
+                        <Grid.Row>
+                            <Grid.Column>
+                                <Container>
+                                    <div
+                                        className={canEdit() ? 'ui stackable five buttons' : 'ui stackable two buttons'}>
+                                        <Button data-cy="backToForms" onClick={() => {
+                                            backToForms();
+                                        }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
+                                        <React.Fragment>
+                                            <Button data-cy="viewSchema"
+                                                    onClick={() => {
+                                                        openSchemaView();
+                                                    }}
+                                                    secondary>{t('form.schema.view', {env: envContext.id})}
+                                            </Button>
+
+                                            {canEdit() && envContext.editable ?
+                                                <React.Fragment><Button data-cy="duplicate"
+                                                                        onClick={() => {
+                                                                            duplicate()
+                                                                        }}
+                                                                        secondary>{t('form.preview.duplicate', {env: envContext.id})}
                                                 </Button>
+                                                    <Button data-cy="edit"
+                                                            onClick={() => {
+                                                                edit()
+                                                            }}
+                                                            primary>{t('form.edit.label-form')}
+                                                    </Button> </React.Fragment> : null}
 
-                                                {canEdit() && envContext.editable ?
-                                                    <React.Fragment><Button data-cy="duplicate"
-                                                                            onClick={() => {
-                                                                                duplicate()
-                                                                            }}
-                                                                            secondary>{t('form.preview.duplicate', {env: envContext.id})}
-                                                    </Button>
-                                                        <Button data-cy="edit"
-                                                                onClick={() => {
-                                                                    edit()
-                                                                }}
-                                                                primary>{t('form.edit.label-form')}
-                                                        </Button> </React.Fragment> : null}
-
-                                            </React.Fragment>
-                                            {config.get('gov-uk-enabled', false) ?
-                                                <Button data-cy="govUKPreview" onClick={() => {
-                                                    window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
-                                                }} color="teal">{t('form.preview.govuk.open')}</Button> : null}
-                                        </div>
-                                    </Container>
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row>
-                                <Grid.Column>
-                                    {form.data ?
-                                        <PreviewFormComponent form={parseCss(form.data)} submission={form.submission}
-                                                              handlePreview={previewSubmission}/> : null}
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                        }
-
-
-                    </Tab.Pane>,
-                },
-                {
-                    menuItem: {key: 'versions', icon: 'copy outline', content: 'Versions'},
-                    render: () => <Tab.Pane><Versions formId={formId}/></Tab.Pane>,
+                                        </React.Fragment>
+                                        {config.get('gov-uk-enabled', false) ?
+                                            <Button data-cy="govUKPreview" onClick={() => {
+                                                window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
+                                            }} color="teal">{t('form.preview.govuk.open')}</Button> : null}
+                                    </div>
+                                </Container>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column>
+                                {form.data ?
+                                    <PreviewFormComponent form={parseCss(form.data)} submission={form.submission}
+                                                          handlePreview={previewSubmission}/> : null}
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 }
-                ];
 
-                if (envContext.editable) {
-                const last = panes.pop();
-                panes.push({
-                menuItem: {key: 'comments', icon: 'comments outline', content: 'Comments'},
-                render: () => <Tab.Pane><Container><Comments formId={formId}/></Container></Tab.Pane>,
-            }, last);
-            }
+            </Tab.Pane>,
+        },
+        {
+            menuItem: {key: 'versions', icon: 'copy outline', content: 'Versions'},
+            render: () => <Tab.Pane><Versions formId={formId}/></Tab.Pane>,
+        }];
 
-                return <Tab panes={panes} onTabChange={(e, data) => {
-                if (data.activeIndex === 0) {
-                    reload();
-                }
-            }
-            }/>
-                };
+    if (envContext.editable) {
+        const last = panes.pop();
+        panes.push({
+            menuItem: {key: 'comments', icon: 'comments outline', content: 'Comments'},
+            render: () => <Tab.Pane><Container><Comments formId={formId}/></Container></Tab.Pane>,
+        }, last);
+    }
 
-                export default PreviewFormPage;
+    return <Tab panes={panes} onTabChange={(e, data) => {
+        if (data.activeIndex === 0) {
+            reload();
+        }
+    }
+    }/>
+};
+
+export default PreviewFormPage;
