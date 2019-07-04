@@ -17,7 +17,8 @@ const Comments = ({formId}) => {
         saveCommentRequestState,
         comment,
         response,
-        setComment
+        setComment,
+        exception
     } = useGetComments(formId);
 
     const {activePage, data, total, limit} = comments;
@@ -29,7 +30,7 @@ const Comments = ({formId}) => {
     if (status === ERROR) {
         return <Message negative>
             <Message.Header>{t('error.general')}</Message.Header>
-            {t('comments.failure.comments-load', {error: JSON.stringify(response.data)})}
+            {t('comments.failure.comments-load', {error: response ?JSON.stringify(response.data) : exception.message})}
         </Message>
     }
     if (saveCommentRequestState.status === ERROR) {

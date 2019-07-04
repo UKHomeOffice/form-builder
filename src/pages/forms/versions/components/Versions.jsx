@@ -1,6 +1,6 @@
 import React from 'react';
 import useGetVersions from "../useGetVersions";
-import {Icon, Loader, Message, Pagination, Tab, Menu, Label} from "semantic-ui-react";
+import {Icon, Loader, Message, Pagination, Tab, Menu, Label, Container} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import {isMobile} from "react-device-detect";
@@ -8,7 +8,7 @@ import VersionPreview from "./VersionPreview";
 import moment from "moment";
 
 const Versions = ({formId}) => {
-    const {versions, status, response, handlePaginationChange} = useGetVersions(formId);
+    const {versions, status, response, handlePaginationChange, exception} = useGetVersions(formId);
     const {activePage, limit, data, total} = versions;
     const {t} = useTranslation();
     if (!status || status === EXECUTING) {
@@ -16,10 +16,10 @@ const Versions = ({formId}) => {
         </div>
     }
     if (status === ERROR) {
-        return <Message negative>
+        return <Container><Message negative>
             <Message.Header>{t('error.general')}</Message.Header>
-            {t('versions.failure.versions-load', {error: JSON.stringify(response.data)})}
-        </Message>
+            {t('versions.failure.versions-load', {error: response ? JSON.stringify(response.data) : exception.message })}
+        </Message></Container>
     }
 
     const panes = data ? data.map((version) => {

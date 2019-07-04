@@ -17,7 +17,7 @@ const useGetVersions = (formId) => {
 
     const cancelVersionsRequest = useRef(CancelToken.source());
 
-    const [{status, response}, makeRequest] = useApiRequest(
+    const [{status, response, exception}, makeRequest] = useApiRequest(
         `/forms/${formId}/versions?limit=${versions.limit}${versions.activePage !== 1 ? `&offset=${((versions.activePage - 1) * versions.limit)}` : ''}`, {
             verb: 'get', params: {
                 cancelToken: cancelVersionsRequest.current.token
@@ -73,7 +73,8 @@ const useGetVersions = (formId) => {
         status,
         versions,
         response,
-        handlePaginationChange
+        handlePaginationChange,
+        exception
     }
 };
 

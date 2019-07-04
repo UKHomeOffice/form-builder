@@ -16,15 +16,19 @@ const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {
         status, response, form,
+        exception,
         previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit, parseCss
     } = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
     if (status === ERROR) {
-        return <Message negative>
+        return <Container><Message negative>
             <Message.Header>{t('error.general')}</Message.Header>
-            {t('form.list.failure.forms-load', {error: JSON.stringify(response.data)})}
-        </Message>
+            {t('form.list.failure.forms-load', {
+                error: response ? JSON.stringify(response.data)
+                    : exception.message
+            })}
+        </Message></Container>
     }
 
     const panes = [

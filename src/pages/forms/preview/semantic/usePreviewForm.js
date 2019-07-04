@@ -26,7 +26,7 @@ const usePreviewForm = (formId) => {
     const CancelToken = axios.CancelToken;
     const cancelPreview = useRef(CancelToken.source());
 
-    const [{status, response}, makeRequest] = useApiRequest(
+    const [{status, response, exception}, makeRequest] = useApiRequest(
         `/forms/${formId}`, {
             verb: 'get', params: {cancelToken: cancelPreview.current.token}
         }
@@ -137,7 +137,8 @@ const usePreviewForm = (formId) => {
         closeSchemaView,
         duplicate,
         edit,
-        parseCss
+        parseCss,
+        exception
     }
 };
 
