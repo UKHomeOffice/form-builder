@@ -59,7 +59,8 @@ const Comments = ({formId}) => {
             </Comment>
         }) : null}
 
-        {total > 10 ? <div style={{marginTop: '20px', textAlign: 'center'}}><Pagination
+        <div style={{marginTop: '20px', textAlign: 'center'}}><Pagination
+                disabled={total < limit}
                 totalPages={Math.ceil(parseInt(total) / limit)}
                 activePage={activePage}
                 ellipsisItem={isMobile ? null : {
@@ -77,7 +78,7 @@ const Comments = ({formId}) => {
                 prevItem={{content: <Icon name='angle left'/>, icon: true}}
                 nextItem={{content: <Icon name='angle right'/>, icon: true}}
                 onPageChange={handlePaginationChange}/></div>
-            : null}
+
         <Form reply loading={saveCommentRequestState.status === EXECUTING}>
             <Form.TextArea onChange={(e, {value}) => setComment(value)} value={comment}/>
             <Button content='Add comment' labelPosition='left' icon='edit' primary onClick={() => handleNewComment()}

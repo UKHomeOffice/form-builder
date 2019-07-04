@@ -1,6 +1,6 @@
 import React from 'react';
 import useGetVersions from "../useGetVersions";
-import {Icon, Label, Loader, Message, Pagination, Tab} from "semantic-ui-react";
+import {Icon, Loader, Message, Pagination, Tab, Menu, Label} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import {isMobile} from "react-device-detect";
@@ -23,8 +23,7 @@ const Versions = ({formId}) => {
     }
 
     const panes = data ? data.map((version) => {
-        const item = version.latest ? `${moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")} (Latest)`
-            : `${moment(version.validTo).format("DD-MM-YYYY HH:mm:ss")} (${ moment(version.validTo).fromNow()})` ;
+        const item = <Menu.Item key={version.versionId}>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}{version.latest ? <Label color='red' size='medium'><Icon name='time' /> Latest</Label> : <Label size='medium'> <Icon name='time' />{ moment(version.validFrom).fromNow()}</Label>}</Menu.Item>;
         return {
             menuItem: item,
             render: () => <Tab.Pane><VersionPreview version={version}/></Tab.Pane>
@@ -33,24 +32,25 @@ const Versions = ({formId}) => {
 
     return <React.Fragment><Tab menu={{fluid: true, vertical: true, tabular: true}} panes={panes}/>
         <div style={{marginTop: '20px', textAlign: 'center'}}>
-            {total > 10 ? <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
-                                     activePage={activePage}
-                                     ellipsisItem={isMobile ? null : {
-                                         content: <Icon name='ellipsis horizontal'/>,
-                                         icon: true
-                                     }}
-                                     firstItem={isMobile ? null : {
-                                         content: <Icon name='angle double left'/>,
-                                         icon: true
-                                     }}
-                                     lastItem={isMobile ? null : {
-                                         content: <Icon name='angle double right'/>,
-                                         icon: true
-                                     }}
-                                     prevItem={{content: <Icon name='angle left'/>, icon: true}}
-                                     nextItem={{content: <Icon name='angle right'/>, icon: true}}
-                                     onPageChange={handlePaginationChange}/>
-                : null}</div>
+            <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
+                        disabled={total < limit}
+                        activePage={activePage}
+                        ellipsisItem={isMobile ? null : {
+                            content: <Icon name='ellipsis horizontal'/>,
+                            icon: true
+                        }}
+                        firstItem={isMobile ? null : {
+                            content: <Icon name='angle double left'/>,
+                            icon: true
+                        }}
+                        lastItem={isMobile ? null : {
+                            content: <Icon name='angle double right'/>,
+                            icon: true
+                        }}
+                        prevItem={{content: <Icon name='angle left'/>, icon: true}}
+                        nextItem={{content: <Icon name='angle right'/>, icon: true}}
+                        onPageChange={handlePaginationChange}/>
+        </div>
     </React.Fragment>
 };
 

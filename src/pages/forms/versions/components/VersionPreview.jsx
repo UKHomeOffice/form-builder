@@ -1,17 +1,26 @@
 import React from "react";
 import {Form} from 'react-formio';
-import {Container, Grid, Header} from "semantic-ui-react";
+import {Container, Grid, Item, Label} from "semantic-ui-react";
 
 const VersionPreview = ({version}) => {
     return <Container>
         <Grid>
             <Grid.Row>
                 <Grid.Column>
-                    <Header as='h2'>
-                        {version.schema.title}
-                        <Header.Subheader>{version.updatedBy ?
-                            `Updated by ${version.updatedBy}` : `Updated by ${version.createdBy}`}</Header.Subheader>
-                    </Header>
+                    <Item>
+                        <Item.Content>
+                            <Item.Header>Title:{version.schema.title}</Item.Header>
+                            <Item.Meta>
+                                <span>Name: {version.schema.name}</span>
+                            </Item.Meta>
+                            <Item.Meta>
+                                <span>Path: {version.schema.path}</span>
+                            </Item.Meta>
+                            <Item.Extra>
+                                <Label icon='user' content={version.createdBy}/>
+                            </Item.Extra>
+                        </Item.Content>
+                    </Item>
                     <Form form={version.schema} options={{
                         readOnly: true
                     }}/>
