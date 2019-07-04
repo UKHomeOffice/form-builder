@@ -56,6 +56,12 @@ const messages = {
         }
     },
     "form": {
+        "restore" : {
+            "success-title" : "Successful version restore",
+            "success-description": "{{versionId}} has been restored to latest",
+            "failure" : "Failed to restore form to latest due {{error}}"
+
+        },
         "loading-form" : "Loading form",
         "download": {
             "successful" : "Download successful",

@@ -126,6 +126,10 @@ const usePreviewForm = (formId) => {
         return form;
     };
 
+    const reload = () => {
+        makeRequest();
+    };
+
     return {
         previewSubmission,
         status,
@@ -138,7 +142,8 @@ const usePreviewForm = (formId) => {
         duplicate,
         edit,
         parseCss,
-        exception
+        exception,
+        reload
     }
 };
 

@@ -1,18 +1,22 @@
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
-import {SUCCESS} from "../../../core/api/actionTypes";
+import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
+import {toast} from "react-semantic-toasts";
+import {useTranslation} from "react-i18next";
 
 const useGetVersions = (formId) => {
     const initialState = {
         limit: 10,
         activePage: 1,
         data: null,
-        total: 0,
+        total: 0
     };
+    const [version, setVersion] = useState(null);
+
     const isMounted = useRef(true);
     const [versions, setVersions] = useState(initialState);
-
+    const {t} = useTranslation();
     const CancelToken = axios.CancelToken;
 
     const cancelVersionsRequest = useRef(CancelToken.source());
@@ -25,9 +29,17 @@ const useGetVersions = (formId) => {
         }
     );
 
+    const [restoreState, makeRestoreRequest] = useApiRequest(`/forms/restore`, {
+        verb: 'post', params: {
+            formId: formId,
+            versionId: version
+        }
+    });
+
     const savedCallback = useRef();
     const cancelRequests = useRef();
-
+    const restoreCallback = useRef();
+    const executeRestoreCallback = useRef();
 
     useEffect(() => {
         savedCallback.current = () => {
@@ -36,7 +48,46 @@ const useGetVersions = (formId) => {
         cancelRequests.current = () => {
             cancelVersionsRequest.current.cancel('Cancelling get versions');
         };
+        restoreCallback.current = () => {
+            if (restoreState.status === SUCCESS) {
+                toast({
+                    type: 'success',
+                    icon: 'check circle',
+                    title: t("form.restore.success-title"),
+                    description: t("form.restore.success-description", {versionId: version}),
+                    animation: 'scale',
+                    time: 10000
+                });
+                makeRequest();
+            }
+            if (restoreState.status === ERROR) {
+                toast({
+                    type: 'error',
+                    icon: 'exclamation circle',
+                    title: t('error.general'),
+                    description: t('form.restore.failure', {
+                        error: restoreState.response ?
+                            JSON.stringify(restoreState.response.data) : restoreState.exception.message
+                    }),
+                    animation: 'scale',
+                    time: 10000
+                })
+            }
+        }
+        executeRestoreCallback.current = () => {
+            makeRestoreRequest();
+        }
     });
+
+    useEffect(() => {
+        if (version) {
+            executeRestoreCallback.current();
+        }
+    }, [version]);
+
+    useEffect(() => {
+        restoreCallback.current();
+    }, [restoreState]);
 
     useEffect(() => {
         savedCallback.current();
@@ -68,13 +119,18 @@ const useGetVersions = (formId) => {
         }));
     };
 
+    const restore = (version) => {
+        setVersion(version.versionId)
+    };
 
     return {
         status,
         versions,
         response,
         handlePaginationChange,
-        exception
+        exception,
+        restore,
+        restoreState
     }
 };
 
