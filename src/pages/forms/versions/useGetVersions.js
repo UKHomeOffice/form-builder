@@ -73,7 +73,7 @@ const useGetVersions = (formId) => {
                     time: 10000
                 })
             }
-        }
+        };
         executeRestoreCallback.current = () => {
             makeRestoreRequest();
         }

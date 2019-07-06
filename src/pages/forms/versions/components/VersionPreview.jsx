@@ -27,15 +27,23 @@ const VersionPreview = ({version, restore, restoreState}) => {
                         <Item.Meta>
                             <span>Path: {version.schema.path}</span>
                         </Item.Meta>
+                        <Item.Meta>
+                            <span>FormId: {version.form.id}</span>
+                        </Item.Meta>
+                        <Item.Meta>
+                            <span>VersionId: {version.versionId}</span>
+                        </Item.Meta>
                         <Item.Extra>
                             <Label icon='user' content={version.createdBy}/>
                             <Label icon='time' content={moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}/>
                         </Item.Extra>
                     </Item.Content>
                 </Item>
+                <div style={{marginTop: '10px'}}>
                 <Form form={version.schema} options={{
                     readOnly: true
                 }}/>
+                </div>
             </Grid.Column>
         </Grid>
     </Container>

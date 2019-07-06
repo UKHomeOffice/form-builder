@@ -29,8 +29,8 @@ const Versions = ({formId}) => {
                 <React.Fragment>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}<Label color='red'
                                                                                                 size='small'>Latest</Label></React.Fragment>
                 : <React.Fragment>
-                    {moment(version.validTo).format("DD-MM-YYYY HH:mm:ss")}
-                    <Label size='small'>{moment(version.validTo).fromNow()}</Label>
+                    {moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}
+                    <Label size='small'>{moment(version.validFrom).fromNow()}</Label>
                 </React.Fragment>
             }
 
