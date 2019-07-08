@@ -34,7 +34,7 @@ const VersionPreview = ({version, restore, restoreState}) => {
                             <span>VersionId: {version.versionId}</span>
                         </Item.Meta>
                         <Item.Extra>
-                            <Label icon='user' content={version.createdBy}/>
+                            <Label icon='user' content={version.updatedBy}/>
                             <Label icon='time' content={moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}/>
                         </Item.Extra>
                     </Item.Content>
