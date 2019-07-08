@@ -20,21 +20,21 @@ const VersionPreview = ({version, restore, restoreState}) => {
                     }}/> : null) : null}
                 <Item>
                     <Item.Content>
-                        <Item.Header>Title: {version.schema.title}</Item.Header>
+                        <Item.Header><strong>Title:</strong> {version.schema.title}</Item.Header>
                         <Item.Meta>
-                            <span>Name: {version.schema.name}</span>
+                            <span><strong>Name:</strong> {version.schema.name}</span>
                         </Item.Meta>
                         <Item.Meta>
-                            <span>Path: {version.schema.path}</span>
+                            <span><strong>Path:</strong> {version.schema.path}</span>
                         </Item.Meta>
                         <Item.Meta>
-                            <span>FormId: {version.form.id}</span>
+                            <span><strong>Form Id:</strong> {version.form.id}</span>
                         </Item.Meta>
                         <Item.Meta>
-                            <span>VersionId: {version.versionId}</span>
+                            <span><strong>Version Id:</strong> {version.versionId}</span>
                         </Item.Meta>
-                        <Item.Extra>
-                            <Label icon='user' content={version.updatedBy}/>
+                        <Item.Extra style={{marginTop: '10px'}}>
+                            <Label icon='user' content={version.updatedBy ? version.updatedBy : version.createdBy}/>
                             <Label icon='time' content={moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}/>
                         </Item.Extra>
                     </Item.Content>
