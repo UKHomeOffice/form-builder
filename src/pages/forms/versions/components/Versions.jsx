@@ -1,6 +1,6 @@
 import React from 'react';
 import useGetVersions from "../useGetVersions";
-import {Container, Icon, Label, Loader, Menu, Message, Pagination, Tab} from "semantic-ui-react";
+import {Checkbox, Container, Icon, Label, Loader, Menu, Message, Pagination, Tab} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
 import {isMobile} from "react-device-detect";

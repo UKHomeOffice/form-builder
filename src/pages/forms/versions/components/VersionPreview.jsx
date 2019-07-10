@@ -40,9 +40,9 @@ const VersionPreview = ({version, restore, restoreState}) => {
                     </Item.Content>
                 </Item>
                 <div style={{marginTop: '10px'}}>
-                <Form form={version.schema} options={{
-                    readOnly: true
-                }}/>
+                    <Form form={version.schema} options={{
+                        readOnly: true
+                    }}/>
                 </div>
             </Grid.Column>
         </Grid>
