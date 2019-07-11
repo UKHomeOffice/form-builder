@@ -6,6 +6,7 @@ import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
 import _ from 'lodash'
+import useEnvContext from "../../../../core/context/useEnvContext";
 const CreateFormPage = () => {
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
@@ -22,6 +23,8 @@ const CreateFormPage = () => {
         closePreview,
         changeDisplay
     } = useCreateForm();
+
+    const {envContext} = useEnvContext();
 
 
     return <div style={{paddingBottom: '10px'}}>
@@ -42,6 +45,7 @@ const CreateFormPage = () => {
             <FormBuilderComponent
                 form={form}
                 t={t}
+                envContext={envContext}
                 updateField={updateField}
                 openPreview={openPreview}
                 closePreview={closePreview}
