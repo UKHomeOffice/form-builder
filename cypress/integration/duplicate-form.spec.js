@@ -15,15 +15,15 @@ describe('Duplicate form', () => {
         cy.get('[data-cy=form-builder]').click();
         cy.url().should('include', '/forms/local/create/builder');
 
-        const formTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
+        const formTitle = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
         cy.get('input[name=title]').type(formTitle);
-        cy.get("[data-type=textfield]").trigger("mousedown", { which: 1 })
+        cy.get("[data-type=textfield]").trigger("mousedown", {which: 1})
         cy.get(".drag-container").trigger("mousemove").trigger("mouseup");
         cy.get("button[ref=saveButton]").click();
         cy.get('[data-cy=persist-form]').click();
 
 
-        cy.url().should('include', '/forms/local');
+        cy.visit("/forms/local");
 
         cy.get('input[name=search-title]').type(formTitle);
 
@@ -31,18 +31,18 @@ describe('Duplicate form', () => {
 
         cy.get('[data-cy=preview-form]').click();
 
+        cy.wait(1000);
         cy.url().should('include', '/preview');
+
         cy.get("[data-cy=duplicate]").click();
         cy.wait(1000);
 
-        cy.url().should('contains', '/duplicate');
-
-        const newTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
+        const newTitle = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
         cy.get('input[name=title]').clear();
         cy.get('input[name=title]').type(newTitle);
 
         cy.get('[data-cy=persist-form]').click();
-        
+
         cy.wait(1000);
 
         cy.get('input[name=search-title]').type(newTitle);
