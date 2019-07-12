@@ -1,0 +1,104 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.NAME}}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      name: {{.NAME}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      name: {{.NAME}}
+    spec:
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: proxy
+        image: quay.io/ukhomeofficedigital/nginx-proxy
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+        env:
+        - name: PROXY_SERVICE_HOST
+          value: "127.0.0.1"
+        - name: PROXY_SERVICE_PORT
+          value: "8101"
+        - name: SERVER_CERT
+          value: "/certs/tls.crt"
+        - name: SERVER_KEY
+          value: "/certs/tls.key"
+        - name: SSL_CIPHERS
+          value: "ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:AES256+EDH:!aNULL"
+        - name: ENABLE_UUID_PARAM
+          value: "FALSE"
+        - name: NAXSI_USE_DEFAULT_RULES
+          value: "FALSE"
+        - name: PORT_IN_HOST_HEADER
+          value: "FALSE"
+        - name: ERROR_REDIRECT_CODES
+          value: "599"
+        - name: ADD_NGINX_LOCATION_CFG
+          value: |
+            gzip off;
+            proxy_buffer_size         256k;
+            proxy_buffers             4 512k;
+            proxy_busy_buffers_size   512k;
+            echo_read_request_body;
+        - name: LOG_FORMAT_NAME
+          value: "json"
+        - name: NO_LOGGING_URL_PARAMS
+          value: "{{.NO_LOGGING_URL_PARAMS}}"
+        - name: NO_LOGGING_BODY
+          value: "{{.NO_LOGGING_BODY}}"
+        - name: NO_LOGGING_RESPONSE
+          value: "{{.NO_LOGGING_RESPONSE}}"
+        - name: STATSD_METRICS
+          value: "FALSE"
+        ports:
+        - name: https
+          containerPort: 10443
+        volumeMounts:
+          - name: certs
+            mountPath: /certs
+      - name: {{.NAME}}
+        image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/cop/form-builder:{{.IMAGE_TAG}}
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readiness
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        volumeMounts:
+        - mountPath: /config
+          name: config-volume
+      volumes:
+      - name: config-volume
+        secret:
+          defaultMode: 420
+          secretName: formbuilder
+      - name: certs
+        secret:
+          secretName: "{{.NAME}}-pod-tls"
+

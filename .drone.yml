@@ -17,3 +17,73 @@ pipeline:
     when:
       branch: master
       event: push
+
+  deploy_to_dev:
+    image: quay.io/ukhomeofficedigital/kd
+    secrets:
+      - DEV_NAME
+      - DEV_DOMAIN
+      - DEV_WHITELIST
+      - DEV_KUBE_NAMESPACE
+      - DEV_KUBE_SERVER
+      - DEV_KUBE_TOKEN
+      - DEV_INTERNAL_CA_URL
+      - DEV_NO_LOGGING_URL_PARAMS
+      - DEV_NO_LOGGING_BODY
+      - DEV_NO_LOGGING_RESPONSE
+    commands:
+      - export NAME=$${DEV_NAME}
+      - export DOMAIN=$${DEV_DOMAIN}
+      - export WHITELIST=$${DEV_WHITELIST}
+      - export KUBE_NAMESPACE=$${DEV_KUBE_NAMESPACE}
+      - export KUBE_SERVER=$${DEV_KUBE_SERVER}
+      - export KUBE_TOKEN=$${DEV_KUBE_TOKEN}
+      - export INTERNAL_CA_URL=$${DEV_INTERNAL_CA_URL}
+      - export NO_LOGGING_URL_PARAMS=$${DEV_NO_LOGGING_URL_PARAMS}
+      - export NO_LOGGING_BODY=$${DEV_NO_LOGGING_BODY}
+      - export NO_LOGGING_RESPONSE=$${DEV_NO_LOGGING_RESPONSE}
+      - export IMAGE_TAG=${DRONE_COMMIT_SHA}
+      - kd --insecure-skip-tls-verify -f kube/cert.yml
+      - kd --insecure-skip-tls-verify -f kube/secret.yml
+      - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+      - kd --insecure-skip-tls-verify -f kube/service.yml
+      - kd --insecure-skip-tls-verify -f kube/deployment.yml
+      - kd --insecure-skip-tls-verify -f kube/ingress.yml
+    when:
+      environment: dev
+      event: deployment
+
+  deploy_to_production:
+    image: quay.io/ukhomeofficedigital/kd
+    secrets:
+      - PRODUCTION_NAME
+      - PRODUCTION_DOMAIN
+      - PRODUCTION_WHITELIST
+      - PRODUCTION_KUBE_NAMESPACE
+      - PRODUCTION_KUBE_SERVER
+      - PRODUCTION_KUBE_TOKEN
+      - PRODUCTION_INTERNAL_CA_URL
+      - PRODUCTION_NO_LOGGING_URL_PARAMS
+      - PRODUCTION_NO_LOGGING_BODY
+      - PRODUCTION_NO_LOGGING_RESPONSE
+    commands:
+      - export NAME=$${PRODUCTION_NAME}
+      - export DOMAIN=$${PRODUCTION_DOMAIN}
+      - export WHITELIST=$${PRODUCTION_WHITELIST}
+      - export KUBE_NAMESPACE=$${PRODUCTION_KUBE_NAMESPACE}
+      - export KUBE_SERVER=$${PRODUCTION_KUBE_SERVER}
+      - export KUBE_TOKEN=$${PRODUCTION_KUBE_TOKEN}
+      - export INTERNAL_CA_URL=$${PRODUCTION_INTERNAL_CA_URL}
+      - export NO_LOGGING_URL_PARAMS=$${PRODUCTION_NO_LOGGING_URL_PARAMS}
+      - export NO_LOGGING_BODY=$${PRODUCTION_NO_LOGGING_BODY}
+      - export NO_LOGGING_RESPONSE=$${PRODUCTION_NO_LOGGING_RESPONSE}
+      - export IMAGE_TAG=${DRONE_COMMIT_SHA}
+      - kd --insecure-skip-tls-verify -f kube/cert.yml
+      - kd --insecure-skip-tls-verify -f kube/secret.yml
+      - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+      - kd --insecure-skip-tls-verify -f kube/service.yml
+      - kd --insecure-skip-tls-verify -f kube/deployment.yml
+      - kd --insecure-skip-tls-verify -f kube/ingress.yml
+    when:
+      environment: production
+      event: deployment
