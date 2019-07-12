@@ -188,7 +188,7 @@ const FormList = () => {
                                                             </List>
                                                         }/>
                                                         {isEditable ? <Card.Content extra>
-                                                            <Button size='tiny' color='blue' icon="download"
+                                                            <Button size='tiny' color='blue'
                                                                     onClick={() => download(form._id, form.name)}>
                                                                 Download
                                                             </Button>

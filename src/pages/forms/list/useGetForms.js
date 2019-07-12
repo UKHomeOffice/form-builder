@@ -48,6 +48,7 @@ const useGetForms = () => {
             setValues(forms => ({
                 ...forms,
                 activePage: 1,
+                activeIndex: -1,
                 searchTitle: value
             }))
         },
@@ -249,6 +250,7 @@ const useGetForms = () => {
     const handlePaginationChange = (e, {activePage}) => {
         setValues(forms => ({
             ...forms,
+            activeIndex: -1,
             activePage: activePage
         }));
     };
@@ -333,6 +335,7 @@ const useGetForms = () => {
         setValues(forms => ({
             ...forms,
             filter: filter,
+            activeIndex: -1,
             filterValue: value
         }));
     };

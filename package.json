@@ -35,7 +35,7 @@
     "enzyme-adapter-react-16": "^1.12.1",
     "express": "^4.16.4",
     "font-awesome": "^4.7.0",
-    "formiojs": "4.0.0-beta.48",
+    "formiojs": "4.0.0-rc.5",
     "govuk-frontend": "^2.11.0",
     "i18next": "^15.1.0",
     "i18next-browser-languagedetector": "^3.0.1",
@@ -70,7 +70,7 @@
     "replace-in-file": "^4.1.0",
     "secure-ls": "^1.2.5",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.87.1",
+    "semantic-ui-react": "^0.87.2",
     "use-debounce": "^2.0.0",
     "uuid4": "^1.1.4",
     "winston": "^3.2.1"

@@ -47,10 +47,10 @@ const PreviewFormPage = ({formId}) => {
                 }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
                     {canEdit() ? <React.Fragment>
                         <Button data-cy="viewSchema"
+                                color='grey'
                                 onClick={() => {
                                     openSchemaView();
-                                }}
-                                secondary>{t('form.schema.view', {env: envContext.id})}
+                                }}>{t('form.schema.view', {env: envContext.id})}
                         </Button>
 
                         <Button data-cy="duplicate"
