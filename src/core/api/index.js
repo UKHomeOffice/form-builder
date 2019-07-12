@@ -48,11 +48,16 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
 
     const makeRequest = async () => {
         dispatch(executing());
+        let response;
         try {
-            const response = await instance[verb](`${envContext.url}${path}`, params);
+            response = await instance[verb](`${envContext.url}${path}`, params);
             dispatch(success(response));
-        } catch ({response = null, ...exception}) {
-            dispatch(error(response, exception));
+        } catch (err) {
+            if (axios.isCancel(err)) {
+                console.log(err.message);
+            } else {
+                dispatch(error(err.response, err));
+            }
         }
     };
 

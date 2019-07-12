@@ -8,7 +8,7 @@ const classes = {
 };
 const govukFormioTemplate = {
     datagrid: {
-        form: `<table class="table datagrid-table table-bordered
+        form: `<table class="table datagrid-table table-bordered 
             {{ component.striped ? 'table-striped' : ''}}
             {{ component.hover ? 'table-hover' : ''}}
             {{ component.condensed ? 'table-sm' : ''}}
@@ -54,7 +54,7 @@ const govukFormioTemplate = {
               </td>
               {% } %}
               {% }) %}
-              {% if (hasExtraColumn && (removePlacement === 'col')) { %}
+              {% if (hasExtraColumn) { %}
                 {% if (!builder && hasRemoveButtons) { %}
                 <td>
                   <button type="button" class="govuk-button btn button--secondary formio-button-remove-row" ref="{{datagridKey}}-removeRow">

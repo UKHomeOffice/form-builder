@@ -6,19 +6,37 @@ describe("variable replacement", () => {
     const variableReplacer = new VariableReplacer();
 
     it('can generate uuid for key', () => {
+
         const data = {
-            "{$.staffDetailsContext.staffId}": "{{guid}}"
+            "components" :[
+                {
+                    "key" : "id",
+                    "defaultValue" : "{$.staffDetailsContext.staffId}"
+                }
+            ]
         };
-        const replaced = variableReplacer.replace(data);
-        expect(replaced['{$.staffDetailsContext.staffId}']).not.toEqual("{{guid}}");
+
+        const replacement = [{
+            "{$.staffDetailsContext.staffId}": "{{guid}}"
+        }];
+        const replaced = variableReplacer.replace(data, replacement);
+        expect(replaced.components[0].defaultValue).not.toEqual("{{guid}}");
     });
 
     it('can generate first name for key', () => {
         const data = {
-            "{$.keycloakContext.firstName}": "{{firstName}}"
+            "components" :[
+                {
+                    "key" : "id",
+                    "defaultValue" : "{$.staffDetailsContext.staffId}"
+                }
+            ]
         };
-        const replaced = variableReplacer.replace(data);
-        expect(replaced['{$.keycloakContext.firstName}']).not.toEqual("{{firstName}}");
+        const replacement = [{
+            "{$.keycloakContext.firstName}": "{{firstName}}"
+        }];
+        const replaced = variableReplacer.replace(data, replacement);
+        expect(replaced.components[0].defaultValue).not.toEqual("{{firstName}}");
     });
 
     it('can replace json', () => {
@@ -190,5 +208,6 @@ describe("variable replacement", () => {
 
         const teamSelectComponent = _.find(replaced.components, {key: 'teamId'});
         expect(teamSelectComponent.data.url).toEqual('www.google.co.uk/api/platform-data/teamlocations?select=teamid,locationid,team(teamname)');
+        expect(teamSelectComponent.template).toEqual("<span>{{ item.team.teamname }}</span>");
     });
 });

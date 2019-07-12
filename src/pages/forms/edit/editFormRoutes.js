@@ -1,14 +1,14 @@
 import {mount, route} from 'navi'
 import React from "react";
 import EditFormPage from "./components/EditFormPage";
-import {withEnvContext} from "../formsRoute";
+import {withEditAuthorization, withEnvContext} from "../../../core/AppRouter";
 
 
 export default mount({
-    '/': withEnvContext(route(req => {
+    '/': withEditAuthorization(withEnvContext(route(req => {
         return {
             title: 'Edit Form',
             view: <EditFormPage formId={req.params.formId}/>
         }
-    }))
+    })))
 });

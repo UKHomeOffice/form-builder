@@ -5,7 +5,7 @@
   ],
   "properties": {
     "gov-uk-enabled": {
-      "type" : "boolean"
+      "type": "boolean"
     },
     "environments": {
       "$id": "#/properties/environments",
@@ -161,17 +161,19 @@
             "type": "array",
             "title": "The Variable-replacements Schema",
             "items": {
-              "$ref" : "#/properties/variable-replacement"
+              "$ref": "#/properties/variable-replacement"
             }
           }
         }
       }
     },
-    "variable-replacement" : {
+    "variable-replacement": {
       "$id": "#/properties/variable-replacement",
-      "type" : "object",
-      "examples" : [
-        {"{$.environmentContext.platformDataUrl}": "http://www.google.co.uk"}
+      "type": "object",
+      "examples": [
+        {
+          "{$.environmentContext.platformDataUrl}": "http://www.google.co.uk"
+        }
       ]
     },
     "keycloak": {
@@ -181,13 +183,16 @@
       "required": [
         "authUrl",
         "clientId",
-        "realm"
+        "realm",
+        "access-roles",
+        "promotion-roles",
+        "edit-roles"
       ],
       "properties": {
         "authUrl": {
           "$id": "#/properties/keycloak/properties/authUrl",
           "type": "string",
-          "title": "The Authurl Schema",
+          "title": "The Auth url Schema",
           "default": "",
           "examples": [
             "http://keycloak.lodev.xyz/auth"
@@ -197,7 +202,7 @@
         "clientId": {
           "$id": "#/properties/keycloak/properties/clientId",
           "type": "string",
-          "title": "The Clientid Schema",
+          "title": "The Client id Schema",
           "default": "",
           "examples": [
             "platform-ui"
@@ -213,6 +218,45 @@
             "dev"
           ],
           "pattern": "^(.*)$"
+        },
+        "access-roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "title": "Access roles",
+          "examples": [
+            "['access-role1','access-role2']"
+          ]
+        },
+        "promotion-roles": {
+          "type": "array",
+          "title": "Promotion roles",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "examples": [
+            "['promotion-role1','promotion-role2']"
+          ]
+        },
+        "edit-roles": {
+          "type": "array",
+          "title": "Edit roles",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "examples": [
+            "['edit-role1','edit-role2']"
+          ]
         }
       }
     }

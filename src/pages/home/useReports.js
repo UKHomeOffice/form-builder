@@ -26,6 +26,8 @@ const useReports = () => {
     const {state, setState} = useContext(ApplicationContext);
     const environments = config.get('environments');
 
+    const isMounted = useRef(true);
+
     const instance = axios.create();
 
     instance.interceptors.request.use(async (config) => {
@@ -41,31 +43,41 @@ const useReports = () => {
         });
 
     instance.interceptors.response.use(null, (error) => {
-        const url = error.config.url;
-        const errorMessage = error.message;
-        toast({
-            type: 'error',
-            icon: 'exclamation circle',
-            title: t('error.general'),
-            description: t('home.failure.reports', {url: url, error: errorMessage}),
-            animation: 'scale',
-            time: 20000
-        });
-        log([{
-            message: `Failed to get report data from ${url}`,
-            level: "error",
-            exception: errorMessage,
-            reportUrl: url
-        }]);
-        return Promise.resolve({
-            headers: {
-                'content-range': "0/0"
-            }
-        })
+        if (axios.isCancel(error)) {
+            console.log(error.message);
+            return Promise.resolve({
+                headers: {
+                    'content-range': "0/0"
+                }
+            });
+        } else {
+            const url = error.config ? error.config.url : "";
+            const errorMessage = error.message;
+            toast({
+                type: 'error',
+                icon: 'exclamation circle',
+                title: t('error.general'),
+                description: t('home.failure.reports', {url: url, error: errorMessage}),
+                animation: 'scale',
+                time: 20000
+            });
+            log([{
+                message: `Failed to get report data from ${url}`,
+                level: "error",
+                exception: errorMessage,
+                reportUrl: url
+            }]);
+            return Promise.resolve({
+                headers: {
+                    'content-range': "0/0"
+                }
+            })
+        }
     });
 
     const fetchReportsCallback = useRef();
-
+    const cancelTokenRefs = useRef([]);
+    const CancelToken = axios.CancelToken;
 
     const callback = async () => {
         clearEnvContext();
@@ -76,18 +88,22 @@ const useReports = () => {
             }));
         }
         const perEnvResults = await axios.all(environments.map(async (environment) => {
+            const source = CancelToken.source();
+            cancelTokenRefs.current.push(source);
             const url = `${environment.url}/form?select=_id&display__in=form,wizard&limit=1&type__ne=resource`;
             const response = await instance({
                 url: url,
                 method: 'GET',
                 headers: {
                     "x-environment": environment,
-                }
+                },
+                cancelToken: source.token
             });
             return {
                 environment: environment,
                 response: response
             }
+
         }));
         const formsCountData = _.map(perEnvResults, (result) => {
             return {
@@ -96,26 +112,32 @@ const useReports = () => {
                 "value": parseInt(result.response.headers['content-range'].split('/')[1]),
             }
         });
-        setReports(reports => ({
-            ...reports,
-            statusFormsPerEnvCount: SUCCESS,
-            formsPerEnvCount: formsCountData
-        }));
-        const formTypeResults = await axios.all(environments.map(async (environment) => {
+        if (isMounted.current) {
+            setReports(reports => ({
+                ...reports,
+                statusFormsPerEnvCount: SUCCESS,
+                formsPerEnvCount: formsCountData
+            }));
+        }
 
+        const formTypeResults = await axios.all(environments.map(async (environment) => {
+            const source = CancelToken.source();
+            cancelTokenRefs.current.push(source);
             const formTypes = await instance({
                 url: `${environment.url}/form?select=_id&display=form&limit=1&type__ne=resource`,
                 method: 'GET',
                 headers: {
                     "x-environment": environment,
-                }
+                },
+                cancelToken: source.token
             });
             const wizardTypes = await instance({
                 url: `${environment.url}/form?select=_id&display=wizard&limit=1&type__ne=resource`,
                 method: "GET",
                 headers: {
                     "x-environment": environment,
-                }
+                },
+                cancelToken: source.token
             });
             return {
                 environment: environment.id,
@@ -134,11 +156,13 @@ const useReports = () => {
                 form: forms,
             }
         });
-        setReports(reports => ({
-            ...reports,
-            statusTypeData: SUCCESS,
-            typeData: typeData
-        }));
+        if (isMounted.current) {
+            setReports(reports => ({
+                ...reports,
+                statusTypeData: SUCCESS,
+                typeData: typeData
+            }));
+        }
 
     };
 
@@ -150,6 +174,13 @@ const useReports = () => {
             await fetchReportsCallback.current();
         };
         fetch();
+        const tokens = cancelTokenRefs.current;
+        return () => {
+            isMounted.current = false;
+            tokens.forEach((source) =>{
+                source.cancel("Cancelling API request");
+            })
+        }
     }, []);
     return {
         reports,

@@ -6,10 +6,14 @@ import {useTranslation} from 'react-i18next';
 import PreviewFormComponent from "../../../common/components/PreviewFormComponent";
 import config from 'react-global-configuration';
 import useEnvContext from "../../../../../core/context/useEnvContext";
+import SchemaModal from "../../../schema/SchemaModal";
+import useRoles from "../../../common/useRoles";
+import './PreviewFormPage.scss';
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission, backToForms} = usePreviewForm(formId);
+    const {status, response, form, previewSubmission, backToForms, openSchemaView, closeSchemaView, duplicate, edit, parseCss} = usePreviewForm(formId);
+    const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
     if (!status || status === EXECUTING) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
@@ -33,19 +37,47 @@ const PreviewFormPage = ({formId}) => {
                 </Divider>
             </Grid.Column>
         </Grid.Row>
-
+        {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView} close={closeSchemaView}/> : null}
         <Grid.Row>
             <Grid.Column>
-                <Container><Button data-cy="backToForms" onClick={() => {
+                <Container>
+                <div className={canEdit() ? 'ui stackable five buttons' : 'ui stackable two buttons'}>
+                <Button data-cy="backToForms" onClick={() => {
                     backToForms();
-                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button> {config.get('gov-uk-enabled', false) ?<Button data-cy="govUKPreview" onClick={() => {
-                    window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
-                }} color="teal">{t('form.preview.govuk.open')}</Button> : null} </Container>
+                }} default>{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
+                    {canEdit() ? <React.Fragment>
+                        <Button data-cy="viewSchema"
+                                color='grey'
+                                onClick={() => {
+                                    openSchemaView();
+                                }}>{t('form.schema.view', {env: envContext.id})}
+                        </Button>
+
+                        <Button data-cy="duplicate"
+                                onClick={() => {
+                                    duplicate()
+                                }}
+                                secondary>{t('form.preview.duplicate', {env: envContext.id})}
+                        </Button>
+                        <Button data-cy="edit"
+                                onClick={() => {
+                                    edit()
+                                }}
+                                primary>{t('form.edit.label-form')}
+                        </Button>
+
+                    </React.Fragment> : null}
+                    {config.get('gov-uk-enabled', false) ?
+                        <Button data-cy="govUKPreview" onClick={() => {
+                            window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
+                        }} color="teal">{t('form.preview.govuk.open')}</Button> : null}
+                </div>
+                </Container>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                {form.data ? <PreviewFormComponent form={form.data} submission={form.submission}
+                {form.data ? <PreviewFormComponent form={parseCss(form.data)} submission={form.submission}
                                                    handlePreview={previewSubmission}/> : null}
             </Grid.Column>
         </Grid.Row>

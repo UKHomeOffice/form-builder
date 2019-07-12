@@ -36,6 +36,8 @@ const messages = {
         }
     },
     "error" : {
+        "not-found" : "Sorry the url you requested does not exist",
+        "not-authorized": "Sorry you do not have the necessary privileges to access this application. Please contact your support team",
         "general" : "An error occurred",
         "no-context": "An environment context has not been selected",
         "no-context-message": "You need to select an environment context in order to create forms"
@@ -67,6 +69,9 @@ const messages = {
         },
         "create": {
             "file-upload" : {
+                "no-form-content" : "No form content found"
+            },
+            "duplicate": {
                 "no-form-content" : "No form content found"
             },
             "not-allowed": {
@@ -130,7 +135,12 @@ const messages = {
         "cancel": {
             "label":"Cancel"
         },
+        "schema": {
+          "label" : "Form schema view",
+          "view": "View form schema"
+        },
         "preview" : {
+            "duplicate" : "Duplicate form",
             "back-to-forms" : "Back to {{env}} forms",
             "failure" : {
                 "gov-uk-not-configured" : "Gov UK styling is not configured"
@@ -147,6 +157,7 @@ const messages = {
         },
         "edit": {
             "label" : "Edit",
+            "label-form" : "Edit form",
             "failure" : {
                 "form-load": "Failed to load form due to {{error}}",
                 "missing-form" : "Form {{formId}} does not exist",

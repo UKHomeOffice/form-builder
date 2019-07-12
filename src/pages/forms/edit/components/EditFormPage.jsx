@@ -18,7 +18,7 @@ const EditFormPage = ({formId}) => {
         closePreview,
         openPreview,
         formInvalid,
-        saveRequest,
+        editRequest,
         state,
         changeDisplay
     } = useEditForm(formId);
@@ -37,7 +37,8 @@ const EditFormPage = ({formId}) => {
     }
 
     if (!status || status === EXECUTING) {
-        return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader></div>
+        return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
+        </div>
     }
 
     if (status === ERROR) {
@@ -57,6 +58,7 @@ const EditFormPage = ({formId}) => {
                 Edit
             </Header>
         </Divider>
+
         {editForm.data ? <FormBuilderComponent
             form={editForm}
             updateField={updateField}
@@ -69,7 +71,7 @@ const EditFormPage = ({formId}) => {
             openPreview={openPreview}
             t={t}
             formInvalid={formInvalid}
-            save={saveRequest}
+            save={editRequest}
             changeDisplay={changeDisplay}
         /> : null}
     </div>

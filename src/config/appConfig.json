@@ -19,7 +19,7 @@
     "editable": true,
     "variable-replacements": [
       {
-        "{$.environmentContext.platformDataUrl}": "http://www.google.co.uk"
+        "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
       },
       {
         "{$.staffDetailsContext.staffId}": "{{guid}}"
@@ -29,6 +29,9 @@
       },
       {
         "{$.keycloakContext.familyName}": "{{lastName}}"
+      },
+      {
+        "{$.someContext.id}" : 3
       }
     ]
   },
@@ -145,6 +148,9 @@
   "keycloak": {
     "authUrl": "http://keycloak.lodev.xyz/auth",
     "clientId": "platform-ui",
-    "realm": "dev"
+    "realm": "dev",
+    "access-roles" : ["platform"],
+    "promotion-roles" : ["platform"],
+    "edit-roles" : ["platform"]
   }
 }

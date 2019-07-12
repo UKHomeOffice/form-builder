@@ -58,25 +58,28 @@ const Confirm = ({form, setValue, backToForms, promote, status}) => {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column textAlign="right">
-                        <Button size='large' secondary icon labelPosition='left' onClick={() => {
-                            setValue(form => ({
-                                ...form,
-                                step: "environment"
-                            }));
-                        }}>
-                            <Icon name='left arrow'/>
-                            {t('form.promote.previous')}
+                        <div className={'ui stackable three buttons'}>
+                            <Button size='large' secondary icon labelPosition='left' onClick={() => {
+                                setValue(form => ({
+                                    ...form,
+                                    step: "environment"
+                                }));
+                            }}>
+                                <Icon name='left arrow'/>
+                                {t('form.promote.previous')}
 
-                        </Button>
-                        <Button size='large' onClick={() => {
-                            backToForms()
-                        }}>
-                            {t('form.cancel.label')}
-                        </Button>
-                        <Button size='large' positive onClick={() => {
-                            promote()
-                        }}
-                                loading={status === EXECUTING} disabled={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
+                            </Button>
+                            <Button size='large' onClick={() => {
+                                backToForms()
+                            }}>
+                                {t('form.cancel.label')}
+                            </Button>
+                            <Button size='large' positive onClick={() => {
+                                promote()
+                            }}
+                                    loading={status === EXECUTING}
+                                    disabled={status === EXECUTING}>{status === EXECUTING ? t('form.promote.promoting-label') : t('form.promote.promote-action')}</Button>
+                        </div>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

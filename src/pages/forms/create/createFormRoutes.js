@@ -5,7 +5,8 @@ import CreateFormFileUpload from "./components/CreateFormFileUpload";
 import React from "react";
 import CreateFormChoice from "./components/CreateFormChoice";
 import EditableEnvironmentChecker from "../common/components/EditableEnvironmentChecker";
-import {withEnvContext} from "../formsRoute";
+import {withEnvContext} from "../../../core/AppRouter";
+import DuplicateFormPage from "./components/DuplicateFormPage";
 
 
 export default mount({
@@ -17,6 +18,10 @@ export default mount({
         title: 'Create form with builder',
         view: <EditableEnvironmentChecker><CreateFormPage/></EditableEnvironmentChecker>
     })),
+    '/duplicate': withEnvContext(route((req) => ({
+        title: 'Duplicate form',
+        view: <EditableEnvironmentChecker><DuplicateFormPage formContent={req.body}/></EditableEnvironmentChecker>
+    }))),
     '/file-upload': withEnvContext(route((req) => ({
         title: 'Create form via file upload',
         view: <EditableEnvironmentChecker><CreateFormFileUpload formContent={req.body}/></EditableEnvironmentChecker>

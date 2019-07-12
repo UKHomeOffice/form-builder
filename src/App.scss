@@ -28,3 +28,19 @@
   height: 0 !important;
   animation: none !important
 }
+
+@media only screen and (max-width: 767px) {
+  .ui.stackable.buttons {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .ui.stackable.buttons > .button{
+    width: 100%;
+    margin-bottom: 0.4em;
+    border-radius: 0.28571429rem;
+  }
+}

@@ -1,4 +1,4 @@
-import {lazy, mount, route} from 'navi'
+import {lazy, map, mount, redirect, route} from 'navi'
 import Home from "../pages/home/component/Home";
 import React, {Suspense, useState} from "react";
 import {Main} from "./Main";
@@ -10,16 +10,62 @@ import {useTranslation} from "react-i18next";
 import config from "react-global-configuration"
 import _ from 'lodash';
 import {Logout} from "../common/Logout";
+import Unauthorized from "../common/Unauthorized";
 
+
+const hasAuthorization = (authorizationRoles, context, matcher) => {
+    const roles = context.keycloak.tokenParsed.realm_access.roles;
+    let isAuthorizedAccess = _.intersectionWith(authorizationRoles, roles).length >= 1;
+    return isAuthorizedAccess
+        ? matcher
+        : redirect(
+            '/unauthorized')
+};
+
+export const withAccessAuthorization = (matcher) => {
+    return map((request, context) => {
+            return hasAuthorization(context.config.get('keycloak.access-roles'), context, matcher);
+        }
+    );
+};
+
+
+export const withPromotionAuthorization = (matcher) => {
+    return map((request, context) => {
+            return hasAuthorization(context.config.get('keycloak.promotion-roles'), context, matcher);
+        }
+    );
+};
+
+
+export const withEditAuthorization = (matcher) => {
+    return map((request, context) => {
+            return hasAuthorization(context.config.get('keycloak.edit-roles'), context, matcher);
+        }
+    );
+};
+
+export const withEnvContext = (matcher) => {
+    return withAccessAuthorization(map((request, context) =>
+        context.environment
+            ? matcher
+            : redirect(
+            '/')
+    ));
+};
 
 const routes = mount({
-    '/': route({
+    '/': withAccessAuthorization(route({
         title: 'Home',
         view: <Home/>
+    })),
+    "/unauthorized": route({
+        title: 'Logout',
+        view: <Unauthorized/>
     }),
-    '/logout' : route({
-       title: 'Logout',
-       view: <Logout/>
+    '/logout': route({
+        title: 'Logout',
+        view: <Logout/>
     }),
     '/forms': lazy(() => import('../pages/forms/formsRoute'))
 });
@@ -36,14 +82,19 @@ export const AppRouter = () => {
 
     const [state, setState] = useState({
         environment: environmentLocalStorage ? _.find(environments, {id: environmentLocalStorage}) : null,
-        activeMenuItem:  environmentLocalStorage ? t('menu.forms.name') : t('menu.home.name')
+        activeMenuItem: environmentLocalStorage ? t('menu.forms.name') : t('menu.home.name')
     });
 
     if (!initialised) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('loading')}</Loader></div>;
     }
     return (<ApplicationContext.Provider value={{state, setState}}>
-            <Router routes={routes} context={{isAuthenticated: keycloak.authenticated, environment: state.environment}}>
+            <Router routes={routes} context={{
+                isAuthenticated: keycloak.authenticated,
+                environment: state.environment,
+                keycloak: keycloak,
+                config: config
+            }}>
                 <Main>
                     <Suspense fallback={null}>
                         <View/>

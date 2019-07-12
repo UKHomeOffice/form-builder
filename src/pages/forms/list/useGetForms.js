@@ -8,11 +8,13 @@ import fileDownload from 'js-file-download';
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
+import axios from "axios";
 
 const useGetForms = () => {
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {t} = useTranslation();
+
     const initialState = {
         column: null,
         direction: null,
@@ -34,6 +36,10 @@ const useGetForms = () => {
             formName: null
         }
     };
+
+    const isMounted = useRef(true);
+
+
     const [forms, setValues] = useState(initialState);
 
 
@@ -42,6 +48,7 @@ const useGetForms = () => {
             setValues(forms => ({
                 ...forms,
                 activePage: 1,
+                activeIndex: -1,
                 searchTitle: value
             }))
         },
@@ -49,22 +56,34 @@ const useGetForms = () => {
         {maxWait: 2000}
     );
 
+    const CancelToken = axios.CancelToken;
+
+    const wizardCountCancel = useRef(CancelToken.source());
+    const formsCountCancel = useRef(CancelToken.source());
+    const formsCancel = useRef(CancelToken.source());
+
     const [{status, response}, makeRequest] = useApiRequest(
         `/form?select=title,path,name,display,created,modified&${forms.filter}&limit=${forms.limit}${forms.activePage !== 1 ? `&skip=${((forms.activePage - 1) * forms.limit)}` : ''}${forms.searchTitle !== '' && forms.searchTitle !== '<>' ? `&title__regex=/${forms.searchTitle}/i` : ''}`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: formsCancel.current.token
+            }
         }
     );
 
 
     const [wizardCountState, wizardStatsRequest] = useApiRequest(
         `/form?select=_id&display=wizard&type__ne=resource`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: wizardCountCancel.current.token
+            }
         }
     );
 
     const [formCountState, formStatsRequest] = useApiRequest(
         `/form?select=_id&type__ne=resource&display__ne=wizard`, {
-            verb: 'get', params: {}
+            verb: 'get', params: {
+                cancelToken: formsCountCancel.current.token
+            }
         }
     );
 
@@ -86,6 +105,8 @@ const useGetForms = () => {
     const wizardStatsCallback = useRef();
     const formStatsCallback = useRef();
     const resetCallback = useRef();
+    const cancelRequests = useRef();
+
 
     useEffect(() => {
         savedCallback.current = () => {
@@ -99,7 +120,6 @@ const useGetForms = () => {
         };
 
         wizardStatsCallback.current = () => {
-
             wizardStatsRequest();
         };
 
@@ -110,6 +130,7 @@ const useGetForms = () => {
         resetCallback.current = () => {
             setValues(forms => ({
                 ...forms,
+                activePage: 1,
                 filterIndex: -1,
                 filterValue: "all",
                 filter: "type__ne=resource",
@@ -143,6 +164,16 @@ const useGetForms = () => {
 
         executeDownloadCallback.current = () => {
             executeDownload();
+        };
+
+        cancelRequests.current = () => {
+            const isFormsPath = navigation.getCurrentValue().url.href.startsWith("/forms/");
+            if (!isFormsPath) {
+                formsCancel.current.cancel("Cancelling request to get forms");
+                wizardCountCancel.current.cancel("cancelling wizard count stats");
+                formsCountCancel.current.cancel("cancelling form count stats");
+                isMounted.current = false;
+            }
         }
     });
 
@@ -160,37 +191,47 @@ const useGetForms = () => {
         resetCallback.current();
         wizardStatsCallback.current();
         formStatsCallback.current();
+        return () => {
+            cancelRequests.current();
+        }
     }, [envContext, forms.refresh]);
 
 
     useEffect(() => {
         if (status === SUCCESS) {
-            setValues(forms => ({
-                ...forms,
-                refresh: false,
-                data: response.data,
-                numberOnPage: response.data.length,
-                total: parseInt(response.headers['content-range'].split('/')[1])
-            }));
+            if (isMounted.current) {
+                setValues(forms => ({
+                    ...forms,
+                    refresh: false,
+                    data: response.data,
+                    numberOnPage: response.data.length,
+                    total: parseInt(response.headers['content-range'].split('/')[1])
+                }));
+            }
+
         }
     }, [response, status, setValues]);
 
 
     useEffect(() => {
         if (wizardCountState.status === SUCCESS) {
-            setValues(forms => ({
-                ...forms,
-                numberOfWizards: parseInt(wizardCountState.response.headers['content-range'].split('/')[1])
-            }));
+            if (isMounted.current) {
+                setValues(forms => ({
+                    ...forms,
+                    numberOfWizards: parseInt(wizardCountState.response.headers['content-range'].split('/')[1])
+                }));
+            }
         }
     }, [wizardCountState, setValues]);
 
     useEffect(() => {
         if (formCountState.status === SUCCESS) {
-            setValues(forms => ({
-                ...forms,
-                numberOfForms: parseInt(formCountState.response.headers['content-range'].split('/')[1])
-            }));
+            if (isMounted.current) {
+                setValues(forms => ({
+                    ...forms,
+                    numberOfForms: parseInt(formCountState.response.headers['content-range'].split('/')[1])
+                }));
+            }
         }
     }, [formCountState, setValues]);
 
@@ -209,6 +250,7 @@ const useGetForms = () => {
     const handlePaginationChange = (e, {activePage}) => {
         setValues(forms => ({
             ...forms,
+            activeIndex: -1,
             activePage: activePage
         }));
     };
@@ -293,6 +335,7 @@ const useGetForms = () => {
         setValues(forms => ({
             ...forms,
             filter: filter,
+            activeIndex: -1,
             filterValue: value
         }));
     };

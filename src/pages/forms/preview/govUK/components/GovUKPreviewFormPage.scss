@@ -30,17 +30,12 @@
   width: 100%;
 }
 
-.datagrid-table th  {
-  text-align: left;
-  @include govuk-font($size: 19);
-  @include govuk-text-colour;
-  display: block;
-}
 
 .formio-button-remove-row {
   margin-left: 15px;
   padding-bottom: 5px;
   padding-top: 7px;
+  margin-top: 15px;
 }
 
 .govuk-form-group .govuk-details {
@@ -54,8 +49,3 @@
   margin-bottom: govuk-spacing(1);
 }
 
-.formio-button-remove-row {
-  margin-left: 15px;
-  padding-bottom: 5px;
-  padding-top: 7px;
-}
