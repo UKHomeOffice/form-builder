@@ -22,6 +22,10 @@ const messages = {
 
     },
     "menu" : {
+        "migration" : {
+            "name": "/migrations",
+            "label": "Migration"
+        },
         "home" : {
             "label" : "Home",
             "name" : "/home"

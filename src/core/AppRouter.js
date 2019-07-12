@@ -67,6 +67,7 @@ const routes = mount({
         title: 'Logout',
         view: <Logout/>
     }),
+    '/migrations': lazy(() => import('../pages/forms/migration/migrationRoutes')),
     '/forms': lazy(() => import('../pages/forms/formsRoute'))
 });
 export const ApplicationContext = React.createContext([{}, () => {
@@ -75,14 +76,12 @@ export const ApplicationContext = React.createContext([{}, () => {
 export const AppRouter = () => {
     const [keycloak, initialised] = useKeycloak();
     const {t} = useTranslation();
-
     const environments = config.get('environments');
 
     const environmentLocalStorage = secureLS.get('ENVIRONMENT');
-
     const [state, setState] = useState({
         environment: environmentLocalStorage ? _.find(environments, {id: environmentLocalStorage}) : null,
-        activeMenuItem: environmentLocalStorage ? t('menu.forms.name') : t('menu.home.name')
+        activeMenuItem: environmentLocalStorage ? t('menu.forms.name') : (window.location.pathname ? window.location.pathname : t('menu.home.name'))
     });
 
     if (!initialised) {

@@ -38,7 +38,20 @@ const useCreateForm = (formContent = null) => {
     const formName = form.data.name;
     const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
             try {
-                return await createForm(axios, envContext, form.data, log);
+                const formResponse = await axios({
+                    method: 'GET',
+                    url: `${envContext.url}/forms?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`
+                });
+
+                if (formResponse.data.total === 0) {
+                    return await createForm(axios, envContext, form.data, log);
+                }
+                const formLoaded = formResponse.data.forms[0];
+                return await axios({
+                    "method": "PUT",
+                    "url": `${envContext.url}/forms/${formLoaded.id}`,
+                    "data": form.data
+                });
             } catch (error) {
                 throw {
                     response: {

@@ -30,7 +30,8 @@ const AppMenu = () => {
         }))
     };
     const environments = config.get('environments');
-    const formsMenu = <React.Fragment><Icon name="wpforms" size="large" style={iconStyle}/><span>{t('menu.forms.label')}</span></React.Fragment>;
+    const formsMenu = <React.Fragment><Icon name="wpforms" size="large"
+                                            style={iconStyle}/><span>{t('menu.forms.label')}</span></React.Fragment>;
     return <Menu pointing secondary>
         <Menu.Item data-cy={`home-menu`} name={t('menu.home.name')}
                    active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')}
@@ -59,16 +60,29 @@ const AppMenu = () => {
                             <Icon name="cog"/><span>{env.label ? env.label : env.id}</span>
                         </Dropdown.Item>
                     ))}
+
                 </Dropdown.Menu>
             </Dropdown>
+
         </Menu.Item>
+
+        {config.get('legacy-migration', false) ? <Menu.Item
+            active={state.activeMenuItem === t('menu.migration.name')}
+            name={t('menu.migration.name')}
+            onClick={async () => {
+                setActiveMenuItem(t('menu.migration.name'));
+                await navigation.navigate("/migrations");
+            }} data-cy="migration">
+            <Icon name='move' size="large" style={iconStyle}/>
+            <span>{t('menu.migration.label')}</span>
+        </Menu.Item> : null}
+
         <Menu.Menu position='right'>
             <Menu.Item
                 name={t('menu.logout.name')}
                 onClick={() => {
                     navigation.navigate("/logout");
                 }} data-cy="logout">
-
                 <Icon name='log out' size="large" style={iconStyle}/>
                 <span>{t('menu.logout.label')}</span>
             </Menu.Item>

@@ -4,6 +4,10 @@
     "keycloak"
   ],
   "properties": {
+    "legacy-migration" : {
+      "type": "boolean",
+      "default": false
+    },
     "gov-uk-enabled": {
       "type": "boolean"
     },

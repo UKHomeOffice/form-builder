@@ -11,9 +11,9 @@
         "password": "secret"
       },
       "keycloak": {
-        "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
-        "clientId": "service-account",
-        "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
+        "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+        "clientId": "form-builder",
+        "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
       }
     },
     "editable": true,
@@ -34,46 +34,13 @@
         "{$.someContext.id}" : 3
       }
     ]
-  }, {
-      "id": "dev",
-      "label": "Dev",
-      "url": "http://formapi.lodev.xyz/api/v1",
-      "description": "Dev environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "http://keycloak.lodev.xyz/auth/realms/dev/protocol/openid-connect/token",
-          "clientId": "service-account",
-          "secret": "ed041195-fdf8-424b-a061-2081ea5067f1"
-        }
-      },
-      "editable": false,
-      "variable-replacements": [
-        {
-          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
-        },
-        {
-          "{$.staffDetailsContext.staffId}": "{{guid}}"
-        },
-        {
-          "{$.keycloakContext.givenName}": "{{firstName}}"
-        },
-        {
-          "{$.keycloakContext.familyName}": "{{lastName}}"
-        },
-        {
-          "{$.someContext.id}" : 3
-        }
-      ]
-    }],
+  }],
   "gov-uk-enabled" : true,
+  "legacy-migration" : true,
   "keycloak": {
-    "authUrl": "http://keycloak.lodev.xyz/auth",
+    "authUrl": "https://keycloak.elf79.dev/auth",
     "clientId": "platform-ui",
-    "realm": "dev",
+    "realm": "elf",
     "access-roles" : ["platform"],
     "promotion-roles" : ["platform"],
     "edit-roles" : ["platform"]
