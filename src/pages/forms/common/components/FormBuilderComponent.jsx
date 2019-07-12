@@ -22,14 +22,15 @@ const FormBuilderComponent = ({
                                   envContext
                               }) => {
         Formio.Templates.framework = 'semantic';
-        Formio.baseUrl = "http://localhost:4000/api/v1";
-        Formio.formsUrl = "http://localhost:4000/api/v1/forms";
-        Formio.formUrl = "http://localhost:4000/api/v1/forms";
-        Formio.projectUrl = "http://localhost:4000/api/v1";
+        Formio.baseUrl = envContext.url;
+        Formio.projectUrl = envContext.url;
+        Formio.formsUrl = `${envContext.url}/forms`;
+        Formio.formUrl = `${envContext.url}/forms`;
         Formio.plugins = [{
             priority: 0,
             requestOptions: function (value, url) {
-                value.headers.append("Authorization", `Bearer ${secureLS.get(`kc-jwt-${envContext.id}`)}`);
+                const token = secureLS.get(`kc-jwt-${envContext.id}`);
+                value.headers.append('Authorization', `Bearer ${token}`);
                 return value;
             }
         }, {
@@ -41,27 +42,21 @@ const FormBuilderComponent = ({
         }, {
             priority: 0,
             requestResponse: function (response) {
-                const updatedResponse = {
+                return {
                     ok: response.ok,
                     json: () => response.json().then((result) => {
                         if (result.forms) {
-                            const updated = result.forms.map((form) => {
-                                const id = form.id;
-                                form['_id'] = id;
+                            return result.forms.map((form) => {
+                                form['_id'] = form.id;
                                 return form;
                             });
-                            return updated;
                         }
-
-                        const id = result.id;
-                        result['_id'] = id;
+                        result['_id'] = result.id;
                         return result;
                     }),
                     status: response.status,
                     headers: response.headers
                 };
-
-                return updatedResponse;
 
             }
         }
