@@ -31,6 +31,7 @@ pipeline:
       - DEV_NO_LOGGING_URL_PARAMS
       - DEV_NO_LOGGING_BODY
       - DEV_NO_LOGGING_RESPONSE
+      - DEV_APP_CONFIG
     commands:
       - export NAME=$${DEV_NAME}
       - export DOMAIN=$${DEV_DOMAIN}
@@ -42,6 +43,7 @@ pipeline:
       - export NO_LOGGING_URL_PARAMS=$${DEV_NO_LOGGING_URL_PARAMS}
       - export NO_LOGGING_BODY=$${DEV_NO_LOGGING_BODY}
       - export NO_LOGGING_RESPONSE=$${DEV_NO_LOGGING_RESPONSE}
+      - export APP_CONFIG=$${DEV_APP_CONFIG}
       - export IMAGE_TAG=${DRONE_COMMIT_SHA}
       - kd --insecure-skip-tls-verify -f kube/cert.yml
       - kd --insecure-skip-tls-verify -f kube/secret.yml
@@ -66,6 +68,7 @@ pipeline:
       - PRODUCTION_NO_LOGGING_URL_PARAMS
       - PRODUCTION_NO_LOGGING_BODY
       - PRODUCTION_NO_LOGGING_RESPONSE
+      - PRODUCTION_APP_CONFIG
     commands:
       - export NAME=$${PRODUCTION_NAME}
       - export DOMAIN=$${PRODUCTION_DOMAIN}
@@ -77,6 +80,7 @@ pipeline:
       - export NO_LOGGING_URL_PARAMS=$${PRODUCTION_NO_LOGGING_URL_PARAMS}
       - export NO_LOGGING_BODY=$${PRODUCTION_NO_LOGGING_BODY}
       - export NO_LOGGING_RESPONSE=$${PRODUCTION_NO_LOGGING_RESPONSE}
+      - export APP_CONFIG=$${PRODUCTION_APP_CONFIG}
       - export IMAGE_TAG=${DRONE_COMMIT_SHA}
       - kd --insecure-skip-tls-verify -f kube/cert.yml
       - kd --insecure-skip-tls-verify -f kube/secret.yml
