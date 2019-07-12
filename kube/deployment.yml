@@ -1,22 +1,18 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{.NAME}}
 spec:
-  replicas: 1
-  revisionHistoryLimit: 3
   selector:
     matchLabels:
       name: {{.NAME}}
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+  replicas: 1
+  revisionHistoryLimit: 3
   template:
     metadata:
-      name: {{.NAME}}
-    spec:
+      labels:
+        name: {{.NAME}}
     spec:
       securityContext:
         runAsUser: 1000
