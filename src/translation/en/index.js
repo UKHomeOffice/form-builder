@@ -59,6 +59,10 @@ const messages = {
             "versions-load" : "Failed to loaded versions {{error}}"
         }
     },
+    "migration" : {
+        "migration-button-label" : "Migrate",
+        "migration-all-button-label" : "Migrate all on page"
+    },
     "form": {
         "restore" : {
             "success-title" : "Successful version restore",

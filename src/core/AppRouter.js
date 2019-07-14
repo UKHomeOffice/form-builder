@@ -11,7 +11,10 @@ import config from "react-global-configuration"
 import _ from 'lodash';
 import {Logout} from "../common/Logout";
 import Unauthorized from "../common/Unauthorized";
+import {KeycloakTokenProvider} from "./KeycloakTokenProvider";
+import eventEmitter from './eventEmitter';
 
+const THIRTY_SECONDS = 30000;
 
 const hasAuthorization = (authorizationRoles, context, matcher) => {
     const roles = context.keycloak.tokenParsed.realm_access.roles;
@@ -83,6 +86,15 @@ export const AppRouter = () => {
         environment: environmentLocalStorage ? _.find(environments, {id: environmentLocalStorage}) : null,
         activeMenuItem: environmentLocalStorage ? t('menu.forms.name') : (window.location.pathname ? window.location.pathname : t('menu.home.name'))
     });
+
+    const keycloakTokenProvider = new KeycloakTokenProvider();
+    eventEmitter.addListener('token-refreshed', (token) => {
+        console.log('refreshing');
+        environments.forEach(async (environment) => {
+            await keycloakTokenProvider.fetchKeycloakToken(environment, token);
+        });
+    });
+
 
     if (!initialised) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('loading')}</Loader></div>;

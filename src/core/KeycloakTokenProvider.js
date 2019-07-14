@@ -1,11 +1,18 @@
 import axios from "axios";
 import secureLS from "./storage";
 import jwt_decode from "jwt-decode";
-
+import axiosRetry, {isNetworkOrIdempotentRequestError} from 'axios-retry';
 
 export class KeycloakTokenProvider {
     constructor() {
         this.fetchKeycloakToken = this.fetchKeycloakToken.bind(this);
+        this.axios = axios.create();
+        axiosRetry(this.axios, {
+            retries: 3,
+            retryCondition: (error) => {
+                return isNetworkOrIdempotentRequestError(error) || error.status === 403
+            }
+        });
     }
 
     fetchKeycloakToken = async (environment, token) => {
@@ -18,7 +25,7 @@ export class KeycloakTokenProvider {
         const key = `kc-jwt-${environment.id}`;
         const fetchToken = async () => {
             try {
-                const tokenResponse = await axios({
+                const tokenResponse = await this.axios({
                     method: 'GET',
                     url: `/keycloak/${environment.id}/token`,
                     headers: {

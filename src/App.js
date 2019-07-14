@@ -9,6 +9,8 @@ import {Loader} from "semantic-ui-react";
 import secureLS from './core/storage';
 import config from 'react-global-configuration';
 import configuration from './config/appConfig';
+import eventEmitter from './core/eventEmitter';
+
 
 if (window.ENVIRONMENT_CONFIG) {
     console.log("Using built version of application");
@@ -39,7 +41,9 @@ export const App = () => (
                       }}
                       onTokens={(tokens) => {
                           console.log("token refreshed");
-                          secureLS.set("jwt-token", tokens.token);
+                          const token = tokens.token;
+                          secureLS.set("jwt-token", token);
+                          eventEmitter.emit('token-refreshed', token);
                       }}
                       initConfig={{
                           onLoad: 'login-required'
