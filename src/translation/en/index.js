@@ -112,7 +112,8 @@ const messages = {
             "label": "Create form",
             "creating-label" : "Creating...",
             "failure": {
-                "failed-to-create": "Failed to create form due to {{error}}"
+                "failed-to-create": "Failed to create form due to {{error}}",
+                "invalid-json" : "Failed to parse the file, possibly invalid JSON"
             },
             "updating-label" :"Creating form....",
             "update-label" : "Create form",

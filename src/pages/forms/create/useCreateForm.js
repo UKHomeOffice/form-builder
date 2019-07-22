@@ -8,11 +8,39 @@ import {toast} from "react-semantic-toasts";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import useLogger from "../../../core/logging/useLogger";
 import createForm from "../../../core/form/createForm";
+import {useTranslation} from "react-i18next";
 
 const useCreateForm = (formContent = null) => {
+    const {t} = useTranslation();
 
     const sanitize = (form) => {
-        return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
+        try {
+            return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
+        } catch (e) {
+            toast({
+                type: 'warning',
+                icon: 'exclamation circle',
+                title: t('error.general'),
+                description: t('form.create.failure.failed-to-create', {error: e.toString()}),
+                animation: 'scale',
+                time: 5000
+            });
+        }
+    };
+
+    const parseToObject = (formContent) => {
+        try {
+            return JSON.parse(formContent)
+        } catch (e) {
+            toast({
+                type: 'warning',
+                icon: 'exclamation circle',
+                title: t('error.general'),
+                description: t('form.create.failure.invalid-json'),
+                animation: 'scale',
+                time: 5000
+            });
+        }
     };
 
     const navigation = useNavigation();
@@ -20,8 +48,10 @@ const useCreateForm = (formContent = null) => {
     const {handleForm} = useCommonFormUtils();
     const {log} = useLogger();
 
+
+
     const [form, setValues] = useState({
-        data: formContent && formContent !== '' ? sanitize(JSON.parse(formContent)) : {
+        data: formContent && formContent !== '' ? sanitize(parseToObject(formContent)) : {
             title: '',
             path: '',
             display: 'form',

@@ -186,6 +186,64 @@ describe("variable replacement", () => {
                     "lockKey": true,
                     "autofocus": false,
                     "searchField": "teamname"
+                },
+                {
+                    "clearOnRefresh": true,
+                    "customConditional": "show = data['targetGroup'] ==='team'",
+                    "input": true,
+                    "tableView": true,
+                    "label": "Team",
+                    "key": "teamIdA",
+                    "placeholder": "",
+                    "data": {
+                        "disableLimit": true,
+                        "headers": [
+                            {
+                                "key": "",
+                                "value": ""
+                            }
+                        ],
+                        "custom": "",
+                        "resource": "",
+                        "url": "{$.environmentContext.platformDataUrl}/api/platform-data/teamlocations?select=teamid,locationid,team(teamname)",
+                        "json": "",
+                        "values": [
+                            {
+                                "label": "",
+                                "value": ""
+                            }
+                        ]
+                    },
+                    "dataSrc": "url",
+                    "valueProperty": "teamid",
+                    "defaultValue": "",
+                    "refreshOn": "locationid",
+                    "filter": "locationid=eq.{{data.locationid}}",
+                    "authenticate": false,
+                    "template": "\u003cspan\u003e{{ item.team.teamname }}\u003c/span\u003e",
+                    "multiple": false,
+                    "protected": false,
+                    "unique": false,
+                    "persistent": true,
+                    "hidden": false,
+                    "clearOnHide": true,
+                    "validate": {
+                        "custom": "",
+                        "required": false
+                    },
+                    "type": "select",
+                    "hideLabel": false,
+                    "labelPosition": "top",
+                    "tags": [],
+                    "conditional": {
+                        "eq": "",
+                        "when": null,
+                        "show": ""
+                    },
+                    "properties": {},
+                    "lockKey": true,
+                    "autofocus": false,
+                    "searchField": "teamname"
                 }
             ],
             "display": "form",
@@ -209,5 +267,9 @@ describe("variable replacement", () => {
         const teamSelectComponent = _.find(replaced.components, {key: 'teamId'});
         expect(teamSelectComponent.data.url).toEqual('www.google.co.uk/api/platform-data/teamlocations?select=teamid,locationid,team(teamname)');
         expect(teamSelectComponent.template).toEqual("<span>{{ item.team.teamname }}</span>");
+
+        const teamSelectComponentA = _.find(replaced.components, {key: 'teamIdA'});
+        expect(teamSelectComponentA.data.url).toEqual('www.google.co.uk/api/platform-data/teamlocations?select=teamid,locationid,team(teamname)');
+        expect(teamSelectComponentA.template).toEqual("<span>{{ item.team.teamname }}</span>");
     });
 });
