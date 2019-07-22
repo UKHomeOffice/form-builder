@@ -14,9 +14,11 @@ class VariableReplacer {
                 const key = Object.keys(replacement)[0];
                 const value = replacement[key];
                 if (!_.startsWith(value, "{{") && !_.endsWith(value, "}}")) {
-                    asString = _.replace(asString,key, value);
+                    while (asString.includes(key)) {
+                        asString = asString.replace(key, value);
+                    }
                 }
-            })
+            });
         }
         return JSON.parse(asString);
     }
