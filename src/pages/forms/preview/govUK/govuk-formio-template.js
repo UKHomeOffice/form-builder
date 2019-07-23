@@ -203,8 +203,14 @@ const govukFormioTemplate = {
                           govukType = 'radios';
                           break;
                       }
+                      
+                      var shouldInline = '';
+                      if (inline) {
+                        shouldInline = 'govuk-' + govukType + '--inline';
+                      } 
                      %}
-                    <div class="govuk-{{govukType}}">
+                   
+                    <div class="govuk-{{govukType}} {{shouldInline}}">
                       {% values.forEach(function(item) { %}
                       <div class="form-check{{inline ? '-inline' : ''}} govuk-{{govukType}}__item" ref="wrapper">
                         <{{input.type}}
