@@ -90,10 +90,25 @@ const govukFormioTemplate = {
     },
     button: {
         form: `
+                {%
+                      var buttonType = '';
+                      switch (input.component.theme) {
+                        case 'warning':
+                        case 'danger':
+                          buttonType = 'govuk-button--warning';
+                          break;
+                        case 'secondary':
+                        case 'info':
+                          buttonType = 'govuk-button--secondary';
+                          break;
+                      }
+                     
+                 %}
+
                   <{{input.type}}
                     ref="button"
                     {% for (var attr in input.attr) { %}
-                    {{attr}}="{{input.attr[attr]}}{% if (attr==='class') { %} govuk-button {% } %}"
+                    {{attr}}="{{input.attr[attr]}}{% if (attr==='class') { %} govuk-button {{buttonType}} {% } %}"
                     {% } %}
                   >
                   {% if (component.leftIcon) { %}<span class="{{component.leftIcon}}"></span>&nbsp;{% } %}
