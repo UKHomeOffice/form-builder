@@ -75,7 +75,7 @@ const useGetForms = () => {
     };
 
     const [{status, response}, makeRequest] = useApiRequest(
-        `/forms?select=title,path,name,display,id&limit=${forms.limit}${forms.activePage !== 1 ? `&offset=${((forms.activePage - 1) * forms.limit)}` : ''}${resolveFilter()}`, {
+        `/form?select=title,path,name,display,id&limit=${forms.limit}${forms.activePage !== 1 ? `&offset=${((forms.activePage - 1) * forms.limit)}` : ''}${resolveFilter()}`, {
             verb: 'get', params: {
                 cancelToken: formsCancel.current.token
             }
@@ -84,7 +84,7 @@ const useGetForms = () => {
 
 
     const [wizardCountState, wizardStatsRequest] = useApiRequest(
-        `/forms?filter=display__eq__wizard&countOnly=true`, {
+        `/form?filter=display__eq__wizard&countOnly=true`, {
             verb: 'get', params: {
                 cancelToken: wizardCountCancel.current.token
             }
@@ -92,7 +92,7 @@ const useGetForms = () => {
     );
 
     const [formCountState, formStatsRequest] = useApiRequest(
-        `/forms?filter=display__eq__form&countOnly=true`, {
+        `/form?filter=display__eq__form&countOnly=true`, {
             verb: 'get', params: {
                 cancelToken: formsCountCancel.current.token
             }
@@ -101,7 +101,7 @@ const useGetForms = () => {
 
 
     const [downloadFormState, executeDownload] = useApiRequest(
-        `/forms/${forms.downloadFile.formId}`, {
+        `/form/${forms.downloadFile.formId}`, {
             verb: 'get', params: {
                 responseType: 'arraybuffer'
             }

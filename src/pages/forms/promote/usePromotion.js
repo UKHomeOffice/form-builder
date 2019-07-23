@@ -27,7 +27,7 @@ const usePromotion = (formId) => {
     const keycloakTokenProvider = new KeycloakTokenProvider();
 
     const [fetchState, makeRequest] = useApiRequest(
-        `/forms/${formId}`, {
+        `/form/${formId}`, {
             verb: 'get', params: {}
         }
     );

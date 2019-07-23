@@ -24,8 +24,8 @@ const FormBuilderComponent = ({
         Formio.Templates.framework = 'semantic';
         Formio.baseUrl = envContext.url;
         Formio.projectUrl = envContext.url;
-        Formio.formsUrl = `${envContext.url}/forms`;
-        Formio.formUrl = `${envContext.url}/forms`;
+        Formio.formsUrl = `${envContext.url}/form`;
+        Formio.formUrl = `${envContext.url}/form`;
         Formio.plugins = [{
             priority: 0,
             requestOptions: function (value, url) {
@@ -36,7 +36,7 @@ const FormBuilderComponent = ({
         }, {
             priority: 0,
             preRequest: function (requestArgs) {
-                requestArgs.url = requestArgs.url.replace("form", "forms").replace("_id", "id");
+                requestArgs.url = requestArgs.url.replace("_id", "id");
                 return requestArgs;
             }
         }, {

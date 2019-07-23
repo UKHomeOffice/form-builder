@@ -14,7 +14,7 @@ const useGDSPreviewForm = (formId) => {
         submission: null
     });
     const [{status, response}, makeRequest] = useApiRequest(
-        `/forms/${formId}`, {
+        `/form/${formId}`, {
             verb: 'get', params: {}
         }
     );

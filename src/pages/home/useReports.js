@@ -90,7 +90,7 @@ const useReports = () => {
         const perEnvResults = await axios.all(environments.map(async (environment) => {
             const source = CancelToken.source();
             cancelTokenRefs.current.push(source);
-            const url = `${environment.url}/forms?countOnly=true`;
+            const url = `${environment.url}/form?countOnly=true`;
             const response = await instance({
                 url: url,
                 method: 'GET',
@@ -124,7 +124,7 @@ const useReports = () => {
             const source = CancelToken.source();
             cancelTokenRefs.current.push(source);
             const formTypes = await instance({
-                url: `${environment.url}/forms?filter=display__eq__form&countOnly=true`,
+                url: `${environment.url}/form?filter=display__eq__form&countOnly=true`,
                 method: 'GET',
                 headers: {
                     "x-environment": environment,
@@ -132,7 +132,7 @@ const useReports = () => {
                 cancelToken: source.token
             });
             const wizardTypes = await instance({
-                url: `${environment.url}/forms?filter=display__eq__wizard&countOnly=true`,
+                url: `${environment.url}/form?filter=display__eq__wizard&countOnly=true`,
                 method: "GET",
                 headers: {
                     "x-environment": environment,

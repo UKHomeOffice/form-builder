@@ -14,8 +14,6 @@ import Unauthorized from "../common/Unauthorized";
 import {KeycloakTokenProvider} from "./KeycloakTokenProvider";
 import eventEmitter from './eventEmitter';
 
-const THIRTY_SECONDS = 30000;
-
 const hasAuthorization = (authorizationRoles, context, matcher) => {
     const roles = context.keycloak.tokenParsed.realm_access.roles;
     let isAuthorizedAccess = _.intersectionWith(authorizationRoles, roles).length >= 1;
