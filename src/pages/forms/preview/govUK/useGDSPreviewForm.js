@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {SUCCESS} from "../../../../core/api/actionTypes";
 import {Formio} from "react-formio";
 import govukFormioTemplate from "./govuk-formio-template";
+import { initAll } from 'govuk-frontend'
 
 const useGDSPreviewForm = (formId) => {
     const navigation = useNavigation();
@@ -23,6 +24,7 @@ const useGDSPreviewForm = (formId) => {
 
     const callback = () => {
         Formio.Templates.current = govukFormioTemplate;
+        initAll();
         setValue(form => ({
             ...form,
             data: null
