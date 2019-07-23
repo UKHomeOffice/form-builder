@@ -121,9 +121,6 @@ const govukFormioTemplate = {
 
                       <label class="{{input.labelClass}} form-check-label govuk-label govuk-checkboxes__label" for="formio-checkbox-{{component.key}}">
                         {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
-                        {% if (component.tooltip) { %}
-                          <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
-                        {% } %}
                       </label>
 
                     </div>
