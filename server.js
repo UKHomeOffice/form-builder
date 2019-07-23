@@ -85,6 +85,10 @@ const kcConfig = {
 const keycloak = new Keycloak({}, kcConfig);
 app.use(keycloak.middleware());
 
+if (appConfig['gov-uk-enabled']) {
+    app.use('/assets', express.static(path.join(__dirname, '/node_modules/govuk-frontend/assets')));
+}
+
 app.get("/keycloak/:env/token",  keycloak.protect(), async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
     try {
