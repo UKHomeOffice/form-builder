@@ -308,26 +308,34 @@ const govukFormioTemplate = {
                     <div class="govuk-date-input">
                       {% if (dayFirst && showDay) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
-                        <div>{{day}}</div>
+                       <div class="govuk-form-group">
+                            <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
+                            <div>{{day}}</div>
+                        </div>
                       </div>
                       {% } %}
                       {% if (showMonth) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-month" class="govuk-label govuk-date-input__label">{{t('Month')}}</label>
-                        <div>{{month}}</div>
+                         <div class="govuk-form-group">
+                            <label for="{{component.key}}-month" class="govuk-label govuk-date-input__label">{{t('Month')}}</label>
+                            <div>{{month}}</div>
+                          </div>  
                       </div>
                       {% } %}
                       {% if (!dayFirst && showDay) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
-                        <div>{{day}}</div>
+                       <div class="govuk-form-group">
+                            <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
+                            <div>{{day}}</div>
+                        </div>
                       </div>
                       {% } %}
                       {% if (showYear) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-year" class="govuk-label govuk-date-input__label">{{t('Year')}}</label>
-                        <div>{{year}}</div>
+                        <div class="govuk-form-group">
+                            <label for="{{component.key}}-year" class="govuk-label govuk-date-input__label">{{t('Year')}}</label>
+                            <div>{{year}}</div>
+                        </div>
                       </div>
                       {% } %}
                     </div>
@@ -354,7 +362,7 @@ const govukFormioTemplate = {
                         {{components}}
                       </div>
                       {% if (buttons.cancel) { %}
-                        <button class="govuk-button btn button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
+                        <button class="govuk-button btn govuk-button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
                       {% } %}
                       {% if (buttons.previous) { %}
                         <button class="govuk-button btn btn-primary btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>
