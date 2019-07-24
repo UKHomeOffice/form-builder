@@ -60,6 +60,8 @@ const messages = {
         }
     },
     "migration" : {
+        "confirm-header": 'Migrate old formio forms to new platform',
+        "confirm-content": "Are you sure you want to migrate the old forms to new platform?",
         "title" : "Formio migration",
         "description": "Migrate Formio forms to new platform",
         "migration-action-label" : "Migrate forms to {{env}}",

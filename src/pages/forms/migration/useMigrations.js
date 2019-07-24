@@ -1,22 +1,61 @@
 import useEnvContext from "../../../core/context/useEnvContext";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useMultipleApiCallbackRequest} from "../../../core/api";
 import {SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
+import {toast} from "react-semantic-toasts";
+import {useTranslation} from "react-i18next";
 
 const useMigrations = () => {
         const {clearEnvContext, envContext} = useEnvContext();
-
-
+        const {t} = useTranslation();
         const [formio, setFormio] = useState({
             url: 'https://formio.elf79.dev',
             username: 'me@lodev.xyz',
             password: 'secret',
             environment: '',
             forms: [],
-            limit: 20,
+            total: 0,
+            limit: 10,
+            numberOnPage: 0,
             activePage: 1,
-            formsIdsForMigration: []
+            formsIdsForMigration: [],
+            open: false
+
+        });
+        const savedCallback = useRef();
+
+        const [{migrationState}, migrateRequest] = useMultipleApiCallbackRequest(async (axios) => {
+            const santize = (form) => {
+                return _.omit(form, ['submissionAccess', 'access', 'machineName', '_id', 'tags', 'created', 'modified']);
+            };
+            formio.formsIdsForMigration.forEach(async (formId) => {
+                try {
+                    const form = await axios({
+                        method: 'GET',
+                        url: `${formio.url}/form/${formId}`,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+                    const created = await axios({
+                        url: `${envContext.url}/form`,
+                        method: 'POST',
+                        data: santize(form.data)
+                    });
+                    return created;
+                } catch (e) {
+                    toast({
+                        type: 'warning',
+                        icon: 'exclamation circle',
+                        title: t('error.general'),
+                        description: t('form.create.failure.failed-to-create', {error: e.message}),
+                        animation: 'scale',
+                        time: 5000
+                    });
+                }
+            });
+            return Promise.resolve(true);
 
         });
 
@@ -40,7 +79,7 @@ const useMigrations = () => {
                             "Content-Type": "application/json",
                             'x-jwt-token': tokenResponse.headers['x-jwt-token']
                         },
-                        url: `${formio.url}/form?select=title,path,name,display,created,modified&limit=${formio.limit}${formio.activePage !== 1 ? `&skip=${((formio.activePage - 1) * formio.limit)}` : ''}`,
+                        url: `${formio.url}/form?&limit=${formio.limit}${formio.activePage !== 1 ? `&skip=${((formio.activePage - 1) * formio.limit)}` : ''}`,
                         method: 'GET',
                     });
 
@@ -88,23 +127,43 @@ const useMigrations = () => {
             }]
         );
 
+
+        useEffect(() => {
+            savedCallback.current = () => {
+                setFormio(formio => ({
+                    ...formio,
+                    data: null,
+                    total: 0,
+                    numberOnPage: 0
+                }));
+                makeRequest();
+            };
+        });
+
         useEffect(() => {
             clearEnvContext();
         }, []);
 
         useEffect(() => {
+            if (formio.environment) {
+                savedCallback.current();
+            }
+        }, [formio.activePage]);
+
+        useEffect(() => {
             if (status === SUCCESS) {
                 setFormio(formio => ({
                     ...formio,
-                    forms: response.data
+                    forms: response.data,
+                    numberOnPage: response.data.length,
+                    total: parseInt(response.headers['content-range'].split('/')[1])
                 }));
             }
         }, [status, setFormio, formio, response]);
-        const loadForms = () => {
 
+        const loadForms = () => {
             makeRequest();
         };
-
 
         const hasValue = (value) => {
             return value && value !== '';
@@ -113,12 +172,38 @@ const useMigrations = () => {
         const formInValid = () => {
             return !hasValue(formio.url) || !hasValue(formio.username) || !hasValue(formio.password) || !hasValue(formio.environment);
         };
+        const handlePaginationChange = (e, {activePage}) => {
+            setFormio(formio => ({
+                ...formio,
+                activePage: activePage
+            }));
+        };
+
+        const handleCancelMigration = () => {
+            setFormio(formio => ({
+                ...formio,
+                open: false
+            }));
+        };
+
+        const handleConfirmMigration = () => {
+            setFormio(formio => ({
+                ...formio,
+                open: false
+            }));
+            migrateRequest();
+        };
+
+
         return {
             loadForms,
             status,
             formio,
             setFormio,
-            formInValid
+            formInValid,
+            handlePaginationChange,
+            handleCancelMigration,
+            handleConfirmMigration
         }
     }
 ;

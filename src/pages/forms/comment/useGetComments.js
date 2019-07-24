@@ -19,7 +19,7 @@ const useGetComments = (formId) => {
     const cancelCommentsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/forms/${formId}/comments?limit=${comments.limit}${comments.activePage !== 1 ? `&offset=${((comments.activePage - 1) * comments.limit)}` : ''}`, {
+        `/form/${formId}/comments?limit=${comments.limit}${comments.activePage !== 1 ? `&offset=${((comments.activePage - 1) * comments.limit)}` : ''}`, {
             verb: 'get', params: {
                 cancelToken: cancelCommentsRequest.current.token
             }
@@ -27,7 +27,7 @@ const useGetComments = (formId) => {
     );
 
     const [saveCommentRequestState, saveCommentRequest] = useApiRequest(
-        `/forms/${formId}/comments`, {
+        `/form/${formId}/comments`, {
             verb: 'post', params: {
                 comment: comment
             }
