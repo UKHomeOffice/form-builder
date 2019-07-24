@@ -22,14 +22,14 @@ const useGetVersions = (formId) => {
     const cancelVersionsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/forms/${formId}/versions?limit=${versions.limit}${versions.activePage !== 1 ? `&offset=${((versions.activePage - 1) * versions.limit)}` : ''}`, {
+        `/form/${formId}/versions?limit=${versions.limit}${versions.activePage !== 1 ? `&offset=${((versions.activePage - 1) * versions.limit)}` : ''}`, {
             verb: 'get', params: {
                 cancelToken: cancelVersionsRequest.current.token
             }
         }
     );
 
-    const [restoreState, makeRestoreRequest] = useApiRequest(`/forms/restore`, {
+    const [restoreState, makeRestoreRequest] = useApiRequest(`/form/restore`, {
         verb: 'post', params: {
             formId: formId,
             versionId: version

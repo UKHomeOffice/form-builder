@@ -60,6 +60,9 @@ const messages = {
         }
     },
     "migration" : {
+        "title" : "Formio migration",
+        "description": "Migrate Formio forms to new platform",
+        "migration-action-label" : "Migrate forms to {{env}}",
         "migration-button-label" : "Migrate",
         "migration-all-button-label" : "Migrate all on page"
     },

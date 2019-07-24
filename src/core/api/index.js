@@ -12,17 +12,19 @@ import axiosRetry from 'axios-retry';
 const keycloakTokenProvider = new KeycloakTokenProvider();
 
 const configureAxios = async (envContext, config, keycloak) => {
-    const token = secureLS.get("jwt-token");
-    config.headers['Accept'] = 'application/json';
-    config.headers['Content-Type'] = 'application/json';
-    config.headers['Cache-Control'] = "no-cache";
-    config.headers['x-user-email'] = keycloak.tokenParsed.email;
-    if (config.headers['x-promote-kc-token']) {
-        config.headers.Authorization = config.headers['x-promote-kc-token'];
-        delete config.headers['x-promote-kc-token'];
-    } else {
-        const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(envContext, token);
-        config.headers['Authorization'] = `Bearer ${jwtToken}`;
+    if (envContext) {
+        const token = secureLS.get("jwt-token");
+        config.headers['Accept'] = 'application/json';
+        config.headers['Content-Type'] = 'application/json';
+        config.headers['Cache-Control'] = "no-cache";
+        config.headers['x-user-email'] = keycloak.tokenParsed.email;
+        if (config.headers['x-promote-kc-token']) {
+            config.headers.Authorization = config.headers['x-promote-kc-token'];
+            delete config.headers['x-promote-kc-token'];
+        } else {
+            const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(envContext, token);
+            config.headers['Authorization'] = `Bearer ${jwtToken}`;
+        }
     }
     return Promise.resolve(config);
 };

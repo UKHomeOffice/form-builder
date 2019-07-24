@@ -15,7 +15,7 @@ const createForm = async (axios,
     } else {
         try {
             response = await axios({
-                url: `${envContext.url}/forms`,
+                url: `${envContext.url}/form`,
                 method: 'POST',
                 data: form,
                 headers: headers
