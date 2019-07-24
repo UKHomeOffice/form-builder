@@ -3,11 +3,13 @@ import {useEffect, useRef, useState} from "react";
 import {useMultipleApiCallbackRequest} from "../../../core/api";
 import {SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
+import useLogger from "../../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 
 const useMigrations = () => {
-        const {clearEnvContext, envContext} = useEnvContext();
+        const {clearEnvContext, getEnvDetails} = useEnvContext();
+        const {log} = useLogger();
         const {t} = useTranslation();
         const [formio, setFormio] = useState({
             url: 'https://formio.elf79.dev',
@@ -25,41 +27,75 @@ const useMigrations = () => {
         });
         const savedCallback = useRef();
 
-        const [{migrationState}, migrateRequest] = useMultipleApiCallbackRequest(async (axios) => {
+        const [migrationState, migrateRequest] = useMultipleApiCallbackRequest(async (axios) => {
+            const envContext = getEnvDetails(formio.environment);
             const santize = (form) => {
                 return _.omit(form, ['submissionAccess', 'access', 'machineName', '_id', 'tags', 'created', 'modified']);
             };
-            formio.formsIdsForMigration.forEach(async (formId) => {
+            const formsSuccessfullyMigrated = [];
+            const formsFailedToMigrate = [];
+            const tokenResponse = await axios({
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: 'POST',
+                url: `${formio.url}/user/login`,
+                data: {
+                    data: {
+                        email: formio.username,
+                        password: formio.password
+                    }
+                }
+            });
+
+
+            for await (const formId of formio.formsIdsForMigration) {
+                const form = await axios({
+                    method: 'GET',
+                    url: `${formio.url}/form/${formId}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                        'x-jwt-token': tokenResponse.headers['x-jwt-token']
+                    },
+                });
                 try {
-                    const form = await axios({
-                        method: 'GET',
-                        url: `${formio.url}/form/${formId}`,
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                    });
-                    const created = await axios({
+                    const response = await axios({
                         url: `${envContext.url}/form`,
                         method: 'POST',
                         data: santize(form.data)
                     });
-                    return created;
+
+                    if (response.status === 201) {
+                        formsSuccessfullyMigrated.push(form.data.name);
+                    } else {
+                        log([{
+                            message: `Failed to migrate ${formId}`,
+                            exception: response.data,
+                            level: 'error'
+                        }]);
+                        formsFailedToMigrate.push(form.data.name);
+                    }
                 } catch (e) {
-                    toast({
-                        type: 'warning',
-                        icon: 'exclamation circle',
-                        title: t('error.general'),
-                        description: t('form.create.failure.failed-to-create', {error: e.message}),
-                        animation: 'scale',
-                        time: 5000
-                    });
+                    log([{
+                        message: `Failed to migrate ${formId}`,
+                        exception: e.response.data,
+                        status: e.status,
+                        level: 'error'
+                    }]);
+                    formsFailedToMigrate.push(form.data.name);
+                }
+            }
+
+            return Promise.resolve({
+                data: {
+                    formsSuccessfullyMigrated: formsSuccessfullyMigrated,
+                    formsFailedToMigrate: formsFailedToMigrate
                 }
             });
-            return Promise.resolve(true);
-
-        });
+        }, [], [], getEnvDetails(formio.environment));
 
         const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
+                const envContext = getEnvDetails(formio.environment);
                 try {
                     const tokenResponse = await axios({
                         headers: {
@@ -101,6 +137,7 @@ const useMigrations = () => {
                                 if (found) {
                                     form['exists'] = true;
                                 }
+                                return form;
                             })
                         }
 
@@ -124,7 +161,7 @@ const useMigrations = () => {
             }], [{
                 message: `Forms successfully loaded`,
                 level: 'info',
-            }]
+            }], getEnvDetails(formio.environment)
         );
 
 
@@ -160,6 +197,33 @@ const useMigrations = () => {
                 }));
             }
         }, [status, setFormio, formio, response]);
+
+
+        useEffect(() => {
+            if (migrationState.status === SUCCESS) {
+                for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
+                    toast({
+                        type: 'warning',
+                        icon: 'exclamation circle',
+                        title: t('migration.failure.title'),
+                        description: t('migration.failure.description', {formName: failedForm}),
+                        animation: 'scale',
+                        time: 5000
+                    });
+                }
+                for (const successfulForm of migrationState.response.data.formsSuccessfullyMigrated) {
+                    toast({
+                        type: 'success',
+                        icon: 'check circle',
+                        title: t('migration.success.title'),
+                        description: t('migration.success.description', {formName: successfulForm}),
+                        animation: 'scale',
+                        time: 5000
+                    });
+                }
+                makeRequest();
+            }
+        }, [migrationState]);
 
         const loadForms = () => {
             makeRequest();
@@ -203,7 +267,8 @@ const useMigrations = () => {
             formInValid,
             handlePaginationChange,
             handleCancelMigration,
-            handleConfirmMigration
+            handleConfirmMigration,
+            migrationState
         }
     }
 ;

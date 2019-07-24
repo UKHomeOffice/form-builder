@@ -21,10 +21,10 @@ import useEnvContext from "../../../../core/context/useEnvContext";
 import {useNavigation} from "react-navi";
 import _ from 'lodash';
 import {isMobile} from "react-device-detect";
-import {Comment} from "semantic-ui-react/dist/commonjs/views/Comment";
 
 const MigrationPage = () => {
-    const {loadForms, formio, setFormio, formInValid, status, handlePaginationChange, handleCancelMigration, handleConfirmMigration} = useMigrations();
+    const {loadForms, formio, setFormio, formInValid, status, handlePaginationChange, handleCancelMigration,
+        handleConfirmMigration, migrationState} = useMigrations();
     const {url, username, password, forms, environment, total, limit, activePage, open} = formio;
     const {t} = useTranslation();
     const {editableEnvironments, changeContextById, clearEnvContext} = useEnvContext();
@@ -75,7 +75,6 @@ const MigrationPage = () => {
                                     })}
                                     onChange={
                                         (e, {value}) => {
-                                            changeContextById(value);
                                             setFormio(formio => ({
                                                 ...formio,
                                                 environment: value
@@ -114,7 +113,7 @@ const MigrationPage = () => {
                                     formInValid() || status === EXECUTING
                                 } loading={status === EXECUTING}/>
                                 <Button secondary onClick={() => {
-                                    clearEnvContext()
+                                    clearEnvContext();
                                     navigation.navigate("/");
                                 }}>{t('form.cancel.label')}</Button>
                             </div>
@@ -197,6 +196,8 @@ const MigrationPage = () => {
                                     open: true
                                 }));
                             }}
+                            loading={migrationState.status === EXECUTING}
+                            disabled={migrationState.status === EXECUTING}
                             primary>{t('migration.migration-action-label', {env: environment})}</Button>
                             <Button secondary onClick={() => {
                                 clearEnvContext()

@@ -66,7 +66,16 @@ const messages = {
         "description": "Migrate Formio forms to new platform",
         "migration-action-label" : "Migrate forms to {{env}}",
         "migration-button-label" : "Migrate",
-        "migration-all-button-label" : "Migrate all on page"
+        "migration-all-button-label" : "Migrate all on page",
+        "failed-to-migrate" : "Failed to migrate {{formName}}",
+        "failure" : {
+            "title" : "Failed migration",
+            "description" :"Failed to migrate {{formName}}"
+        },
+        "success" : {
+            "title": "Successful migration",
+            "description" :"{{formName}} successfully migrated"
+        }
     },
     "form": {
         "restore" : {

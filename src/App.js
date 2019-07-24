@@ -38,6 +38,9 @@ export const App = () => (
                           if (event === 'onAuthLogout' || event === 'onAuthError') {
                               clearSecureLocalStorage();
                           }
+                          if (event === 'onTokenExpired') {
+                              keycloak.updateToken()
+                          }
                       }}
                       onTokens={(tokens) => {
                           console.log("token refreshed");

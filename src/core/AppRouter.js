@@ -87,7 +87,6 @@ export const AppRouter = () => {
 
     const keycloakTokenProvider = new KeycloakTokenProvider();
     eventEmitter.addListener('token-refreshed', (token) => {
-        console.log('refreshing');
         environments.forEach(async (environment) => {
             await keycloakTokenProvider.fetchKeycloakToken(environment, token);
         });
