@@ -126,13 +126,6 @@ const MigrationPage = () => {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Header as='h3'>
-                           Or
-                        </Header>
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                    <Grid.Column>
                         <Input data-cy="search-title" icon='search'
                                name="search-title"
                                placeholder={t('form.list.search-label')}
