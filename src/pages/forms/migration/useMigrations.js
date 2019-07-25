@@ -1,7 +1,7 @@
 import useEnvContext from "../../../core/context/useEnvContext";
 import {useEffect, useRef, useState} from "react";
 import {useMultipleApiCallbackRequest} from "../../../core/api";
-import {SUCCESS} from "../../../core/api/actionTypes";
+import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
 import useLogger from "../../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
@@ -12,9 +12,9 @@ const useMigrations = () => {
         const {log} = useLogger();
         const {t} = useTranslation();
         const [formio, setFormio] = useState({
-            url: 'https://formio.elf79.dev',
-            username: 'me@lodev.xyz',
-            password: 'secret',
+            url: '',
+            username: '',
+            password: '',
             environment: '',
             forms: [],
             total: 0,
@@ -27,6 +27,7 @@ const useMigrations = () => {
         });
         const savedCallback = useRef();
         const handleMigrationCallback = useRef();
+        const failedToLoadFormsCallback = useRef();
 
         const [migrationState, migrateRequest] = useMultipleApiCallbackRequest(async (axios) => {
             const envContext = getEnvDetails(formio.environment);
@@ -177,6 +178,16 @@ const useMigrations = () => {
                 makeRequest();
             };
 
+            failedToLoadFormsCallback.current = (error) => {
+                toast({
+                    type: 'warning',
+                    icon: 'exclamation circle',
+                    title: t('error.general'),
+                    description: t('migration.failure.failed-to-load', {error: error.toString()}),
+                    animation: 'scale',
+                    time: 5000
+                });
+            };
             handleMigrationCallback.current = () => {
                 for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
                     toast({
@@ -225,6 +236,9 @@ const useMigrations = () => {
                     numberOnPage: response.data.length,
                     total: parseInt(response.headers['content-range'].split('/')[1])
                 }));
+            }
+            if (status === ERROR) {
+                failedToLoadFormsCallback.current(response.data);
             }
         }, [status, setFormio, formio, response]);
 

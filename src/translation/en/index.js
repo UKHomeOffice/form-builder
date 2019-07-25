@@ -70,7 +70,8 @@ const messages = {
         "failed-to-migrate" : "Failed to migrate {{formName}}",
         "failure" : {
             "title" : "Failed migration",
-            "description" :"Failed to migrate {{formName}}"
+            "description" :"Failed to migrate {{formName}}",
+            "failed-to-load": "Failed to load forms from source due to {{error}}"
         },
         "migrating-label" : "Migrating",
         "success" : {
