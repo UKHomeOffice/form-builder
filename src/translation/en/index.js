@@ -72,6 +72,7 @@ const messages = {
             "title" : "Failed migration",
             "description" :"Failed to migrate {{formName}}"
         },
+        "migrating-label" : "Migrating",
         "success" : {
             "title": "Successful migration",
             "description" :"{{formName}} successfully migrated"

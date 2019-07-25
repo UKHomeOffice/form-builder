@@ -26,6 +26,7 @@ const useMigrations = () => {
 
         });
         const savedCallback = useRef();
+        const handleMigrationCallback = useRef();
 
         const [migrationState, migrateRequest] = useMultipleApiCallbackRequest(async (axios) => {
             const envContext = getEnvDetails(formio.environment);
@@ -66,14 +67,14 @@ const useMigrations = () => {
                     });
 
                     if (response.status === 201) {
-                        formsSuccessfullyMigrated.push(form.data.name);
+                        formsSuccessfullyMigrated.push({formId: formId, name: form.data.name});
                     } else {
                         log([{
                             message: `Failed to migrate ${formId}`,
                             exception: response.data,
                             level: 'error'
                         }]);
-                        formsFailedToMigrate.push(form.data.name);
+                        formsFailedToMigrate.push({formId: formId, name: form.data.name});
                     }
                 } catch (e) {
                     log([{
@@ -82,7 +83,7 @@ const useMigrations = () => {
                         status: e.status,
                         level: 'error'
                     }]);
-                    formsFailedToMigrate.push(form.data.name);
+                    formsFailedToMigrate.push({formId: formId, name: form.data.name});
                 }
             }
 
@@ -175,6 +176,35 @@ const useMigrations = () => {
                 }));
                 makeRequest();
             };
+
+            handleMigrationCallback.current = () => {
+                for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
+                    toast({
+                        type: 'warning',
+                        icon: 'exclamation circle',
+                        title: t('migration.failure.title'),
+                        description: t('migration.failure.description', {formName: failedForm.name}),
+                        animation: 'scale',
+                        time: 5000
+                    });
+                }
+                for (const successfulForm of migrationState.response.data.formsSuccessfullyMigrated) {
+                    const selectedFormIds = formio.formsIdsForMigration;
+                    _.remove(selectedFormIds, (id) => {
+                        return id === successfulForm.formId
+                    });
+                    setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
+                    toast({
+                        type: 'success',
+                        icon: 'check circle',
+                        title: t('migration.success.title'),
+                        description: t('migration.success.description', {formName: successfulForm.name}),
+                        animation: 'scale',
+                        time: 5000
+                    });
+                }
+                makeRequest();
+            }
         });
 
         useEffect(() => {
@@ -201,27 +231,7 @@ const useMigrations = () => {
 
         useEffect(() => {
             if (migrationState.status === SUCCESS) {
-                for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
-                    toast({
-                        type: 'warning',
-                        icon: 'exclamation circle',
-                        title: t('migration.failure.title'),
-                        description: t('migration.failure.description', {formName: failedForm}),
-                        animation: 'scale',
-                        time: 5000
-                    });
-                }
-                for (const successfulForm of migrationState.response.data.formsSuccessfullyMigrated) {
-                    toast({
-                        type: 'success',
-                        icon: 'check circle',
-                        title: t('migration.success.title'),
-                        description: t('migration.success.description', {formName: successfulForm}),
-                        animation: 'scale',
-                        time: 5000
-                    });
-                }
-                makeRequest();
+                handleMigrationCallback.current();
             }
         }, [migrationState]);
 

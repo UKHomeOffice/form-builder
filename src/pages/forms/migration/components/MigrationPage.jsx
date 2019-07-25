@@ -5,6 +5,7 @@ import {
     Checkbox,
     Confirm,
     Container,
+    Dimmer,
     Form,
     Grid,
     Header,
@@ -13,7 +14,7 @@ import {
     List,
     Loader,
     Pagination,
-    Popup
+    Popup,
 } from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import {EXECUTING} from "../../../../core/api/actionTypes";
@@ -23,11 +24,13 @@ import _ from 'lodash';
 import {isMobile} from "react-device-detect";
 
 const MigrationPage = () => {
-    const {loadForms, formio, setFormio, formInValid, status, handlePaginationChange, handleCancelMigration,
-        handleConfirmMigration, migrationState} = useMigrations();
+    const {
+        loadForms, formio, setFormio, formInValid, status, handlePaginationChange, handleCancelMigration,
+        handleConfirmMigration, migrationState
+    } = useMigrations();
     const {url, username, password, forms, environment, total, limit, activePage, open} = formio;
     const {t} = useTranslation();
-    const {editableEnvironments, changeContextById, clearEnvContext} = useEnvContext();
+    const {editableEnvironments, clearEnvContext} = useEnvContext();
     const navigation = useNavigation();
     return <Container>
         <Confirm open={open}
@@ -124,48 +127,55 @@ const MigrationPage = () => {
                     <Grid.Column>
                         {status === EXECUTING ?
                             <Loader active inline='centered' size='medium'>{t('form.list.loading')}</Loader> :
-                            <List divided verticalAlign='middle'>
-                                {
-                                    forms.map((form) => {
-                                        let checked = false;
-                                        if (formio.formsIdsForMigration.length !== 0) {
-                                            if (_.find(formio.formsIdsForMigration, (id) => {
-                                                return id === form._id;
-                                            })) {
-                                                checked = true;
+                            <Dimmer.Dimmable dimmed={migrationState.status === EXECUTING}>
+                                <Dimmer active={migrationState.status === EXECUTING} inverted>
+                                    <Loader active inline='centered'
+                                            size='medium'>{t('migration.migrating-label')}</Loader>
+                                </Dimmer>
+                                <List divided verticalAlign='middle'>
+                                    {
+                                        forms.map((form) => {
+                                            let checked = false;
+                                            if (formio.formsIdsForMigration.length !== 0) {
+                                                if (_.find(formio.formsIdsForMigration, (id) => {
+                                                    return id === form._id;
+                                                })) {
+                                                    checked = true;
+                                                }
                                             }
-                                        }
 
-                                        return <List.Item key={form._id}>
-                                            <List.Content floated='right'>
-                                                {!form.exists ?
-                                                    <Checkbox toggle
-                                                              value={form._id}
-                                                              defaultChecked={checked}
-                                                              onChange={(event, data) => {
-                                                                  if (data.checked) {
-                                                                      formio.formsIdsForMigration.push(data.value);
-                                                                  } else {
-                                                                      _.remove(formio.formsIdsForMigration, (id) => {
-                                                                          return id === data.value;
-                                                                      })
-                                                                  }
-                                                                  setFormio(formio => ({
-                                                                      ...formio
-                                                                  }));
-                                                              }}
-                                                    />
-                                                    : <Popup content={`${form.name} has already been migrated`}
-                                                             trigger={<Label color='teal' as='a'>Migrated</Label>}
-                                                             on='hover'
-                                                             basic
-                                                    />}
-                                            </List.Content>
-                                            <List.Content>{form.title}</List.Content>
-                                        </List.Item>
-                                    })
-                                }
-                            </List>}
+                                            return <List.Item key={form._id}>
+                                                <List.Content floated='right'>
+                                                    {!form.exists ?
+                                                        <Checkbox toggle
+                                                                  value={form._id}
+                                                                  defaultChecked={checked}
+                                                                  onChange={(event, data) => {
+                                                                      if (data.checked) {
+                                                                          formio.formsIdsForMigration.push(data.value);
+                                                                      } else {
+                                                                          _.remove(formio.formsIdsForMigration, (id) => {
+                                                                              return id === data.value;
+                                                                          })
+                                                                      }
+                                                                      setFormio(formio => ({
+                                                                          ...formio
+                                                                      }));
+                                                                  }}
+                                                        />
+                                                        : <Popup content={`${form.name} has already been migrated`}
+                                                                 trigger={<Label color='teal' as='a'>Migrated</Label>}
+                                                                 on='hover'
+                                                                 basic
+                                                        />}
+                                                </List.Content>
+                                                <List.Content>{form.title}</List.Content>
+                                            </List.Item>
+                                        })
+                                    }
+                                </List>
+                            </Dimmer.Dimmable>
+                        }
                         {forms.length !== 0 ? <div style={{marginTop: '20px', textAlign: 'center'}}><Pagination
                             disabled={total < limit}
                             totalPages={Math.ceil(parseInt(total) / limit)}
