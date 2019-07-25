@@ -1,10 +1,10 @@
 {
   "environments": [
     {
-    "id": "local",
-    "label": "Local",
+    "id": "dev",
+    "label": "Development",
     "url": "http://localhost:4000",
-    "description": "Local environment",
+    "description": "Development environment",
     "service": {
       "keycloak": {
         "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",

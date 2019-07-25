@@ -67,7 +67,7 @@ describe("Edit form", () => {
         cy.url().should('include', '/forms/local');
 
         cy.request({
-            url: `http://localhost:4000/api/v1/forms?filter=title__eq__${formTitle}`,
+            url: `http://localhost:4000/form?filter=title__eq__${formTitle}`,
             headers: {
                 "Authorization" : `Bearer ${secureLS.get('kc-jwt-local')}`
             }

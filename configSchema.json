@@ -72,41 +72,9 @@
             "type": "object",
             "title": "The Service Schema",
             "required": [
-              "formio",
               "keycloak"
             ],
             "properties": {
-              "formio": {
-                "$id": "#/properties/environments/items/properties/service/properties/formio",
-                "type": "object",
-                "title": "The Formio Schema",
-                "required": [
-                  "username",
-                  "password"
-                ],
-                "properties": {
-                  "username": {
-                    "$id": "#/properties/environments/items/properties/service/properties/formio/properties/username",
-                    "type": "string",
-                    "title": "The Username Schema",
-                    "default": "",
-                    "examples": [
-                      "me@lodev.xyz"
-                    ],
-                    "pattern": "^(.*)$"
-                  },
-                  "password": {
-                    "$id": "#/properties/environments/items/properties/service/properties/formio/properties/password",
-                    "type": "string",
-                    "title": "The Password Schema",
-                    "default": "",
-                    "examples": [
-                      "secret"
-                    ],
-                    "pattern": "^(.*)$"
-                  }
-                }
-              },
               "keycloak": {
                 "$id": "#/properties/environments/items/properties/service/properties/keycloak",
                 "type": "object",

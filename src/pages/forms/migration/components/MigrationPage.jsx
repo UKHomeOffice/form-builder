@@ -96,6 +96,7 @@ const MigrationPage = () => {
                                 fluid
                                 value={environment}
                                 label='Target environment'
+                                error={environment === '' || environment === null}
                                 options={editableEnvironments().map((env) => {
                                     return {
                                         key: env.id,
