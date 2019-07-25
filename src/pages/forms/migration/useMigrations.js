@@ -13,9 +13,9 @@ const useMigrations = () => {
         const {log} = useLogger();
         const {t} = useTranslation();
         const [formio, setFormio] = useState({
-            url: 'https://formio.elf79.dev',
-            username: 'me@lodev.xyz',
-            password: 'secret',
+            url: '',
+            username: '',
+            password: '',
             environment: '',
             forms: [],
             total: 0,

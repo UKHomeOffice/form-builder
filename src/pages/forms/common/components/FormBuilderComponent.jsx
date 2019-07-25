@@ -1,9 +1,8 @@
 import React from 'react';
 import {Button, Container, Divider, Form, Label} from "semantic-ui-react";
 import {EXECUTING} from "../../../../core/api/actionTypes";
-import {FormBuilder, Formio} from 'react-formio';
+import {FormBuilder} from 'react-formio';
 import PreviewFormModal from "../../create/components/PreviewFormModal";
-import secureLS from '../../../../core/storage';
 
 const FormBuilderComponent = ({
                                   form,
