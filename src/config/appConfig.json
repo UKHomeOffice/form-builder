@@ -6,10 +6,6 @@
     "url": "http://localhost:4000",
     "description": "Local environment",
     "service": {
-      "formio": {
-        "username": "me@lodev.xyz",
-        "password": "secret"
-      },
       "keycloak": {
         "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
         "clientId": "form-builder",

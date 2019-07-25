@@ -18,49 +18,8 @@ const FormBuilderComponent = ({
                                   openPreview,
                                   save,
                                   formInvalid,
-                                  changeDisplay,
-                                  envContext
+                                  changeDisplay
                               }) => {
-        Formio.Templates.framework = 'semantic';
-        Formio.baseUrl = envContext.url;
-        Formio.projectUrl = envContext.url;
-        Formio.formsUrl = `${envContext.url}/form`;
-        Formio.formUrl = `${envContext.url}/form`;
-        Formio.plugins = [{
-            priority: 0,
-            requestOptions: function (value, url) {
-                const token = secureLS.get(`kc-jwt-${envContext.id}`);
-                value.headers.append('Authorization', `Bearer ${token}`);
-                return value;
-            }
-        }, {
-            priority: 0,
-            preRequest: function (requestArgs) {
-                requestArgs.url = requestArgs.url.replace("_id", "id");
-                return requestArgs;
-            }
-        }, {
-            priority: 0,
-            requestResponse: function (response) {
-                return {
-                    ok: response.ok,
-                    json: () => response.json().then((result) => {
-                        if (result.forms) {
-                            return result.forms.map((form) => {
-                                form['_id'] = form.id;
-                                return form;
-                            });
-                        }
-                        result['_id'] = result.id;
-                        return result;
-                    }),
-                    status: response.status,
-                    headers: response.headers
-                };
-
-            }
-        }
-        ];
 
         return <Container>
             <Form className='attached fluid segment'>

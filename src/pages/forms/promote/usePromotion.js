@@ -43,7 +43,7 @@ const usePromotion = (formId) => {
             const formResponse = await axios({
                 method: 'GET',
                 headers: headers,
-                url: `${promotionEnvironment.url}/forms?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`
+                url: `${promotionEnvironment.url}/form?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`
             });
             if (formResponse.data.total === 0) {
                 log([{
@@ -70,7 +70,7 @@ const usePromotion = (formId) => {
                 } else {
                     return await axios({
                         "method": "PUT",
-                        "url": `${promotionEnvironment.url}/forms/${formLoaded.id}`,
+                        "url": `${promotionEnvironment.url}/form/${formLoaded.id}`,
                         "data": formLoaded,
                         headers: headers,
                     });

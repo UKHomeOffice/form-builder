@@ -10,6 +10,7 @@ import {
     Grid,
     Header,
     Icon,
+    Input,
     Label,
     List,
     Loader,
@@ -26,9 +27,9 @@ import {isMobile} from "react-device-detect";
 const MigrationPage = () => {
     const {
         loadForms, formio, setFormio, formInValid, status, handlePaginationChange, handleCancelMigration,
-        handleConfirmMigration, migrationState
+        handleConfirmMigration, migrationState, handleTitleSearch
     } = useMigrations();
-    const {url, username, password, forms, environment, total, limit, activePage, open} = formio;
+    const {url, username, password, forms, environment, total, limit, activePage, open, searchTitle} = formio;
     const {t} = useTranslation();
     const {editableEnvironments, clearEnvContext} = useEnvContext();
     const navigation = useNavigation();
@@ -52,7 +53,7 @@ const MigrationPage = () => {
                     <Grid.Column>
                         <Form onSubmit={loadForms}>
                             <Form.Group>
-                                <Form.Input name="url" label='Source environment' placeholder='Formio URL' width={4}
+                                <Form.Input name="url" label='Source environment' placeholder='Formio URL' width={6}
                                             onChange={
                                                 (e, {name, value}) => {
                                                     setFormio(formio => ({
@@ -64,32 +65,11 @@ const MigrationPage = () => {
                                             error={url === '' || url === null}
                                             value={url}
                                 />
-                                <Form.Select
-                                    width={4}
-                                    fluid
-                                    value={environment}
-                                    label='Target environment'
-                                    options={editableEnvironments().map((env) => {
-                                        return {
-                                            key: env.id,
-                                            text: env.label,
-                                            value: env.id
-                                        }
-                                    })}
-                                    onChange={
-                                        (e, {value}) => {
-                                            setFormio(formio => ({
-                                                ...formio,
-                                                environment: value
-                                            }));
-                                        }}
-                                    placeholder='Environment '/>
-
                                 <Form.Input name="username" label='Username'
                                             value={username}
                                             error={username === '' || username === null}
                                             placeholder='Service account username'
-                                            width={4} onChange={
+                                            width={6} onChange={
                                     (e, {name, value}) => {
                                         setFormio(formio => ({
                                             ...formio,
@@ -102,7 +82,7 @@ const MigrationPage = () => {
                                             placeholder='Service account password'
                                             value={password}
                                             error={password === '' || password === null}
-                                            width={4} onChange={
+                                            width={6} onChange={
                                     (e, {name, value}) => {
                                         setFormio(formio => ({
                                             ...formio,
@@ -111,6 +91,26 @@ const MigrationPage = () => {
                                     }
                                 }/>
                             </Form.Group>
+                            <Form.Select
+                                width={4}
+                                fluid
+                                value={environment}
+                                label='Target environment'
+                                options={editableEnvironments().map((env) => {
+                                    return {
+                                        key: env.id,
+                                        text: env.label,
+                                        value: env.id
+                                    }
+                                })}
+                                onChange={
+                                    (e, {value}) => {
+                                        setFormio(formio => ({
+                                            ...formio,
+                                            environment: value
+                                        }));
+                                    }}
+                                placeholder='Environment '/>
                             <div>
                                 <Button content='Load forms to migrate' primary disabled={
                                     formInValid() || status === EXECUTING
@@ -121,6 +121,25 @@ const MigrationPage = () => {
                                 }}>{t('form.cancel.label')}</Button>
                             </div>
                         </Form>
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column>
+                        <Header as='h3'>
+                           Or
+                        </Header>
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column>
+                        <Input data-cy="search-title" icon='search'
+                               name="search-title"
+                               placeholder={t('form.list.search-label')}
+                               size='large'
+                               value={searchTitle}
+                               disabled={formInValid()}
+                               onChange={handleTitleSearch}
+                               fluid focus/>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>

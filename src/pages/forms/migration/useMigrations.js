@@ -6,15 +6,16 @@ import _ from 'lodash';
 import useLogger from "../../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
+import {useDebouncedCallback} from "use-debounce";
 
 const useMigrations = () => {
         const {clearEnvContext, getEnvDetails} = useEnvContext();
         const {log} = useLogger();
         const {t} = useTranslation();
         const [formio, setFormio] = useState({
-            url: '',
-            username: '',
-            password: '',
+            url: 'https://formio.elf79.dev',
+            username: 'me@lodev.xyz',
+            password: 'secret',
             environment: '',
             forms: [],
             total: 0,
@@ -22,12 +23,25 @@ const useMigrations = () => {
             numberOnPage: 0,
             activePage: 1,
             formsIdsForMigration: [],
+            searchTitle: '',
             open: false
 
         });
         const savedCallback = useRef();
         const handleMigrationCallback = useRef();
         const failedToLoadFormsCallback = useRef();
+
+        const [searchTitle] = useDebouncedCallback(
+            (value) => {
+                setFormio(formio => ({
+                    ...formio,
+                    activePage: 1,
+                    searchTitle: value
+                }));
+            },
+            100,
+            {maxWait: 2000}
+        );
 
         const [migrationState, migrateRequest] = useMultipleApiCallbackRequest(async (axios) => {
             const envContext = getEnvDetails(formio.environment);
@@ -117,7 +131,7 @@ const useMigrations = () => {
                             "Content-Type": "application/json",
                             'x-jwt-token': tokenResponse.headers['x-jwt-token']
                         },
-                        url: `${formio.url}/form?&limit=${formio.limit}${formio.activePage !== 1 ? `&skip=${((formio.activePage - 1) * formio.limit)}` : ''}`,
+                        url: `${formio.url}/form?&limit=${formio.limit}${formio.activePage !== 1 ? `&skip=${((formio.activePage - 1) * formio.limit)}` : ''}${formio.searchTitle !== '' ? `&title__regex=/${formio.searchTitle}/i` : ''}`,
                         method: 'GET',
                     });
 
@@ -226,7 +240,7 @@ const useMigrations = () => {
             if (formio.environment) {
                 savedCallback.current();
             }
-        }, [formio.activePage]);
+        }, [formio.activePage, formio.searchTitle]);
 
         useEffect(() => {
             if (status === SUCCESS) {
@@ -250,6 +264,10 @@ const useMigrations = () => {
         }, [migrationState]);
 
         const loadForms = () => {
+            setFormio(formio => ({
+                ...formio,
+                searchTitle: ''
+            }));
             makeRequest();
         };
 
@@ -282,6 +300,10 @@ const useMigrations = () => {
             migrateRequest();
         };
 
+        const handleTitleSearch = (e, data) => {
+            searchTitle(data.value);
+        };
+
 
         return {
             loadForms,
@@ -292,7 +314,8 @@ const useMigrations = () => {
             handlePaginationChange,
             handleCancelMigration,
             handleConfirmMigration,
-            migrationState
+            migrationState,
+            handleTitleSearch
         }
     }
 ;
