@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Container, Grid, Icon, Item, Radio} from "semantic-ui-react";
+import {Button, Container, Grid, Icon, Item, Message, Radio} from "semantic-ui-react";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import _ from "lodash";
 import uuid4 from "uuid4";
@@ -20,39 +20,48 @@ const Environment = ({form, setValue, isDisabled}) => {
             <Grid.Row>
                 <Grid.Column>
                     <Container>
-                        <Grid columns={3} stackable divided>
-                            {
-                                _.map(_.chunk(availableEnvironments(envContext.id), 3), (environments) => {
-                                    return <Grid.Row key={uuid4()}>
-                                        {
-                                            _.map(environments, (environment) => {
-                                                return <Grid.Column key={uuid4()}>
-                                                    <Item.Group divided relaxed key={uuid4()}>
-                                                        <Item key={environment.id}>
-                                                            <Item.Image size='tiny' src="/cog-solid.svg"/>
-                                                            <Item.Content>
-                                                                <Item.Header
-                                                                    as="a">{environment.label ? environment.label : environment.id}</Item.Header>
-                                                                <Item.Description>
-                                                                    <Radio
-                                                                        toggle
-                                                                        name='environmentGroup'
-                                                                        value={environment.id}
-                                                                        checked={form.environment === environment.id}
-                                                                        onChange={handleChange}
-                                                                        label={t('form.promote.environment', {env: environment.label})}
-                                                                    />
-                                                                </Item.Description>
-                                                            </Item.Content>
-                                                        </Item>
-                                                    </Item.Group>
-                                                </Grid.Column>
-                                            })
-                                        }
-                                    </Grid.Row>
-                                })
-                            }
-                        </Grid>
+                        {availableEnvironments(envContext.id).length !== 0 ? <Grid columns={3} stackable divided>
+                                {
+                                    _.map(_.chunk(availableEnvironments(envContext.id), 3), (environments) => {
+                                        return <Grid.Row key={uuid4()}>
+                                            {
+                                                _.map(environments, (environment) => {
+                                                    return <Grid.Column key={uuid4()}>
+                                                        <Item.Group divided relaxed key={uuid4()}>
+                                                            <Item key={environment.id}>
+                                                                <Item.Image size='tiny' src="/cog-solid.svg"/>
+                                                                <Item.Content>
+                                                                    <Item.Header
+                                                                        as="a">{environment.label ? environment.label : environment.id}</Item.Header>
+                                                                    <Item.Description>
+                                                                        <Radio
+                                                                            toggle
+                                                                            name='environmentGroup'
+                                                                            value={environment.id}
+                                                                            checked={form.environment === environment.id}
+                                                                            onChange={handleChange}
+                                                                            label={t('form.promote.environment', {env: environment.label})}
+                                                                        />
+                                                                    </Item.Description>
+                                                                </Item.Content>
+                                                            </Item>
+                                                        </Item.Group>
+                                                    </Grid.Column>
+                                                })
+                                            }
+                                        </Grid.Row>
+                                    })
+                                }
+                            </Grid>
+                            : <Message negative icon>
+                                <Icon name='exclamation circle'/>
+                                <Message.Content>
+                                    <Message.Header>{t('form.promote.no-environments-to-promote-title')}</Message.Header>
+                                    <p>{t('form.promote.no-environments-to-promote-description')}</p>
+                                </Message.Content>
+                            </Message>
+
+                        }
                     </Container>
                 </Grid.Column>
             </Grid.Row>

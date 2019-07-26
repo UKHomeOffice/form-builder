@@ -94,6 +94,8 @@ const messages = {
             "failed-message" : "Please try again"
         },
         "promote" : {
+            "no-environments-to-promote-title" : "No available environment",
+            "no-environments-to-promote-description" : "Please check your application configuration. No promotable environment available",
             "promoting-label": "Promoting form...",
             "confirm" : "Confirm form promotion",
             "header" : "Form promotion",
