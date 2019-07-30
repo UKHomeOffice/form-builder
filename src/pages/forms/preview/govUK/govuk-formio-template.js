@@ -90,10 +90,25 @@ const govukFormioTemplate = {
     },
     button: {
         form: `
+                {%
+                      var buttonType = '';
+                      switch (input.component.theme) {
+                        case 'warning':
+                        case 'danger':
+                          buttonType = 'govuk-button--warning';
+                          break;
+                        case 'secondary':
+                        case 'info':
+                          buttonType = 'govuk-button--secondary';
+                          break;
+                      }
+                     
+                 %}
+
                   <{{input.type}}
                     ref="button"
                     {% for (var attr in input.attr) { %}
-                    {{attr}}="{{input.attr[attr]}}{% if (attr==='class') { %} govuk-button {% } %}"
+                    {{attr}}="{{input.attr[attr]}}{% if (attr==='class') { %} govuk-button {{buttonType}} {% } %}"
                     {% } %}
                   >
                   {% if (component.leftIcon) { %}<span class="{{component.leftIcon}}"></span>&nbsp;{% } %}
@@ -121,9 +136,6 @@ const govukFormioTemplate = {
 
                       <label class="{{input.labelClass}} form-check-label govuk-label govuk-checkboxes__label" for="formio-checkbox-{{component.key}}">
                         {% if (!self.labelIsHidden()) { %}<span>{{input.label}}</span>{% } %}
-                        {% if (component.tooltip) { %}
-                          <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
-                        {% } %}
                       </label>
 
                     </div>
@@ -203,8 +215,14 @@ const govukFormioTemplate = {
                           govukType = 'radios';
                           break;
                       }
+                      
+                      var shouldInline = '';
+                      if (inline) {
+                        shouldInline = 'govuk-' + govukType + '--inline';
+                      } 
                      %}
-                    <div class="govuk-{{govukType}}">
+                   
+                    <div class="govuk-{{govukType}} {{shouldInline}}">
                       {% values.forEach(function(item) { %}
                       <div class="form-check{{inline ? '-inline' : ''}} govuk-{{govukType}}__item" ref="wrapper">
                         <{{input.type}}
@@ -290,26 +308,34 @@ const govukFormioTemplate = {
                     <div class="govuk-date-input">
                       {% if (dayFirst && showDay) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
-                        <div>{{day}}</div>
+                       <div class="govuk-form-group">
+                            <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
+                            <div>{{day}}</div>
+                        </div>
                       </div>
                       {% } %}
                       {% if (showMonth) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-month" class="govuk-label govuk-date-input__label">{{t('Month')}}</label>
-                        <div>{{month}}</div>
+                         <div class="govuk-form-group">
+                            <label for="{{component.key}}-month" class="govuk-label govuk-date-input__label">{{t('Month')}}</label>
+                            <div>{{month}}</div>
+                          </div>  
                       </div>
                       {% } %}
                       {% if (!dayFirst && showDay) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
-                        <div>{{day}}</div>
+                       <div class="govuk-form-group">
+                            <label for="{{component.key}}-day" class="govuk-label govuk-date-input__label">{{t('Day')}}</label>
+                            <div>{{day}}</div>
+                        </div>
                       </div>
                       {% } %}
                       {% if (showYear) { %}
                       <div class="govuk-date-input__item">
-                        <label for="{{component.key}}-year" class="govuk-label govuk-date-input__label">{{t('Year')}}</label>
-                        <div>{{year}}</div>
+                        <div class="govuk-form-group">
+                            <label for="{{component.key}}-year" class="govuk-label govuk-date-input__label">{{t('Year')}}</label>
+                            <div>{{year}}</div>
+                        </div>
                       </div>
                       {% } %}
                     </div>
@@ -336,7 +362,7 @@ const govukFormioTemplate = {
                         {{components}}
                       </div>
                       {% if (buttons.cancel) { %}
-                        <button class="govuk-button btn button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
+                        <button class="govuk-button btn govuk-button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
                       {% } %}
                       {% if (buttons.previous) { %}
                         <button class="govuk-button btn btn-primary btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>
