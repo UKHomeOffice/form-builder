@@ -20,7 +20,7 @@ const FormBuilderComponent = ({
                                   changeDisplay
                               }) => {
 
-        return <Container>
+        return <Container fluid>
             <Form className='attached fluid segment'>
                 <Form.Group widths='equal'>
                     <Form.Field>

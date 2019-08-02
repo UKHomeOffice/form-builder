@@ -39,7 +39,11 @@ export const App = () => (
                               clearSecureLocalStorage();
                           }
                           if (event === 'onTokenExpired') {
-                              keycloak.updateToken()
+                              keycloak.updateToken(120).success(() => {
+                                  console.log('Token refreshed after minValidity');
+                              }).error(() =>{
+                                  keycloak.logout();
+                              });
                           }
                       }}
                       onTokens={(tokens) => {

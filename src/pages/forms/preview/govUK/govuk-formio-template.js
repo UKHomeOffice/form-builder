@@ -8,24 +8,21 @@ const classes = {
 };
 const govukFormioTemplate = {
     datagrid: {
-        form: `<table class="table datagrid-table table-bordered 
-            {{ component.striped ? 'table-striped' : ''}}
-            {{ component.hover ? 'table-hover' : ''}}
-            {{ component.condensed ? 'table-sm' : ''}}
+        form: `<table class="govuk-table
             " {% if (component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
           {% if (hasHeader) { %}
-          <thead>
+          <thead class="govuk-table__head">
             <tr>
               {% columns.forEach(function(col) { %}
               {% if (visibleColumns[col.key]) { %}
-              <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+              <th style="text-align:left" class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
                 {{ col.hideLabel ? '' : t(col.label || col.title) }}
                 {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{col.tooltip}}"></i>{% } %}
               </th>
               {% } %}
               {% }) %}
               {% if (hasExtraColumn) { %}
-              <th>
+              <th style="text-align:left">
                 {% if (!builder && hasAddButton && hasTopSubmit) { %}
                 <button class="govuk-button formio-button-add-row" ref="{{datagridKey}}-addRow">
                   <i class="{{iconClass('plus')}}"></i> Add Another
@@ -36,17 +33,17 @@ const govukFormioTemplate = {
             </tr>
           </thead>
           {% } %}
-          <tbody ref="{{datagridKey}}-tbody">
+          <tbody class="govuk-table__body" ref="{{datagridKey}}-tbody">
             {% rows.forEach(function(row) { %}
             {% if (hasGroups && groups[index]) { %}
-            <tr ref="{{datagridKey}}-group-header" class="datagrid-group-header{{hasToggle ? ' clickable' : ''}}">
+            <tr ref="{{datagridKey}}-group-header" class="govuk-table__row datagrid-group-header{{hasToggle ? ' clickable' : ''}}">
               <td
                 ref="{{datagridKey}}-group-label"
                 colspan="{{numColumns}}"
-                class="datagrid-group-label">{{groups[index].label}}</td>
+                class="govuk-table__header datagrid-group-label">{{groups[index].label}}</td>
             </tr>
             {% } %}
-            <tr ref="{{datagridKey}}-row">
+            <tr ref="{{datagridKey}}-row" class="govuk-table__row">
               {% columns.forEach(function(col) { %}
               {% if (visibleColumns[col.key]) { %}
               <td ref="{{datagridKey}}">
@@ -56,8 +53,8 @@ const govukFormioTemplate = {
               {% }) %}
               {% if (hasExtraColumn) { %}
                 {% if (!builder && hasRemoveButtons) { %}
-                <td>
-                  <button type="button" class="govuk-button btn button--secondary formio-button-remove-row" ref="{{datagridKey}}-removeRow">
+                <td style="vertical-align: bottom;">
+                  <button type="button" class="govuk-button govuk-button--warning formio-button-remove-row" ref="{{datagridKey}}-removeRow">
                     <i class="{{iconClass('remove-circle')}}"></i>
                   </button>
                 </td>
@@ -68,7 +65,7 @@ const govukFormioTemplate = {
                 </td>
                 {% } %}
               {% } else if (removePlacement === 'corner') { %}
-                <button type="button" tabindex="-1" class="govuk-button btn button--secondary formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
+                <button type="button" tabindex="-1" class="govuk-button govuk-button--warning formio-{{ component.type }}-remove" ref="{{datagridKey}}-removeRow">
                   <i class="{{ iconClass('remove') }}"></i>
                 </button>
               {% } %}
@@ -87,6 +84,38 @@ const govukFormioTemplate = {
           </tfoot>
           {% } %}
         </table>`
+    },
+    columns: {
+        form: `<div class="govuk-grid-row" style="width: 100%;">
+                    {% component.columns.forEach(function(column, index) { 
+                      var columnWidth;
+                      switch(column.width) {
+                        case 3:
+                          columnWidth = 'govuk-grid-column-one-quarter';
+                          break;
+                        case 4:
+                          columnWidth = 'govuk-grid-column-one-third';
+                          break;
+                        case 6:
+                           columnWidth = 'govuk-grid-column-one-half';
+                           break;   
+                        case 8:
+                           columnWidth = 'govuk-grid-column-two-thirds';
+                           break; 
+                        case 9:
+                           columnWidth = 'govuk-grid-column-three-quarters';
+                           break;         
+                        default:
+                          console.warn('Unknown column width for converting to GDS column width: ' +  column.width);
+                          columnWidth = 'govuk-grid-column-full';  
+                      }
+                      
+                    %}
+                    <div class="{{columnWidth}}" ref="{{columnKey}}">
+                      {{columnComponents[index]}}
+                    </div>
+                    {% }) %}
+                  </div>`
     },
     button: {
         form: `
@@ -362,16 +391,16 @@ const govukFormioTemplate = {
                         {{components}}
                       </div>
                       {% if (buttons.cancel) { %}
-                        <button class="govuk-button btn govuk-button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
+                        <button class="govuk-button govuk-button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
                       {% } %}
                       {% if (buttons.previous) { %}
-                        <button class="govuk-button btn btn-primary btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>
+                        <button class="govuk-button  btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>
                       {% } %}
                       {% if (buttons.next) { %}
-                        <button class="govuk-button btn btn-primary btn-wizard-nav-next" ref="{{wizardKey}}-next">{{t('next')}}</button>
+                        <button class="govuk-button btn-wizard-nav-next" ref="{{wizardKey}}-next">{{t('next')}}</button>
                       {% } %}
                       {% if (buttons.submit) { %}
-                        <button class="govuk-button btn btn-primary btn-wizard-nav-submit" ref="{{wizardKey}}-submit">{{t('submit')}}</button>
+                        <button class="govuk-button btn-wizard-nav-submit" ref="{{wizardKey}}-submit">{{t('submit')}}</button>
                       {% } %}
                     </div>
                   `
