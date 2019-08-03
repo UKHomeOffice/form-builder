@@ -69,8 +69,10 @@ const PreviewFormPage = ({formId}) => {
                                         <React.Fragment>
                                             <Button data-cy="viewSchema"
                                                     color='grey'
+                                                    loading={form.openSchemaView}
+                                                    disabled={form.openSchemaView}
                                                     onClick={() => {
-                                                        openSchemaView();
+                                                         openSchemaView();
                                                     }}>{t('form.schema.view', {env: envContext.id})}
 
                                             </Button>
