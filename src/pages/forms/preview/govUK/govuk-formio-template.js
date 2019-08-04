@@ -391,11 +391,7 @@ const govukFormioTemplate = {
                         {{components}}
                       </div>
                       {% if (buttons.cancel) { %}
-<<<<<<< HEAD
-                        <button class="govuk-button btn govuk-button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
-=======
                         <button class="govuk-button govuk-button--secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
->>>>>>> 0bd354921ae367abe180357836386997834f953d
                       {% } %}
                       {% if (buttons.previous) { %}
                         <button class="govuk-button  btn-wizard-nav-previous" ref="{{wizardKey}}-previous">{{t('previous')}}</button>

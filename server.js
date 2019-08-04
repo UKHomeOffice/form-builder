@@ -88,35 +88,6 @@ app.use(keycloak.middleware());
 if (appConfig['gov-uk-enabled']) {
     app.use('/assets', express.static(path.join(__dirname, '/node_modules/govuk-frontend/assets')));
 }
-<<<<<<< HEAD
-
-app.get("/formio/:env/token", keycloak.protect(), async (req, res, next) => {
-    const environment = _.find(appConfig.environments, {id: req.params.env});
-    try {
-        const tokenResponse = await axios({
-            headers: {
-                "Content-Type": "application/json"
-            },
-            method: 'POST',
-            url: `${environment.url}/user/login`,
-            data: {
-                    data: {
-                        email: environment.service.formio.username,
-                        password: environment.service.formio.password
-                    }
-            }
-        });
-        res.set("Content-Type", "application/json");
-        res.json({
-            "x-jwt-token": tokenResponse.headers['x-jwt-token']
-        });
-    } catch (e) {
-        logger.error("Failed to get formio token from " + environment.url, {error: e.toString()});
-        next(e)
-    }
-});
-=======
->>>>>>> 0bd354921ae367abe180357836386997834f953d
 
 app.get("/keycloak/:env/token",  keycloak.protect(), async (req, res, next) => {
     const environment = _.find(appConfig.environments, {id: req.params.env});
