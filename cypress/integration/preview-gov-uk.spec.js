@@ -69,7 +69,7 @@ describe("Gov UK preview", () => {
         }).then((resp) => {
             expect(resp.status).to.eq(200);
             expect(resp.body.length).to.eq(1);
-            const formId = resp.body[0]._id;
+            const formId = resp.body[0].id;
             cy.visit(`/forms/local/${formId}/preview/gov-uk`);
 
             cy.get('.govuk-input').should('exist');

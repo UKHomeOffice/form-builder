@@ -60,6 +60,7 @@ const EditFormPage = ({formId}) => {
         </Divider>
 
         {editForm.data ? <FormBuilderComponent
+            envContext={envContext}
             form={editForm}
             updateField={updateField}
             updateForm={updateForm}

@@ -33,6 +33,7 @@ import 'cypress-file-upload';
 const username = 'dev1@lodev.xyz';
 const password = 'secret';
 
+
 beforeEach(() => {
     cy.visit("/");
 
@@ -45,45 +46,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    cy.getCookie("formTitle").then((cookie) => {
-        if (cookie && cookie.value) {
-            const formTitle = cookie.value;
-            cy.request({
-                method: 'POST', url: `http://formio.lodev.xyz/user/login`,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: {
-                    "data": {
-                        "email": "me@lodev.xyz",
-                        "password": "secret"
-                    }
-                }
-            }).then((response) => {
-                const token = response.headers['x-jwt-token'];
-                cy.request({
-                    url: `http://formio.lodev.xyz/form?title=${formTitle}`,
-                    method: 'GET',
-                    headers: {
-                        "x-jwt-token": token
-                    }
-                }).then((resp) => {
-                    expect(resp.status).to.eq(200);
-                    const id = resp.body[0]._id;
-                    cy.request({
-                        url: `http://formio.lodev.xyz/form/${id}`,
-                        method: 'DELETE',
-                        headers: {
-                            "x-jwt-token": token
-                        }
-                    }).then((resp) => {
-                        expect(resp.status).to.eq(200);
-                    });
-                });
-            });
-        }
-    });
-
     cy.getCookie("skipLogout").then((cookie) => {
        if (!cookie)  {
            cy.get('[data-cy=logout]').click();

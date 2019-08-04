@@ -5,18 +5,18 @@ import {error, executing, success} from './actionCreators';
 import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
-import FormioTokenProvider from "../form/FormioTokenProvider";
 import secureLS from "../storage";
+import {useKeycloak} from "react-keycloak";
+import axiosRetry from 'axios-retry';
 
 const keycloakTokenProvider = new KeycloakTokenProvider();
-const formioTokenProvider = new FormioTokenProvider();
 
-
-const configureAxios = async (envContext, config) => {
+const configureAxios = async (envContext, config, keycloak) => {
     const token = secureLS.get("jwt-token");
     config.headers['Accept'] = 'application/json';
     config.headers['Content-Type'] = 'application/json';
     config.headers['Cache-Control'] = "no-cache";
+    config.headers['x-user-email'] = keycloak.tokenParsed.email;
     if (config.headers['x-promote-kc-token']) {
         config.headers.Authorization = config.headers['x-promote-kc-token'];
         delete config.headers['x-promote-kc-token'];
@@ -25,12 +25,6 @@ const configureAxios = async (envContext, config) => {
         config.headers['Authorization'] = `Bearer ${jwtToken}`;
     }
 
-    if (config.headers['x-promote-formio-token']) {
-        config.headers['x-jwt-token'] = config.headers['x-promote-formio-token'];
-        delete config.headers['x-promote-formio-token'];
-    } else {
-        config.headers['x-jwt-token'] = await formioTokenProvider.fetchToken(envContext, token);
-    }
     return Promise.resolve(config);
 };
 
@@ -39,9 +33,11 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const instance = axios.create();
     const {envContext} = useEnvContext();
+    const [keycloak] = useKeycloak();
 
+    axiosRetry(instance, {retries: 3});
 
-    instance.interceptors.request.use(async (config) => configureAxios(envContext, config),
+    instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak),
         (err) => {
             return Promise.reject(err);
         });
@@ -53,6 +49,7 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             response = await instance[verb](`${envContext.url}${path}`, params);
             dispatch(success(response));
         } catch (err) {
+            console.log(err.stack);
             if (axios.isCancel(err)) {
                 console.log(err.message);
             } else {
@@ -65,14 +62,19 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
 };
 
 
-export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, logAfter = null) => {
+export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, logAfter = null, env = null) => {
+
     const [state, dispatch] = useReducer(reducer, initialState);
     const instance = axios.create();
     const {envContext} = useEnvContext();
     const {log} = useLogger();
+    const [keycloak] = useKeycloak();
+
+    const environment = env ? env : envContext;
+    axiosRetry(instance, {retries: 3});
 
     instance.interceptors.request.use(async (config) =>
-            configureAxios(envContext, config),
+            configureAxios(environment, config, keycloak),
         (err) => {
             return Promise.reject(err);
         });

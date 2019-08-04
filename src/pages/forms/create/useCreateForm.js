@@ -8,20 +8,50 @@ import {toast} from "react-semantic-toasts";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import useLogger from "../../../core/logging/useLogger";
 import createForm from "../../../core/form/createForm";
+import {useTranslation} from "react-i18next";
 
 const useCreateForm = (formContent = null) => {
+    const {t} = useTranslation();
 
     const sanitize = (form) => {
-        return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
+        try {
+            return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
+        } catch (e) {
+            toast({
+                type: 'warning',
+                icon: 'exclamation circle',
+                title: t('error.general'),
+                description: t('form.create.failure.failed-to-create', {error: e.toString()}),
+                animation: 'scale',
+                time: 5000
+            });
+        }
+    };
+
+    const parseToObject = (formContent) => {
+        try {
+            return JSON.parse(formContent)
+        } catch (e) {
+            toast({
+                type: 'warning',
+                icon: 'exclamation circle',
+                title: t('error.general'),
+                description: t('form.create.failure.invalid-json'),
+                animation: 'scale',
+                time: 5000
+            });
+        }
     };
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
-    const {submissionAccess, handleForm} = useCommonFormUtils();
+    const {handleForm} = useCommonFormUtils();
     const {log} = useLogger();
 
+
+
     const [form, setValues] = useState({
-        data: formContent && formContent !== '' ? sanitize(JSON.parse(formContent)) : {
+        data: formContent && formContent !== '' ? sanitize(parseToObject(formContent)) : {
             title: '',
             path: '',
             display: 'form',
@@ -38,11 +68,24 @@ const useCreateForm = (formContent = null) => {
     const formName = form.data.name;
     const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
             try {
-                return await createForm(axios, envContext, form.data, submissionAccess, log);
+                const formResponse = await axios({
+                    method: 'GET',
+                    url: `${envContext.url}/form?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`
+                });
+
+                if (formResponse.data.total === 0) {
+                    return await createForm(axios, envContext, form.data, log);
+                }
+                const formLoaded = formResponse.data.forms[0];
+                return await axios({
+                    "method": "PUT",
+                    "url": `${envContext.url}/form/${formLoaded.id}`,
+                    "data": form.data
+                });
             } catch (error) {
                 throw {
                     response: {
-                        data: error.toString()
+                        data: error
                     }
                 }
             }

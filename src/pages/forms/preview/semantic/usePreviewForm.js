@@ -7,11 +7,13 @@ import {Formio} from "react-formio";
 import axios from "axios";
 import _ from 'lodash';
 import FormioUtils from 'formiojs/utils';
+import useCommonFormUtils from "../../common/useCommonFormUtils";
 
 const usePreviewForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
+    const {handleForm} = useCommonFormUtils();
 
     const [form, setValue] = useState({
         data: null,
@@ -24,7 +26,7 @@ const usePreviewForm = (formId) => {
     const CancelToken = axios.CancelToken;
     const cancelPreview = useRef(CancelToken.source());
 
-    const [{status, response}, makeRequest] = useApiRequest(
+    const [{status, response, exception}, makeRequest] = useApiRequest(
         `/form/${formId}`, {
             verb: 'get', params: {cancelToken: cancelPreview.current.token}
         }
@@ -59,13 +61,15 @@ const usePreviewForm = (formId) => {
     useEffect(() => {
         if (status === SUCCESS) {
             if (isMounted.current) {
+                const data = response.data;
+                handleForm(data);
                 setValue(form => ({
                     ...form,
-                    data: response.data
+                    data: data
                 }));
             }
         }
-    }, [response, status, setValue]);
+    }, [response, status, setValue, handleForm]);
 
     const backToForms = async () => {
         await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
@@ -98,7 +102,7 @@ const usePreviewForm = (formId) => {
 
     const duplicate = async () => {
         const copiedForm = _.cloneDeep(form.data);
-        delete copiedForm._id;
+        delete copiedForm.id;
         copiedForm.title = "Copy of " + form.data.title;
         copiedForm.name = "Copy of " + form.data.name;
         copiedForm.path = "Copy of " + form.data.path;
@@ -122,6 +126,10 @@ const usePreviewForm = (formId) => {
         return form;
     };
 
+    const reload = () => {
+        makeRequest();
+    };
+
     return {
         previewSubmission,
         status,
@@ -133,7 +141,9 @@ const usePreviewForm = (formId) => {
         closeSchemaView,
         duplicate,
         edit,
-        parseCss
+        parseCss,
+        exception,
+        reload
     }
 };
 

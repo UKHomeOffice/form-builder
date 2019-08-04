@@ -29,6 +29,7 @@ import _ from 'lodash';
 import moment from "moment";
 import useRoles from "../../common/useRoles";
 import ButtonGroup from "./ButtonGroup";
+import './FormList.scss';
 
 const FormList = () => {
     const {
@@ -130,7 +131,7 @@ const FormList = () => {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
-                    <Dimmer.Dimmable blurring dimmed={isLoading}>
+                    <Dimmer.Dimmable dimmed={isLoading}>
                         <Dimmer active={isLoading} inverted>
                             <Loader active inline='centered' size='large'>{t('form.list.loading')}</Loader>
                         </Dimmer>
@@ -151,7 +152,7 @@ const FormList = () => {
                             </Table.Header>
                             <Table.Body data-cy="form-table-data">
                                 {_.map(data, (form, index) => (
-                                    <Table.Row key={form._id}>
+                                    <Table.Row key={form.id}>
                                         <Table.Cell>
                                             <Accordion>
                                                 <Accordion.Title active={forms.activeIndex === index} index={index}
@@ -160,6 +161,7 @@ const FormList = () => {
                                                     {form.title}
                                                 </Accordion.Title>
                                                 <Accordion.Content active={forms.activeIndex === index}>
+<<<<<<< HEAD
 
                                                     <Card>
                                                         <Card.Content header={form.title}/>
@@ -194,6 +196,43 @@ const FormList = () => {
                                                             </Button>
                                                         </Card.Content> : null}
                                                     </Card>
+=======
+                                                    <div id="formDetails">
+                                                        <Card>
+                                                            <Card.Content header={form.title}/>
+                                                            <Card.Content description={
+                                                                <List>
+                                                                    <List.Item>
+                                                                        <List.Header>Identifier:</List.Header>
+                                                                        <List.Content>{form.id}</List.Content>
+                                                                    </List.Item>
+                                                                    <List.Item>
+                                                                        <List.Header>Name:</List.Header>
+                                                                        <List.Content>{form.name}</List.Content>
+                                                                    </List.Item>
+                                                                    <List.Item>
+                                                                        <List.Header>Path:</List.Header>
+                                                                        <List.Content>{form.path}</List.Content>
+                                                                    </List.Item>
+                                                                    <List.Item>
+                                                                        <List.Header>Created:</List.Header>
+                                                                        <List.Content>{moment(form.createdOn).fromNow()}</List.Content>
+                                                                    </List.Item>
+                                                                    <List.Item>
+                                                                        <List.Header>Updated:</List.Header>
+                                                                        <List.Content>{moment(form.updatedOn).fromNow()}</List.Content>
+                                                                    </List.Item>
+                                                                </List>
+                                                            }/>
+                                                            {isEditable ? <Card.Content extra>
+                                                                <Button size='tiny' color='blue'
+                                                                        onClick={() => download(form.id, form.name)}>
+                                                                    Download
+                                                                </Button>
+                                                            </Card.Content> : null}
+                                                        </Card>
+                                                    </div>
+>>>>>>> 0bd354921ae367abe180357836386997834f953d
                                                 </Accordion.Content>
                                             </Accordion>
                                         </Table.Cell>
@@ -204,9 +243,9 @@ const FormList = () => {
                                                 justifyContent: 'center',
                                                 display: 'flex'
                                             }}><Label size='large'
-                                                      color={form.display === 'wizard' ? 'blue' : 'teal'}><Icon
-                                                name={(!form.display || form.display === 'form') ? 'wpforms' : form.display}/>{form.display ? form.display : 'form'}
-                                            </Label></div>
+                                                      basic
+                                                      icon={!form.display || form.display === 'form' ? 'wpforms' : form.display}
+                                                      content={form.display ? form.display : 'form'}/></div>
                                         </Table.Cell>
                                         <Table.Cell>
                                             <ButtonGroup form={form}
@@ -221,9 +260,10 @@ const FormList = () => {
                             <Table.Footer>
                                 <Table.Row>
                                     <Table.HeaderCell colSpan={1}>{total} forms</Table.HeaderCell>
-                                    {total > limit ? <Table.HeaderCell colSpan={isEditable ? 2 : 3}>
+                                    <Table.HeaderCell colSpan={isEditable ? 2 : 3}>
                                         <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
                                                     activePage={activePage}
+                                                    disabled={total <= limit}
                                                     ellipsisItem={isMobile ? null : {
                                                         content: <Icon name='ellipsis horizontal'/>,
                                                         icon: true
@@ -239,15 +279,16 @@ const FormList = () => {
                                                     prevItem={{content: <Icon name='angle left'/>, icon: true}}
                                                     nextItem={{content: <Icon name='angle right'/>, icon: true}}
                                                     onPageChange={handlePaginationChange}/>
-                                    </Table.HeaderCell> : <Table.HeaderCell/>}
+                                    </Table.HeaderCell>
                                     {isEditable ? <Table.HeaderCell colSpan={2}>
-                                        <Button floated={isMobile ? null : 'right'} icon labelPosition='left' primary
-                                                size='small'
-                                                onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
-                                                data-cy="create-form">
-                                            <Icon name='wpforms'/>{t('form.create.label')}
-                                        </Button>
-                                    </Table.HeaderCell> : null}
+                                            <Button floated={isMobile ? null : 'right'} icon labelPosition='left' primary
+                                                    size='small'
+                                                    onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}
+                                                    data-cy="create-form">
+                                                <Icon name='wpforms'/>{t('form.create.label')}
+                                            </Button>
+                                        </Table.HeaderCell> :
+                                        <React.Fragment><Table.HeaderCell/><Table.HeaderCell/></React.Fragment>}
                                 </Table.Row>
                             </Table.Footer>
                         </Table>

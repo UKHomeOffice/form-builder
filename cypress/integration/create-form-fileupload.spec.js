@@ -1,3 +1,6 @@
+const Chance = require('chance');
+const chance = new Chance();
+
 describe("Create form using upload", () => {
 
     it('can upload file and create form', () => {
@@ -21,7 +24,9 @@ describe("Create form using upload", () => {
             );
             cy.url().should('include', '/forms/local/create/file-upload');
 
-            cy.get('input[name=title]').type("{end} new form for testing");
+            const newTitle = chance.word({ length: 5 });
+
+            cy.get('input[name=title]').type(newTitle);
 
             cy.get('[data-cy=persist-form]').click();
 
@@ -29,7 +34,7 @@ describe("Create form using upload", () => {
 
             cy.url().should('include', '/forms/local');
 
-            cy.get('input[name=search-title]').type("Apples and Oranges new form for testing");
+            cy.get('input[name=search-title]').type(newTitle);
 
             cy.wait(1000);
 
@@ -42,7 +47,7 @@ describe("Create form using upload", () => {
             cy.get('[data-cy="confirm-delete"]').click();
 
             cy.get('input[name=search-title]').clear();
-            cy.get('input[name=search-title]').type("Apples and Oranges new form for testing");
+            cy.get('input[name=search-title]').type(newTitle);
 
             cy.get('[data-cy=form-table-data]').should('empty');
 

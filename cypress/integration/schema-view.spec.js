@@ -39,7 +39,7 @@ describe("Schema form", () => {
 
         cy.get('.pretty-json-container').should('exist');
 
-        cy.get(".object-meta-data").contains("14 items");
+        cy.get(".object-meta-data").contains("11 items");
 
         cy.get('.ui.modal > .close').click({multiple: true});
 

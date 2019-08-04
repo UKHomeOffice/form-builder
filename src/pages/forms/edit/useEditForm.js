@@ -51,7 +51,7 @@ const useEditForm = (formId) => {
     const editFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        await navigation.navigate(`/forms/${envContext.id}/${editForm.data._id}/preview`, {replace: true});
+        await navigation.navigate(`/forms/${envContext.id}/${editForm.data.id}/preview`, {replace: true});
         toast({
             type: 'success',
             icon: 'check circle',
@@ -166,6 +166,7 @@ const useEditForm = (formId) => {
     };
 
     const openPreview = () => {
+        handleForm(editForm.data);
         setValues({
             ...editForm,
             displayPreview: true
@@ -188,9 +189,7 @@ const useEditForm = (formId) => {
     };
     const changeDisplay = (value) => {
         editForm.data.display = value;
-        if (value === 'form') {
-            handleForm(editForm.data);
-        }
+        handleForm(editForm.data);
         setValues({
             ...editForm
         });

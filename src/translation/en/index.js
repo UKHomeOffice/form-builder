@@ -22,6 +22,10 @@ const messages = {
 
     },
     "menu" : {
+        "migration" : {
+            "name": "/migrations",
+            "label": "Migration"
+        },
         "home" : {
             "label" : "Home",
             "name" : "/home"
@@ -42,7 +46,46 @@ const messages = {
         "no-context": "An environment context has not been selected",
         "no-context-message": "You need to select an environment context in order to create forms"
     },
+    "comments" : {
+        "loading": "Loading comments",
+        "failure" : {
+            "comments-load" : "Failed to load comments {{error}}",
+            "create-comment" : "Failed to create new comment due to {{error}}"
+        }
+    },
+    "versions" : {
+        "loading": "Loading versions",
+        "failure" : {
+            "versions-load" : "Failed to loaded versions {{error}}"
+        }
+    },
+    "migration" : {
+        "confirm-header": 'Migrate old formio forms to new platform',
+        "confirm-content": "Are you sure you want to migrate the old forms to new platform?",
+        "title" : "Formio migration",
+        "description": "Migrate Formio forms to new platform",
+        "migration-action-label" : "Migrate forms to {{env}}",
+        "migration-button-label" : "Migrate",
+        "migration-all-button-label" : "Migrate all on page",
+        "failed-to-migrate" : "Failed to migrate {{formName}}",
+        "failure" : {
+            "title" : "Failed migration",
+            "description" :"Failed to migrate {{formName}}",
+            "failed-to-load": "Failed to load forms from source due to {{error}}"
+        },
+        "migrating-label" : "Migrating",
+        "success" : {
+            "title": "Successful migration",
+            "description" :"{{formName}} successfully migrated"
+        }
+    },
     "form": {
+        "restore" : {
+            "success-title" : "Successful version restore",
+            "success-description": "{{versionId}} has been restored to latest",
+            "failure" : "Failed to restore form to latest due {{error}}"
+
+        },
         "loading-form" : "Loading form",
         "download": {
             "successful" : "Download successful",
@@ -51,6 +94,8 @@ const messages = {
             "failed-message" : "Please try again"
         },
         "promote" : {
+            "no-environments-to-promote-title" : "No available environment",
+            "no-environments-to-promote-description" : "Please check your application configuration. No promotable environment available",
             "promoting-label": "Promoting form...",
             "confirm" : "Confirm form promotion",
             "header" : "Form promotion",
@@ -85,7 +130,8 @@ const messages = {
             "label": "Create form",
             "creating-label" : "Creating...",
             "failure": {
-                "failed-to-create": "Failed to create form due to {{error}}"
+                "failed-to-create": "Failed to create form due to {{error}}",
+                "invalid-json" : "Failed to parse the file, possibly invalid JSON"
             },
             "updating-label" :"Creating form....",
             "update-label" : "Create form",

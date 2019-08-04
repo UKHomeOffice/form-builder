@@ -1,26 +1,12 @@
 @import "~govuk-frontend/all.scss";
 
+<<<<<<< HEAD
+=======
+.body {
+  font-family: "nta", Arial, sans-serif;
+}
+
+>>>>>>> 0bd354921ae367abe180357836386997834f953d
 .datagrid-table td {
-  vertical-align: top;
   width: 100%;
 }
-
-
-.formio-button-remove-row {
-  margin-left: 15px;
-  padding-bottom: 5px;
-  padding-top: 7px;
-  margin-top: 15px;
-}
-
-.govuk-form-group .govuk-details {
-  margin-top: 30px;
-}
-
-.datagrid-govuk-label .datagrid-table th  {
-  @include govuk-font($size: 19);
-  @include govuk-text-colour;
-  display: block;
-  margin-bottom: govuk-spacing(1);
-}
-

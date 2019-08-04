@@ -17,7 +17,7 @@ const ButtonGroup = ({  form,
     const {t} = useTranslation();
 
     const deleteFormButton = <DeleteFormButton form={form}
-                                               onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form._id)}/>;
+                                               onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form.id)}/>;
     const editButton = <Button data-cy="edit-form" positive
                                onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>;
     const previewButton = <Button primary data-cy="preview-form"

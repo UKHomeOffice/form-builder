@@ -5,6 +5,7 @@ import useCommonFormUtils from "../../common/useCommonFormUtils";
 import useCreateForm from "../useCreateForm";
 import {ERROR} from "../../../../core/api/actionTypes";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
+import useEnvContext from "../../../../core/context/useEnvContext";
 
 const CreateFormFileUpload = ({formContent}) => {
     const {t} = useTranslation();
@@ -21,7 +22,7 @@ const CreateFormFileUpload = ({formContent}) => {
         openPreview,
         closePreview
     } = useCreateForm(formContent);
-
+    const {envContext} = useEnvContext();
     if (!formContent) {
         return <Container><Message icon negative>
             <Icon name='warning circle'/>
@@ -50,6 +51,7 @@ const CreateFormFileUpload = ({formContent}) => {
             <FormBuilderComponent
                 form={form}
                 t={t}
+                envContext={envContext}
                 updateField={updateField}
                 openPreview={openPreview}
                 closePreview={closePreview}

@@ -5,7 +5,6 @@ import config from "react-global-configuration"
 import _ from 'lodash';
 
 
-
 const useEnvContext = () => {
     const {state, setState} = useContext(ApplicationContext);
     const environments = config.get('environments');
@@ -46,7 +45,15 @@ const useEnvContext = () => {
 
     const envContext = state.environment ? state.environment : getEnvDetails(secureLS.get("ENVIRONMENT"));
 
+    const editableEnvironments = () => {
+        const environments = config.get('environments');
+        return _.filter(environments, (environment) => {
+            return environment.editable;
+        });
+    };
+
     return {
+        editableEnvironments,
         changeContext,
         clearEnvContext,
         envContext,
