@@ -161,42 +161,6 @@ const FormList = () => {
                                                     {form.title}
                                                 </Accordion.Title>
                                                 <Accordion.Content active={forms.activeIndex === index}>
-<<<<<<< HEAD
-
-                                                    <Card>
-                                                        <Card.Content header={form.title}/>
-                                                        <Card.Content description={
-                                                            <List>
-                                                                <List.Item>
-                                                                    <List.Header>Name:</List.Header>
-                                                                    <List.Content>{form.name}</List.Content>
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Header>Path:</List.Header>
-                                                                    <List.Content>{form.path}</List.Content>
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Header>Identifier:</List.Header>
-                                                                    <List.Content>{form._id}</List.Content>
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Header>Created:</List.Header>
-                                                                    <List.Content>{moment(form.created).fromNow()}</List.Content>
-                                                                </List.Item>
-                                                                <List.Item>
-                                                                    <List.Header>Updated:</List.Header>
-                                                                    <List.Content>{moment(form.updated).fromNow()}</List.Content>
-                                                                </List.Item>
-                                                            </List>
-                                                        }/>
-                                                        {isEditable ? <Card.Content extra>
-                                                            <Button size='tiny' color='blue'
-                                                                    onClick={() => download(form._id, form.name)}>
-                                                                Download
-                                                            </Button>
-                                                        </Card.Content> : null}
-                                                    </Card>
-=======
                                                     <div id="formDetails">
                                                         <Card>
                                                             <Card.Content header={form.title}/>
@@ -232,7 +196,6 @@ const FormList = () => {
                                                             </Card.Content> : null}
                                                         </Card>
                                                     </div>
->>>>>>> 0bd354921ae367abe180357836386997834f953d
                                                 </Accordion.Content>
                                             </Accordion>
                                         </Table.Cell>
