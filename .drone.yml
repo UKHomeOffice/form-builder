@@ -18,30 +18,20 @@ pipeline:
   deploy_to_dev:
     image: quay.io/ukhomeofficedigital/kd
     secrets:
-      - DEV_NAME
-      - DEV_DOMAIN
+      - DEV_FORM_BUILDER_NAME
       - DEV_WHITELIST
-      - DEV_KUBE_NAMESPACE
+      - DEV_FORM_BUILDER_KUBE_NAMESPACE
       - DEV_KUBE_SERVER
       - DEV_KUBE_TOKEN
-      - DEV_INTERNAL_CA_URL
-      - DEV_NO_LOGGING_URL_PARAMS
-      - DEV_NO_LOGGING_BODY
-      - DEV_NO_LOGGING_RESPONSE
-      - DEV_APP_CONFIG
+      - DEV_FORM_BUILDER_APP_CONFIG
     commands:
-      - export NAME=$${DEV_NAME}
-      - export DOMAIN=$${DEV_DOMAIN}
+      - export FORM_BUILDER_NAME=$${DEV_FORM_BUILDER_NAME}
       - export WHITELIST=$${DEV_WHITELIST}
-      - export KUBE_NAMESPACE=$${DEV_KUBE_NAMESPACE}
+      - export FORM_BUILDER_KUBE_NAMESPACE=$${DEV_FORM_BUILDER_KUBE_NAMESPACE}
       - export KUBE_SERVER=$${DEV_KUBE_SERVER}
       - export KUBE_TOKEN=$${DEV_KUBE_TOKEN}
-      - export INTERNAL_CA_URL=$${DEV_INTERNAL_CA_URL}
-      - export NO_LOGGING_URL_PARAMS=$${DEV_NO_LOGGING_URL_PARAMS}
-      - export NO_LOGGING_BODY=$${DEV_NO_LOGGING_BODY}
-      - export NO_LOGGING_RESPONSE=$${DEV_NO_LOGGING_RESPONSE}
-      - export APP_CONFIG=$${DEV_APP_CONFIG}
-      - export IMAGE_TAG=${DRONE_COMMIT_SHA}
+      - export FORM_BUILDER_APP_CONFIG=$${DEV_FORM_BUILDER_APP_CONFIG}
+      - export FORM_BUILDER_IMAGE_TAG=${DRONE_COMMIT_SHA}
       - kd --insecure-skip-tls-verify -f kube/cert.yml
       - kd --insecure-skip-tls-verify -f kube/secret.yml
       - kd --insecure-skip-tls-verify -f kube/network-policy.yml
@@ -55,30 +45,20 @@ pipeline:
   deploy_to_production:
     image: quay.io/ukhomeofficedigital/kd
     secrets:
-      - PRODUCTION_NAME
-      - PRODUCTION_DOMAIN
+      - PRODUCTION_FORM_BUILDER_NAME
       - PRODUCTION_WHITELIST
-      - PRODUCTION_KUBE_NAMESPACE
+      - PRODUCTION_FORM_BUILDER_KUBE_NAMESPACE
       - PRODUCTION_KUBE_SERVER
       - PRODUCTION_KUBE_TOKEN
-      - PRODUCTION_INTERNAL_CA_URL
-      - PRODUCTION_NO_LOGGING_URL_PARAMS
-      - PRODUCTION_NO_LOGGING_BODY
-      - PRODUCTION_NO_LOGGING_RESPONSE
-      - PRODUCTION_APP_CONFIG
+      - PRODUCTION_FORM_BUILDER_APP_CONFIG
     commands:
-      - export NAME=$${PRODUCTION_NAME}
-      - export DOMAIN=$${PRODUCTION_DOMAIN}
+      - export FORM_BUILDER_NAME=$${PRODUCTION_FORM_BUILDER_NAME}
       - export WHITELIST=$${PRODUCTION_WHITELIST}
-      - export KUBE_NAMESPACE=$${PRODUCTION_KUBE_NAMESPACE}
+      - export FORM_BUILDER_KUBE_NAMESPACE=$${PRODUCTION_FORM_BUILDER_KUBE_NAMESPACE}
       - export KUBE_SERVER=$${PRODUCTION_KUBE_SERVER}
       - export KUBE_TOKEN=$${PRODUCTION_KUBE_TOKEN}
-      - export INTERNAL_CA_URL=$${PRODUCTION_INTERNAL_CA_URL}
-      - export NO_LOGGING_URL_PARAMS=$${PRODUCTION_NO_LOGGING_URL_PARAMS}
-      - export NO_LOGGING_BODY=$${PRODUCTION_NO_LOGGING_BODY}
-      - export NO_LOGGING_RESPONSE=$${PRODUCTION_NO_LOGGING_RESPONSE}
-      - export APP_CONFIG=$${PRODUCTION_APP_CONFIG}
-      - export IMAGE_TAG=${DRONE_COMMIT_SHA}
+      - export FORM_BUILDER_APP_CONFIG=$${PRODUCTION_FORM_BUILDER_APP_CONFIG}
+      - export FORM_BUILDER_IMAGE_TAG=${DRONE_COMMIT_SHA}
       - kd --insecure-skip-tls-verify -f kube/cert.yml
       - kd --insecure-skip-tls-verify -f kube/secret.yml
       - kd --insecure-skip-tls-verify -f kube/network-policy.yml

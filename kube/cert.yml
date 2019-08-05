@@ -1,13 +1,13 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: {{.NAME}}-pod-tls
+  name: {{.FORM_BUILDER_NAME}}-pod-tls
 spec:
-  secretName: {{.NAME}}-pod-tls
+  secretName: {{.FORM_BUILDER_NAME}}-pod-tls
   issuerRef:
     name: platform-tls
     kind: ClusterIssuer
-  commonName: {{.NAME}}.{{.KUBE_NAMESPACE}}.svc.cluster.local
+  commonName: {{.FORM_BUILDER_NAME}}.{{.KUBE_NAMESPACE}}.svc.cluster.local
   dnsNames:
   - localhost
   - 127.0.0.1

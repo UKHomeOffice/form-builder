@@ -11,18 +11,18 @@ metadata:
     kubernetes.io/ingress.class: nginx-external
     stable.k8s.psg.io/kcm.provider: http
   labels:
-    app.kubernetes.io/name: {{.NAME}}
+    app.kubernetes.io/name: {{.FORM_BUILDER_NAME}}
     stable.k8s.psg.io/kcm.class: default
-  name: {{.NAME}}
+  name: {{.FORM_BUILDER_NAME}}
 spec:
   rules:
-  - host: {{.NAME}}.{{.DOMAIN}}
+  - host: {{.FORM_BUILDER_URL}}
     http:
       paths:
       - backend:
-          serviceName: {{.NAME}}
+          serviceName: {{.FORM_BUILDER_NAME}}
           servicePort: 443
   tls:
   - hosts:
-    - {{.NAME}}.{{.DOMAIN}}
-    secretName: {{.NAME}}.{{.DOMAIN}}-tls
+    - {{.FORM_BUILDER_URL}}
+    secretName: {{.FORM_BUILDER_URL}}-tls
