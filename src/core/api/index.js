@@ -7,7 +7,6 @@ import useLogger from "../logging/useLogger";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
 import secureLS from "../storage";
 import {useKeycloak} from "react-keycloak";
-import axiosRetry from 'axios-retry';
 
 const keycloakTokenProvider = new KeycloakTokenProvider();
 
@@ -34,8 +33,6 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const instance = axios.create();
     const {envContext} = useEnvContext();
     const [keycloak] = useKeycloak();
-
-    axiosRetry(instance, {retries: 3});
 
     instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak),
         (err) => {
@@ -71,7 +68,6 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
     const [keycloak] = useKeycloak();
 
     const environment = env ? env : envContext;
-    axiosRetry(instance, {retries: 3});
 
     instance.interceptors.request.use(async (config) =>
             configureAxios(environment, config, keycloak),
