@@ -343,7 +343,6 @@ const useGetForms = () => {
             activePage: 1,
             activeIndex: -1,
             filter: filter,
-            activeIndex: -1,
             filterValue: value
         }));
     };
