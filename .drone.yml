@@ -24,6 +24,7 @@ pipeline:
       - DEV_KUBE_SERVER
       - DEV_KUBE_TOKEN
       - DEV_FORM_BUILDER_APP_CONFIG
+      - DEV_FORM_BUILDER_PORT
     commands:
       - export FORM_BUILDER_NAME=$${DEV_FORM_BUILDER_NAME}
       - export WHITELIST=$${DEV_WHITELIST}
@@ -31,6 +32,7 @@ pipeline:
       - export KUBE_SERVER=$${DEV_KUBE_SERVER}
       - export KUBE_TOKEN=$${DEV_KUBE_TOKEN}
       - export FORM_BUILDER_APP_CONFIG=$${DEV_FORM_BUILDER_APP_CONFIG}
+      - export FORM_BUILDER_PORT=$${DEV_FORM_BUILDER_PORT}
       - export FORM_BUILDER_IMAGE_TAG=${DRONE_COMMIT_SHA}
       - kd --insecure-skip-tls-verify -f kube/cert.yml
       - kd --insecure-skip-tls-verify -f kube/secret.yml
@@ -51,6 +53,7 @@ pipeline:
       - PRODUCTION_KUBE_SERVER
       - PRODUCTION_KUBE_TOKEN
       - PRODUCTION_FORM_BUILDER_APP_CONFIG
+      - PRODUCTION_FORM_BUILDER_PORT
     commands:
       - export FORM_BUILDER_NAME=$${PRODUCTION_FORM_BUILDER_NAME}
       - export WHITELIST=$${PRODUCTION_WHITELIST}
@@ -58,6 +61,7 @@ pipeline:
       - export KUBE_SERVER=$${PRODUCTION_KUBE_SERVER}
       - export KUBE_TOKEN=$${PRODUCTION_KUBE_TOKEN}
       - export FORM_BUILDER_APP_CONFIG=$${PRODUCTION_FORM_BUILDER_APP_CONFIG}
+      - export FORM_BUILDER_PORT=$${PRODUCTION_FORM_BUILDER_PORT}
       - export FORM_BUILDER_IMAGE_TAG=${DRONE_COMMIT_SHA}
       - kd --insecure-skip-tls-verify -f kube/cert.yml
       - kd --insecure-skip-tls-verify -f kube/secret.yml
