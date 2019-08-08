@@ -3,12 +3,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: {{.FORM_BUILDER_NAME}}
-  name: {{.FORM_BUILDER_NAME}}
+    name: {{.FORMBUILDER_NAME}}
+  name: {{.FORMBUILDER_NAME}}
 spec:
   ports:
   - name: https
     port: 443
     targetPort: 10443
   selector:
-    name: {{.FORM_BUILDER_NAME}}
+    name: {{.FORMBUILDER_NAME}}

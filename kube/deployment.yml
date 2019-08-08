@@ -2,31 +2,31 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{.FORM_BUILDER_NAME}}
+  name: {{.FORMBUILDER_NAME}}
 spec:
   selector:
     matchLabels:
-      name: {{.FORM_BUILDER_NAME}}
+      name: {{.FORMBUILDER_NAME}}
   replicas: 1
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
-        name: {{.FORM_BUILDER_NAME}}
+        name: {{.FORMBUILDER_NAME}}
     spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
       containers:
       - name: proxy
-        image: {{.NGINX_PROXY_IMAGE_REPO}}:{{.NGINX_PROXY_IMAGE_TAG}}
+        image: {{.NGINX_IMAGE}}:{{.NGINX_TAG}}
         securityContext:
           runAsNonRoot: true
         env:
           - name: PROXY_SERVICE_HOST
             value: 'http://127.0.0.1'
           - name: PROXY_SERVICE_PORT
-            value: "{{.FORM_BUILDER_PORT}}"
+            value: "{{.FORMBUILDER_PORT}}"
           - name: LOG_FORMAT_NAME
             value: 'json'
           - name: NAXSI_USE_DEFAULT_RULES
@@ -36,14 +36,14 @@ spec:
         ports:
           - name: https
             containerPort: 10443
-      - name: {{.FORM_BUILDER_NAME}}
-        image: {{.FORM_BUILDER_IMAGE_REPO}}:{{.FORM_BUILDER_IMAGE_TAG}}
+      - name: {{.FORMBUILDER_NAME}}
+        image: {{.FORMBUILDER_IMAGE}}:{{.FORMBUILDER_TAG}}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /healthz
-            port: {{.FORM_BUILDER_PORT}}
+            port: {{.FORMBUILDER_PORT}}
             scheme: HTTP
           periodSeconds: 10
           successThreshold: 1
@@ -52,7 +52,7 @@ spec:
           failureThreshold: 3
           httpGet:
             path: /readiness
-            port: {{.FORM_BUILDER_PORT}}
+            port: {{.FORMBUILDER_PORT}}
             scheme: HTTP
           periodSeconds: 10
           successThreshold: 1
