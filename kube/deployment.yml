@@ -48,6 +48,9 @@ spec:
       - name: {{.FORMBUILDER_NAME}}
         image: {{.FORMBUILDER_IMAGE}}:{{.FORMBUILDER_TAG}}
         imagePullPolicy: Always
+        env:
+          - name: FORMBUILDER_PORT
+            value: "{{.FORMBUILDER_PORT}}"
         livenessProbe:
           failureThreshold: 3
           httpGet:
