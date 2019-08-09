@@ -17,6 +17,8 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
+      imagePullSecrets:
+        - name: {{.DOCKER_CREDENTIALS}}
       containers:
       - name: proxy
         image: {{.NGINX_IMAGE}}:{{.NGINX_TAG}}
