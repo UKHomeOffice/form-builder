@@ -5,13 +5,13 @@ import {error, executing, success} from './actionCreators';
 import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
-import secureLS from "../storage";
 import {useKeycloak} from "react-keycloak";
+import jwt_decode from "jwt-decode";
 
 const keycloakTokenProvider = new KeycloakTokenProvider();
 
 const configureAxios = async (envContext, config, keycloak) => {
-    const token = secureLS.get("jwt-token");
+    const token = keycloak.token;
     config.headers['Accept'] = 'application/json';
     config.headers['Content-Type'] = 'application/json';
     config.headers['Cache-Control'] = "no-cache";
@@ -27,18 +27,37 @@ const configureAxios = async (envContext, config, keycloak) => {
     return Promise.resolve(config);
 };
 
+const handleError = async (instance, error, keycloak, envContext) => {
+    if (error.response) {
+        const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
+        if (error.response.status === 403 && isExpired) {
+            console.log("Trying again");
+            Object.assign(instance.defaults, configureAxios(envContext, instance.defaults, keycloak));
+            Object.assign(error.response.config, configureAxios(envContext, instance.defaults, keycloak));
+            return await instance.request(error.response.config);
+        } else {
+            return Promise.reject(error);
+        }
+    } else {
+        return Promise.reject(error);
+    }
+}
 
 const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const instance = axios.create();
     const {envContext} = useEnvContext();
     const [keycloak] = useKeycloak();
-
     instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak),
         (err) => {
             return Promise.reject(err);
         });
 
+    instance.interceptors.response.use(response => {
+        return response;
+    }, async error => {
+        return handleError(instance, error, keycloak, envContext);
+    });
     const makeRequest = async () => {
         dispatch(executing());
         let response;
@@ -46,7 +65,6 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             response = await instance[verb](`${envContext.url}${path}`, params);
             dispatch(success(response));
         } catch (err) {
-            console.log(err.stack);
             if (axios.isCancel(err)) {
                 console.log(err.message);
             } else {
@@ -54,6 +72,7 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             }
         }
     };
+
 
     return [state, makeRequest];
 };
@@ -74,6 +93,12 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
         (err) => {
             return Promise.reject(err);
         });
+
+    instance.interceptors.response.use(response => {
+        return response;
+    }, async error => {
+        return handleError(instance, error, keycloak, envContext);
+    });
 
     const execute = async () => {
         if (logBefore) {

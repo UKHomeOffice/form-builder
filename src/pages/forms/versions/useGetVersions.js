@@ -47,6 +47,7 @@ const useGetVersions = (formId) => {
         };
         cancelRequests.current = () => {
             cancelVersionsRequest.current.cancel('Cancelling get versions');
+            isMounted.current = false;
         };
         restoreCallback.current = () => {
             if (restoreState.status === SUCCESS) {

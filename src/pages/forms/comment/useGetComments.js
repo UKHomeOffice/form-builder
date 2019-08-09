@@ -42,6 +42,7 @@ const useGetComments = (formId) => {
         };
         cancelRequests.current = () => {
             cancelCommentsRequest.current.cancel('Cancelling get comments');
+            isMounted.current = false;
         };
     });
 

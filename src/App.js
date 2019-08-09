@@ -38,18 +38,9 @@ export const App = () => (
                           if (event === 'onAuthLogout' || event === 'onAuthError') {
                               clearSecureLocalStorage();
                           }
-                          if (event === 'onTokenExpired') {
-                              keycloak.updateToken(120).success(() => {
-                                  console.log('Token refreshed after minValidity');
-                              }).error(() =>{
-                                  keycloak.logout();
-                              });
-                          }
                       }}
                       onTokens={(tokens) => {
-                          console.log("token refreshed");
                           const token = tokens.token;
-                          secureLS.set("jwt-token", token);
                           eventEmitter.emit('token-refreshed', token);
                       }}
                       initConfig={{

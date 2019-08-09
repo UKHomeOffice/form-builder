@@ -7,14 +7,16 @@ import {KeycloakTokenProvider} from "../../core/KeycloakTokenProvider";
 import useLogger from "../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
-import secureLS from '../../core/storage';
 import useEnvContext from "../../core/context/useEnvContext";
 import {ApplicationContext} from "../../core/AppRouter";
+import {useKeycloak} from "react-keycloak";
+import jwt_decode from "jwt-decode";
 
 const useReports = () => {
     const keycloakProvider = new KeycloakTokenProvider();
     const {t} = useTranslation();
     const {log} = useLogger();
+    const [keycloak] = useKeycloak();
     const [reports, setReports] = useState({
         statusFormsPerEnvCount: EXECUTING,
         activeIndex: 0,
@@ -32,10 +34,9 @@ const useReports = () => {
 
     instance.interceptors.request.use(async (config) => {
             const environment = config.headers['x-environment'];
-            const token = secureLS.get("jwt-token");
+            const token = keycloak.token;
             const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, token);
             config.headers['Authorization'] = `Bearer ${jwtToken}`;
-            delete config.headers['x-environment'];
             return Promise.resolve(config);
         },
         (err) => {
@@ -43,7 +44,20 @@ const useReports = () => {
         });
 
     instance.interceptors.response.use(null, async (error) => {
-        if (axios.isCancel(error)) {
+        const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
+        if (error.response.status === 403 && isExpired) {
+            console.log("Retying");
+            const environment = error.response.config.headers['x-environment'];
+            const token = keycloak.token;
+            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, token);
+            Object.assign(instance.defaults, {
+                "Authorization": `Bearer ${jwtToken}`
+            });
+            Object.assign(error.response.config, {
+                "Authorization": `Bearer ${jwtToken}`
+            });
+            return await instance.request(error.response.config);
+        } else if (axios.isCancel(error)) {
             console.log(error.message);
             return Promise.resolve({
                 data: {

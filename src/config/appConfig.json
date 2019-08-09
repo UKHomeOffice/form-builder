@@ -3,7 +3,7 @@
     {
       "id": "dev",
       "label": "Development",
-      "url": "https://formio.elf79.dev",
+      "url": "http://localhost:4000",
       "description": "Elf Dev environment",
       "service": {
         "formio": {
@@ -19,10 +19,7 @@
       "editable": true,
       "variable-replacements": [
         {
-          "{$.environmentContext.operationalDataUrl}": "https://private-postgrest.dev.cop.homeoffice.gov.uk"
-        },
-        {
-          "{$.environmentContext.referenceDataUrl}": "https://api.refdata-dev.homeoffice.gov.uk"
+          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
         },
         {
           "{$.staffDetailsContext.staffId}": "{{guid}}"

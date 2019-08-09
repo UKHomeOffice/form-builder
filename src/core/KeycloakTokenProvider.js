@@ -1,6 +1,4 @@
 import axios from "axios";
-import secureLS from "./storage";
-import jwt_decode from "jwt-decode";
 
 export class KeycloakTokenProvider {
     constructor() {
@@ -15,7 +13,6 @@ export class KeycloakTokenProvider {
         if (!token) {
             throw Error("No token provided");
         }
-        const key = `kc-jwt-${environment.id}`;
         const fetchToken = async () => {
             try {
                 const tokenResponse = await this.axios({
@@ -34,20 +31,7 @@ export class KeycloakTokenProvider {
             }
 
         };
-
-        let jwtToken = secureLS.get(key);
-        if (!jwtToken) {
-            jwtToken = await fetchToken();
-            secureLS.set(key, jwtToken);
-        } else {
-            const isExpired = jwt_decode(jwtToken).exp < new Date().getTime() / 1000;
-            if (isExpired) {
-                console.log(`Token expired for ${environment.id}...refreshing.`);
-                jwtToken = await fetchToken();
-                secureLS.set(key, jwtToken);
-            }
-        }
-        return jwtToken;
+        return await fetchToken();
     };
 }
 

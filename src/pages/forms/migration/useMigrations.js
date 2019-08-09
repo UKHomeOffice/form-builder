@@ -7,6 +7,7 @@ import useLogger from "../../../core/logging/useLogger";
 import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
+import eventEmitter from '../../../core/eventEmitter';
 
 const useMigrations = () => {
         const {clearEnvContext, getEnvDetails} = useEnvContext();
@@ -189,6 +190,7 @@ const useMigrations = () => {
                     total: 0,
                     numberOnPage: 0
                 }));
+
                 makeRequest();
             };
 
@@ -229,6 +231,7 @@ const useMigrations = () => {
                     });
                 }
                 makeRequest();
+                eventEmitter.emit('enable-navigation');
             }
         });
 
@@ -297,6 +300,7 @@ const useMigrations = () => {
                 ...formio,
                 open: false
             }));
+            eventEmitter.emit('disable-navigation');
             migrateRequest();
         };
 

@@ -5,10 +5,11 @@ import {SUCCESS} from "../../../../core/api/actionTypes";
 import {Formio} from "react-formio";
 import govukFormioTemplate from "./govuk-formio-template";
 import { initAll } from 'govuk-frontend'
+import {useKeycloak} from "react-keycloak";
 
 const useGDSPreviewForm = (formId) => {
     const navigation = useNavigation();
-
+    const [keycloak] = useKeycloak();
     const [form, setValue] = useState({
         data: null,
         formId: formId,

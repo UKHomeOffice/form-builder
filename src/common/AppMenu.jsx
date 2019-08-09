@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext,useState} from 'react';
 import {Dropdown, Icon, Menu} from 'semantic-ui-react';
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
@@ -7,12 +7,16 @@ import config from 'react-global-configuration';
 
 import useEnvContext from "../core/context/useEnvContext";
 import {ApplicationContext} from "../core/AppRouter";
+import eventEmitter from "../core/eventEmitter";
+
 
 const AppMenu = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
     const {clearEnvContext, changeContext, envContext} = useEnvContext();
     const {state, setState} = useContext(ApplicationContext);
+
+    const [disableMenu, setDisableMenu] = useState(false);
 
     const handleEnvChange = (environment) => {
         changeContext(environment);
@@ -29,11 +33,25 @@ const AppMenu = () => {
             activeMenuItem: name
         }))
     };
+
+    eventEmitter.addListener('disable-navigation', () => {
+        setTimeout(() => {
+            if (disableMenu) {
+                setDisableMenu(false)
+            }
+        }, 60000);
+        setDisableMenu(true);
+    });
+
+    eventEmitter.addListener('enable-navigation', () => {
+        setDisableMenu(false);
+    });
+
     const environments = config.get('environments');
     const formsMenu = <React.Fragment><Icon name="wpforms" size="large"
                                             style={iconStyle}/><span>{t('menu.forms.label')}</span></React.Fragment>;
     return <Menu pointing secondary>
-        <Menu.Item data-cy={`home-menu`} name={t('menu.home.name')}
+        <Menu.Item disabled={disableMenu} data-cy={`home-menu`} name={t('menu.home.name')}
                    active={!state.activeMenuItem || state.activeMenuItem === t('menu.home.name')}
                    onClick={(e, {name}) => {
                        setActiveMenuItem(name);
@@ -45,10 +63,10 @@ const AppMenu = () => {
         </Menu.Item>
 
         <Menu.Item
-            data-cy={`forms-menu`}
+            disabled={disableMenu} data-cy={`forms-menu`}
             name={t('menu.forms.name')}
             active={state.activeMenuItem === t('menu.forms.name')}>
-            <Dropdown trigger={formsMenu}>
+            <Dropdown trigger={formsMenu} disabled={disableMenu}>
                 <Dropdown.Menu>
                     <Dropdown.Header>{t('home.environments')}</Dropdown.Header>
                     {_.map(environments, (env) => (
@@ -66,7 +84,7 @@ const AppMenu = () => {
 
         </Menu.Item>
 
-        {config.get('legacy-migration', false) ? <Menu.Item
+        {config.get('legacy-migration', false) ? <Menu.Item disabled={disableMenu}
             active={state.activeMenuItem === t('menu.migration.name')}
             name={t('menu.migration.name')}
             onClick={async () => {
@@ -78,7 +96,7 @@ const AppMenu = () => {
         </Menu.Item> : null}
 
         <Menu.Menu position='right'>
-            <Menu.Item
+            <Menu.Item  disabled={disableMenu}
                 name={t('menu.logout.name')}
                 onClick={() => {
                     navigation.navigate("/logout");

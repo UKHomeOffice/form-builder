@@ -9,6 +9,7 @@ import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import axios from "axios";
+import {useKeycloak} from "react-keycloak";
 
 const useGetForms = () => {
     const navigation = useNavigation();
@@ -41,6 +42,7 @@ const useGetForms = () => {
 
 
     const [forms, setValues] = useState(initialState);
+    const [keycloak] = useKeycloak();
 
 
     const [searchTitle] = useDebouncedCallback(
@@ -196,7 +198,11 @@ const useGetForms = () => {
 
     useEffect(() => {
         savedCallback.current();
-    }, [forms.activePage, forms.searchTitle, forms.refresh, envContext, forms.filter]);
+    }, [forms.activePage,
+        forms.searchTitle,
+        forms.refresh,
+        envContext,
+        forms.filter]);
 
     useEffect(() => {
         resetCallback.current();

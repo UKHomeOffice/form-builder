@@ -119,9 +119,9 @@ const usePreviewForm = (formId) => {
 
     const parseCss = (form) => {
         FormioUtils.eachComponent(form.components, (component) => {
-          if (component.customClass && component.customClass.indexOf('-govuk-') >=0 ) {
-            component.customClass = "";
-          }
+            if (component.customClass && component.customClass.indexOf('-govuk-') >= 0) {
+                component.customClass = "";
+            }
         });
         return form;
     };
