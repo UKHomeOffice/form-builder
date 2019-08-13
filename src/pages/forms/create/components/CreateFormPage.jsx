@@ -5,7 +5,6 @@ import useCreateForm from "../useCreateForm";
 import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
-import _ from 'lodash'
 import useEnvContext from "../../../../core/context/useEnvContext";
 const CreateFormPage = () => {
     const {t} = useTranslation();
@@ -57,7 +56,7 @@ const CreateFormPage = () => {
                 formInvalid={formInvalid}
                 changeDisplay={changeDisplay}
                 updateForm={ (jsonSchema) => {
-                    form.data.components = _.cloneDeep(jsonSchema.components);
+                    form.data.components = jsonSchema.components;
                     setValues({
                         ...form
                     })

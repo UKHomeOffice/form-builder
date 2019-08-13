@@ -54,6 +54,7 @@ const usePreviewForm = (formId) => {
             cancelPreviewRef.cancel("Cancelling preview request");
             isMounted.current = false;
             Formio.Templates.framework = "semantic";
+            Formio.clearCache();
         }
     }, [form.formId]);
 

@@ -14,7 +14,7 @@ const SchemaModal = ({form, open, close}) => {
         <Modal.Content scrolling>
             <ReactJson src={form ? form : {}} theme="monokai" name={null}
                        collapseStringsAfterLength={100}
-                       collapsed={false}/>
+                       collapsed={2}/>
         </Modal.Content>
     </Modal>
 };

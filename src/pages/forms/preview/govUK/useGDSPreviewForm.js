@@ -4,12 +4,10 @@ import {useEffect, useRef, useState} from "react";
 import {SUCCESS} from "../../../../core/api/actionTypes";
 import {Formio} from "react-formio";
 import govukFormioTemplate from "./govuk-formio-template";
-import { initAll } from 'govuk-frontend'
-import {useKeycloak} from "react-keycloak";
+import {initAll} from 'govuk-frontend'
 
 const useGDSPreviewForm = (formId) => {
     const navigation = useNavigation();
-    const [keycloak] = useKeycloak();
     const [form, setValue] = useState({
         data: null,
         formId: formId,
@@ -41,6 +39,7 @@ const useGDSPreviewForm = (formId) => {
         savedCallback.current();
         return () => {
             Formio.Templates.framework = "semantic";
+            Formio.clearCache();
         }
     }, [form.formId]);
 

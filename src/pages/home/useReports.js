@@ -44,6 +44,9 @@ const useReports = () => {
         });
 
     instance.interceptors.response.use(null, async (error) => {
+        if (!error.response) {
+            return Promise.reject(error);
+        }
         const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
         if (error.response.status === 403 && isExpired) {
             console.log("Retying");

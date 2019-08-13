@@ -93,7 +93,11 @@ const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionIn
         <Form form={parsedForm.form} onSubmit={(submission) => previewSubmission(submission)}
               options={
                   {
-                      noAlerts: true
+                      ignoreCache: true,
+                      noAlerts: true,
+                      formio: {
+
+                      }
                   }}/>
         <Divider horizontal>
             <Header as='h4'>

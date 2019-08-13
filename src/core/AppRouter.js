@@ -11,7 +11,6 @@ import config from "react-global-configuration"
 import _ from 'lodash';
 import {Logout} from "../common/Logout";
 import Unauthorized from "../common/Unauthorized";
-import eventEmitter from './eventEmitter';
 
 const hasAuthorization = (authorizationRoles, context, matcher) => {
     const roles = context.keycloak.tokenParsed.realm_access.roles;

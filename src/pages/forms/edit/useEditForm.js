@@ -155,7 +155,7 @@ const useEditForm = (formId) => {
     };
 
     const updateForm = (form) => {
-        editForm.data.components = _.cloneDeep(form.components);
+        editForm.data.components = form.components;
         setValues({
             ...editForm
         });
