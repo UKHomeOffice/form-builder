@@ -63,19 +63,18 @@ describe("Environments panel", () => {
 
 
         const wrapper = mount(<EnvironmentListPanel environments={data}/>);
-
-        const environmentDivs = wrapper.find(".item");
+        const environmentDivs = wrapper.find(".col");
         expect(environmentDivs).toExist();
 
-        const environments = environmentDivs.find(".item");
+        const environments = environmentDivs.find(".col");
         expect(environments.length).toEqual(4);
 
         const dev = environmentDivs.first();
         console.log(dev);
-        expect(dev.find("a").text()).toEqual("dev");
+        expect(dev.find("a").text()).toEqual("View forms");
 
         const prod = environmentDivs.last();
-        expect(prod.find("a").text()).toEqual("prod");
+        expect(prod.find("a").text()).toEqual("View forms");
 
     });
 });
