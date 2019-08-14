@@ -1,7 +1,8 @@
 import React from 'react';
-import {Header, Icon, Label} from 'semantic-ui-react'
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../core/context/useEnvContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCog} from "@fortawesome/free-solid-svg-icons";
 
 const AppHeader = () => {
     const {t} = useTranslation();
@@ -10,14 +11,12 @@ const AppHeader = () => {
     const environment = envContext;
     if (environment) {
         const label = environment.label;
-        return <div className="center-context"><Header as='h2'>
-            <Icon name='cog'/>
-            <Header.Content>
-                {t('environment.label')} : <Label color={environment.editable? 'teal': 'red'} size="large">
-                <div data-cy="context-label">{label ? label : environment.id}</div>
-            </Label>
-            </Header.Content>
-        </Header></div>
+        return<div className="center-context" style={{width: '100hv'}}>
+            <h2 data-cy="context-label" className="display-5"><FontAwesomeIcon
+                icon={faCog}/> {t('environment.label')}: <span style={environment.editable ? {'color': '#5bc0eb'} : {'color': '#dc3545'}} className={environment.editable ? 'context-border-teal' : 'context-border-red'}>{label ? label : environment.id}</span>
+            </h2>
+
+        </div>
     }
     return null;
 };

@@ -21,7 +21,7 @@ const Home = () => {
                 <Col><ReportsPanel/></Col>
             </Row>
         </Container>
-        <hr/>
+        <div className="divider"/>
         <Container fluid>
             <Row>
                 <Col><EnvironmentListPanel environments={environments}/></Col>
