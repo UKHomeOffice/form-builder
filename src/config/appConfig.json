@@ -31,7 +31,137 @@
           "{$.keycloakContext.familyName}": "{{lastName}}"
         }
       ]
-    }],
+    },
+
+    {
+      "id": "devA",
+      "label": "Development",
+      "url": "http://localhost:4000",
+      "description": "Elf Dev environment",
+      "service": {
+        "formio": {
+          "username": "me@lodev.xyz",
+          "password": "secret"
+        },
+        "keycloak": {
+          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "clientId": "form-builder",
+          "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
+        }
+      },
+      "editable": true,
+      "variable-replacements": [
+        {
+          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
+        },
+        {
+          "{$.staffDetailsContext.staffId}": "{{guid}}"
+        },
+        {
+          "{$.keycloakContext.givenName}": "{{firstName}}"
+        },
+        {
+          "{$.keycloakContext.familyName}": "{{lastName}}"
+        }
+      ]
+    },
+    {
+      "id": "devB",
+      "label": "Development",
+      "url": "http://localhost:4000",
+      "description": "Elf Dev environment",
+      "service": {
+        "formio": {
+          "username": "me@lodev.xyz",
+          "password": "secret"
+        },
+        "keycloak": {
+          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "clientId": "form-builder",
+          "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
+        }
+      },
+      "editable": true,
+      "variable-replacements": [
+        {
+          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
+        },
+        {
+          "{$.staffDetailsContext.staffId}": "{{guid}}"
+        },
+        {
+          "{$.keycloakContext.givenName}": "{{firstName}}"
+        },
+        {
+          "{$.keycloakContext.familyName}": "{{lastName}}"
+        }
+      ]
+    },
+    {
+      "id": "devD",
+      "label": "Development",
+      "url": "http://localhost:4000",
+      "description": "Elf Dev environment",
+      "service": {
+        "formio": {
+          "username": "me@lodev.xyz",
+          "password": "secret"
+        },
+        "keycloak": {
+          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "clientId": "form-builder",
+          "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
+        }
+      },
+      "editable": false,
+      "variable-replacements": [
+        {
+          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
+        },
+        {
+          "{$.staffDetailsContext.staffId}": "{{guid}}"
+        },
+        {
+          "{$.keycloakContext.givenName}": "{{firstName}}"
+        },
+        {
+          "{$.keycloakContext.familyName}": "{{lastName}}"
+        }
+      ]
+    },
+    {
+      "id": "devE",
+      "label": "Development",
+      "url": "http://localhost:4000",
+      "description": "Elf Dev environment",
+      "service": {
+        "formio": {
+          "username": "me@lodev.xyz",
+          "password": "secret"
+        },
+        "keycloak": {
+          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "clientId": "form-builder",
+          "secret": "d78fcb80-ff1b-45af-be99-674f4f067950"
+        }
+      },
+      "editable": false,
+      "variable-replacements": [
+        {
+          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
+        },
+        {
+          "{$.staffDetailsContext.staffId}": "{{guid}}"
+        },
+        {
+          "{$.keycloakContext.givenName}": "{{firstName}}"
+        },
+        {
+          "{$.keycloakContext.familyName}": "{{lastName}}"
+        }
+      ]
+    }
+  ],
   "gov-uk-enabled" : true,
   "legacy-migration" : true,
   "keycloak": {

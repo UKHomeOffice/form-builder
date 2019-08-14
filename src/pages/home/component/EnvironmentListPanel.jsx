@@ -1,11 +1,18 @@
 import React, {useContext} from 'react';
-import {Container, Grid, Icon, Item, Label} from "semantic-ui-react";
 import useEnvContext from "../../../core/context/useEnvContext";
 import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
 import _ from 'lodash';
 import uuid4 from 'uuid4';
 import {ApplicationContext} from "../../../core/AppRouter";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCog, faCogs, faEdit, faGlobe} from '@fortawesome/free-solid-svg-icons'
+import Card from "react-bootstrap/Card";
+import ListGroupItem from "react-bootstrap/ListGroupItem";
+import Container from "react-bootstrap/Container";
 
 const EnvironmentListPanel = ({environments}) => {
     const {changeContext} = useEnvContext();
@@ -22,43 +29,48 @@ const EnvironmentListPanel = ({environments}) => {
         changeContext(environment);
         navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
-    return <Grid columns={3} divided stackable>
-        {
-            _.map(_.chunk(environments, 3), (environments) => {
-                return <Grid.Row key={uuid4()}>
-                    {
-                        _.map(environments, (environment) => {
-                            return <Grid.Column key={uuid4()}>
-                                <Container>
-                                <Item.Group link divided relaxed key={uuid4()}>
-                                    <Item onClick={() => {
-                                        handleClick(environment);
-                                    }} key={environment.id}>
-                                        <Item.Image size='tiny' src="/cog-solid.svg"/>
-                                        <Item.Content>
-                                            <Item.Header
-                                                as="a">{environment.label ? environment.label : environment.id}</Item.Header>
-                                            <Item.Meta>
-                                                <Icon name='globe'/><span>{t('environment.url', {url: environment.url})}</span>
-                                            </Item.Meta>
-                                            <Item.Description>{environment.description}</Item.Description>
-                                            <Item.Extra>
-                                                <Label
-                                                    color={environment.editable ? 'teal' : 'red'}>{t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</Label>
+    return <Container>
+        <div style={{textAlign: 'center'}}>
+            <h1 className="display-5"><FontAwesomeIcon icon={faCogs}/> <span>  {t('home.environments')}</span></h1>
+        </div>
+        <Container>
+            <Row>
+                {
+                    _.map(environments, (environment) => {
+                        return <React.Fragment key={uuid4()}>
+                            <div style={{marginTop: '1rem'}}>
+                                <Col key={uuid4()}>
+                                    <Card style={{width: '20rem'}} key={uuid4()} bg="light">
+                                        <Card.Body>
+                                            <Card.Title><FontAwesomeIcon icon={faCog}/>
+                                                <span>{environment.label ? environment.label : environment.id}</span></Card.Title>
+                                            <Card.Text>
+                                                {environment.description}
+                                            </Card.Text>
+                                        </Card.Body>
+                                        <ListGroup className="list-group-flush">
+                                            <ListGroupItem><FontAwesomeIcon
+                                                icon={faGlobe}/><span> {t('environment.url', {url: environment.url})}</span></ListGroupItem>
+                                            <ListGroupItem
+                                                variant={environment.editable ? 'success' : 'danger'}><FontAwesomeIcon
+                                                icon={faEdit}/><span> {t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</span></ListGroupItem>
+                                        </ListGroup>
+                                        <Card.Body>
+                                            <Card.Link href="#" onClick={() => {
+                                                handleClick(environment);
+                                            }} className="stretched-link">View forms</Card.Link>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </div>
+                        </React.Fragment>
 
-                                            </Item.Extra>
+                    })
+                }
+            </Row>
+        </Container>
+    </Container>
 
-                                        </Item.Content>
-                                    </Item>
-                                </Item.Group>
-                                </Container>
-                            </Grid.Column>
-                        })
-                    }
-                </Grid.Row>
-            })
-        }
-    </Grid>;
 };
 
 export default EnvironmentListPanel;

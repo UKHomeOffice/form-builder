@@ -1,4 +1,4 @@
-@import "~semantic-ui-css/semantic.css";
+@import "~bootstrap/dist/css/bootstrap.min.css";
 
 .center {
   height: 50vh;
@@ -13,6 +13,7 @@
   justify-content: center;
   align-items: center
 }
+
 .loader {
   position: absolute;
   left: 0 !important;
@@ -38,9 +39,22 @@
     flex-direction: column;
     width: 100%;
   }
-  .ui.stackable.buttons > .button{
+  .ui.stackable.buttons > .button {
     width: 100%;
     margin-bottom: 0.4em;
     border-radius: 0.28571429rem;
   }
+}
+
+
+
+.navbar-dark .navbar-nav .active > .nav-link,
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link.show,
+.navbar-dark .navbar-nav .show > .nav-link {
+  border-bottom: 3px solid #5bc0eb;
+  bottom: -10px;
+  content: " ";
+  left: 0;
+  right: 0;
 }

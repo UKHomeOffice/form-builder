@@ -4,8 +4,6 @@ import {Form, Formio} from 'react-formio';
 import "formiojs/dist/formio.full.css";
 import {useTranslation} from "react-i18next";
 
-Formio.Templates.framework = 'semantic';
-
 const FormToPromote = ({form, setValue, backToForms}) => {
     const {t} = useTranslation();
     if (!form.data) {

@@ -38,7 +38,6 @@ const useGDSPreviewForm = (formId) => {
     useEffect(() => {
         savedCallback.current();
         return () => {
-            Formio.Templates.framework = "semantic";
             Formio.clearCache();
         }
     }, [form.formId]);

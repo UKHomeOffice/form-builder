@@ -35,7 +35,6 @@ const usePreviewForm = (formId) => {
     const savedCallback = useRef();
 
     const callback = () => {
-        Formio.Templates.framework = "semantic";
         setValue(form => ({
             ...form,
             data: null
@@ -53,7 +52,6 @@ const usePreviewForm = (formId) => {
         return () => {
             cancelPreviewRef.cancel("Cancelling preview request");
             isMounted.current = false;
-            Formio.Templates.framework = "semantic";
             Formio.clearCache();
         }
     }, [form.formId]);
