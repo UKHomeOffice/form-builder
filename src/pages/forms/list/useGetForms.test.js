@@ -9,6 +9,16 @@ jest.mock("react-keycloak", () => ({
     }
 }));
 
+jest.mock('react-toast-notifications' , () => ({
+    useToasts: () => {
+        return {
+            addToast : () => {
+                return jest.fn();
+            }
+        }
+    }
+}));
+
 describe('useGetForms', () => {
     beforeEach(() => {
         window.URL.createObjectURL = jest.fn();
@@ -122,6 +132,7 @@ describe('useGetForms', () => {
                 }
             }
         });
+
         const makeRequest = jest.fn();
         const apiModule = require('../../../core/api/index');
         apiModule.default = () => {
