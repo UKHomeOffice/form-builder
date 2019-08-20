@@ -74,7 +74,7 @@ describe('FormList', () => {
 
         rows.forEach((tr, rowIndex) => {
             const cells = tr.find('td');
-            expect(cells.at(0).text()).toEqual(`formTitle${rowIndex}formName${rowIndex}/formPath${rowIndex}Identifier:Created:a few seconds agoUpdated:a few seconds ago Download`);
+            expect(cells.at(0).text()).toEqual(`formTitle${rowIndex}formName${rowIndex}/formPath${rowIndex}Identifier:Created:a few seconds agoUpdated:a few seconds ago form.download.label`);
             expect(cells.at(1).text()).toEqual(data[rowIndex].name);
 
         });
