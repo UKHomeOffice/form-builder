@@ -18,7 +18,7 @@ const useGetForms = () => {
         const initialState = {
             column: null,
             direction: null,
-            data: null,
+            data: [],
             total: 0,
             activePage: 1,
             limit: 10,
@@ -124,7 +124,7 @@ const useGetForms = () => {
             savedCallback.current = () => {
                 setValues(forms => ({
                     ...forms,
-                    data: null,
+                    data: [],
                     total: 0,
                     numberOnPage: 0
                 }));
@@ -351,16 +351,6 @@ const useGetForms = () => {
             }));
         };
 
-        const handleFilterAccordion = (e, titleProps) => {
-            const {index} = titleProps;
-            const {filterIndex} = forms;
-            const newIndex = filterIndex === index ? -1 : index;
-            setValues(forms => ({
-                ...forms,
-                filterIndex: newIndex
-            }));
-        };
-
 
         return {
             handleSort,
@@ -378,7 +368,6 @@ const useGetForms = () => {
             downloadFormState,
             handlePromotion,
             filter,
-            handleFilterAccordion
         }
     }
 

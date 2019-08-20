@@ -43,7 +43,7 @@ const EnvironmentListPanel = ({environments}) => {
                                     <Card style={{width: '20rem'}} key={uuid4()} bg="light">
                                         <Card.Body>
                                             <Card.Title><FontAwesomeIcon icon={faCog}/>
-                                                <span>{environment.label ? environment.label : environment.id}</span></Card.Title>
+                                                <span> {environment.label ? environment.label : environment.id}</span></Card.Title>
                                             <Card.Text>
                                                 {environment.description}
                                             </Card.Text>

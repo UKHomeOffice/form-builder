@@ -1,5 +1,5 @@
 const messages = {
-    "loading" : "Loading",
+    "loading" : "Loading...",
     "yes" : "Yes",
     "no": "No",
     "home": {
@@ -237,8 +237,8 @@ const messages = {
         "list": {
             "loading" : "Loading forms...",
             "total-forms": "Total forms in {{env}}",
-            "total-form-type": "form types",
-            "total-wizard-type": "wizard types",
+            "total-form-type": "Form types",
+            "total-wizard-type": "Wizard types",
             "failure": {
                 "unknown-error" : "connectivity issues with form server",
                 "forms-load": "Failed to load forms due to {{error}}"

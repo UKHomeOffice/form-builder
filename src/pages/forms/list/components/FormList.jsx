@@ -1,37 +1,30 @@
 import React from 'react';
-import {
-    Accordion,
-    Button,
-    Card,
-    Container,
-    Dimmer,
-    Form,
-    Grid,
-    Icon,
-    Input,
-    Label,
-    List,
-    Loader,
-    Menu,
-    Message,
-    Pagination,
-    Segment,
-    Statistic,
-    Table
-} from 'semantic-ui-react'
-import {isMobile} from 'react-device-detect';
 import useGetForms from "../useGetForms";
-import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
+import {EXECUTING} from "../../../../core/api/actionTypes";
 import "../../common/components/FormBuilderComponent.scss"
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../../../core/context/useEnvContext";
-import _ from 'lodash';
-import moment from "moment";
 import useRoles from "../../common/useRoles";
-import ButtonGroup from "./ButtonGroup";
 import './FormList.scss';
 import Row from "react-bootstrap/Row";
+import Form from "react-bootstrap/Form";
+
 import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCaretDown, faCaretRight, faCaretUp, faCog, faDownload, faMagic} from "@fortawesome/free-solid-svg-icons";
+import CardColumns from "react-bootstrap/CardColumns";
+import {faWpforms} from '@fortawesome/free-brands-svg-icons'
+import Table from "react-bootstrap/Table";
+import _ from 'lodash';
+import Button from "react-bootstrap/Button";
+import Overlay from "../../../../common/Overlay";
+import Collapse from "react-bootstrap/Collapse";
+import ListGroup from "react-bootstrap/ListGroup";
+import moment from "moment";
+
 
 const FormList = () => {
     const {
@@ -50,243 +43,230 @@ const FormList = () => {
         downloadFormState,
         handlePromotion,
         filter,
-        handleFilterAccordion,
     } = useGetForms();
 
     const {canEdit} = useRoles();
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
 
-    const FormType = (
-        <Form>
-            <Form.Group grouped>
-                <Form.Radio label='All' name='all' type='radio' value='all' onChange={filter}
-                            checked={forms.filterValue === 'all'}/>
-                <Form.Radio label='Forms' name='form' type='radio' value='form' onChange={filter}
-                            checked={forms.filterValue === 'form'}/>
-                <Form.Radio label='Wizards' name='wizard' type='radio' value='wizard' onChange={filter}
-                            checked={forms.filterValue === 'wizard'}/>
-            </Form.Group>
-        </Form>
-    );
 
     const {direction, column, data, total, activePage, limit} = forms;
-    if (status === ERROR) {
-        return <Container><Message icon negative>
-            <Icon name='warning circle'/>
-            <Message.Content>
-                <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.list.failure.forms-load', {error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
-            </Message.Content>
-        </Message></Container>
-    }
+    // if (status === ERROR) {
+    //     return <Container><Message icon negative>
+    //         <Icon name='warning circle'/>
+    //         <Message.Content>
+    //             <Message.Header>{t('error.general')}</Message.Header>
+    //             {t('form.list.failure.forms-load', {error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
+    //         </Message.Content>
+    //     </Message></Container>
+    // }
     const isLoading = !status || status === EXECUTING || downloadFormState.status === EXECUTING;
     const isEditable = (canEdit() && envContext.editable);
-    return <React.Fragment>
-        <Container>
-            <Row>
-                <Col>1 of 2</Col>
-                <Col>2 of 2</Col>
-                <Col>2 of 3</Col>
+    const cursor = {cursor: 'pointer'};
 
-            </Row>
-            <Row>
-                <Col>Search</Col>
+    return <Container>
+        <Row>
+            <Col style={{marginTop: '1rem'}} sm>
+                <CardColumns>
+                    <Card bg="light">
+                        <Card.Body>
+                            <div className="media d-flex">
+                                <div className="align-self-center">
+                                    <FontAwesomeIcon icon={faCog} size='3x'/>
+                                </div>
+                                <div className="media-body text-right">
+                                    <h3>{forms.numberOfForms + forms.numberOfWizards}</h3>
+                                    <span>{t('form.list.total-forms', {env: envContext.label})}</span>
+                                </div>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                    <Card bg="light">
+                        <Card.Body>
+                            <div className="media d-flex">
+                                <div className="align-self-center">
+                                    <FontAwesomeIcon icon={faWpforms} size="3x"/>
+                                </div>
+                                <div className="media-body text-right">
+                                    <h3>{forms.numberOfForms}</h3>
+                                    <span>{t('form.list.total-form-type')}</span>
+                                </div>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                    <Card bg="light">
+                        <Card.Body>
+                            <div className="media d-flex">
+                                <div className="align-self-center">
+                                    <FontAwesomeIcon icon={faMagic} size="3x"/>
+                                </div>
+                                <div className="media-body text-right">
+                                    <h3>{forms.numberOfWizards}</h3>
+                                    <span>{t('form.list.total-wizard-type')}</span>
+                                </div>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </CardColumns>
 
-            </Row>
-            <Row>
-                <Col>Filter</Col>
+            </Col>
 
-            </Row>
-            <Row>
-                <Col>Data</Col>
+        </Row>
+        <Row>
+            <Col style={{marginTop: '1rem'}}>
+                <Form.Control type="text"
+                              placeholder={t('form.list.search-label')}
+                              onChange={(e) => {
+                                  handleTitleSearch(e, {
+                                      value: e.target.value
+                                  })
+                              }}
+                />
+            </Col>
+        </Row>
+        <Row>
+            <Col style={{marginTop: '1rem'}} md="auto">
+                <Card style={{height: '7rem'}}>
+                    <Card.Header>Filter by</Card.Header>
+                    <Card.Body bg="light">
+                        <Form>
+                            <Form.Group>
+                                <Form.Check name="filterBy"
+                                            value="all"
+                                            onChange={(e) => filter(e, {value: e.target.value})}
+                                            inline label="All"
+                                            type="radio" id="all"/>
+                                <Form.Check name="filterBy"
+                                            inline label="Wizard"
+                                            value="wizard"
+                                            onChange={(e) => filter(e, {value: e.target.value})}
+                                            type="radio" id="wizard"/>
+                                <Form.Check
+                                    name="filterBy"
+                                    inline
+                                    value="form"
+                                    label="Forms"
+                                    onChange={(e) => filter(e, {value: e.target.value})}
+                                    type="radio"
+                                    id='form'
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Card.Body>
+                </Card>
+            </Col>
 
-            </Row>
-        </Container>
-    </React.Fragment>
+        </Row>
+        <Row>
+            <Col style={{marginTop: '2rem'}}>
+                <Overlay active={isLoading} children={
+                    <React.Fragment><Table responsive striped bordered hover>
+                        <thead>
+                        <tr>
+                            <th style={cursor}
+                                onClick={handleSort('title')}>{t('form.list.table.formTitleCellLabel')} {direction && column === 'title' ?
+                                <span className="ml-2"><FontAwesomeIcon
+                                    icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null}</th>
+                            <th style={cursor}
+                                onClick={handleSort('name')}>{t('form.list.table.formNameCellLabel')} {direction && column === 'name' ?
+                                <span className="ml-2"><FontAwesomeIcon
+                                    icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null}</th>
+                            <th style={cursor}
+                                onClick={handleSort('display')}>{t('form.list.table.formTypeCellLabel')} {direction && column === 'display' ?
+                                <span className="ml-2"><FontAwesomeIcon
+                                    icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null} </th>
+                            <th style={cursor}>{t('form.list.table.formActionsCellLabel')}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
+                        {
+                            _.map(data, (form, index) => {
+                                return <tr key={form.id}>
+                                    <td className="align-middle">
+                                        <div style={cursor} onClick={(e) => handleAccordionClick(e, {
+                                            index: index
+                                        })}>{forms.activeIndex === index ? <FontAwesomeIcon icon={faCaretDown}/> :
+                                            <FontAwesomeIcon icon={faCaretRight}/>}
+                                            <span className="ml-2">{form.title}</span>
+                                        </div>
+                                        <Collapse in={forms.activeIndex === index}>
+                                            <div>
+                                                <Card style={{width: '18rem'}}>
+                                                    <Card.Header>
+                                                        <Card.Title>{form.name}</Card.Title>
+                                                        <Card.Subtitle>
+                                                            <small className="text-muted">{form.path}</small>
+                                                        </Card.Subtitle>
+                                                    </Card.Header>
+                                                    <Card.Body>
+                                                        <ListGroup variant="flush">
+                                                            <ListGroup.Item>
+                                                                <div className="text-muted">Identifier:</div>
+                                                                <div>{form.id}</div>
+                                                            </ListGroup.Item>
+                                                            <ListGroup.Item>
+                                                                <div className="text-muted">Created:</div>
+                                                                <div>{moment(form.createdOn).fromNow()}</div>
+                                                            </ListGroup.Item>
+                                                            <ListGroup.Item>
+                                                                <div className="text-muted">Updated:</div>
+                                                                <div>{moment(form.updatedOn).fromNow()}</div>
+                                                            </ListGroup.Item>
+                                                        </ListGroup>
+                                                    </Card.Body>
+                                                    <Card.Footer>
+                                                        <Card.Link href="#"
+                                                                   onClick={() => download(form.id, form.name)}><FontAwesomeIcon
+                                                            icon={faDownload}/> <span
+                                                            className="ml-2">Download</span></Card.Link>
+                                                    </Card.Footer>
+                                                </Card>
+                                            </div>
+                                        </Collapse>
+                                    </td>
+                                    <td className="align-middle">{form.name}</td>
+                                    <td className="align-middle">
+                                        <Button variant="outline-dark" disabled size="sm">{form.display === 'form' ?
+                                            <FontAwesomeIcon icon={faWpforms}/> :
+                                            <FontAwesomeIcon icon={faMagic}/>} <span
+                                            className="ml-1">{form.display}</span></Button>
+                                    </td>
+                                    <td className="align-middle">
+                                        <div className="container">
+                                            <div className="row grid-divider">
+                                                <div className="col my-1">
+                                                    <Button block variant="danger"
+                                                            size="sm">Delete</Button>
+                                                </div>
+                                                <div className="col my-1">
+                                                    <Button block variant="primary"
+                                                            size="sm">Edit</Button>
+                                                </div>
 
-    {/*<Container>*/}
-        {/*<Grid>*/}
-            {/*<Grid.Row>*/}
-                {/*<Grid.Column>*/}
-                    {/*<Segment raised>*/}
-                        {/*<Statistic.Group widths={isMobile ? 'one' : 'three'}>*/}
-                            {/*<Statistic>*/}
-                                {/*<Statistic.Value>*/}
-                                    {/*{forms.numberOfForms + forms.numberOfWizards}*/}
-                                {/*</Statistic.Value>*/}
-                                {/*<Statistic.Label>{t('form.list.total-forms', {env: envContext.label})}</Statistic.Label>*/}
-                            {/*</Statistic>*/}
-                            {/*<Statistic>*/}
-                                {/*<Statistic.Value>{forms.numberOfForms}</Statistic.Value>*/}
-                                {/*<Statistic.Label>{t('form.list.total-form-type')}</Statistic.Label>*/}
-                            {/*</Statistic>*/}
-                            {/*<Statistic>*/}
-                                {/*<Statistic.Value>{forms.numberOfWizards}</Statistic.Value>*/}
-                                {/*<Statistic.Label>{t('form.list.total-wizard-type')}</Statistic.Label>*/}
-                            {/*</Statistic>*/}
-                        {/*</Statistic.Group>*/}
-                    {/*</Segment>*/}
-                {/*</Grid.Column>*/}
-            {/*</Grid.Row>*/}
-            {/*<Grid.Row>*/}
-                {/*<Grid.Column>*/}
-                    {/*<Input data-cy="search-title" icon='search'*/}
-                           {/*name="search-title"*/}
-                           {/*placeholder={t('form.list.search-label')}*/}
-                           {/*size='large'*/}
-                           {/*onChange={handleTitleSearch}*/}
-                           {/*fluid focus/>*/}
-                {/*</Grid.Column>*/}
-            {/*</Grid.Row>*/}
-            {/*<Grid.Row>*/}
-                {/*<Grid.Column>*/}
-                    {/*<Accordion as={Menu} vertical>*/}
-                        {/*<Menu.Item>*/}
-                            {/*<Accordion.Title*/}
-                                {/*active={forms.filterIndex === 0}*/}
-                                {/*content='Types'*/}
-                                {/*index={0}*/}
-                                {/*onClick={handleFilterAccordion}*/}
-                            {/*/>*/}
-                            {/*<Accordion.Content active={forms.filterIndex === 0} content={FormType}/>*/}
-                        {/*</Menu.Item>*/}
-                    {/*</Accordion>*/}
-                {/*</Grid.Column>*/}
-            {/*</Grid.Row>*/}
-            {/*<Grid.Row>*/}
-                {/*<Grid.Column>*/}
-                    {/*<Dimmer.Dimmable dimmed={isLoading}>*/}
-                        {/*<Dimmer active={isLoading} inverted>*/}
-                            {/*<Loader active inline='centered' size='large'>{t('form.list.loading')}</Loader>*/}
-                        {/*</Dimmer>*/}
-                        {/*<Table columns={4} sortable stackable data-cy="forms-table" striped>*/}
-                            {/*<Table.Header>*/}
-                                {/*<Table.Row>*/}
-                                    {/*<Table.HeaderCell sorted={column === 'title' ? direction : null}*/}
-                                                      {/*onClick={*/}
-                                                          {/*handleSort('title')}*/}
-                                                      {/*width={10}>{t('form.list.table.formTitleCellLabel')}</Table.HeaderCell>*/}
-                                    {/*<Table.HeaderCell sorted={column === 'name' ? direction : null}*/}
-                                                      {/*onClick={handleSort('name')}>{t('form.list.table.formNameCellLabel')}</Table.HeaderCell>*/}
-                                    {/*<Table.HeaderCell sorted={column === 'display' ? direction : null}*/}
-                                                      {/*onClick={handleSort('display')}>{t('form.list.table.formTypeCellLabel')}</Table.HeaderCell>*/}
-                                    {/*<Table.HeaderCell>{t('form.list.table.formActionsCellLabel')}</Table.HeaderCell>*/}
+                                                <div className="col my-1">
+                                                    <Button block variant="info"
+                                                            size="sm">Preview</Button>
+                                                </div>
+                                                <div className="col my-1">
+                                                    <Button block variant="dark" size="sm">Promote</Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            })
+                        }
 
-                                {/*</Table.Row>*/}
-                            {/*</Table.Header>*/}
-                            {/*<Table.Body data-cy="form-table-data">*/}
-                                {/*{_.map(data, (form, index) => (*/}
-                                    {/*<Table.Row key={form.id}>*/}
-                                        {/*<Table.Cell>*/}
-                                            {/*<Accordion>*/}
-                                                {/*<Accordion.Title active={forms.activeIndex === index} index={index}*/}
-                                                                 {/*onClick={handleAccordionClick}>*/}
-                                                    {/*<Icon name='dropdown'/>*/}
-                                                    {/*{form.title}*/}
-                                                {/*</Accordion.Title>*/}
-                                                {/*<Accordion.Content active={forms.activeIndex === index}>*/}
-                                                    {/*<div id="formDetails">*/}
-                                                        {/*<Card>*/}
-                                                            {/*<Card.Content header={form.title}/>*/}
-                                                            {/*<Card.Content description={*/}
-                                                                {/*<List>*/}
-                                                                    {/*<List.Item>*/}
-                                                                        {/*<List.Header>Identifier:</List.Header>*/}
-                                                                        {/*<List.Content>{form.id}</List.Content>*/}
-                                                                    {/*</List.Item>*/}
-                                                                    {/*<List.Item>*/}
-                                                                        {/*<List.Header>Name:</List.Header>*/}
-                                                                        {/*<List.Content>{form.name}</List.Content>*/}
-                                                                    {/*</List.Item>*/}
-                                                                    {/*<List.Item>*/}
-                                                                        {/*<List.Header>Path:</List.Header>*/}
-                                                                        {/*<List.Content>{form.path}</List.Content>*/}
-                                                                    {/*</List.Item>*/}
-                                                                    {/*<List.Item>*/}
-                                                                        {/*<List.Header>Created:</List.Header>*/}
-                                                                        {/*<List.Content>{moment(form.createdOn).fromNow()}</List.Content>*/}
-                                                                    {/*</List.Item>*/}
-                                                                    {/*<List.Item>*/}
-                                                                        {/*<List.Header>Updated:</List.Header>*/}
-                                                                        {/*<List.Content>{moment(form.updatedOn).fromNow()}</List.Content>*/}
-                                                                    {/*</List.Item>*/}
-                                                                {/*</List>*/}
-                                                            {/*}/>*/}
-                                                            {/*{isEditable ? <Card.Content extra>*/}
-                                                                {/*<Button size='tiny' color='blue'*/}
-                                                                        {/*onClick={() => download(form.id, form.name)}>*/}
-                                                                    {/*Download*/}
-                                                                {/*</Button>*/}
-                                                            {/*</Card.Content> : null}*/}
-                                                        {/*</Card>*/}
-                                                    {/*</div>*/}
-                                                {/*</Accordion.Content>*/}
-                                            {/*</Accordion>*/}
-                                        {/*</Table.Cell>*/}
-                                        {/*<Table.Cell>{form.name}</Table.Cell>*/}
-                                        {/*<Table.Cell>*/}
-                                            {/*<div style={{*/}
-                                                {/*alignItems: 'center',*/}
-                                                {/*justifyContent: 'center',*/}
-                                                {/*display: 'flex'*/}
-                                            {/*}}><Label size='large'*/}
-                                                      {/*basic*/}
-                                                      {/*icon={!form.display || form.display === 'form' ? 'wpforms' : form.display}*/}
-                                                      {/*content={form.display ? form.display : 'form'}/></div>*/}
-                                        {/*</Table.Cell>*/}
-                                        {/*<Table.Cell>*/}
-                                            {/*<ButtonGroup form={form}*/}
-                                                         {/*handlePreview={handlePreview}*/}
-                                                         {/*handleEditForm={handleEditForm}*/}
-                                                         {/*handlePromotion={handlePromotion}*/}
-                                                         {/*handleOnSuccessfulDeletion={handleOnSuccessfulDeletion}/>*/}
-                                        {/*</Table.Cell>*/}
-                                    {/*</Table.Row>*/}
-                                {/*))}*/}
-                            {/*</Table.Body>*/}
-                            {/*<Table.Footer>*/}
-                                {/*<Table.Row>*/}
-                                    {/*<Table.HeaderCell colSpan={1}>{total} forms</Table.HeaderCell>*/}
-                                    {/*<Table.HeaderCell colSpan={isEditable ? 2 : 3}>*/}
-                                        {/*<Pagination totalPages={Math.ceil(parseInt(total) / limit)}*/}
-                                                    {/*activePage={activePage}*/}
-                                                    {/*disabled={total <= limit}*/}
-                                                    {/*ellipsisItem={isMobile ? null : {*/}
-                                                        {/*content: <Icon name='ellipsis horizontal'/>,*/}
-                                                        {/*icon: true*/}
-                                                    {/*}}*/}
-                                                    {/*firstItem={isMobile ? null : {*/}
-                                                        {/*content: <Icon name='angle double left'/>,*/}
-                                                        {/*icon: true*/}
-                                                    {/*}}*/}
-                                                    {/*lastItem={isMobile ? null : {*/}
-                                                        {/*content: <Icon name='angle double right'/>,*/}
-                                                        {/*icon: true*/}
-                                                    {/*}}*/}
-                                                    {/*prevItem={{content: <Icon name='angle left'/>, icon: true}}*/}
-                                                    {/*nextItem={{content: <Icon name='angle right'/>, icon: true}}*/}
-                                                    {/*onPageChange={handlePaginationChange}/>*/}
-                                    {/*</Table.HeaderCell>*/}
-                                    {/*{isEditable ? <Table.HeaderCell colSpan={2}>*/}
-                                            {/*<Button floated={isMobile ? null : 'right'} icon labelPosition='left' primary*/}
-                                                    {/*size='small'*/}
-                                                    {/*onClick={() => navigation.navigate(`/forms/${envContext.id}/create`)}*/}
-                                                    {/*data-cy="create-form">*/}
-                                                {/*<Icon name='wpforms'/>{t('form.create.label')}*/}
-                                            {/*</Button>*/}
-                                        {/*</Table.HeaderCell> :*/}
-                                        {/*<React.Fragment><Table.HeaderCell/><Table.HeaderCell/></React.Fragment>}*/}
-                                {/*</Table.Row>*/}
-                            {/*</Table.Footer>*/}
-                        {/*</Table>*/}
-                    {/*</Dimmer.Dimmable>*/}
-                {/*</Grid.Column>*/}
-            {/*</Grid.Row>*/}
-        {/*</Grid>*/}
+                        </tbody>
+                    </Table>
+                    </React.Fragment>
 
-    {/*</Container>*/}
+                }/>
+            </Col>
+        </Row>
+    </Container>;
+
 };
 
 
