@@ -76,6 +76,7 @@
     "react-semantic-toasts": "^0.5.3",
     "react-test-renderer": "^16.8.6",
     "react-testing-library": "^7.0.0",
+    "react-toast-notifications": "^2.2.4",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "replace-in-file": "^4.1.0",

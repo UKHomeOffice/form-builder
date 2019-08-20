@@ -1,20 +1,20 @@
 import {useNavigation} from "react-navi";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import _ from "lodash";
 import useApiRequest from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import useEnvContext from "../../../core/context/useEnvContext";
 import fileDownload from 'js-file-download';
-import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import axios from "axios";
+import {useToasts} from 'react-toast-notifications'
 
 const useGetForms = () => {
         const navigation = useNavigation();
         const {envContext} = useEnvContext();
         const {t} = useTranslation();
-
+        const {addToast} = useToasts();
         const initialState = {
             column: null,
             direction: null,
@@ -152,25 +152,21 @@ const useGetForms = () => {
 
             successfulFormDownloadCallback.current = () => {
                 fileDownload(downloadFormState.response.data, `${forms.downloadFile.formName}.json`);
-                toast({
-                    type: 'success',
-                    icon: 'check circle',
-                    title: t('form.download.successful'),
-                    description: t('form.download.successful-message', {formName: forms.downloadFile.formName}),
-                    animation: 'scale',
-                    time: 5000
-                });
+                addToast(`${t('form.download.successful-message', {formName: forms.downloadFile.formName})}`,
+                    {
+                        appearance: 'success',
+                        autoDismiss: true,
+                        pauseOnHover: true
+                    });
             };
 
             failedFormDownloadCallback.current = () => {
-                toast({
-                    type: 'warning',
-                    icon: 'exclamation circle',
-                    title: t('form.download.failed'),
-                    description: t('form.download.failed-message'),
-                    animation: 'scale',
-                    time: 5000
-                });
+                addToast(`${t('form.download.failed')} - ${t('form.download.failed-message')}`,
+                    {
+                        appearance: 'error',
+                        autoDismiss: true,
+                        pauseOnHover: true
+                    });
             };
 
             executeDownloadCallback.current = () => {
@@ -224,8 +220,17 @@ const useGetForms = () => {
                     }));
                 }
 
+            } else if (status === ERROR) {
+                if (isMounted.current) {
+                    addToast(`${response.status}: Failed to load forms ${response.data.exception}`,
+                        {
+                            appearance: 'error',
+                            autoDismiss: true,
+                            pauseOnHover: true
+                        });
+                }
             }
-        }, [response, status, setValues]);
+        }, [response, status, setValues, addToast]);
 
 
         useEffect(() => {

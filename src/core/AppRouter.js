@@ -11,6 +11,7 @@ import config from "react-global-configuration"
 import _ from 'lodash';
 import {Logout} from "../common/Logout";
 import Unauthorized from "../common/Unauthorized";
+import {ToastProvider} from 'react-toast-notifications'
 
 const hasAuthorization = (authorizationRoles, context, matcher) => {
     const roles = context.keycloak.tokenParsed.realm_access.roles;
@@ -85,6 +86,9 @@ export const AppRouter = () => {
     if (!initialised) {
         return <div className="center"><Loader active inline='centered' size='large'>{t('loading')}</Loader></div>;
     }
+
+
+
     return (<ApplicationContext.Provider value={{state, setState}}>
             <Router routes={routes} context={{
                 isAuthenticated: keycloak.authenticated,
@@ -92,11 +96,11 @@ export const AppRouter = () => {
                 keycloak: keycloak,
                 config: config
             }}>
-                <Main>
+                <ToastProvider placement="top-center"><Main>
                     <Suspense fallback={null}>
                         <View/>
                     </Suspense>
-                </Main>
+                </Main></ToastProvider>
             </Router>
         </ApplicationContext.Provider>
     );

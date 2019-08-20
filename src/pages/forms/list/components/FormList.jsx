@@ -49,18 +49,9 @@ const FormList = () => {
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
 
-
     const {direction, column, data, total, activePage, limit} = forms;
-    // if (status === ERROR) {
-    //     return <Container><Message icon negative>
-    //         <Icon name='warning circle'/>
-    //         <Message.Content>
-    //             <Message.Header>{t('error.general')}</Message.Header>
-    //             {t('form.list.failure.forms-load', {error: response ? JSON.stringify(response.data) : t('form.list.failure.unknown-error')})}
-    //         </Message.Content>
-    //     </Message></Container>
-    // }
-    const isLoading = !status || status === EXECUTING || downloadFormState && downloadFormState.status === EXECUTING;
+
+    const isLoading = !status || status === EXECUTING;
     const isEditable = (canEdit() && envContext.editable);
     const cursor = {cursor: 'pointer'};
 
@@ -216,10 +207,12 @@ const FormList = () => {
                                                         </ListGroup>
                                                     </Card.Body>
                                                     <Card.Footer>
-                                                        <Card.Link href="#"
-                                                                   onClick={() => download(form.id, form.name)}><FontAwesomeIcon
+                                                        <Card.Link
+
+                                                            href="#"
+                                                            onClick={() => download(form.id, form.name)}><FontAwesomeIcon
                                                             icon={faDownload}/> <span
-                                                            className="ml-2">Download</span></Card.Link>
+                                                            className="ml-2">{t('form.download.label')}</span></Card.Link>
                                                     </Card.Footer>
                                                 </Card>
                                             </div>

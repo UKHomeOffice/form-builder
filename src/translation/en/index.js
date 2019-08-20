@@ -88,6 +88,7 @@ const messages = {
         },
         "loading-form" : "Loading form",
         "download": {
+            "label" : "Download",
             "successful" : "Download successful",
             "successful-message" : "{{formName}} successfully downloaded to your local machine",
             "failed": "Download failed",
