@@ -60,7 +60,7 @@ const FormList = () => {
     //         </Message.Content>
     //     </Message></Container>
     // }
-    const isLoading = !status || status === EXECUTING || downloadFormState.status === EXECUTING;
+    const isLoading = !status || status === EXECUTING || downloadFormState && downloadFormState.status === EXECUTING;
     const isEditable = (canEdit() && envContext.editable);
     const cursor = {cursor: 'pointer'};
 
