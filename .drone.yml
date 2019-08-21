@@ -65,3 +65,87 @@ steps:
   when:
     environment: dev
     event: deployment
+
+- name: deploy_to_staging
+  image: quay.io/ukhomeofficedigital/kd
+  secrets:
+    - STAGING_KUBE_SERVER
+    - STAGING_KUBE_PROTOCOL
+    - STAGING_KUBE_TOKEN
+    - STAGING_WHITELIST
+    - STAGING_NGINX_IMAGE
+    - STAGING_NGINX_TAG
+    - STAGING_FORMBUILDER_NAME
+    - STAGING_FORMBUILDER_URL
+    - STAGING_FORMBUILDER_IMAGE
+    - STAGING_FORMBUILDER_TAG
+    - STAGING_FORMBUILDER_CLIENT_ID
+    - STAGING_FORMBUILDER_KUBE_NAMESPACE
+    - STAGING_FORMBUILDER_PORT
+    - STAGING_FORMBUILDER_APP_CONFIG
+  commands:
+    - export KUBE_SERVER=$${STAGING_KUBE_SERVER}
+    - export KUBE_PROTOCOL=$${STAGING_KUBE_PROTOCOL}
+    - export KUBE_TOKEN=$${STAGING_KUBE_TOKEN}
+    - export WHITELIST=$${STAGING_WHITELIST}
+    - export NGINX_IMAGE=$${STAGING_NGINX_IMAGE}
+    - export NGINX_TAG=$${STAGING_NGINX_TAG}
+    - export FORMBUILDER_NAME=$${STAGING_FORMBUILDER_NAME}
+    - export FORMBUILDER_URL=$${STAGING_FORMBUILDER_URL}
+    - export FORMBUILDER_IMAGE=$${STAGING_FORMBUILDER_IMAGE}
+    - export FORMBUILDER_CLIENT_ID=$${STAGING_FORMBUILDER_CLIENT_ID}
+    - export FORMBUILDER_KUBE_NAMESPACE=$${STAGING_FORMBUILDER_KUBE_NAMESPACE}
+    - export FORMBUILDER_PORT=$${STAGING_FORMBUILDER_PORT}
+    - export FORMBUILDER_APP_CONFIG=$${STAGING_FORMBUILDER_APP_CONFIG}
+    - export FORMBUILDER_TAG=${DRONE_COMMIT_SHA}
+    - kd --insecure-skip-tls-verify -f kube/cert.yml
+    - kd --insecure-skip-tls-verify -f kube/secret.yml
+    - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+    - kd --insecure-skip-tls-verify -f kube/service.yml
+    - kd --insecure-skip-tls-verify -f kube/deployment.yml
+    - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  when:
+    environment: staging
+    event: deployment
+
+- name: deploy_to_production
+  image: quay.io/ukhomeofficedigital/kd
+  secrets:
+    - PRODUCTION_KUBE_SERVER
+    - PRODUCTION_KUBE_PROTOCOL
+    - PRODUCTION_KUBE_TOKEN
+    - PRODUCTION_WHITELIST
+    - PRODUCTION_NGINX_IMAGE
+    - PRODUCTION_NGINX_TAG
+    - PRODUCTION_FORMBUILDER_NAME
+    - PRODUCTION_FORMBUILDER_URL
+    - PRODUCTION_FORMBUILDER_IMAGE
+    - PRODUCTION_FORMBUILDER_TAG
+    - PRODUCTION_FORMBUILDER_CLIENT_ID
+    - PRODUCTION_FORMBUILDER_KUBE_NAMESPACE
+    - PRODUCTION_FORMBUILDER_PORT
+    - PRODUCTION_FORMBUILDER_APP_CONFIG
+  commands:
+    - export KUBE_SERVER=$${PRODUCTION_KUBE_SERVER}
+    - export KUBE_PROTOCOL=$${PRODUCTION_KUBE_PROTOCOL}
+    - export KUBE_TOKEN=$${PRODUCTION_KUBE_TOKEN}
+    - export WHITELIST=$${PRODUCTION_WHITELIST}
+    - export NGINX_IMAGE=$${PRODUCTION_NGINX_IMAGE}
+    - export NGINX_TAG=$${PRODUCTION_NGINX_TAG}
+    - export FORMBUILDER_NAME=$${PRODUCTION_FORMBUILDER_NAME}
+    - export FORMBUILDER_URL=$${PRODUCTION_FORMBUILDER_URL}
+    - export FORMBUILDER_IMAGE=$${PRODUCTION_FORMBUILDER_IMAGE}
+    - export FORMBUILDER_CLIENT_ID=$${PRODUCTION_FORMBUILDER_CLIENT_ID}
+    - export FORMBUILDER_KUBE_NAMESPACE=$${PRODUCTION_FORMBUILDER_KUBE_NAMESPACE}
+    - export FORMBUILDER_PORT=$${PRODUCTION_FORMBUILDER_PORT}
+    - export FORMBUILDER_APP_CONFIG=$${PRODUCTION_FORMBUILDER_APP_CONFIG}
+    - export FORMBUILDER_TAG=${DRONE_COMMIT_SHA}
+    - kd --insecure-skip-tls-verify -f kube/cert.yml
+    - kd --insecure-skip-tls-verify -f kube/secret.yml
+    - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+    - kd --insecure-skip-tls-verify -f kube/service.yml
+    - kd --insecure-skip-tls-verify -f kube/deployment.yml
+    - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  when:
+    environment: production
+    event: deployment
