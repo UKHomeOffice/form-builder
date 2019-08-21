@@ -71,7 +71,7 @@ describe('useGetForms', () => {
 
         unmount();
 
-        expect(result.current.forms.activePage).toBe(1);
+        expect(result.current.forms.activePage).toBe(0);
 
         act(() => result.current.handlePaginationChange(null, {activePage: 2}));
 

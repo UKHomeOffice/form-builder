@@ -67,8 +67,9 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
             </svg>
           </FontAwesomeIcon>
            
-          <span>
-             
+          <span
+            className="ml-2"
+          >
             home.reports
           </span>
         </h1>

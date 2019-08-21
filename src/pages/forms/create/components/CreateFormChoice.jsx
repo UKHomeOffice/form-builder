@@ -41,6 +41,7 @@ const CreateFormChoice = () => {
             <h4 className="text-center">{t('form.create.choice.label')}</h4>
             <div style={{marginBottom: '2rem'}} />
             <Container>
+
                 <Row className="grid-divider">
                     <Col>
                         <Button
@@ -74,38 +75,6 @@ const CreateFormChoice = () => {
             </Container>
         </Jumbotron>
     </Container>
-
-    // return <Container><Segment placeholder size="large" color="teal" raised>
-    //     <Grid columns={2} relaxed='very' stackable>
-    //         <Grid.Column>
-    //             <Button
-    //                 data-cy="form-builder"
-    //                 primary content={t('form.create.choice.form-builder-label')} icon="wpforms" size="big"
-    //                     onClick={() => {
-    //                         navigation.navigate(`/forms/${envContext.id}/create/builder`);
-    //                     }}/>
-    //         </Grid.Column>
-    //
-    //         <Grid.Column verticalAlign='middle'>
-    //             <Button
-    //                 as="label"
-    //                 htmlFor={id}
-    //                 secondary content={t('form.create.choice.form-upload-label')} icon='upload' size='big'
-    //                     />
-    //             <input
-    //                 data-cy="file-upload-input"
-    //                 hidden
-    //                 id={id}
-    //                 multiple={false}
-    //                 type="file"
-    //                 accept='.json'
-    //                 onChange={(event) =>handleFileChosen(event.target.files[0])} />
-    //         </Grid.Column>
-    //     </Grid>
-    //
-    //     <Divider vertical>Or</Divider>
-    // </Segment></Container>
-
 };
 
 export default CreateFormChoice;
