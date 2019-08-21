@@ -78,7 +78,8 @@ const useEditForm = (formId) => {
                 type: 'error',
                 icon: 'warning circle',
                 title: `${editForm.data.title} failed to update`,
-                description: JSON.stringify(state.response.data),
+                description: state.response ? JSON.stringify(state.response.data)
+                    : 'Failed to get response from Form API server',
                 animation: 'scale',
                 time: 10000
             });
