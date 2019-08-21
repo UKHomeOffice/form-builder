@@ -21,17 +21,17 @@ const EnvironmentListPanel = ({environments}) => {
     const {t} = useTranslation();
 
 
-    const handleClick = (environment) => {
+    const handleClick = async (environment) => {
         setState(state => ({
             ...state,
             activeMenuItem: t('menu.forms.name')
         }));
         changeContext(environment);
-        navigation.navigate(`/forms/${environment.id}`, {replace: true});
+        await navigation.navigate(`/forms/${environment.id}`, {replace: true});
     };
     return <Container>
         <div style={{textAlign: 'center'}}>
-            <h1 className="display-5"><FontAwesomeIcon icon={faCogs}/> <span>  {t('home.environments')}</span></h1>
+            <h1 className="display-5"><FontAwesomeIcon icon={faCogs}/><span className="ml-2">{t('home.environments')}</span></h1>
         </div>
         <Container>
             <Row>

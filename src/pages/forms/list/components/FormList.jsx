@@ -14,7 +14,16 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCaretDown, faCaretRight, faCaretUp, faCog, faDownload, faMagic} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCaretDown,
+    faCaretRight,
+    faCaretUp,
+    faCog,
+    faDownload,
+    faMagic,
+    faPlus,
+    faList
+} from "@fortawesome/free-solid-svg-icons";
 import CardColumns from "react-bootstrap/CardColumns";
 import {faWpforms} from '@fortawesome/free-brands-svg-icons'
 import Table from "react-bootstrap/Table";
@@ -25,6 +34,7 @@ import Collapse from "react-bootstrap/Collapse";
 import ListGroup from "react-bootstrap/ListGroup";
 import moment from "moment";
 import ReactPaginate from 'react-paginate';
+import ButtonGroup from "./ButtonGroup";
 
 
 const FormList = () => {
@@ -146,144 +156,129 @@ const FormList = () => {
                     </Card.Body>
                 </Card>
             </Col>
-
         </Row>
         <Row>
-            <Col style={{marginTop: '2rem'}}>
-                    <Row noGutters={true}>
-                        <Col xs={12} md={8}>
-                            <ReactPaginate
-                                previousLabel={'Previous'}
-                                nextLabel={'Next'}
-                                breakLabel={'...'}
-                                previousClassName={'page-item'}
-                                nextClassName={'page-item'}
-                                pageCount={Math.ceil(parseInt(total) / limit) }
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
-                                onPageChange={(e) => handlePaginationChange(e.selected)}
-                                containerClassName={'pagination'}
-                                pageClassName={'page-item'}
-                                pageLinkClassName={'page-link'}
-                                activeClassName={'active'}
-                                previousLinkClassName={'page-link'}
-                                nextLinkClassName={'page-link'}
-                            />
-                        </Col>
-                        <Col xs={6} md={4}>
-                            Total
-                        </Col>
-                    </Row>
-
+            <Col style={{marginTop: '1rem'}}>
+                {isEditable ? <div className="float-left">
+                    <Button onClick={async () => await navigation.navigate(`/forms/${envContext.id}/create`)}
+                            data-cy="create-form">
+                        <FontAwesomeIcon icon={faPlus} title={t('form.create.label')}/>
+                    </Button>
+                </div> : null}
+                <div className="float-right">
+                    <ReactPaginate
+                        hrefBuilder={() => "#"}
+                        previousLabel={'Previous'}
+                        nextLabel={'Next'}
+                        breakLabel={'...'}
+                        previousClassName={'page-item'}
+                        nextClassName={'page-item'}
+                        pageCount={Math.ceil(parseInt(total) / limit)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={(e) => handlePaginationChange(e.selected)}
+                        containerClassName={'pagination'}
+                        pageClassName={'page-item'}
+                        pageLinkClassName={'page-link'}
+                        activeClassName={'active'}
+                        previousLinkClassName={'page-link'}
+                        nextLinkClassName={'page-link'}
+                    />
+                </div>
                 <Overlay active={isLoading} children={
                     <React.Fragment>
-
-
                         <Table responsive striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th style={cursor}
-                                onClick={handleSort('title')}>{t('form.list.table.formTitleCellLabel')} {direction && column === 'title' ?
-                                <span className="ml-2"><FontAwesomeIcon
-                                    icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null}</th>
-                            <th style={cursor}
-                                onClick={handleSort('name')}>{t('form.list.table.formNameCellLabel')} {direction && column === 'name' ?
-                                <span className="ml-2"><FontAwesomeIcon
-                                    icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null}</th>
-                            <th style={cursor}
-                                onClick={handleSort('display')}>{t('form.list.table.formTypeCellLabel')} {direction && column === 'display' ?
-                                <span className="ml-2"><FontAwesomeIcon
-                                    icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null} </th>
-                            <th style={cursor}>{t('form.list.table.formActionsCellLabel')}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                            <caption><FontAwesomeIcon icon={faList}/><span className="ml-1">{total} forms</span></caption>
+                            <thead>
+                            <tr>
+                                <th style={cursor}
+                                    onClick={handleSort('title')}>{t('form.list.table.formTitleCellLabel')} {direction && column === 'title' ?
+                                    <span className="ml-2"><FontAwesomeIcon
+                                        icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null}</th>
+                                <th style={cursor}
+                                    onClick={handleSort('name')}>{t('form.list.table.formNameCellLabel')} {direction && column === 'name' ?
+                                    <span className="ml-2"><FontAwesomeIcon
+                                        icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null}</th>
+                                <th style={cursor}
+                                    onClick={handleSort('display')}>{t('form.list.table.formTypeCellLabel')} {direction && column === 'display' ?
+                                    <span className="ml-2"><FontAwesomeIcon
+                                        icon={direction === 'ascending' ? faCaretDown : faCaretUp}/></span> : null} </th>
+                                <th style={cursor}>{t('form.list.table.formActionsCellLabel')}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                        {
-                            _.map(data, (form, index) => {
-                                return <tr key={form.id}>
-                                    <td className="align-middle">
-                                        <div style={cursor} onClick={(e) => handleAccordionClick(e, {
-                                            index: index
-                                        })}>{forms.activeIndex === index ? <FontAwesomeIcon icon={faCaretDown}/> :
-                                            <FontAwesomeIcon icon={faCaretRight}/>}
-                                            <span className="ml-2">{form.title}</span>
-                                        </div>
-                                        <Collapse in={forms.activeIndex === index}>
-                                            <div>
-                                                <Card style={{width: '18rem'}}>
-                                                    <Card.Header>
-                                                        <Card.Title>{form.name}</Card.Title>
-                                                        <Card.Subtitle>
-                                                            <small className="text-muted">{form.path}</small>
-                                                        </Card.Subtitle>
-                                                    </Card.Header>
-                                                    <Card.Body>
-                                                        <ListGroup variant="flush">
-                                                            <ListGroup.Item>
-                                                                <div className="text-muted">Identifier:</div>
-                                                                <div>{form.id}</div>
-                                                            </ListGroup.Item>
-                                                            <ListGroup.Item>
-                                                                <div className="text-muted">Created:</div>
-                                                                <div>{moment(form.createdOn).fromNow()}</div>
-                                                            </ListGroup.Item>
-                                                            <ListGroup.Item>
-                                                                <div className="text-muted">Updated:</div>
-                                                                <div>{moment(form.updatedOn).fromNow()}</div>
-                                                            </ListGroup.Item>
-                                                        </ListGroup>
-                                                    </Card.Body>
-                                                    <Card.Footer>
-                                                        <Card.Link
-
-                                                            href="#"
-                                                            onClick={() => download(form.id, form.name)}><FontAwesomeIcon
-                                                            icon={faDownload}/> <span
-                                                            className="ml-2">{t('form.download.label')}</span></Card.Link>
-                                                    </Card.Footer>
-                                                </Card>
+                            {
+                                _.map(data, (form, index) => {
+                                    return <tr key={form.id}>
+                                        <td className="align-middle">
+                                            <div style={cursor} onClick={(e) => handleAccordionClick(e, {
+                                                index: index
+                                            })}>{forms.activeIndex === index ? <FontAwesomeIcon icon={faCaretDown}/> :
+                                                <FontAwesomeIcon icon={faCaretRight}/>}
+                                                <span className="ml-2">{form.title}</span>
                                             </div>
-                                        </Collapse>
-                                    </td>
-                                    <td className="align-middle">{form.name}</td>
-                                    <td className="align-middle">
-                                        <Button variant="outline-dark" disabled size="sm">{form.display === 'form' ?
-                                            <FontAwesomeIcon icon={faWpforms}/> :
-                                            <FontAwesomeIcon icon={faMagic}/>} <span
-                                            className="ml-1">{form.display}</span></Button>
-                                    </td>
-                                    <td className="align-middle">
-                                        <div className="container">
-                                            <div className="row grid-divider">
-                                                <div className="col my-1">
-                                                    <Button block variant="danger"
-                                                            size="sm">Delete</Button>
-                                                </div>
-                                                <div className="col my-1">
-                                                    <Button block variant="primary"
-                                                            size="sm">Edit</Button>
-                                                </div>
+                                            <Collapse in={forms.activeIndex === index}>
+                                                <div>
+                                                    <Card style={{width: '18rem'}}>
+                                                        <Card.Header>
+                                                            <Card.Title>{form.name}</Card.Title>
+                                                            <Card.Subtitle>
+                                                                <small className="text-muted">{form.path}</small>
+                                                            </Card.Subtitle>
+                                                        </Card.Header>
+                                                        <Card.Body>
+                                                            <ListGroup variant="flush">
+                                                                <ListGroup.Item>
+                                                                    <div className="text-muted">Identifier:</div>
+                                                                    <div>{form.id}</div>
+                                                                </ListGroup.Item>
+                                                                <ListGroup.Item>
+                                                                    <div className="text-muted">Created:</div>
+                                                                    <div>{moment(form.createdOn).fromNow()}</div>
+                                                                </ListGroup.Item>
+                                                                <ListGroup.Item>
+                                                                    <div className="text-muted">Updated:</div>
+                                                                    <div>{moment(form.updatedOn).fromNow()}</div>
+                                                                </ListGroup.Item>
+                                                            </ListGroup>
+                                                        </Card.Body>
+                                                        <Card.Footer>
+                                                            <Card.Link
 
-                                                <div className="col my-1">
-                                                    <Button block variant="info"
-                                                            size="sm">Preview</Button>
+                                                                href="#"
+                                                                onClick={() => download(form.id, form.name)}><FontAwesomeIcon
+                                                                icon={faDownload}/> <span
+                                                                className="ml-2">{t('form.download.label')}</span></Card.Link>
+                                                        </Card.Footer>
+                                                    </Card>
                                                 </div>
-                                                <div className="col my-1">
-                                                    <Button block variant="dark" size="sm">Promote</Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            })
-                        }
+                                            </Collapse>
+                                        </td>
+                                        <td className="align-middle">{form.name}</td>
+                                        <td className="align-middle">
+                                            <Button variant="outline-dark" disabled size="sm">{form.display === 'form' ?
+                                                <FontAwesomeIcon icon={faWpforms}/> :
+                                                <FontAwesomeIcon icon={faMagic}/>} <span
+                                                className="ml-1">{form.display}</span></Button>
+                                        </td>
+                                        <td className="align-middle" style={{width:'25rem'}}>
+                                            <ButtonGroup form={form}
+                                                         handlePreview={handlePreview}
+                                                         handleEditForm={handleEditForm}
+                                                         handlePromotion={handlePromotion}
+                                                         handleOnSuccessfulDeletion={handleOnSuccessfulDeletion}/>
 
-                        </tbody>
-                    </Table>
+                                        </td>
+                                    </tr>
+                                })
+                            }
+
+                            </tbody>
+                        </Table>
                     </React.Fragment>
-
                 }/>
+
             </Col>
         </Row>
     </Container>;

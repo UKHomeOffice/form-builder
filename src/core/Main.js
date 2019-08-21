@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import AppMenu from "../common/AppMenu";
 import Footer from "../common/Footer";
 import {NavNotFoundBoundary, useCurrentRoute} from "react-navi";
-import Notification from "../common/Notification";
 import AppHeader from "../common/AppHeader";
 import config from 'react-global-configuration'
 import {useTranslation} from "react-i18next";
@@ -30,7 +29,6 @@ export const Main = ({children}) => {
             <AppMenu/>
             <Container>
                 <AppHeader/>
-                <Notification/>
             </Container>
             <NavNotFoundBoundary render={pageNotFound}>
                 {children || null}
@@ -45,7 +43,6 @@ export const Main = ({children}) => {
             !isGovUKUrl ? <React.Fragment> <AppMenu/>
                 <Container>
                     <AppHeader/>
-                    <Notification/>
                 </Container></React.Fragment> : null
         }
         <NavNotFoundBoundary render={pageNotFound}>

@@ -125,7 +125,8 @@ const messages = {
                 "message": "Environment context does not allow creation of forms directly"
             },
             "choice": {
-                "form-builder-label" : "Use builder",
+                "label" :"Create a form using builder or upload an existing json file",
+                "form-builder-label" : "Form builder",
                 "form-upload-label" : "Form upload"
             },
             "label": "Create form",

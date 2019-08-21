@@ -1,31 +1,40 @@
 import useEnvContext from "../../../../core/context/useEnvContext";
 import {useTranslation} from "react-i18next";
-import {Container, Icon, Message} from "semantic-ui-react";
-import React from "react";
+import React, {useState} from "react";
+import Container from "react-bootstrap/Container";
+import Alert from "react-bootstrap/Alert";
 
 const EditableEnvironmentChecker = ({children}) => {
     const {envContext} = useEnvContext();
     const {t} = useTranslation();
+    const [show, setShow] = useState(true);
 
     if (!envContext) {
-        return <Message icon negative>
-            <Icon name='exclamation circle'/>
-            <Message.Content>
-                <Message.Header>{t('error.no-context')}</Message.Header>
-                {t('error.no-context-message')}
-            </Message.Content>
-        </Message>
+        return <Container>
+            <div style={{'paddingTop': '20px'}}>
+                <Alert show={show} variant="danger" onClose={() => setShow(false)} dismissible>
+                    <Alert.Heading>{t('error.no-context')}</Alert.Heading>
+                    <p>
+                        {t('error.no-context-message')}
+                    </p>
+                </Alert>
+            </div>
+        </Container>
     }
     if (envContext.editable) {
         return <div>{children}</div>;
     } else {
-        return <Container data-cy="not-allowed-to-create"><Message icon negative>
-            <Icon name='exclamation circle'/>
-            <Message.Content>
-                <Message.Header>{t('form.create.not-allowed.title')}</Message.Header>
-                {t('form.create.not-allowed.message')}
-            </Message.Content>
-        </Message></Container>
+        return <Container>
+            <div style={{'paddingTop': '20px'}}>
+                <Alert show={show} variant="danger" onClose={() => setShow(false)} dismissible>
+                    <Alert.Heading>{t('form.create.not-allowed.title')}</Alert.Heading>
+                    <p>
+                        {t('form.create.not-allowed.message')}
+                    </p>
+                </Alert>
+            </div>
+        </Container>
+
     }
 
 };

@@ -166,5 +166,15 @@ server.on('connection', connection => {
     connection.on('close', () => connections = connections.filter(curr => curr !== connection));
 });
 
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('unhandledRejection', {
+        exception: reason.message,
+    });
+});
+
+process.on('uncaughtException', (error) => {
+    logger.error('uncaughtException', error);
+});
+
 
 

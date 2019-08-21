@@ -20,7 +20,7 @@ const useGetForms = () => {
             direction: null,
             data: [],
             total: 0,
-            activePage: 1,
+            activePage: 0,
             limit: 10,
             searchTitle: '',
             numberOfWizards: 0,
@@ -47,7 +47,7 @@ const useGetForms = () => {
             (value) => {
                 setValues(forms => ({
                     ...forms,
-                    activePage: 1,
+                    activePage: 0,
                     activeIndex: -1,
                     searchTitle: value
                 }));
@@ -75,7 +75,7 @@ const useGetForms = () => {
         };
 
         const [{status, response}, makeRequest] = useApiRequest(
-            `/form?select=title,path,name,display,id&limit=${forms.limit}${forms.activePage !== 1 ? `&offset=${((forms.activePage - 1) * forms.limit)}` : ''}${resolveFilter()}`, {
+            `/form?select=title,path,name,display,id&limit=${forms.limit}&offset=${((forms.activePage) * forms.limit)}${resolveFilter()}`, {
                 verb: 'get', params: {
                     cancelToken: formsCancel.current.token
                 }
@@ -142,7 +142,7 @@ const useGetForms = () => {
             resetCallback.current = () => {
                 setValues(forms => ({
                     ...forms,
-                    activePage: 1,
+                    activePage: 0,
                     filterIndex: -1,
                     filterValue: "all",
                     numberOfForms: 0,
@@ -222,7 +222,16 @@ const useGetForms = () => {
 
             } else if (status === ERROR) {
                 if (isMounted.current) {
-                    addToast(`${response.status}: Failed to load forms ${response.data.exception}`,
+                    let status;
+                    let message;
+                    if (!response) {
+                        status = 503;
+                        message = `Network issue for ${envContext.label}`
+                    } else {
+                        status = response.status;
+                        message = response.data.exception;
+                    }
+                    addToast(`${status}: Failed to load forms ${message}`,
                         {
                             appearance: 'error',
                             autoDismiss: true,
@@ -268,7 +277,6 @@ const useGetForms = () => {
 
 
         const handlePaginationChange = (page) => {
-            alert(page);
             setValues(forms => ({
                 ...forms,
                 activeIndex: -1,

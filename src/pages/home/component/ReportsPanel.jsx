@@ -18,7 +18,7 @@ const ReportsPanel = () => {
     const {t} = useTranslation();
     return <Container fluid>
         <div style={{textAlign: 'center'}}>
-            <h1 className="display-5"><FontAwesomeIcon icon={faChartLine}/> <span> {t('home.reports')}</span></h1>
+            <h1 className="display-5"><FontAwesomeIcon icon={faChartLine}/> <span className="ml-2">{t('home.reports')}</span></h1>
         </div>
 
         <Row>

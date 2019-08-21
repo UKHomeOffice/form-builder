@@ -1,10 +1,9 @@
 import React from 'react';
 import useRoles from "../../common/useRoles";
-import {Button} from 'semantic-ui-react'
 import useEnvContext from "../../../../core/context/useEnvContext";
 import {useTranslation} from "react-i18next";
 import DeleteFormButton from "../../common/components/DeleteFormButton";
-import {isMobile} from 'react-device-detect';
+import Button from "react-bootstrap/Button";
 
 const ButtonGroup = ({  form,
                          handleOnSuccessfulDeletion,
@@ -16,28 +15,40 @@ const ButtonGroup = ({  form,
     const {envContext} = useEnvContext();
     const {t} = useTranslation();
 
-    const deleteFormButton = <DeleteFormButton form={form}
-                                               onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form.id)}/>;
-    const editButton = <Button data-cy="edit-form" positive
-                               onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>;
-    const previewButton = <Button primary data-cy="preview-form"
-                                  onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>;
-    const promoteButton = <Button secondary data-cy="promote-form"
-                                  onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button>;
-    return isMobile ? <div className={canEdit() ? 'ui stackable four buttons container' : 'ui stackable one buttons container'}>
-        {deleteFormButton}
-        {envContext.editable ? editButton : null}
-        {previewButton}
-        {canPromote() ? promoteButton : null}
-    </div> : <Button.Group>
-        {canEdit() ? <React.Fragment>
-            {deleteFormButton}
-            {envContext.editable ? <React.Fragment><Button.Or/>{editButton}</React.Fragment> : null}
-            <Button.Or/>
-        </React.Fragment> : null}
-        {previewButton}
-        {canPromote() ? <React.Fragment><Button.Or/>{promoteButton}</React.Fragment> : null}
-    </Button.Group>
+    // const deleteFormButton = ;
+
+     return <div className="container">
+         <div className="row grid-divider">
+             {canEdit() ? <React.Fragment>
+                 <div className="col my-1">
+                     <DeleteFormButton form={form} onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form.id)}/>
+                 </div>
+                 {envContext.editable ? <React.Fragment>
+                     <div className="col my-1">
+                         <Button data-cy="edit-form"
+                                 block variant="primary"
+                                 size="sm"
+                                 onClick={() => handleEditForm(form)}>{t('form.edit.label')}</Button>
+                     </div>
+                 </React.Fragment> : null}
+             </React.Fragment> : null}
+
+             <div className="col my-1">
+                 <Button data-cy="preview-form"
+                         block variant="info"
+                         size="sm"
+                         onClick={() => handlePreview(form)}>{t('form.preview.label')}</Button>
+             </div>
+             {canPromote()? <div className="col my-1">
+                 <Button data-cy="promote-form"
+                         block variant="dark" size="sm"
+                         onClick={() => handlePromotion(form)}>{t('form.promote.label')}</Button>
+             </div> : null}
+         </div>
+     </div>
+
+
+
 
 };
 
