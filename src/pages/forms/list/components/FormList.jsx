@@ -24,6 +24,7 @@ import Overlay from "../../../../common/Overlay";
 import Collapse from "react-bootstrap/Collapse";
 import ListGroup from "react-bootstrap/ListGroup";
 import moment from "moment";
+import ReactPaginate from 'react-paginate';
 
 
 const FormList = () => {
@@ -54,7 +55,6 @@ const FormList = () => {
     const isLoading = !status || status === EXECUTING;
     const isEditable = (canEdit() && envContext.editable);
     const cursor = {cursor: 'pointer'};
-
     return <Container>
         <Row>
             <Col style={{marginTop: '1rem'}} sm>
@@ -150,8 +150,36 @@ const FormList = () => {
         </Row>
         <Row>
             <Col style={{marginTop: '2rem'}}>
+                    <Row noGutters={true}>
+                        <Col xs={12} md={8}>
+                            <ReactPaginate
+                                previousLabel={'Previous'}
+                                nextLabel={'Next'}
+                                breakLabel={'...'}
+                                previousClassName={'page-item'}
+                                nextClassName={'page-item'}
+                                pageCount={Math.ceil(parseInt(total) / limit) }
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={5}
+                                onPageChange={(e) => handlePaginationChange(e.selected)}
+                                containerClassName={'pagination'}
+                                pageClassName={'page-item'}
+                                pageLinkClassName={'page-link'}
+                                activeClassName={'active'}
+                                previousLinkClassName={'page-link'}
+                                nextLinkClassName={'page-link'}
+                            />
+                        </Col>
+                        <Col xs={6} md={4}>
+                            Total
+                        </Col>
+                    </Row>
+
                 <Overlay active={isLoading} children={
-                    <React.Fragment><Table responsive striped bordered hover>
+                    <React.Fragment>
+
+
+                        <Table responsive striped bordered hover>
                         <thead>
                         <tr>
                             <th style={cursor}

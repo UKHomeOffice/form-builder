@@ -70,6 +70,7 @@
     "react-keycloak": "^6.0.4",
     "react-mentions": "^3.1.0",
     "react-navi": "^0.12.6",
+    "react-paginate": "^6.3.0",
     "react-redux": "^7.0.3",
     "react-router": "^5.0.0",
     "react-scripts": "3.0.0",

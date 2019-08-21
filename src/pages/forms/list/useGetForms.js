@@ -267,11 +267,12 @@ const useGetForms = () => {
         }, [downloadFormState]);
 
 
-        const handlePaginationChange = (e, {activePage}) => {
+        const handlePaginationChange = (page) => {
+            alert(page);
             setValues(forms => ({
                 ...forms,
                 activeIndex: -1,
-                activePage: activePage
+                activePage: page
             }));
         };
 
