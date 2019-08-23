@@ -11,7 +11,6 @@ const CreateFormPage = () => {
     const {
         backToForms,
         status,
-        response,
         makeRequest,
         formInvalid,
         form,
