@@ -1,6 +1,16 @@
 import {act, renderHook} from 'react-hooks-testing-library'
 import useCreateForm from "./useCreateForm";
 
+jest.mock('react-toast-notifications' , () => ({
+    useToasts: () => {
+        return {
+            addToast : () => {
+                return jest.fn();
+            }
+        }
+    }
+}));
+
 describe('useCreateForm', () => {
     beforeEach(() => {
 
