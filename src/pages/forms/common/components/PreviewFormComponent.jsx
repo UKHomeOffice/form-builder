@@ -1,43 +1,66 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {Container, Divider, Grid, Header, Icon, Message, Placeholder} from "semantic-ui-react";
+import React, {useEffect, useRef, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 import ReactJson from "react-json-view";
 import {Form} from 'react-formio';
 import './PreviewFormComponent.scss';
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCaretDown, faCaretRight, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+import Alert from "react-bootstrap/Alert";
+import Collapse from "react-bootstrap/Collapse";
+import Spinner from "react-bootstrap/Spinner";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
-    return <Container>
-        <Grid>
-            <Grid.Row>
-                <Grid.Column>
-                    <Message icon
-                             warning>
-                        <Icon name='exclamation circle'/>
-                        <Message.Content>
-                            <Message.Header>{t('form.preview.submission-warning-title')}</Message.Header>
-                            {t('form.preview.submission-warning-description')}
-                        </Message.Content>
-                    </Message>
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    {form ? <Header
-                        as='h2'
-                        content={form.title ? form.title : 'No form title'}
-                        subheader={form.name ? form.name : 'No form name'}
-                        dividing
-                    /> : null}
-                    <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
-                                      previewSubmission={(submission) => {
-                                          handlePreview(submission)
-                                      }}/>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+    const [open, setOpen] = useState(false);
+    const cursor = {cursor: 'pointer'};
 
+    return <Container>
+        <Row>
+            <Col>
+                <Alert variant="warning">
+                    <Alert.Heading><FontAwesomeIcon icon={faExclamationTriangle}/>
+                        <span className="m-2" style={cursor} onClick={() => {
+                            setOpen(!open)
+                        }}><FontAwesomeIcon
+                            icon={!open ? faCaretRight : faCaretDown}/></span>
+                        <span className="m-0" style={cursor} onClick={() => {
+                            setOpen(!open)
+                        }}>
+                           {t('form.preview.submission-warning-title')}
+                        </span>
+                    </Alert.Heading>
+                    <Collapse in={open}>
+                        <div id="collapse-text">
+                            <p class="lead">{t('form.preview.submission-warning-description')}</p>
+                        </div>
+                    </Collapse>
+                </Alert>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                {
+                    form? <React.Fragment>
+                        <h2>
+                            {form.title ? form.title : 'No form title'}
+                            <span className="m-2"><small className="text-muted">{form.name ? form.name : 'No form name'}</small></span>
+                        </h2>
+                    </React.Fragment> : null
+                }
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
+                                                   previewSubmission={(submission) => {
+                                                       handlePreview(submission)
+                                                   }}/>
+            </Col>
+        </Row>
     </Container>
 };
 
@@ -78,15 +101,9 @@ const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionIn
     }
 
     if (parsedForm.isParsing) {
-        return <Placeholder fluid>
-            <Placeholder.Paragraph>
-                <Placeholder.Line length='full'/>
-                <Placeholder.Line length='full'/>
-                <Placeholder.Line length='full'/>
-                <Placeholder.Line length='full'/>
-                <Placeholder.Line length='full'/>
-            </Placeholder.Paragraph>
-        </Placeholder>
+        return <div className="center-context">
+            <Spinner animation="border" role="status"/>
+        </div>
     }
 
     return <React.Fragment>
@@ -95,16 +112,10 @@ const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionIn
                   {
                       ignoreCache: true,
                       noAlerts: true,
-                      formio: {
-
-                      }
+                      formio: {}
                   }}/>
-        <Divider horizontal>
-            <Header as='h4'>
-                <Icon name='database'/>
-                {t('form.preview.form-submission-label')}
-            </Header>
-        </Divider>
+        <div className="hr-text" data-content={t('form.preview.form-submission-label')} />
+
         <ReactJson src={formSubmission ? formSubmission : {}} theme="monokai" name={null}
                    collapseStringsAfterLength={100}
                    collapsed={submissionInfoCollapsed}/>

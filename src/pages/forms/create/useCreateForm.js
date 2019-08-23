@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useNavigation} from "react-navi";
 import {useMultipleApiCallbackRequest} from "../../../core/api";
-import {EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
+import {ERROR, EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
 import useEnvContext from "../../../core/context/useEnvContext";
 import {toast} from "react-semantic-toasts";
@@ -9,10 +9,11 @@ import useCommonFormUtils from "../common/useCommonFormUtils";
 import useLogger from "../../../core/logging/useLogger";
 import createForm from "../../../core/form/createForm";
 import {useTranslation} from "react-i18next";
+import {useToasts} from "react-toast-notifications";
 
 const useCreateForm = (formContent = null) => {
     const {t} = useTranslation();
-
+    const {addToast} = useToasts();
     const sanitize = (form) => {
         try {
             return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
@@ -32,14 +33,12 @@ const useCreateForm = (formContent = null) => {
         try {
             return JSON.parse(formContent)
         } catch (e) {
-            toast({
-                type: 'warning',
-                icon: 'exclamation circle',
-                title: t('error.general'),
-                description: t('form.create.failure.invalid-json'),
-                animation: 'scale',
-                time: 5000
-            });
+            addToast(`${t('error.general')} - ${t('form.create.failure.invalid-json')}`,
+                {
+                    appearance: 'error',
+                    autoDismiss: true,
+                    pauseOnHover: true
+                });
         }
     };
 
@@ -47,7 +46,6 @@ const useCreateForm = (formContent = null) => {
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
     const {log} = useLogger();
-
 
 
     const [form, setValues] = useState({
@@ -99,29 +97,57 @@ const useCreateForm = (formContent = null) => {
     );
     const success = () => {
         navigation.navigate(`/forms/${envContext.id}`, {replace: true});
-        toast({
-            type: 'success',
-            icon: 'check circle',
-            title: `${form.data.title} created`,
-            description: `${form.data.name} has been successfully created`,
-            animation: 'scale',
-            time: 10000
-        });
+        addToast(`${form.data.name} has been successfully created`,
+            {
+                appearance: 'success',
+                autoDismiss: true,
+                pauseOnHover: true
+            });
+    };
+
+
+    const failure = () => {
+        let message = '';
+        if (response) {
+            if (response.data.validationErrors) {
+                response.data.validationErrors.forEach((validationError) => {
+                    message += validationError.message + "\n";
+                });
+            } else {
+                message = response.data.exception;
+            }
+        } else {
+            message = "No response from Form API server";
+        }
+
+        addToast(`${t('error.general')}: ${t('form.create.failure.failed-to-create', {error: message})}`,
+            {
+                appearance: 'error'
+            });
     };
 
     const savedCallback = useRef();
+    const failedCallbackRef = useRef();
 
     const callback = () => {
         success();
     };
 
+    const failedCallback = () => {
+        failure();
+    }
+
     useEffect(() => {
         savedCallback.current = callback;
+        failedCallbackRef.current = failedCallback;
     });
 
     useEffect(() => {
         if (status === SUCCESS) {
             savedCallback.current();
+        }
+        if (status === ERROR) {
+            failedCallbackRef.current();
         }
     }, [status]);
 

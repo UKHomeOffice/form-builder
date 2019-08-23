@@ -158,6 +158,7 @@ const messages = {
                 "label": "Title",
                 "missing": "Form title is required for creating a form"
             },
+            "actions" : "Actions",
             "preview" : {
                 "modal" : {
                     "missing-title": "No title defined for form",

@@ -1,32 +1,58 @@
 import React, {useState} from "react";
-import {Icon, Message, Modal} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
 import './PreviewFormModal.scss';
 import PreviewFormComponent from "../../common/components/PreviewFormComponent";
-
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Alert from "react-bootstrap/Alert";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {
+    faExclamationTriangle,
+    faEye
+} from "@fortawesome/free-solid-svg-icons";
 
 const PreviewFormModal = ({form, title, open, onClosePreview}) => {
     const [submission, setSubmission] = useState(null);
     const {t} = useTranslation();
-
-    return <Modal open={open} onClose={onClosePreview} closeOnEscape={true} closeIcon>
-        {!form ? <Message warning>
-                <Message.Header>{t('form.create.preview.modal.missing-form.title')}</Message.Header>
+    return <Modal show={open} onHide={onClosePreview}
+                  dialogClassName="modal-fullscreen">
+        <Modal.Header closeButton>
+            <Modal.Title><FontAwesomeIcon icon={faEye}/><span className="m-2">{t('form.preview.label')}</span></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            {!form ? <Alert variant="warning">
+                <Alert.Heading><FontAwesomeIcon icon={faExclamationTriangle}/><span className="m-2">{t('form.create.preview.modal.missing-form.title')}</span></Alert.Heading>
                 <p>{t('form.create.preview.modal.missing-form.message')}</p>
-            </Message> :
-            <React.Fragment>
-                <Modal.Header>
-                    <Icon name='eye'/>
-                    {t('form.preview.label')}
-                </Modal.Header>
-                <Modal.Content>
-                    <PreviewFormComponent form={form} submission={submission} handlePreview={(submission) => {
-                        setSubmission(submission)
-                    }}/>
-                </Modal.Content>
-            </React.Fragment>
-        }
+            </Alert> :
+                <PreviewFormComponent form={form} submission={submission} handlePreview={(submission) => {
+                                        setSubmission(submission)
+                                    }}/>
+            }
+        </Modal.Body>
+        <Modal.Footer>
+            <Button variant="secondary" onClick={onClosePreview}>
+                Close
+            </Button>
+        </Modal.Footer>
     </Modal>
+    // return <Modal open={open} onClose={onClosePreview} closeOnEscape={true} closeIcon>
+    //     {!form ? <Message warning>
+    //             <Message.Header>{t('form.create.preview.modal.missing-form.title')}</Message.Header>
+    //             <p>{t('form.create.preview.modal.missing-form.message')}</p>
+    //         </Message> :
+    //         <React.Fragment>
+    //             <Modal.Header>
+    //                 <Icon name='eye'/>
+    //                 {t('form.preview.label')}
+    //             </Modal.Header>
+    //             <Modal.Content>
+    //                 <PreviewFormComponent form={form} submission={submission} handlePreview={(submission) => {
+    //                     setSubmission(submission)
+    //                 }}/>
+    //             </Modal.Content>
+    //         </React.Fragment>
+    //     }
+    // </Modal>
 };
 
 export default PreviewFormModal;

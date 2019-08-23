@@ -74,7 +74,7 @@ const CreateFormChoice = () => {
                 </Row>
             </Container>
         </Jumbotron>
-    </Container>
+    </Container>;
 };
 
 export default CreateFormChoice;
