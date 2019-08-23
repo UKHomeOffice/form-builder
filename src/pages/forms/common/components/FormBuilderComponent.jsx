@@ -32,7 +32,7 @@ const FormBuilderComponent = ({
                 <Container>
                     <Row>
                         <Col>
-                            <hr className="hr-text" data-content={t('form.create.label')}/>
+                            <hr className="hr-text" data-content={t('form.details')}/>
                         </Col>
                     </Row>
                     <Row className="justify-content-center align-items-center">

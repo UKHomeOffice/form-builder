@@ -4,7 +4,6 @@ import {useMultipleApiCallbackRequest} from "../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
 import useEnvContext from "../../../core/context/useEnvContext";
-import {toast} from "react-semantic-toasts";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import useLogger from "../../../core/logging/useLogger";
 import createForm from "../../../core/form/createForm";
@@ -18,14 +17,13 @@ const useCreateForm = (formContent = null) => {
         try {
             return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
         } catch (e) {
-            toast({
-                type: 'warning',
-                icon: 'exclamation circle',
-                title: t('error.general'),
-                description: t('form.create.failure.failed-to-create', {error: e.toString()}),
-                animation: 'scale',
-                time: 5000
-            });
+
+            addToast(`${t('error.general')} - ${t('form.create.failure.failed-to-create', {error: e.toString()})}`,
+                {
+                    appearance: 'error',
+                    autoDismiss: true,
+                    pauseOnHover: true
+                });
         }
     };
 

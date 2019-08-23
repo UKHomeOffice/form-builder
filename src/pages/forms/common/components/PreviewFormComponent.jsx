@@ -65,7 +65,7 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
 };
 
 
-const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
+export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
 
     const {t} = useTranslation();
     const {performFormParse} = useFormDataReplacer();
@@ -114,7 +114,7 @@ const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionIn
                       noAlerts: true,
                       formio: {}
                   }}/>
-        <div className="hr-text" data-content={t('form.preview.form-submission-label')} />
+        <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')} />
 
         <ReactJson src={formSubmission ? formSubmission : {}} theme="monokai" name={null}
                    collapseStringsAfterLength={100}

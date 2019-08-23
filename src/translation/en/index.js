@@ -80,6 +80,7 @@ const messages = {
         }
     },
     "form": {
+        "details" : "Form details",
         "restore" : {
             "success-title" : "Successful version restore",
             "success-description": "{{versionId}} has been restored to latest",

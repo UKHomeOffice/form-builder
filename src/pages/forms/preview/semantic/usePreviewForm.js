@@ -102,9 +102,10 @@ const usePreviewForm = (formId) => {
     const duplicate = async () => {
         const copiedForm = _.cloneDeep(form.data);
         delete copiedForm.id;
+
         copiedForm.title = "Copy of " + form.data.title;
-        copiedForm.name = "Copy of " + form.data.name;
-        copiedForm.path = "Copy of " + form.data.path;
+        copiedForm.name = _.toLower("Copy of " + form.data.name).replace(/\s/g, '') ;
+        copiedForm.path = _.camelCase("Copy of " + form.data.path);
 
         await navigation.navigate(`/forms/${envContext.id}/create/duplicate`, {
             body: JSON.stringify(copiedForm),
