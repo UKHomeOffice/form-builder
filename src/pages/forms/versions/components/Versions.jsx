@@ -9,6 +9,8 @@ import Tab from "react-bootstrap/Tab";
 import moment from "moment";
 import Badge from "react-bootstrap/Badge";
 import VersionPreview from "./VersionPreview";
+import Overlay from "../../../../common/Overlay";
+import {EXECUTING} from "../../../../core/api/actionTypes";
 
 const Versions = ({formId}) => {
     const {versions, status, response, handlePaginationChange, exception, restore, restoreState} = useGetVersions(formId);
@@ -73,11 +75,14 @@ const Versions = ({formId}) => {
     const navItems = data ? data.map((version) => {
         const isLatest = version.latest;
         const label = <React.Fragment>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}
-             <Badge variant="secondary" className="ml-2 float-right">{moment(version.validFrom).fromNow()}</Badge></React.Fragment>;
+            <Badge variant="secondary"
+                   className="ml-2 float-right">{moment(version.validFrom).fromNow()}</Badge></React.Fragment>;
 
         const navItem = <Nav.Item key={version.versionId}>
             <Nav.Link eventKey={isLatest ? 'latest' : version.versionId}>{
-                isLatest ? <React.Fragment>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}<Badge variant="danger" className="ml-2 float-right">Latest</Badge></React.Fragment> : label
+                isLatest ?
+                    <React.Fragment>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}<Badge variant="danger"
+                                                                                                    className="ml-2 float-right">Latest</Badge></React.Fragment> : label
             }</Nav.Link>
         </Nav.Item>;
         return navItem
@@ -85,13 +90,13 @@ const Versions = ({formId}) => {
 
     const versionTabs = data ? data.map((version) => {
         const key = version.latest ? 'latest' : version.versionId;
-        return  <Tab.Pane key={version.versionId} eventKey={key}>
+        return <Tab.Pane key={version.versionId} eventKey={key}>
             <VersionPreview version={version} restore={restore} restoreState={restoreState}/>
         </Tab.Pane>
     }) : [];
 
     return <Container fluid className="mt-3">
-        <Tab.Container id="versions" defaultActiveKey="latest">
+        <Overlay active={!status || status === EXECUTING} loadingText={t('versions.loading')} styleName={"mt-5"}><Tab.Container id="versions" defaultActiveKey="latest">
             <Row>
                 <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
@@ -105,6 +110,7 @@ const Versions = ({formId}) => {
                 </Col>
             </Row>
         </Tab.Container>
+        </Overlay>
     </Container>
 };
 

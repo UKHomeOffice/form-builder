@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Form} from 'react-formio';
 import useEnvContext from "../../../../core/context/useEnvContext";
 import Container from "react-bootstrap/Container";
@@ -6,19 +6,37 @@ import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import moment from "moment";
 import Button from "react-bootstrap/Button";
-import {faRedo} from "@fortawesome/free-solid-svg-icons";
+import {faRedo, faPlusCircle, faMinusCircle} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {EXECUTING} from "../../../../core/api/actionTypes";
+import Collapse from "react-bootstrap/Collapse";
+import ListGroup from "react-bootstrap/ListGroup";
 
 const VersionPreview = ({version, restore, restoreState}) => {
     const {envContext} = useEnvContext();
+    const [openDetails, setOpenDetails] = useState(false);
 
     return <Container>
         <Row className="mt-2">
             <Container fluid>
                 <Card>
-                    <Card.Header>{version.schema.name} {envContext.editable ? (!version.latest ?
+                    <Card.Header>
+                        <a href="#" onClick={() => {
+                            setOpenDetails(!openDetails)
+                        }}><FontAwesomeIcon icon={openDetails ? faMinusCircle : faPlusCircle}/><span className="ml-2">{version.schema.title}</span></a>
+                        <Collapse in={openDetails} className="mt-2 mb-2">
+                            <div id="formDetails">
+                                <ListGroup variant="flush">
+                                    <ListGroup.Item variant="light"><strong>Name:</strong> {version.schema.name}</ListGroup.Item>
+                                    <ListGroup.Item variant="light"><strong>Path:</strong> {version.schema.path}</ListGroup.Item>
+                                    <ListGroup.Item variant="light"><strong>FormId:</strong> {version.form.id}</ListGroup.Item>
+                                    <ListGroup.Item variant="light"><strong>VersionId:</strong> {version.versionId}</ListGroup.Item>
+                                    <ListGroup.Item variant="light"><strong>UpdatedBy:</strong> {version.updatedBy ? version.updatedBy : version.createdBy}</ListGroup.Item>
+                                </ListGroup>
+                            </div>
+                        </Collapse>{envContext.editable ? (!version.latest ?
                         <Button
+                            variant="success"
                             disabled={restoreState.status === EXECUTING}
                             onClick={() => {
                                 restore(version)

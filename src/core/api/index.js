@@ -31,7 +31,6 @@ const handleError = async (instance, error, keycloak, envContext) => {
     if (error.response) {
         const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
         if ((error.response.status ===  403 || error.response.status === 401) && isExpired) {
-            window.reload();
             console.log("Trying again");
             Object.assign(instance.defaults, configureAxios(envContext, instance.defaults, keycloak));
             Object.assign(error.response.config, configureAxios(envContext, instance.defaults, keycloak));

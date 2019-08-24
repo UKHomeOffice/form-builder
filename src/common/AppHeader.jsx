@@ -3,6 +3,7 @@ import {useTranslation} from "react-i18next";
 import useEnvContext from "../core/context/useEnvContext";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCog} from "@fortawesome/free-solid-svg-icons";
+import Badge from "react-bootstrap/Badge";
 
 const AppHeader = () => {
     const {t} = useTranslation();
@@ -13,7 +14,7 @@ const AppHeader = () => {
         const label = environment.label;
         return <div className="center-context" style={{width: '100hv', marginTop:'1rem'}}>
             <h2 data-cy="context-label" className="display-5"><FontAwesomeIcon
-                icon={faCog}/> {t('environment.label')}: <span style={environment.editable ? {'color': '#5bc0eb'} : {'color': '#dc3545'}} className={environment.editable ? 'context-border-teal' : 'context-border-red'}>{label ? label : environment.id}</span>
+                icon={faCog}/> {t('environment.label')}: <Badge variant={environment.editable ? 'info' : 'danger'}>{label ? label : environment.id}</Badge>
             </h2>
 
         </div>
