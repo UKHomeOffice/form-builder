@@ -85,7 +85,7 @@ const Versions = ({formId}) => {
 
     const versionTabs = data ? data.map((version) => {
         const key = version.latest ? 'latest' : version.versionId;
-        return  <Tab.Pane eventKey={key}>
+        return  <Tab.Pane key={version.versionId} eventKey={key}>
             <VersionPreview version={version} restore={restore} restoreState={restoreState}/>
         </Tab.Pane>
     }) : [];

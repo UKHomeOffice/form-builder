@@ -3,16 +3,17 @@ import {useEffect, useRef, useState} from "react";
 import useApiRequest from "../../../core/api";
 import {ERROR, EXECUTING, SUCCESS} from "../../../core/api/actionTypes";
 import useEnvContext from "../../../core/context/useEnvContext";
-import {toast} from "react-semantic-toasts";
 import _ from 'lodash';
 import axios from "axios";
 import useCommonFormUtils from "../common/useCommonFormUtils";
+import {useToasts} from "react-toast-notifications";
 
 const useEditForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
+    const {addToast} = useToasts();
 
     const [editForm, setValues] = useState({
         data: null,
@@ -51,15 +52,13 @@ const useEditForm = (formId) => {
     const editFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
+        addToast(`${editForm.data.name} has been successfully updated`,
+            {
+                appearance: 'success',
+                autoDismiss: true,
+                pauseOnHover: true
+            });
         await navigation.navigate(`/forms/${envContext.id}/${editForm.data.id}/preview`, {replace: true});
-        toast({
-            type: 'success',
-            icon: 'check circle',
-            title: `${editForm.data.title} updated`,
-            description: `${editForm.data.name} has been successfully updated`,
-            animation: 'scale',
-            time: 10000
-        });
     };
 
     const callback = () => {
@@ -74,15 +73,23 @@ const useEditForm = (formId) => {
         savedCallback.current = callback;
         editSuccessCallback.current = onSuccessfulEdit;
         editFailedCallback.current = () => {
-            toast({
-                type: 'error',
-                icon: 'warning circle',
-                title: `${editForm.data.title} failed to update`,
-                description: state.response ? JSON.stringify(state.response.data)
-                    : 'Failed to get response from Form API server',
-                animation: 'scale',
-                time: 10000
-            });
+            let message = '';
+            if (response) {
+                if (response.data.validationErrors) {
+                    response.data.validationErrors.forEach((validationError) => {
+                        message += validationError.message + "\n";
+                    });
+                } else {
+                    message = response.data.exception;
+                }
+            } else {
+                message = "No response from Form API server";
+            }
+
+            addToast(`${editForm.data.title} failed to update due to ${message}`,
+                {
+                    appearance: 'error'
+                });
         }
     });
 
