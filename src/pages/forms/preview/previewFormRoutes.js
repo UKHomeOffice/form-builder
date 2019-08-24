@@ -1,6 +1,6 @@
 import {mount, route} from 'navi'
 import React from "react";
-import PreviewFormPage from "./semantic/components/PreviewFormPage";
+import PreviewFormPage from "./bootstrap/components/PreviewFormPage";
 import GovUKPreviewFormPage from "./govUK/components/GovUKPreviewFormPage";
 import {withEnvContext} from "../../../core/AppRouter";
 

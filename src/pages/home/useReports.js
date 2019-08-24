@@ -50,7 +50,7 @@ const useReports = () => {
             return Promise.reject(error);
         }
         const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
-        if (error.response.status === 403 || error.response.status === 401 && isExpired) {
+        if ((error.response.status === 403 || error.response.status === 401) && isExpired) {
             console.log("Retying");
             const environment = error.response.config.headers['x-environment'];
             const token = keycloak.token;

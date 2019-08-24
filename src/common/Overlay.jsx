@@ -1,5 +1,4 @@
 import React from "react";
-import Spinner from "react-bootstrap/Spinner";
 import {useTranslation} from "react-i18next";
 
 const Overlay = ({active, children, styleName, loadingText}) => {

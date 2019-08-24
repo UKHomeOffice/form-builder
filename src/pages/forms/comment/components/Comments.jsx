@@ -31,7 +31,7 @@ const Comments = ({formId}) => {
     return <Container>
         <Row>
             <Col className="d-flex flex-column align-items-center justify-content-center">
-                <Card style={{width: '100%'}} className="mt-2 border-0">
+                <Card style={{width: '100%'}} className="border-0">
                     <Card.Body>
                         <Form>
                             <Form.Group controlId="comment">

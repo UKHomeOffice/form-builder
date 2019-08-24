@@ -21,7 +21,7 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
     return <Container>
         <Row>
             <Col>
-                <Alert variant="warning">
+                <Alert variant="warning" className="border-1">
                     <Alert.Heading><FontAwesomeIcon icon={faExclamationTriangle}/>
                         <span className="m-2" style={cursor} onClick={() => {
                             setOpen(!open)
@@ -35,7 +35,7 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
                     </Alert.Heading>
                     <Collapse in={open}>
                         <div id="collapse-text">
-                            <p class="lead">{t('form.preview.submission-warning-description')}</p>
+                            <p className="lead">{t('form.preview.submission-warning-description')}</p>
                         </div>
                     </Collapse>
                 </Alert>
