@@ -19,7 +19,8 @@ const usePreviewForm = (formId) => {
         data: null,
         formId: formId,
         submission: null,
-        openSchemaView: false
+        openSchemaView: false,
+        tabKey: 'details'
     });
 
     const isMounted = useRef(true);
@@ -98,7 +99,12 @@ const usePreviewForm = (formId) => {
             openSchemaView: false
         }));
     };
-
+    const setTabKey = (tabKey) => {
+        setValue(form => ({
+            ...form,
+            tabKey: tabKey
+        }))
+    }
     const duplicate = async () => {
         const copiedForm = _.cloneDeep(form.data);
         delete copiedForm.id;
@@ -143,7 +149,8 @@ const usePreviewForm = (formId) => {
         edit,
         parseCss,
         exception,
-        reload
+        reload,
+        setTabKey
     }
 };
 

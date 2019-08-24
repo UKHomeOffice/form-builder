@@ -11,6 +11,9 @@ import useRoles from "../../../common/useRoles";
 import './PreviewFormPage.scss';
 import Comments from "../../../comment/components/Comments";
 import Versions from "../../../versions/components/Versions";
+import Tabs from "react-bootstrap/Tabs";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faComments, faHistory, faInfo} from "@fortawesome/free-solid-svg-icons";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
@@ -24,7 +27,8 @@ const PreviewFormPage = ({formId}) => {
         duplicate,
         edit,
         parseCss,
-        reload
+        reload,
+        setTabKey
     } = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
@@ -72,7 +76,7 @@ const PreviewFormPage = ({formId}) => {
                                                     loading={form.openSchemaView}
                                                     disabled={form.openSchemaView}
                                                     onClick={() => {
-                                                         openSchemaView();
+                                                        openSchemaView();
                                                     }}>{t('form.schema.view', {env: envContext.id})}
 
                                             </Button>
@@ -125,12 +129,26 @@ const PreviewFormPage = ({formId}) => {
         }, last);
     }
 
-    return <Tab panes={panes} onTabChange={(e, data) => {
-        if (data.activeIndex === 0) {
-            reload();
-        }
-    }
-    }/>
+    // return <Tab panes={panes} onTabChange={(e, data) => {
+    //     if (data.activeIndex === 0) {
+    //         reload();
+    //     }
+    // }
+    // }/>
+
+    return <Tabs unmountOnExit={true} mountOnEnter={true} className="mt-3" id="formsPreview" activeKey={form.tabKey} onSelect={(k) => setTabKey(k)}>
+        <Tab eventKey="details" title={<React.Fragment><FontAwesomeIcon icon={faInfo}/><span className="m-2">Form details</span></React.Fragment>}>
+            <div>Hello</div>
+        </Tab>
+        <Tab eventKey="history" title={<React.Fragment><FontAwesomeIcon icon={faHistory}/><span
+            className="m-2">History</span></React.Fragment>}>
+            <Versions formId={formId}/>
+        </Tab>
+        <Tab eventKey="comments" title={<React.Fragment><FontAwesomeIcon icon={faComments}/><span
+            className="m-2">Comments</span></React.Fragment>}>
+            <Comments formId={formId}/>
+        </Tab>
+    </Tabs>
 };
 
 export default PreviewFormPage;

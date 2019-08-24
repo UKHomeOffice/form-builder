@@ -43,7 +43,6 @@ const FormList = () => {
         forms,
         navigation,
         status,
-        response,
         handlePaginationChange,
         handleTitleSearch,
         handleOnSuccessfulDeletion,
@@ -51,7 +50,6 @@ const FormList = () => {
         handleEditForm,
         handleAccordionClick,
         download,
-        downloadFormState,
         handlePromotion,
         filter,
     } = useGetForms();
@@ -60,7 +58,7 @@ const FormList = () => {
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
 
-    const {direction, column, data, total, activePage, limit} = forms;
+    const {direction, column, data, total, limit} = forms;
 
     const isLoading = !status || status === EXECUTING;
     const isEditable = (canEdit() && envContext.editable);
@@ -178,6 +176,7 @@ const FormList = () => {
                         pageRangeDisplayed={5}
                         onPageChange={(e) => handlePaginationChange(e.selected)}
                         containerClassName={'pagination'}
+                        breakClassName={'page-link'}
                         pageClassName={'page-item'}
                         pageLinkClassName={'page-link'}
                         activeClassName={'active'}
@@ -185,7 +184,7 @@ const FormList = () => {
                         nextLinkClassName={'page-link'}
                     />
                 </div>
-                <Overlay active={isLoading} children={
+                <Overlay active={isLoading} styleName="mt-5" children={
                     <React.Fragment>
                         <Table responsive striped bordered hover>
                             <caption><FontAwesomeIcon icon={faList}/><span className="ml-1">{total} forms</span></caption>

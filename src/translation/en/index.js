@@ -48,6 +48,9 @@ const messages = {
     },
     "comments" : {
         "loading": "Loading comments",
+        "success" : {
+            "created" : "Your comment was successfully added"
+        },
         "failure" : {
             "comments-load" : "Failed to load comments {{error}}",
             "create-comment" : "Failed to create new comment due to {{error}}"

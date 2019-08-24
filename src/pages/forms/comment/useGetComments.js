@@ -1,25 +1,28 @@
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
-import {SUCCESS} from "../../../core/api/actionTypes";
+import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
+import {useToasts} from "react-toast-notifications";
+import {useTranslation} from "react-i18next";
 
 const useGetComments = (formId) => {
+    const {t} = useTranslation();
     const initialState = {
-        limit: 10,
-        activePage: 1,
+        limit: 5,
+        activePage: 0,
         data: null,
         total: 0,
     };
     const isMounted = useRef(true);
     const [comments, setComments] = useState(initialState);
     const [comment, setComment] = useState('');
-
+    const {addToast} = useToasts();
     const CancelToken = axios.CancelToken;
 
     const cancelCommentsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}/comments?limit=${comments.limit}${comments.activePage !== 1 ? `&offset=${((comments.activePage - 1) * comments.limit)}` : ''}`, {
+        `/form/${formId}/comments?limit=${comments.limit}&offset=${((comments.activePage) * comments.limit)}`, {
             verb: 'get', params: {
                 cancelToken: cancelCommentsRequest.current.token
             }
@@ -29,13 +32,19 @@ const useGetComments = (formId) => {
     const [saveCommentRequestState, saveCommentRequest] = useApiRequest(
         `/form/${formId}/comments`, {
             verb: 'post', params: {
-                comment: comment
+                comment: null
             }
         }
     );
 
     const savedCallback = useRef();
     const cancelRequests = useRef();
+
+    const failedToLoadCommentsCallback = useRef();
+    const failedToSaveCommentCallback = useRef();
+    const successfullySavedCommentCallback = useRef();
+
+
     useEffect(() => {
         savedCallback.current = () => {
             makeRequest();
@@ -44,6 +53,64 @@ const useGetComments = (formId) => {
             cancelCommentsRequest.current.cancel('Cancelling get comments');
             isMounted.current = false;
         };
+
+        failedToLoadCommentsCallback.current = () => {
+            let message = '';
+            if (response) {
+                message = response.data.exception;
+            } else {
+                message = "No response from Form API server";
+            }
+            addToast(`${t('error.general')}: ${t('comments.failure.comments-load', {error: message})}`,
+                {
+                    appearance: 'error'
+                });
+        };
+
+        failedToSaveCommentCallback.current = () => {
+            let message = '';
+            if (saveCommentRequestState.response) {
+                const saveResponse = saveCommentRequestState.response.data;
+                if (saveResponse.validationErrors) {
+                    saveResponse.validationErrors.forEach((validationError) => {
+                        message += validationError.message + "\n";
+                    });
+                } else {
+                    message = saveResponse.exception;
+                }
+            } else {
+                message = "No response from Form API server";
+            }
+            addToast(`${t('error.general')}: ${t('comments.failure.create-comment', {error: message})}`,
+                {
+                    appearance: 'error'
+                });
+        };
+
+        successfullySavedCommentCallback.current = () => {
+            const data = comments.data;
+            const savedComment = saveCommentRequestState.response.data;
+            const total = comments.total + 1;
+            if (savedComment) {
+                setComment('');
+                data.unshift(savedComment);
+                if (total > 10) {
+                    data.pop();
+                }
+                setComments(comments => ({
+                    ...comments,
+                    data: data,
+                    total: total
+                }));
+                addToast(`${t('comments.success.created')}`,
+                    {
+                        appearance: 'success',
+                        autoDismiss: true,
+                        pauseOnHover: true
+                    });
+            }
+        }
+
     });
 
     useEffect(() => {
@@ -60,23 +127,11 @@ const useGetComments = (formId) => {
     useEffect(() => {
         if (saveCommentRequestState.status === SUCCESS) {
             if (isMounted.current) {
-                const data = comments.data;
-                const savedComment = saveCommentRequestState.response.data;
-                const total = comments.total + 1;
-                if (savedComment) {
-                    setComment('');
-                    data.unshift(savedComment);
-                    if (total > 10) {
-                        data.pop();
-                    }
-                    setComments(comments => ({
-                        ...comments,
-                        data: data,
-                        total: total
-                    }));
-                }
-
+                successfullySavedCommentCallback.current();
             }
+        }
+        if (saveCommentRequestState.status === ERROR) {
+            failedToSaveCommentCallback.current();
         }
     }, [saveCommentRequestState, setComments]);
 
@@ -91,12 +146,17 @@ const useGetComments = (formId) => {
             }
 
         }
+        if (status === ERROR) {
+            if (isMounted.current) {
+                failedToLoadCommentsCallback.current();
+            }
+        }
     }, [response, status, setComments]);
 
-    const handlePaginationChange = (e, {activePage}) => {
+    const handlePaginationChange = (page) => {
         setComments(forms => ({
             ...forms,
-            activePage: activePage
+            activePage: page
         }));
     };
 
