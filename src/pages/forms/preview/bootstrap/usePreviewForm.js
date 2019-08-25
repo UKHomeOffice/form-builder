@@ -1,19 +1,23 @@
 import useApiRequest from "../../../../core/api";
 import {useNavigation} from "react-navi";
 import {useEffect, useRef, useState} from "react";
-import {SUCCESS} from "../../../../core/api/actionTypes";
+import {ERROR, SUCCESS} from "../../../../core/api/actionTypes";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import {Formio} from "react-formio";
 import axios from "axios";
 import _ from 'lodash';
 import FormioUtils from 'formiojs/utils';
 import useCommonFormUtils from "../../common/useCommonFormUtils";
+import {useToasts} from "react-toast-notifications";
+import {useTranslation} from "react-i18next";
 
 const usePreviewForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
+    const {addToast} = useToasts();
+    const {t} = useTranslation();
 
     const [form, setValue] = useState({
         data: null,
@@ -34,6 +38,8 @@ const usePreviewForm = (formId) => {
     );
 
     const savedCallback = useRef();
+    const handleSuccessfulFormLoad = useRef();
+    const handleFailedFormLoad = useRef();
 
     const callback = () => {
         setValue(form => ({
@@ -43,8 +49,27 @@ const usePreviewForm = (formId) => {
         makeRequest();
     };
 
+
+    const successfulFormLoadCallback = () => {
+        const data = response.data;
+        handleForm(data);
+        setValue(form => ({
+            ...form,
+            data: data
+        }));
+    };
+    const failedToLoadFormCallback = () => {
+        const message = response ? response.data.exception : 'No response from Form API server';
+        addToast(`${t('form.list.failure.forms-load', {error: message})}`,
+            {
+                appearance: 'error'
+            });
+    };
+
     useEffect(() => {
         savedCallback.current = callback;
+        handleFailedFormLoad.current = failedToLoadFormCallback;
+        handleSuccessfulFormLoad.current = successfulFormLoadCallback;
     });
 
     useEffect(() => {
@@ -61,15 +86,15 @@ const usePreviewForm = (formId) => {
     useEffect(() => {
         if (status === SUCCESS) {
             if (isMounted.current) {
-                const data = response.data;
-                handleForm(data);
-                setValue(form => ({
-                    ...form,
-                    data: data
-                }));
+                handleSuccessfulFormLoad.current();
             }
         }
-    }, [response, status, setValue, handleForm]);
+        if (status === ERROR) {
+            if (isMounted.current) {
+                handleFailedFormLoad.current();
+            }
+        }
+    }, [status]);
 
     const backToForms = async () => {
         await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
@@ -103,14 +128,17 @@ const usePreviewForm = (formId) => {
         setValue(form => ({
             ...form,
             tabKey: tabKey
-        }))
-    }
+        }));
+        if (tabKey === 'details') {
+            makeRequest();
+        }
+    };
     const duplicate = async () => {
         const copiedForm = _.cloneDeep(form.data);
         delete copiedForm.id;
 
         copiedForm.title = "Copy of " + form.data.title;
-        copiedForm.name = _.toLower("Copy of " + form.data.name).replace(/\s/g, '') ;
+        copiedForm.name = _.toLower("Copy of " + form.data.name).replace(/\s/g, '');
         copiedForm.path = _.camelCase("Copy of " + form.data.path);
 
         await navigation.navigate(`/forms/${envContext.id}/create/duplicate`, {
@@ -132,10 +160,6 @@ const usePreviewForm = (formId) => {
         return form;
     };
 
-    const reload = () => {
-        makeRequest();
-    };
-
     return {
         previewSubmission,
         status,
@@ -149,7 +173,6 @@ const usePreviewForm = (formId) => {
         edit,
         parseCss,
         exception,
-        reload,
         setTabKey
     }
 };

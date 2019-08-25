@@ -142,3 +142,14 @@
     background-color: #fcfcfa;
   }
 }
+
+
+.modal-fullscreen {
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0;
+  top: 0;
+  left: 0;
+}

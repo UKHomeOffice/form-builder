@@ -4,7 +4,6 @@ import {useTranslation} from 'react-i18next';
 import PreviewFormComponent from "../../../common/components/PreviewFormComponent";
 import config from 'react-global-configuration';
 import useEnvContext from "../../../../../core/context/useEnvContext";
-import SchemaModal from "../../../schema/SchemaModal";
 import useRoles from "../../../common/useRoles";
 import './PreviewFormPage.scss';
 import Comments from "../../../comment/components/Comments";
@@ -14,15 +13,17 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faComments, faHistory, faInfo} from "@fortawesome/free-solid-svg-icons";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import Tab from "react-bootstrap/Tab";
+import Container from "react-bootstrap/Container";
+import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import {isMobile} from 'react-device-detect';
+import SchemaModal from "../../../schema/SchemaModal";
 
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {
-        status, response, form,
-        exception,
+        form,
         previewSubmission,
         backToForms,
         openSchemaView,
@@ -30,20 +31,10 @@ const PreviewFormPage = ({formId}) => {
         duplicate,
         edit,
         parseCss,
-        reload,
         setTabKey
     } = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
-    // if (status === ERROR) {
-    //     return <Container><Message negative>
-    //         <Message.Header>{t('error.general')}</Message.Header>
-    //         {t('form.list.failure.forms-load', {
-    //             error: response ? JSON.stringify(response.data)
-    //                 : exception.message
-    //         })}
-    //     </Message></Container>
-    // }
     //
     // const panes = [
     //     {
@@ -133,30 +124,78 @@ const PreviewFormPage = ({formId}) => {
     // }
     //
 
-    return <Tabs unmountOnExit={true} mountOnEnter={true} className="mt-3" id="formsPreview" activeKey={form.tabKey}
-                 onSelect={(k) => {
-                     setTabKey(k);
-                     if (k === 'details') {
-                         reload();
-                     }
-                 }}>
-        <Tab eventKey="details" title={<React.Fragment><FontAwesomeIcon icon={faInfo}/><span className="m-2">Form details</span></React.Fragment>}>
+    return <Container fluid>
+        <Row>
+            <Col className="d-flex flex-column align-items-center justify-content-center mt-3">
+                <ButtonToolbar>
+                    <Button block={isMobile} className="mr-2"
+                            onClick={() => {
+                                backToForms();
+                            }}
+                            variant="secondary">{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
+                    <Button block={isMobile} variant="info"
+                            onClick={() => {
+                                openSchemaView();
+                            }}
+                            className="mr-2">{t('form.schema.view', {env: envContext.id})}</Button>
 
-            {form.data ?
-                <div className="mt-2"><PreviewFormComponent form={parseCss(form.data)} submission={form.submission}
-                                                            handlePreview={previewSubmission}/></div> : null}
-        </Tab>
-        <Tab eventKey="history" title={<React.Fragment><FontAwesomeIcon icon={faHistory}/><span
-            className="m-2">History</span></React.Fragment>}>
-            <Versions formId={formId}/>
-        </Tab>
-        {envContext.editable ?
-            <Tab eventKey="comments" title={<React.Fragment><FontAwesomeIcon icon={faComments}/><span
-                className="m-2">Comments</span></React.Fragment>}>
-                <Comments formId={formId}/>
-            </Tab>
-            : null}
-    </Tabs>
+                    {canEdit() && envContext.editable ? <React.Fragment>
+                        <Button block={isMobile} variant="dark"
+                                onClick={() => {
+                                    duplicate()
+                                }}
+                                className="mr-2">{t('form.preview.duplicate', {env: envContext.id})}</Button>
+                        <Button block={isMobile} variant="primary"
+                                onClick={() => {
+                                    edit()
+                                }}
+                                className="mr-2">{t('form.edit.label-form')}</Button>
+                    </React.Fragment> : null}
+
+                    {config.get('gov-uk-enabled', false) ?
+                        <Button block={isMobile} variant="success"
+                                onClick={() => {
+                                    window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
+                                }}
+                                className="mr-2">{t('form.preview.govuk.open')}</Button> : null}
+                </ButtonToolbar>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <Tabs unmountOnExit={true} mountOnEnter={true} className="mt-3" id="formsPreview"
+                      activeKey={form.tabKey}
+                      onSelect={(k) => {
+                          setTabKey(k);
+                      }}>
+                    <Tab eventKey="details" title={<React.Fragment><FontAwesomeIcon icon={faInfo}/><span
+                        className="m-2">Form details</span></React.Fragment>}>
+
+                        {form.data ?
+                            <div className="mt-2"><PreviewFormComponent form={parseCss(form.data)}
+                                                                        submission={form.submission}
+                                                                        handlePreview={previewSubmission}/>
+                            </div> : null}
+                    </Tab>
+                    <Tab eventKey="history" title={<React.Fragment><FontAwesomeIcon icon={faHistory}/><span
+                        className="m-2">History</span></React.Fragment>}>
+                        <Versions formId={formId}/>
+                    </Tab>
+                    {envContext.editable ?
+                        <Tab eventKey="comments" title={<React.Fragment><FontAwesomeIcon icon={faComments}/><span
+                            className="m-2">Comments</span></React.Fragment>}>
+                            <Comments formId={formId}/>
+                        </Tab>
+                        : null}
+                </Tabs>
+            </Col>
+        </Row>
+        {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView}
+                                  close={closeSchemaView}/> : null}
+
+    </Container>
+
+
 };
 
 export default PreviewFormPage;

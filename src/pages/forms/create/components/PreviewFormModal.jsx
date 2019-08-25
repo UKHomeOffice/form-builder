@@ -35,24 +35,6 @@ const PreviewFormModal = ({form, title, open, onClosePreview}) => {
             </Button>
         </Modal.Footer>
     </Modal>
-    // return <Modal open={open} onClose={onClosePreview} closeOnEscape={true} closeIcon>
-    //     {!form ? <Message warning>
-    //             <Message.Header>{t('form.create.preview.modal.missing-form.title')}</Message.Header>
-    //             <p>{t('form.create.preview.modal.missing-form.message')}</p>
-    //         </Message> :
-    //         <React.Fragment>
-    //             <Modal.Header>
-    //                 <Icon name='eye'/>
-    //                 {t('form.preview.label')}
-    //             </Modal.Header>
-    //             <Modal.Content>
-    //                 <PreviewFormComponent form={form} submission={submission} handlePreview={(submission) => {
-    //                     setSubmission(submission)
-    //                 }}/>
-    //             </Modal.Content>
-    //         </React.Fragment>
-    //     }
-    // </Modal>
 };
 
 export default PreviewFormModal;

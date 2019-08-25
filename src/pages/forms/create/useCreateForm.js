@@ -133,7 +133,7 @@ const useCreateForm = (formContent = null) => {
 
     const failedCallback = () => {
         failure();
-    }
+    };
 
     useEffect(() => {
         savedCallback.current = callback;
