@@ -1,11 +1,15 @@
 import React from 'react';
-import {Container, Divider, Header, Icon, Loader, Message} from "semantic-ui-react";
 import useEditForm from "../useEditForm";
-import {ERROR, EXECUTING} from "../../../../core/api/actionTypes";
+import {EXECUTING} from "../../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
 import useEnvContext from "../../../../core/context/useEnvContext";
+import Container from "react-bootstrap/Container";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
+import Alert from "react-bootstrap/Alert";
+import Overlay from "../../../../common/Overlay";
 
 const EditFormPage = ({formId}) => {
     const {
@@ -27,55 +31,41 @@ const EditFormPage = ({formId}) => {
     const {envContext} = useEnvContext();
 
     if (!envContext.editable) {
-        return <Container><Message icon negative>
-            <Icon name='warning circle'/>
-            <Message.Content>
-                <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.edit.failure.non-editable-environment')}
-            </Message.Content>
-        </Message></Container>
+
+        return <Container>
+            <Alert variant="warning" className="border-1 mt-2">
+                <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                    <span className="ml-2">{t('error.general')}</span>
+                </Alert.Heading>
+                <p className="lead">{t('form.edit.failure.non-editable-environment')}</p>
+            </Alert>
+        </Container>
+
     }
 
-    if (!status || status === EXECUTING) {
-        return <div className="center"><Loader active inline='centered' size='large'>{t('form.loading-form')}</Loader>
-        </div>
-    }
 
-    if (status === ERROR) {
-        return <Container><Message icon negative>
-            <Icon name='warning circle'/>
-            <Message.Content>
-                <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.edit.failure.form-load', {error: response ? JSON.stringify(response.data) : t('form.edit.failure.unknown-error')})}
-            </Message.Content>
-        </Message></Container>
-    }
+    return <Overlay active={!status || status === EXECUTING} styleName="mt-5"
+                    children=
+                        {editForm.data ? <FormBuilderComponent
+                            envContext={envContext}
+                            form={editForm}
+                            updateField={updateField}
+                            updateForm={updateForm}
+                            status={state.status}
+                            formChoices={formChoices}
+                            messageKeyPrefix={"form.edit"}
+                            backToForms={backToForms}
+                            closePreview={closePreview}
+                            openPreview={openPreview}
+                            t={t}
+                            formInvalid={formInvalid}
+                            save={editRequest}
+                            changeDisplay={changeDisplay}
+                        /> : null}
 
-    return <div style={{paddingBottom: '10px'}}>
-        <Divider horizontal>
-            <Header as='h4'>
-                <Icon name='edit'/>
-                Edit
-            </Header>
-        </Divider>
+                    loadingText={t('form.loading-form')}/>;
 
-        {editForm.data ? <FormBuilderComponent
-            envContext={envContext}
-            form={editForm}
-            updateField={updateField}
-            updateForm={updateForm}
-            status={state.status}
-            formChoices={formChoices}
-            messageKeyPrefix={"form.edit"}
-            backToForms={backToForms}
-            closePreview={closePreview}
-            openPreview={openPreview}
-            t={t}
-            formInvalid={formInvalid}
-            save={editRequest}
-            changeDisplay={changeDisplay}
-        /> : null}
-    </div>
+
 };
 
 export default EditFormPage;

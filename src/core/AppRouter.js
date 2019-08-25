@@ -4,7 +4,6 @@ import React, {Suspense, useState} from "react";
 import {Main} from "./Main";
 import {Router, View} from "react-navi";
 import {useKeycloak} from 'react-keycloak';
-import {Loader} from "semantic-ui-react";
 import secureLS from '../core/storage';
 import {useTranslation} from "react-i18next";
 import config from "react-global-configuration"
@@ -12,10 +11,11 @@ import _ from 'lodash';
 import {Logout} from "../common/Logout";
 import Unauthorized from "../common/Unauthorized";
 import {ToastProvider} from 'react-toast-notifications'
+import Overlay from "../common/Overlay";
 
 const hasAuthorization = (authorizationRoles, context, matcher) => {
     const roles = context.keycloak.tokenParsed.realm_access.roles;
-    let isAuthorizedAccess = _.intersectionWith(authorizationRoles, roles).length >= 1;
+    const isAuthorizedAccess = _.intersectionWith(authorizationRoles, roles).length >= 1;
     return isAuthorizedAccess
         ? matcher
         : redirect(
@@ -83,27 +83,26 @@ export const AppRouter = () => {
         environment: environmentLocalStorage ? _.find(environments, {id: environmentLocalStorage}) : null,
         activeMenuItem: environmentLocalStorage ? t('menu.forms.name') : (window.location.pathname ? window.location.pathname : t('menu.home.name'))
     });
-    if (!initialised) {
-        return <div className="center"><Loader active inline='centered' size='large'>{t('loading')}</Loader></div>;
-    }
 
 
-
-    return (<ApplicationContext.Provider value={{state, setState}}>
-            <Router routes={routes} context={{
-                isAuthenticated: keycloak.authenticated,
-                environment: state.environment,
-                keycloak: keycloak,
-                config: config
-            }}>
-                <ToastProvider placement="top-center"><Main>
-                    <Suspense fallback={null}>
-                        <View/>
-                    </Suspense>
-                </Main></ToastProvider>
-            </Router>
-        </ApplicationContext.Provider>
-    );
+    return <Overlay active={!initialised} styleName="mt-5" children={
+        (<ApplicationContext.Provider value={{state, setState}}>
+                <Router routes={routes} context={{
+                    isAuthenticated: keycloak.authenticated,
+                    environment: state.environment,
+                    keycloak: keycloak,
+                    config: config
+                }}>
+                    <ToastProvider placement="top-center"><Main>
+                        <Suspense fallback={null}>
+                            <View/>
+                        </Suspense>
+                    </Main></ToastProvider>
+                </Router>
+            </ApplicationContext.Provider>
+        )
+    } loadingText={t('loading')}>
+    </Overlay>
 };
 
 

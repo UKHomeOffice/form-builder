@@ -1,9 +1,13 @@
 import React from 'react';
-import {Container, Divider, Header, Icon, Message} from 'semantic-ui-react'
 import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import useCreateForm from "../useCreateForm";
-import {ERROR} from "../../../../core/api/actionTypes";
+import Container from "react-bootstrap/Container";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
+import Alert from "react-bootstrap/Alert";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
 
 const DuplicateFormPage = ({formContent}) => {
@@ -12,7 +16,6 @@ const DuplicateFormPage = ({formContent}) => {
     const {
         backToForms,
         status,
-        response,
         makeRequest,
         formInvalid,
         form,
@@ -25,53 +28,44 @@ const DuplicateFormPage = ({formContent}) => {
     } = useCreateForm(formContent);
 
     if (!formContent) {
-        return <Container><Message icon negative>
-            <Icon name='warning circle'/>
-            <Message.Content>
-                <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.create.duplicate.no-form-content')}
-            </Message.Content>
-        </Message></Container>
+        return <Container>
+            <Alert variant="warning" className="border-1 mt-2">
+                <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                    <span className="ml-2">{t('error.general')}</span>
+                </Alert.Heading>
+                <p className="lead">{t('form.create.duplicate.no-form-content')}</p>
+            </Alert>
+        </Container>
     }
 
-    return <div style={{paddingBottom: '10px'}}>
-        <Divider horizontal>
-            <Header as='h4'>
-                <Icon name='copy'/>
-                Duplicate
-            </Header>
-        </Divider>
-        <Container>
-            {status === ERROR ? <Message icon negative>
-                <Icon name='warning circle'/>
-                <Message.Content>
-                    <Message.Header>{t('error.general')}</Message.Header>
-                    {t('form.create.failure.failed-to-create', {error: JSON.stringify(response.data)})}
-                </Message.Content>
-            </Message> : null}
-            <FormBuilderComponent
-                duplicate={true}
-                form={form}
-                t={t}
-                updateField={updateField}
-                openPreview={openPreview}
-                closePreview={closePreview}
-                status={status}
-                save={makeRequest}
-                formChoices={formChoices}
-                messageKeyPrefix={"form.create"}
-                backToForms={backToForms}
-                formInvalid={formInvalid}
-                changeDisplay={changeDisplay}
-                updateForm={(jsonSchema) =>
-                    setValues({
-                        ...form,
-                        data: Object.assign(jsonSchema, form.data)
-                    })
-                }
-            />
-        </Container>
-    </div>
+    return <Container>
+        <Row>
+            <Col>
+                <FormBuilderComponent
+                    duplicate={true}
+                    form={form}
+                    t={t}
+                    updateField={updateField}
+                    openPreview={openPreview}
+                    closePreview={closePreview}
+                    status={status}
+                    save={makeRequest}
+                    formChoices={formChoices}
+                    messageKeyPrefix={"form.create"}
+                    backToForms={backToForms}
+                    formInvalid={formInvalid}
+                    changeDisplay={changeDisplay}
+                    updateForm={(jsonSchema) =>
+                        setValues({
+                            ...form,
+                            data: Object.assign(jsonSchema, form.data)
+                        })
+                    }
+                />
+            </Col>
+        </Row>
+
+    </Container>
 };
 
 export default DuplicateFormPage;

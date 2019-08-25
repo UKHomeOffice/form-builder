@@ -5,11 +5,11 @@ import Keycloak from 'keycloak-js';
 import {KeycloakProvider} from 'react-keycloak';
 import {Provider} from "react-redux";
 import configureStore from './core/configureStore'
-import {Loader} from "semantic-ui-react";
 import secureLS from './core/storage';
 import config from 'react-global-configuration';
 import configuration from './config/appConfig';
 import eventEmitter from './core/eventEmitter';
+import Spinner from "react-bootstrap/Spinner";
 
 
 if (window.ENVIRONMENT_CONFIG) {
@@ -33,6 +33,7 @@ const clearSecureLocalStorage = () => {
 };
 
 export const App = () => (
+
     <KeycloakProvider keycloak={keycloak}
                       onEvent={(event) => {
                           if (event === 'onAuthLogout' || event === 'onAuthError') {
@@ -45,7 +46,11 @@ export const App = () => (
                       }}
                       initConfig={{
                           onLoad: 'login-required'
-                      }} LoadingComponent={() => <Loader active inline='centered' size='large'>Loading</Loader>}>
+                      }} LoadingComponent={() => <div className="center">
+        <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+        </Spinner>
+    </div>}>
         <Provider store={store}>
             <AppRouter/>
         </Provider>
