@@ -2,15 +2,16 @@ import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
-import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
+import {useToasts} from "react-toast-notifications";
 
 const useGetVersions = (formId) => {
     const initialState = {
         limit: 10,
-        activePage: 1,
+        activePage: 0,
         data: null,
-        total: 0
+        total: 0,
+        versionKey: null
     };
     const [version, setVersion] = useState(null);
 
@@ -18,11 +19,11 @@ const useGetVersions = (formId) => {
     const [versions, setVersions] = useState(initialState);
     const {t} = useTranslation();
     const CancelToken = axios.CancelToken;
-
+    const {addToast} = useToasts();
     const cancelVersionsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}/versions?limit=${versions.limit}${versions.activePage !== 1 ? `&offset=${((versions.activePage - 1) * versions.limit)}` : ''}`, {
+        `/form/${formId}/versions?limit=${versions.limit}&offset=${((versions.activePage ) * versions.limit)}`, {
             verb: 'get', params: {
                 cancelToken: cancelVersionsRequest.current.token
             }
@@ -51,28 +52,35 @@ const useGetVersions = (formId) => {
         };
         restoreCallback.current = () => {
             if (restoreState.status === SUCCESS) {
-                toast({
-                    type: 'success',
-                    icon: 'check circle',
-                    title: t("form.restore.success-title"),
-                    description: t("form.restore.success-description", {versionId: version}),
-                    animation: 'scale',
-                    time: 10000
-                });
+                addToast(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`,
+                    {
+                        appearance: 'success',
+                        autoDismiss: true,
+                        pauseOnHover: true
+                    });
                 makeRequest();
             }
             if (restoreState.status === ERROR) {
-                toast({
-                    type: 'error',
-                    icon: 'exclamation circle',
-                    title: t('error.general'),
-                    description: t('form.restore.failure', {
-                        error: restoreState.response ?
-                            JSON.stringify(restoreState.response.data) : restoreState.exception.message
-                    }),
-                    animation: 'scale',
-                    time: 10000
-                })
+                let message = '';
+                if (restoreState.response) {
+                    if (restoreState.response.data.validationErrors) {
+                        restoreState.response.data.validationErrors.forEach((validationError) => {
+                            message += validationError.message + "\n";
+                        });
+                    } else {
+                        message = restoreState.response.data.exception;
+                    }
+                } else {
+                    message = "No response from Form API server";
+                }
+
+                addToast(`${t('form.restore.failure', {
+                        error: message
+                    })}`,
+                    {
+                        appearance: 'error'
+                    });
+
             }
         };
         executeRestoreCallback.current = () => {
@@ -105,6 +113,7 @@ const useGetVersions = (formId) => {
             if (isMounted.current) {
                 setVersions(versions => ({
                     ...versions,
+                    versionKey: response.data.versions ? response.data.versions[0].versionId : null,
                     data: response.data.versions,
                     total: response.data.total
                 }));
@@ -113,7 +122,7 @@ const useGetVersions = (formId) => {
         }
     }, [response, status, setVersions]);
 
-    const handlePaginationChange = (e, {activePage}) => {
+    const handlePaginationChange = (activePage) => {
         setVersions(versions => ({
             ...versions,
             activePage: activePage
@@ -124,6 +133,14 @@ const useGetVersions = (formId) => {
         setVersion(version.versionId)
     };
 
+    const setVersionKey = (versionKey) => {
+        setVersions(versions => ({
+            ...versions,
+             versionKey: versionKey
+        }));
+    };
+
+
     return {
         status,
         versions,
@@ -131,7 +148,8 @@ const useGetVersions = (formId) => {
         handlePaginationChange,
         exception,
         restore,
-        restoreState
+        restoreState,
+        setVersionKey
     }
 };
 

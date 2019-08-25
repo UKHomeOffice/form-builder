@@ -12,65 +12,12 @@ import VersionPreview from "./VersionPreview";
 import Overlay from "../../../../common/Overlay";
 import {EXECUTING} from "../../../../core/api/actionTypes";
 
-const Versions = ({formId}) => {
-    const {versions, status, response, handlePaginationChange, exception, restore, restoreState} = useGetVersions(formId);
-    const {activePage, limit, data, total} = versions;
-    const {t} = useTranslation();
-    // if (!status || status === EXECUTING) {
-    //     return <div className="center"><Loader active inline='centered' size='large'>{t('versions.loading')}</Loader>
-    //     </div>
-    // }
-    // if (status === ERROR) {
-    //     return <Container><Message negative>
-    //         <Message.Header>{t('error.general')}</Message.Header>
-    //         {t('versions.failure.versions-load', {error: response ? JSON.stringify(response.data) : exception.message})}
-    //     </Message></Container>
-    // }
-    //
-    // const panes = data ? data.map((version) => {
-    //     const item = <Menu.Item
-    //         key={version.versionId}>
-    //         {version.latest ?
-    //             <React.Fragment>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}<Label color='red'
-    //                                                                                             size='small'>Latest</Label></React.Fragment>
-    //             : <React.Fragment>
-    //                 {moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}
-    //                 <Label size='small'>{moment(version.validFrom).fromNow()}</Label>
-    //             </React.Fragment>
-    //         }
-    //
-    //     </Menu.Item>;
-    //     return {
-    //         menuItem: item,
-    //         render: () => <Tab.Pane><VersionPreview version={version} restore={restore}
-    //                                                 restoreState={restoreState}/></Tab.Pane>
-    //     }
-    // }) : [];
+import ReactPaginate from 'react-paginate';
 
-    //
-    // return <React.Fragment>
-    //     <Tab menu={{fluid: true, vertical: true, tabular: true}} panes={panes}/>
-    //     <div style={{marginTop: '20px', textAlign: 'center'}}>
-    //         <Pagination totalPages={Math.ceil(parseInt(total) / limit)}
-    //                     disabled={total <= limit}
-    //                     activePage={activePage}
-    //                     ellipsisItem={isMobile ? null : {
-    //                         content: <Icon name='ellipsis horizontal'/>,
-    //                         icon: true
-    //                     }}
-    //                     firstItem={isMobile ? null : {
-    //                         content: <Icon name='angle double left'/>,
-    //                         icon: true
-    //                     }}
-    //                     lastItem={isMobile ? null : {
-    //                         content: <Icon name='angle double right'/>,
-    //                         icon: true
-    //                     }}
-    //                     prevItem={{content: <Icon name='angle left'/>, icon: true}}
-    //                     nextItem={{content: <Icon name='angle right'/>, icon: true}}
-    //                     onPageChange={handlePaginationChange}/>
-    //     </div>
-    // </React.Fragment>
+const Versions = ({formId}) => {
+    const {versions, status, handlePaginationChange, restore, restoreState, setVersionKey} = useGetVersions(formId);
+    const {limit, data, total, versionKey} = versions;
+    const {t} = useTranslation();
 
     const navItems = data ? data.map((version) => {
         const isLatest = version.latest;
@@ -79,7 +26,7 @@ const Versions = ({formId}) => {
                    className="ml-2 float-right">{moment(version.validFrom).fromNow()}</Badge></React.Fragment>;
 
         const navItem = <Nav.Item key={version.versionId}>
-            <Nav.Link eventKey={isLatest ? 'latest' : version.versionId}>{
+            <Nav.Link eventKey={version.versionId}>{
                 isLatest ?
                     <React.Fragment>{moment(version.validFrom).format("DD-MM-YYYY HH:mm:ss")}<Badge variant="danger"
                                                                                                     className="ml-2 float-right">Latest</Badge></React.Fragment> : label
@@ -89,28 +36,54 @@ const Versions = ({formId}) => {
     }) : [];
 
     const versionTabs = data ? data.map((version) => {
-        const key = version.latest ? 'latest' : version.versionId;
-        return <Tab.Pane key={version.versionId} eventKey={key}>
+        return <Tab.Pane key={version.versionId} eventKey={version.versionId}>
             <VersionPreview version={version} restore={restore} restoreState={restoreState}/>
         </Tab.Pane>
     }) : [];
-
     return <Container fluid className="mt-3">
-        <Overlay active={!status || status === EXECUTING} loadingText={t('versions.loading')} styleName={"mt-5"}><Tab.Container id="versions" defaultActiveKey="latest">
-            <Row>
-                <Col sm={3}>
-                    <Nav variant="pills" className="flex-column">
-                        {navItems}
-                    </Nav>
-                </Col>
-                <Col sm={9}>
-                    <Tab.Content>
-                        {versionTabs}
-                    </Tab.Content>
-                </Col>
-            </Row>
-        </Tab.Container>
-        </Overlay>
+        <Row>
+            <Col className="d-flex flex-column align-items-center justify-content-center mt-3">
+                <ReactPaginate
+                    hrefBuilder={() => "#"}
+                    previousLabel={'Previous'}
+                    nextLabel={'Next'}
+                    breakLabel={'...'}
+                    previousClassName={'page-item'}
+                    nextClassName={'page-item'}
+                    pageCount={Math.ceil(parseInt(total) / limit)}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={(e) => handlePaginationChange(e.selected)}
+                    containerClassName={'pagination'}
+                    pageClassName={'page-item'}
+                    pageLinkClassName={'page-link'}
+                    activeClassName={'active'}
+                    previousLinkClassName={'page-link'}
+                    nextLinkClassName={'page-link'}
+                />
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <Overlay active={!status || status === EXECUTING} loadingText={t('versions.loading')}
+                         styleName={"mt-5"}>
+                    <Tab.Container id="versions" activeKey={versionKey} onSelect={(key) => setVersionKey(key)}>
+                        <Row>
+                            <Col sm={3}>
+                                <Nav variant="pills" className="flex-column">
+                                    {navItems}
+                                </Nav>
+                            </Col>
+                            <Col sm={9}>
+                                <Tab.Content>
+                                    {versionTabs}
+                                </Tab.Content>
+                            </Col>
+                        </Row>
+                    </Tab.Container>
+                </Overlay>
+            </Col>
+        </Row>
     </Container>
 };
 
