@@ -41,11 +41,13 @@ const PreviewFormPage = ({formId}) => {
             <Col className="d-flex flex-column align-items-center justify-content-center mt-3">
                 <ButtonToolbar>
                     <Button block={isMobile} className="mr-2"
+                            disabled={form.disableAllActions}
                             onClick={() => {
                                 backToForms();
                             }}
                             variant="secondary">{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
                     <Button block={isMobile} variant="info"
+                            disabled={form.disableAllActions}
                             onClick={() => {
                                 openSchemaView();
                             }}
@@ -53,11 +55,13 @@ const PreviewFormPage = ({formId}) => {
 
                     {canEdit() && envContext.editable ? <React.Fragment>
                         <Button block={isMobile} variant="dark"
+                                disabled={form.disableAllActions}
                                 onClick={() => {
                                     duplicate()
                                 }}
                                 className="mr-2">{t('form.preview.duplicate', {env: envContext.id})}</Button>
                         <Button block={isMobile} variant="primary"
+                                disabled={form.disableAllActions}
                                 onClick={() => {
                                     edit()
                                 }}
@@ -66,6 +70,7 @@ const PreviewFormPage = ({formId}) => {
 
                     {config.get('gov-uk-enabled', false) ?
                         <Button block={isMobile} variant="success"
+                                disabled={form.disableAllActions}
                                 onClick={() => {
                                     window.open(`/forms/${envContext.id}/${formId}/preview/gov-uk`)
                                 }}

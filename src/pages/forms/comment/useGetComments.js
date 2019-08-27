@@ -32,7 +32,7 @@ const useGetComments = (formId) => {
     const [saveCommentRequestState, saveCommentRequest] = useApiRequest(
         `/form/${formId}/comments`, {
             verb: 'post', params: {
-                comment: null
+                comment: comment
             }
         }
     );
@@ -57,7 +57,7 @@ const useGetComments = (formId) => {
         failedToLoadCommentsCallback.current = () => {
             let message = '';
             if (response) {
-                message = response.data.exception;
+                message = response.data.message;
             } else {
                 message = "No response from Form API server";
             }

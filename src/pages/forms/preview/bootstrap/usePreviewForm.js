@@ -24,7 +24,8 @@ const usePreviewForm = (formId) => {
         formId: formId,
         submission: null,
         openSchemaView: false,
-        tabKey: 'details'
+        tabKey: 'details',
+        disableAllActions: false
     });
 
     const isMounted = useRef(true);
@@ -59,7 +60,11 @@ const usePreviewForm = (formId) => {
         }));
     };
     const failedToLoadFormCallback = () => {
-        const message = response ? response.data.exception : 'No response from Form API server';
+        const message = response ? response.data.message : 'No response from Form API server';
+        setValue(form => ({
+            ...form,
+            disableAllActions: true
+        }));
         addToast(`${t('form.list.failure.forms-load', {error: message})}`,
             {
                 appearance: 'error'
