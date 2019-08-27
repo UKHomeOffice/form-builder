@@ -9,6 +9,8 @@ import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import axios from "axios";
 import {useToasts} from 'react-toast-notifications'
+import eventEmitter from '../../../core/eventEmitter';
+
 
 const useGetForms = () => {
         const navigation = useNavigation();
@@ -74,7 +76,7 @@ const useGetForms = () => {
             return baseFilter;
         };
 
-        const [{status, response}, makeRequest] = useApiRequest(
+        const [{status, response, exception}, makeRequest] = useApiRequest(
             `/form?select=title,path,name,display,id&limit=${forms.limit}&offset=${((forms.activePage) * forms.limit)}${resolveFilter()}`, {
                 verb: 'get', params: {
                     cancelToken: formsCancel.current.token
@@ -110,6 +112,7 @@ const useGetForms = () => {
 
 
         const savedCallback = useRef();
+        const handleFailedToLoadFormsCallback = useRef();
 
         const successfulFormDownloadCallback = useRef();
         const failedFormDownloadCallback = useRef();
@@ -121,6 +124,13 @@ const useGetForms = () => {
 
 
         useEffect(() => {
+
+            handleFailedToLoadFormsCallback.current = () => {
+                eventEmitter.emit('error', {
+                    message: t('form.list.failure.forms-load', {error: exception.message})
+                })
+            };
+
             savedCallback.current = () => {
                 setValues(forms => ({
                     ...forms,
@@ -161,12 +171,9 @@ const useGetForms = () => {
             };
 
             failedFormDownloadCallback.current = () => {
-                addToast(`${t('form.download.failed')} - ${t('form.download.failed-message')}`,
-                    {
-                        appearance: 'error',
-                        autoDismiss: true,
-                        pauseOnHover: true
-                    });
+                eventEmitter.emit('error', {
+                    message: `${t('form.download.failed')} - ${t('form.download.failed-message')}`
+                });
             };
 
             executeDownloadCallback.current = () => {
@@ -222,21 +229,7 @@ const useGetForms = () => {
 
             } else if (status === ERROR) {
                 if (isMounted.current) {
-                    let status;
-                    let message;
-                    if (!response) {
-                        status = 503;
-                        message = `Network issue for ${envContext.label}`
-                    } else {
-                        status = response.status;
-                        message = response.data.exception;
-                    }
-                    addToast(`${status}: Failed to load forms ${message}`,
-                        {
-                            appearance: 'error',
-                            autoDismiss: true,
-                            pauseOnHover: true
-                        });
+                    handleFailedToLoadFormsCallback.current();
                 }
             }
         }, [response, status, setValues, addToast]);
