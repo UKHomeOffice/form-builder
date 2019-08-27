@@ -22,10 +22,10 @@ const VersionPreview = ({version, restore, restoreState}) => {
             <Col>
                 <Card>
                     <Card.Header>
-                        <a href="#" onClick={() => {
+                        <Button variant="link" onClick={() => {
                             setOpenDetails(!openDetails)
                         }}><FontAwesomeIcon icon={openDetails ? faMinusCircle : faPlusCircle}/><span
-                            className="ml-2">{version.schema.title}</span></a>
+                            className="ml-2">{version.schema.title}</span></Button>
                         <Collapse in={openDetails} className="mt-2 mb-2">
                             <div id="formDetails">
                                 <ListGroup variant="flush">

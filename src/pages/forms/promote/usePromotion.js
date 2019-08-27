@@ -1,14 +1,15 @@
 import useApiRequest, {useMultipleApiCallbackRequest} from "../../../core/api";
 import {useNavigation} from "react-navi";
 import {useEffect, useRef, useState} from "react";
-import {SUCCESS} from "../../../core/api/actionTypes";
+import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import useEnvContext from "../../../core/context/useEnvContext";
 import createForm from "../../../core/form/createForm";
 import useLogger from "../../../core/logging/useLogger";
-import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {KeycloakTokenProvider} from "../../../core/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
+import Stepper from 'bs-stepper'
+import {useToasts} from "react-toast-notifications";
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
@@ -16,13 +17,16 @@ const usePromotion = (formId) => {
     const [keycloak] = useKeycloak();
     const {getEnvDetails, envContext} = useEnvContext();
     const {t} = useTranslation();
+    const {addToast} = useToasts();
     const [form, setValue] = useState({
         data: null,
         formId: formId,
         step: 'form',
         disabled: true,
-        environment: null
+        environment: null,
+        stepper: null
     });
+
 
     const keycloakTokenProvider = new KeycloakTokenProvider();
 
@@ -99,36 +103,83 @@ const usePromotion = (formId) => {
 
     const successfulPromotionCallback = useRef();
 
+    const handleFailedPromotion = useRef();
+
+    const handleFailedToLoadForm = useRef();
+
     const callback = () => {
         setValue(form => ({
             ...form,
             data: null
         }));
+
         makeRequest();
     };
 
+
+    const handleFailedToLoadFormCallback = () => {
+        let message = '';
+        if (response) {
+            message = response.data.message;
+        } else {
+            message = "No response from Form API server";
+        }
+        addToast(`${t('form.promote.failed-to-load-form', {error: message})}`,
+            {
+                appearance: 'error'
+            });
+    };
+    const handleFailedPromotionCallback = () => {
+        let message = '';
+        if (response) {
+            if (response.data.validationErrors) {
+                response.data.validationErrors.forEach((validationError) => {
+                    message += validationError.message + "\n";
+                });
+            } else {
+                message = response.data.message;
+            }
+        } else {
+            message = "No response from Form API server";
+        }
+
+        addToast(`${t('form.promote.failed-to-promote', {formName: form.data.name, error: message})}`,
+            {
+                appearance: 'error'
+            });
+    };
+
+
     const successCallback = () => {
         const promotionEnvironment = getEnvDetails(form.environment);
+        let message;
+
+        if (promotionEnvironment.approvalUrl) {
+            message = t('form.promote.approval.successful-description', {
+                formName: form.data.name,
+                env: promotionEnvironment.label
+            });
+        } else {
+            message = t('form.promote.successful-description', {
+                formName: form.data.name,
+                env: promotionEnvironment.label
+            })
+        }
+
+        addToast(`${message}`,
+            {
+                appearance: 'success',
+                autoDismiss: true,
+                pauseOnHover: true
+            });
         navigation.navigate(`/forms/${envContext.id}`, {replace: true});
-        toast({
-            type: 'success',
-            icon: 'check circle',
-            title: promotionEnvironment.approvalUrl ? t('form.promote.approval.successful-title', {formName: form.data.name}) : t('form.promote.successful-title', {
-                formName: form.data.name,
-                env: promotionEnvironment.label
-            }),
-            description: promotionEnvironment.approvalUrl ? t('form.promote.approval.successful-description', {
-                formName: form.data.name,
-                env: promotionEnvironment.label
-            }) : t('form.promote.successful-description', {formName: form.data.name, env: promotionEnvironment.label}),
-            animation: 'scale',
-            time: 10000
-        });
     };
 
     useEffect(() => {
         savedCallback.current = callback;
         successfulPromotionCallback.current = successCallback;
+        handleFailedPromotion.current = handleFailedPromotionCallback;
+        handleFailedToLoadForm.current = handleFailedToLoadFormCallback;
     });
 
     useEffect(() => {
@@ -140,14 +191,25 @@ const usePromotion = (formId) => {
         if (fetchState.status === SUCCESS) {
             setValue(form => ({
                 ...form,
-                data: fetchState.response.data
+                data: fetchState.response.data,
+                stepper: new Stepper(document.querySelector('#promotionStepper'), {
+                    linear: true,
+                    animation: true
+                })
             }));
         }
+        if (fetchState.status === ERROR) {
+            handleFailedToLoadForm.current();
+        }
+
     }, [fetchState.status, fetchState.response, setValue]);
 
     useEffect(() => {
         if (status === SUCCESS) {
             successfulPromotionCallback.current();
+        }
+        if (status === ERROR) {
+            handleFailedPromotion.current();
         }
     }, [status]);
 
@@ -158,7 +220,6 @@ const usePromotion = (formId) => {
     const isDisabled = () => {
         return !form.environment
     };
-
 
     return {
         fetchState,

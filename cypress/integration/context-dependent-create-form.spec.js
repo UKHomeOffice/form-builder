@@ -24,7 +24,7 @@ describe("Non editable environment cannot create new forms", () => {
 
 
         cy.get('[data-cy=not-allowed-to-create]').should('exist');
-        cy.contains('Environment context does not allow creation of forms directly');
+        cy.contains('EnvironmentPanel context does not allow creation of forms directly');
 
     });
 
@@ -44,7 +44,7 @@ describe("Non editable environment cannot create new forms", () => {
         cy.visit("/forms/demo/create/builder");
 
         cy.get('[data-cy=not-allowed-to-create]').should('exist');
-        cy.contains('Environment context does not allow creation of forms directly');
+        cy.contains('EnvironmentPanel context does not allow creation of forms directly');
 
     });
 
@@ -64,7 +64,7 @@ describe("Non editable environment cannot create new forms", () => {
         cy.visit("/forms/demo/create/file-upload");
 
         cy.get('[data-cy=not-allowed-to-create]').should('exist');
-        cy.contains('Environment context does not allow creation of forms directly');
+        cy.contains('EnvironmentPanel context does not allow creation of forms directly');
 
     });
 });

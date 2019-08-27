@@ -4,7 +4,6 @@ import {useMultipleApiCallbackRequest} from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import _ from 'lodash';
 import useLogger from "../../../core/logging/useLogger";
-import {toast} from "react-semantic-toasts";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import eventEmitter from '../../../core/eventEmitter';
@@ -195,25 +194,25 @@ const useMigrations = () => {
             };
 
             failedToLoadFormsCallback.current = (error) => {
-                toast({
-                    type: 'warning',
-                    icon: 'exclamation circle',
-                    title: t('error.general'),
-                    description: t('migration.failure.failed-to-load', {error: error.toString()}),
-                    animation: 'scale',
-                    time: 5000
-                });
+                // toast({
+                //     type: 'warning',
+                //     icon: 'exclamation circle',
+                //     title: t('error.general'),
+                //     description: t('migration.failure.failed-to-load', {error: error.toString()}),
+                //     animation: 'scale',
+                //     time: 5000
+                // });
             };
             handleMigrationCallback.current = () => {
                 for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
-                    toast({
-                        type: 'warning',
-                        icon: 'exclamation circle',
-                        title: t('migration.failure.title'),
-                        description: t('migration.failure.description', {formName: failedForm.name}),
-                        animation: 'scale',
-                        time: 5000
-                    });
+                    // toast({
+                    //     type: 'warning',
+                    //     icon: 'exclamation circle',
+                    //     title: t('migration.failure.title'),
+                    //     description: t('migration.failure.description', {formName: failedForm.name}),
+                    //     animation: 'scale',
+                    //     time: 5000
+                    // });
                 }
                 for (const successfulForm of migrationState.response.data.formsSuccessfullyMigrated) {
                     const selectedFormIds = formio.formsIdsForMigration;
@@ -221,14 +220,14 @@ const useMigrations = () => {
                         return id === successfulForm.formId
                     });
                     setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
-                    toast({
-                        type: 'success',
-                        icon: 'check circle',
-                        title: t('migration.success.title'),
-                        description: t('migration.success.description', {formName: successfulForm.name}),
-                        animation: 'scale',
-                        time: 5000
-                    });
+                    // toast({
+                    //     type: 'success',
+                    //     icon: 'check circle',
+                    //     title: t('migration.success.title'),
+                    //     description: t('migration.success.description', {formName: successfulForm.name}),
+                    //     animation: 'scale',
+                    //     time: 5000
+                    // });
                 }
                 makeRequest();
                 eventEmitter.emit('enable-navigation');

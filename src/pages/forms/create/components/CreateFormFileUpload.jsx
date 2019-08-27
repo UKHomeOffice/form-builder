@@ -1,11 +1,13 @@
 import React from 'react';
-import {Container, Divider, Header, Icon, Message} from 'semantic-ui-react'
 import {useTranslation} from "react-i18next";
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import useCreateForm from "../useCreateForm";
-import {ERROR} from "../../../../core/api/actionTypes";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
 import useEnvContext from "../../../../core/context/useEnvContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
+import Container from "react-bootstrap/Container";
+import Alert from "react-bootstrap/Alert";
 
 const CreateFormFileUpload = ({formContent}) => {
     const {t} = useTranslation();
@@ -13,7 +15,6 @@ const CreateFormFileUpload = ({formContent}) => {
     const {
         backToForms,
         status,
-        response,
         makeRequest,
         formInvalid,
         form,
@@ -23,53 +24,39 @@ const CreateFormFileUpload = ({formContent}) => {
         closePreview
     } = useCreateForm(formContent);
     const {envContext} = useEnvContext();
-    if (!formContent) {
-        return <Container><Message icon negative>
-            <Icon name='warning circle'/>
-            <Message.Content>
-                <Message.Header>{t('error.general')}</Message.Header>
-                {t('form.create.file-upload.no-form-content')}
-            </Message.Content>
-        </Message></Container>
-    }
 
-    return <div style={{paddingBottom: '10px'}}>
-        <Divider horizontal>
-            <Header as='h4'>
-                <Icon name='add'/>
-                Create from existing source
-            </Header>
-        </Divider>
-        <Container>
-            {status === ERROR ? <Message icon negative>
-                <Icon name='warning circle'/>
-                <Message.Content>
-                    <Message.Header>{t('error.general')}</Message.Header>
-                    {t('form.create.failure.failed-to-create', {error: JSON.stringify(response.data)})}
-                </Message.Content>
-            </Message> : null}
-            <FormBuilderComponent
-                form={form}
-                t={t}
-                envContext={envContext}
-                updateField={updateField}
-                openPreview={openPreview}
-                closePreview={closePreview}
-                status={status}
-                save={makeRequest}
-                formChoices={formChoices}
-                messageKeyPrefix={"form.create"}
-                backToForms={backToForms}
-                formInvalid={formInvalid}
-                updateForm={ (jsonSchema) =>
-                    setValues({
-                        ...form,
-                        data: Object.assign(jsonSchema, form.data)
-                    })
-                }
-            />
+    if (!formContent) {
+        return <Container>
+            <Alert variant="warning" className="border-1 mt-2">
+                <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                    <span className="ml-2">{t('error.general')}</span>
+                </Alert.Heading>
+                <p className="lead">{t('form.create.file-upload.no-form-content')}</p>
+            </Alert>
         </Container>
-    </div>
+    }
+    return <Container>
+        <FormBuilderComponent
+            form={form}
+            t={t}
+            envContext={envContext}
+            updateField={updateField}
+            openPreview={openPreview}
+            closePreview={closePreview}
+            status={status}
+            save={makeRequest}
+            formChoices={formChoices}
+            messageKeyPrefix={"form.create"}
+            backToForms={backToForms}
+            formInvalid={formInvalid}
+            updateForm={(jsonSchema) =>
+                setValues({
+                    ...form,
+                    data: Object.assign(jsonSchema, form.data)
+                })
+            }
+        />
+    </Container>
 };
 
 export default CreateFormFileUpload;

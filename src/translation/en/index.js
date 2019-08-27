@@ -109,6 +109,7 @@ const messages = {
             "previous" : "Previous",
             "next" : "Next",
             "promote-action" : "Promote",
+            "failed-to-load-form" : "Failed to load form due to {{error}}",
             "successful-title" : "{{formName}} successfully promoted",
             "successful-description": "{{formName}} has been successfully promoted to {{env}}",
             "failed-to-promote" : "Failed to promote {{formName}} due to {{error}}",
@@ -126,7 +127,7 @@ const messages = {
             },
             "not-allowed": {
                 "title": "Not allowed",
-                "message": "Environment context does not allow creation of forms directly"
+                "message": "EnvironmentPanel context does not allow creation of forms directly"
             },
             "choice": {
                 "label" :"Create a form using builder or upload an existing json file",
