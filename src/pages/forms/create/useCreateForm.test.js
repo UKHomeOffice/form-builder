@@ -23,7 +23,15 @@ describe('useCreateForm', () => {
 
         const naviModule = require('react-navi');
         naviModule.useNavigation = jest.fn(() => {
-            return 'fake bar'
+            return {
+                getCurrentValue : () => {
+                    return {
+                        url: {
+                            pathname: 'test'
+                        }
+                    }
+                }
+            }
         });
 
         const loggingModule = require('../../../core/logging/useLogger');

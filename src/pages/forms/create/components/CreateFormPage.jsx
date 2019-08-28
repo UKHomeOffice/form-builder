@@ -27,7 +27,6 @@ const CreateFormPage = () => {
     } = useCreateForm();
 
     const {envContext} = useEnvContext();
-
     return <div className="mt-3">
         {form.hasUnsavedData ? <Container><Alert variant="warning" className="border-1 mt-2">
             <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>

@@ -51,10 +51,9 @@ const useCreateForm = (formContent = null) => {
         data: formContent && formContent !== '' ? sanitize(parseToObject(formContent)) : {
             title: '',
             path: '',
-            display: 'form',
+            display: '',
             name: ''
         },
-        intervalId: null,
         displayPreview: false,
         missing: {
             path: false,
@@ -102,7 +101,9 @@ const useCreateForm = (formContent = null) => {
                 autoDismiss: true,
                 pauseOnHover: true
             });
-        await formindexdb.form.delete(form.data.name);
+        formindexdb.form.clear().then(() => {
+            console.log("Draft data cleared");
+        });
         await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
 
@@ -139,29 +140,22 @@ const useCreateForm = (formContent = null) => {
     };
 
     useEffect(() => {
+        console.log("checking for any existing data");
         formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then((data) => {
             if (data) {
-                const schema = data.schema;
                 setValues({
                     ...form,
                     hasUnsavedData: true,
-                    data: {
-                        display: schema.display,
-                        name: schema.name,
-                        path: schema.path,
-                        title: schema.title,
-                        components: schema.components
-                    }
+                    data: data.schema
                 });
             }
         });
-
         setInterval(() => {
             softSave();
         }, 30000);
         return () => {
             formindexdb.form.clear().then(() => {
-               console.log("Draft data cleared");
+                console.log("Draft data cleared");
             });
         };
     }, []);
@@ -252,11 +246,14 @@ const useCreateForm = (formContent = null) => {
         setValues({
             ...form
         });
+        softSave();
     };
 
 
     const softSave = () => {
-        if (form.data.components && form.data.components.length !== 0) {
+        if (form.data.components
+                && form.data.components.length !== 0
+        ) {
             setValues({
                 ...form,
                 hasUnsavedData: true

@@ -18,24 +18,20 @@ const CreateFormFileUpload = ({formContent}) => {
         makeRequest,
         formInvalid,
         form,
-        setValues,
+        updateSchema,
         updateField,
         openPreview,
         closePreview
     } = useCreateForm(formContent);
     const {envContext} = useEnvContext();
 
-    if (!formContent) {
-        return <Container>
-            <Alert variant="warning" className="border-1 mt-2">
-                <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
-                    <span className="ml-2">{t('error.general')}</span>
-                </Alert.Heading>
-                <p className="lead">{t('form.create.file-upload.no-form-content')}</p>
-            </Alert>
-        </Container>
-    }
     return <Container>
+        {form.hasUnsavedData ? <Container><Alert variant="warning" className="border-1 mt-2">
+            <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                <span className="ml-2">{t('form.create.unsaved.data.title')}</span>
+            </Alert.Heading>
+            <p>{t('form.create.unsaved.data.description')}</p>
+        </Alert></Container> : null}
         <FormBuilderComponent
             form={form}
             t={t}
@@ -49,12 +45,8 @@ const CreateFormFileUpload = ({formContent}) => {
             messageKeyPrefix={"form.create"}
             backToForms={backToForms}
             formInvalid={formInvalid}
-            updateForm={(jsonSchema) =>
-                setValues({
-                    ...form,
-                    data: Object.assign(jsonSchema, form.data)
-                })
-            }
+            updateForm={updateSchema}
+
         />
     </Container>
 };
