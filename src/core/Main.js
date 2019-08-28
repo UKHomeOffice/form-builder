@@ -33,7 +33,16 @@ export const Main = ({children}) => {
             addToast(`${t('error.general')}: ${exception.message}`,
                 options);
         } else {
-            //TODO: Handle response errors
+            let errorMessage;
+            if (response.data.validationErrors) {
+                response.data.validationErrors.forEach((validationError) => {
+                    errorMessage += validationError.message + "\n";
+                });
+            } else {
+                errorMessage = response.data.message;
+            }
+            addToast(`${t('error.general')}: ${errorMessage}`,
+                options);
         }
     });
 

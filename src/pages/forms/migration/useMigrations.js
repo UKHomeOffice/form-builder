@@ -6,12 +6,15 @@ import _ from 'lodash';
 import useLogger from "../../../core/logging/useLogger";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
+import {useToasts} from "react-toast-notifications";
 import eventEmitter from '../../../core/eventEmitter';
 
 const useMigrations = () => {
         const {clearEnvContext, getEnvDetails} = useEnvContext();
         const {log} = useLogger();
         const {t} = useTranslation();
+        const {addToast} = useToasts();
+
         const [formio, setFormio] = useState({
             url: '',
             username: '',
@@ -21,7 +24,7 @@ const useMigrations = () => {
             total: 0,
             limit: 10,
             numberOnPage: 0,
-            activePage: 1,
+            activePage: 0,
             formsIdsForMigration: [],
             searchTitle: '',
             open: false
@@ -35,7 +38,7 @@ const useMigrations = () => {
             (value) => {
                 setFormio(formio => ({
                     ...formio,
-                    activePage: 1,
+                    activePage: 0,
                     searchTitle: value
                 }));
             },
@@ -110,7 +113,7 @@ const useMigrations = () => {
             });
         }, [], [], getEnvDetails(formio.environment));
 
-        const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
+        const [{status, response, exception}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
                 const envContext = getEnvDetails(formio.environment);
                 try {
                     const tokenResponse = await axios({
@@ -131,7 +134,7 @@ const useMigrations = () => {
                             "Content-Type": "application/json",
                             'x-jwt-token': tokenResponse.headers['x-jwt-token']
                         },
-                        url: `${formio.url}/form?&limit=${formio.limit}${formio.activePage !== 1 ? `&skip=${((formio.activePage - 1) * formio.limit)}` : ''}${formio.searchTitle !== '' ? `&title__regex=/${formio.searchTitle}/i` : ''}`,
+                        url: `${formio.url}/form?&limit=${formio.limit}&skip=${((formio.activePage) * formio.limit)}${formio.searchTitle !== '' ? `&title__regex=/${formio.searchTitle}/i` : ''}`,
                         method: 'GET',
                     });
 
@@ -193,26 +196,19 @@ const useMigrations = () => {
                 makeRequest();
             };
 
-            failedToLoadFormsCallback.current = (error) => {
-                // toast({
-                //     type: 'warning',
-                //     icon: 'exclamation circle',
-                //     title: t('error.general'),
-                //     description: t('migration.failure.failed-to-load', {error: error.toString()}),
-                //     animation: 'scale',
-                //     time: 5000
-                // });
+            failedToLoadFormsCallback.current = () => {
+                eventEmitter.emit('error', {
+                    exception: exception,
+                    response: response
+                });
             };
             handleMigrationCallback.current = () => {
                 for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
-                    // toast({
-                    //     type: 'warning',
-                    //     icon: 'exclamation circle',
-                    //     title: t('migration.failure.title'),
-                    //     description: t('migration.failure.description', {formName: failedForm.name}),
-                    //     animation: 'scale',
-                    //     time: 5000
-                    // });
+
+                    eventEmitter.emit('error', {
+                        message: t('migration.failure.description', {formName: failedForm.name})
+                    });
+
                 }
                 for (const successfulForm of migrationState.response.data.formsSuccessfullyMigrated) {
                     const selectedFormIds = formio.formsIdsForMigration;
@@ -220,14 +216,12 @@ const useMigrations = () => {
                         return id === successfulForm.formId
                     });
                     setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
-                    // toast({
-                    //     type: 'success',
-                    //     icon: 'check circle',
-                    //     title: t('migration.success.title'),
-                    //     description: t('migration.success.description', {formName: successfulForm.name}),
-                    //     animation: 'scale',
-                    //     time: 5000
-                    // });
+                    addToast(`${t('migration.success.description', {formName: successfulForm.name})}`,
+                        {
+                            appearance: 'success',
+                            autoDismiss: true,
+                            pauseOnHover: true
+                        });
                 }
                 makeRequest();
                 eventEmitter.emit('enable-navigation');
@@ -254,7 +248,7 @@ const useMigrations = () => {
                 }));
             }
             if (status === ERROR) {
-                failedToLoadFormsCallback.current(response.data);
+                failedToLoadFormsCallback.current();
             }
         }, [status, setFormio, formio, response]);
 
@@ -280,7 +274,7 @@ const useMigrations = () => {
         const formInValid = () => {
             return !hasValue(formio.url) || !hasValue(formio.username) || !hasValue(formio.password) || !hasValue(formio.environment);
         };
-        const handlePaginationChange = (e, {activePage}) => {
+        const handlePaginationChange = (activePage) => {
             setFormio(formio => ({
                 ...formio,
                 activePage: activePage

@@ -119,6 +119,12 @@ const messages = {
             }
         },
         "create": {
+            "unsaved" : {
+                "data": {
+                    "title" : "Unsaved form data",
+                    "description" : "You have created a form schema. If you navigate away from this page you will lose your data. Please ensure you save using 'Create form'"
+                }
+            },
             "file-upload" : {
                 "no-form-content" : "No form content found"
             },

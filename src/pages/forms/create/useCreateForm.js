@@ -9,6 +9,7 @@ import useLogger from "../../../core/logging/useLogger";
 import createForm from "../../../core/form/createForm";
 import {useTranslation} from "react-i18next";
 import {useToasts} from "react-toast-notifications";
+import formindexdb from '../../../core/db/formindexdb';
 
 const useCreateForm = (formContent = null) => {
     const {t} = useTranslation();
@@ -53,6 +54,7 @@ const useCreateForm = (formContent = null) => {
             display: 'form',
             name: ''
         },
+        intervalId: null,
         displayPreview: false,
         missing: {
             path: false,
@@ -93,14 +95,15 @@ const useCreateForm = (formContent = null) => {
             level: 'info',
         }]
     );
-    const success = () => {
-        navigation.navigate(`/forms/${envContext.id}`, {replace: true});
+    const success = async () => {
         addToast(`${form.data.name} has been successfully created`,
             {
                 appearance: 'success',
                 autoDismiss: true,
                 pauseOnHover: true
             });
+        await formindexdb.form.delete(form.data.name);
+        await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
 
 
@@ -136,6 +139,34 @@ const useCreateForm = (formContent = null) => {
     };
 
     useEffect(() => {
+        formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then((data) => {
+            if (data) {
+                const schema = data.schema;
+                setValues({
+                    ...form,
+                    hasUnsavedData: true,
+                    data: {
+                        display: schema.display,
+                        name: schema.name,
+                        path: schema.path,
+                        title: schema.title,
+                        components: schema.components
+                    }
+                });
+            }
+        });
+
+        setInterval(() => {
+            softSave();
+        }, 30000);
+        return () => {
+            formindexdb.form.clear().then(() => {
+               console.log("Draft data cleared");
+            });
+        };
+    }, []);
+
+    useEffect(() => {
         savedCallback.current = callback;
         failedCallbackRef.current = failedCallback;
     });
@@ -163,9 +194,14 @@ const useCreateForm = (formContent = null) => {
 
                 form.data.title = value;
                 form.data.path = _.toLower(value).replace(/\s/g, '');
+
+                if (form.data.components && form.data.components.length !== 0) {
+                    formindexdb.form.delete(form.data.name).then(() => {
+                        console.log("deleted old record");
+                    });
+                }
                 form.data.name = _.camelCase(value);
                 form.data.machineName = form.data.name;
-
                 setValues({
                     ...form
                 });
@@ -176,13 +212,15 @@ const useCreateForm = (formContent = null) => {
                     ...form
                 });
             }
-
         } else {
             form.missing[target] = !hasValue;
             form.data[target] = value;
             setValues({
                 ...form
             });
+        }
+        if (form.data.components && form.data.components.length !== 0) {
+            softSave();
         }
     };
 
@@ -216,6 +254,34 @@ const useCreateForm = (formContent = null) => {
         });
     };
 
+
+    const softSave = () => {
+        if (form.data.components && form.data.components.length !== 0) {
+            setValues({
+                ...form,
+                hasUnsavedData: true
+            });
+            formindexdb.form.put({
+                path: navigation.getCurrentValue().url.pathname,
+                id: form.data.name,
+                schema: form.data
+            }).then((id) => {
+                console.log(`saved ${id}`);
+            }).catch((err) => {
+                console.error(err);
+            });
+        }
+    };
+
+    const updateSchema = (jsonSchema) => {
+        form.data.components = jsonSchema.components;
+        setValues({
+            ...form
+        });
+        softSave();
+    };
+
+
     return {
         formInvalid,
         backToForms,
@@ -227,7 +293,8 @@ const useCreateForm = (formContent = null) => {
         updateField,
         openPreview,
         closePreview,
-        changeDisplay
+        changeDisplay,
+        updateSchema,
     }
 };
 

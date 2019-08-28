@@ -11,13 +11,24 @@ import Button from "react-bootstrap/Button";
 import {EXECUTING} from "../../../../core/api/actionTypes";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import {isMobile} from "react-device-detect";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {
+    faList,
+    faCheck
+} from "@fortawesome/free-solid-svg-icons";
+import ReactPaginate from 'react-paginate';
+import _ from "lodash";
+import Overlay from "../../../../common/Overlay";
+import Table from "react-bootstrap/Table";
+import ExtendedBootstrapSwitchButton from "../../../../common/ExtendedBootstrapSwitchButton";
+import Modal from "react-bootstrap/Modal";
 
 const MigrationPage = () => {
     const {
         loadForms, formio, setFormio, formInValid, status, handlePaginationChange, handleCancelMigration,
         handleConfirmMigration, migrationState, handleTitleSearch
     } = useMigrations();
-    const {url, username, password, forms, environment, total, limit, activePage, open, searchTitle} = formio;
+    const {forms, total, limit,  open} = formio;
     const {t} = useTranslation();
     const {editableEnvironments, clearEnvContext} = useEnvContext();
 
@@ -29,7 +40,7 @@ const MigrationPage = () => {
             ...formio,
             [name]: value
         }));
-    }
+    };
     return <Container>
         <Row>
             <Col className="mt-5 d-flex flex-column align-items-center justify-content-center">
@@ -94,7 +105,7 @@ const MigrationPage = () => {
                             <Form.Control as="select"
                                           name="environment"
                                           onChange={handleChange}>
-                                <option hidden selected>Target environment</option>
+                                <option hidden defaultValue={null}>Target environment</option>
                                 {editableEnvironments().map((env) => {
                                     return <option key={env.id} value={env.id}>{env.label}</option>
                                 })}
@@ -108,6 +119,7 @@ const MigrationPage = () => {
                                     className="mr-2"
                                     disabled={formInValid() || status === EXECUTING}
                                     onClick={() => {
+                                        loadForms()
                                     }}>{status === EXECUTING ? 'Loading forms...' : 'Load forms to migrate'}</Button>
                             <Button data-cy="preview-form"
                                     variant="dark"
@@ -125,209 +137,152 @@ const MigrationPage = () => {
         </Row>
         <Row>
             <Col>
-
+                <div className="float-right">
+                    <ReactPaginate
+                        hrefBuilder={() => "#"}
+                        previousLabel={'Previous'}
+                        nextLabel={'Next'}
+                        breakLabel={'...'}
+                        previousClassName={'page-item'}
+                        nextClassName={'page-item'}
+                        pageCount={Math.ceil(parseInt(total) / limit)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={(e) => handlePaginationChange(e.selected)}
+                        containerClassName={'pagination'}
+                        breakClassName={'page-link'}
+                        pageClassName={'page-item'}
+                        pageLinkClassName={'page-link'}
+                        activeClassName={'active'}
+                        previousLinkClassName={'page-link'}
+                        nextLinkClassName={'page-link'}
+                    />
+                </div>
             </Col>
         </Row>
+        <Row>
+            <Col style={{marginTop: '1rem'}}>
+                <Form.Control type="text"
+                              disabled={formInValid()}
+                              placeholder={t('form.list.search-label')}
+                              onChange={(e) => {
+                                  handleTitleSearch(e, {
+                                      value: e.target.value
+                                  })
+                              }}
+                />
+            </Col>
+        </Row>
+        <Row>
+            <Col className="mt-3">
+                <Overlay active={status === EXECUTING}  styleName="mt-3" children={
+                    <Table responsive striped bordered hover>
+                        <caption><FontAwesomeIcon icon={faList}/><span className="ml-1">{total} forms</span></caption>
+                        <thead>
+                        <tr>
+                            <th>{t('form.list.table.formTitleCellLabel')}</th>
+                            <th>{t('form.list.table.formNameCellLabel')}</th>
+                            <th>Migrated</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <React.Fragment>
+                            {
+                                _.map(forms, (form) => {
+                                    let checked = false;
+                                    const exists = form.exists;
+                                    const formId = form._id;
+                                    if (formio.formsIdsForMigration.length !== 0) {
+                                        if (_.find(formio.formsIdsForMigration, (id) => {
+                                            return id === form._id;
+                                        })) {
+                                            checked = true;
+                                        }
+                                    }
+
+                                    return <tr key={formId}>
+                                       <td>{form.title}</td>
+                                       <td>{form.name}</td>
+                                       <td>
+                                           <ExtendedBootstrapSwitchButton
+                                               key={formId}
+                                               checked={exists || checked}
+                                               disabled={exists}
+                                               onlabel={exists? <React.Fragment><FontAwesomeIcon icon={faCheck}/><span className="ml-1">Migrated</span></React.Fragment>: "Migrate"}
+                                               onstyle='primary'
+                                               offlabel={"Migrate?"}
+                                               offstyle='info'
+                                               style='w-100 mt-2'
+                                               onChange={(checked) => {
+                                                   if (checked) {
+                                                       formio.formsIdsForMigration.push(formId);
+                                                   } else {
+                                                       _.remove(formio.formsIdsForMigration, (id) => {
+                                                           return id === formId;
+                                                       })
+                                                   }
+                                                   setFormio(formio => ({
+                                                       ...formio
+                                                   }));
+                                               }}
+                                           />
+                                       </td>
+                                   </tr>
+                                })
+                            }
+                        </React.Fragment>
+                        </tbody>
+                    </Table>
+                }/>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <ButtonToolbar>
+                    <Button variant="primary"
+                            block={isMobile}
+                            className="mr-2"
+                            disabled={migrationState.status === EXECUTING || formio.formsIdsForMigration.length === 0}
+                            onClick={() => {
+                                setFormio(formio => ({
+                                ...formio,
+                                open: true
+                            }));
+                            }}>{migrationState.status === EXECUTING ? 'Migrating forms....' : 'Migrate selected forms'}</Button>
+                    <Button data-cy="preview-form"
+                            variant="dark"
+                            block={isMobile}
+                            className="mr-2"
+                            onClick={async () => {
+                                clearEnvContext();
+                                await navigation.navigate("/");
+                            }}>{t('form.cancel.label')}</Button>
+
+                </ButtonToolbar>
+            </Col>
+        </Row>
+        <Modal show={open} onHide={() => handleCancelMigration()}>
+            <Modal.Header closeButton>
+                <Modal.Title>{t('migration.confirm-header')}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body><React.Fragment>
+                <div className="d-flex flex-column align-items-center justify-content-center">
+                    <p>{t('migration.confirm-content')}</p>
+                </div>
+            </React.Fragment></Modal.Body>
+            <Modal.Footer>
+                <Button
+                    disabled={migrationState.status === EXECUTING}
+                    variant="secondary" onClick={() => handleCancelMigration()}>Cancel</Button>
+                <Button data-cy="confirm-migration"
+                        disabled={migrationState.status === EXECUTING}
+                        onClick={() =>handleConfirmMigration()}
+                        variant="primary">Migrate</Button>
+
+            </Modal.Footer>
+        </Modal>
     </Container>
-    // return <Container>
-    //     <Confirm open={open}
-    //              onCancel={handleCancelMigration}
-    //              onConfirm={handleConfirmMigration}
-    //              content={t('migration.confirm-content')}
-    //              header={t('migration.confirm-header')}
-    //     />
-    //     <div style={{paddingTop: '20px'}}>
-    //         <div style={{textAlign: 'center'}}>
-    //             <Header as='h2' icon>
-    //                 <Icon name='move'/>
-    //                 {t('migration.title')}
-    //                 <Header.Subheader> {t('migration.description')}</Header.Subheader>
-    //             </Header>
-    //         </div>
-    //         <Grid columns='equal'>
-    //             <Grid.Row>
-    //                 <Grid.Column>
-    //                     <Form onSubmit={loadForms}>
-    //                         <Form.Group>
-    //                             <Form.Input name="url" label='Source environment' placeholder='Formio URL' width={6}
-    //                                         onChange={
-    //                                             (e, {name, value}) => {
-    //                                                 setFormio(formio => ({
-    //                                                     ...formio,
-    //                                                     [name]: value
-    //                                                 }));
-    //                                             }
-    //                                         }
-    //                                         error={url === '' || url === null}
-    //                                         value={url}
-    //                             />
-    //                             <Form.Input name="username" label='Username'
-    //                                         value={username}
-    //                                         error={username === '' || username === null}
-    //                                         placeholder='Service account username'
-    //                                         width={6} onChange={
-    //                                 (e, {name, value}) => {
-    //                                     setFormio(formio => ({
-    //                                         ...formio,
-    //                                         [name]: value
-    //                                     }));
-    //                                 }
-    //                             }/>
-    //                             <Form.Input name="password" label='Password'
-    //                                         type="password"
-    //                                         placeholder='Service account password'
-    //                                         value={password}
-    //                                         error={password === '' || password === null}
-    //                                         width={6} onChange={
-    //                                 (e, {name, value}) => {
-    //                                     setFormio(formio => ({
-    //                                         ...formio,
-    //                                         [name]: value
-    //                                     }));
-    //                                 }
-    //                             }/>
-    //                         </Form.Group>
-    //                         <Form.Select
-    //                             width={4}
-    //                             fluid
-    //                             value={environment}
-    //                             label='Target environment'
-    //                             error={environment === '' || environment === null}
-    //                             options={editableEnvironments().map((env) => {
-    //                                 return {
-    //                                     key: env.id,
-    //                                     text: env.label,
-    //                                     value: env.id
-    //                                 }
-    //                             })}
-    //                             onChange={
-    //                                 (e, {value}) => {
-    //                                     setFormio(formio => ({
-    //                                         ...formio,
-    //                                         environment: value
-    //                                     }));
-    //                                 }}
-    //                             placeholder='Environment '/>
-    //                         <div>
-    //                             <Button content='Load forms to migrate' primary disabled={
-    //                                 formInValid() || status === EXECUTING
-    //                             } loading={status === EXECUTING}/>
-    //                             <Button secondary onClick={() => {
-    //                                 clearEnvContext();
-    //                                 navigation.navigate("/");
-    //                             }}>{t('form.cancel.label')}</Button>
-    //                         </div>
-    //                     </Form>
-    //                 </Grid.Column>
-    //             </Grid.Row>
-    //             <Grid.Row>
-    //                 <Grid.Column>
-    //                     <Input data-cy="search-title" icon='search'
-    //                            name="search-title"
-    //                            placeholder={t('form.list.search-label')}
-    //                            size='large'
-    //                            value={searchTitle}
-    //                            disabled={formInValid()}
-    //                            onChange={handleTitleSearch}
-    //                            fluid focus/>
-    //                 </Grid.Column>
-    //             </Grid.Row>
-    //             <Grid.Row>
-    //                 <Grid.Column>
-    //                     {status === EXECUTING ?
-    //                         <Loader active inline='centered' size='medium'>{t('form.list.loading')}</Loader> :
-    //                         <Dimmer.Dimmable dimmed={migrationState.status === EXECUTING}>
-    //                             <Dimmer active={migrationState.status === EXECUTING} inverted>
-    //                                 <Loader active inline='centered'
-    //                                         size='medium'>{t('migration.migrating-label')}</Loader>
-    //                             </Dimmer>
-    //                             <List divided verticalAlign='middle'>
-    //                                 {
-    //                                     forms.map((form) => {
-    //                                         let checked = false;
-    //                                         if (formio.formsIdsForMigration.length !== 0) {
-    //                                             if (_.find(formio.formsIdsForMigration, (id) => {
-    //                                                 return id === form._id;
-    //                                             })) {
-    //                                                 checked = true;
-    //                                             }
-    //                                         }
-    //
-    //                                         return <List.Item key={form._id}>
-    //                                             <List.Content floated='right'>
-    //                                                 {!form.exists ?
-    //                                                     <Checkbox toggle
-    //                                                               value={form._id}
-    //                                                               defaultChecked={checked}
-    //                                                               onChange={(event, data) => {
-    //                                                                   if (data.checked) {
-    //                                                                       formio.formsIdsForMigration.push(data.value);
-    //                                                                   } else {
-    //                                                                       _.remove(formio.formsIdsForMigration, (id) => {
-    //                                                                           return id === data.value;
-    //                                                                       })
-    //                                                                   }
-    //                                                                   setFormio(formio => ({
-    //                                                                       ...formio
-    //                                                                   }));
-    //                                                               }}
-    //                                                     />
-    //                                                     : <Popup content={`${form.name} has already been migrated`}
-    //                                                              trigger={<Label color='teal' as='a'>Migrated</Label>}
-    //                                                              on='hover'
-    //                                                              basic
-    //                                                     />}
-    //                                             </List.Content>
-    //                                             <List.Content>{form.title}</List.Content>
-    //                                         </List.Item>
-    //                                     })
-    //                                 }
-    //                             </List>
-    //                         </Dimmer.Dimmable>
-    //                     }
-    //                     {forms.length !== 0 ? <div style={{marginTop: '20px', textAlign: 'center'}}><Pagination
-    //                         disabled={total < limit}
-    //                         totalPages={Math.ceil(parseInt(total) / limit)}
-    //                         activePage={activePage}
-    //                         ellipsisItem={isMobile ? null : {
-    //                             content: <Icon name='ellipsis horizontal'/>,
-    //                             icon: true
-    //                         }}
-    //                         firstItem={isMobile ? null : {
-    //                             content: <Icon name='angle double left'/>,
-    //                             icon: true
-    //                         }}
-    //                         lastItem={isMobile ? null : {
-    //                             content: <Icon name='angle double right'/>,
-    //                             icon: true
-    //                         }}
-    //                         prevItem={{content: <Icon name='angle left'/>, icon: true}}
-    //                         nextItem={{content: <Icon name='angle right'/>, icon: true}}
-    //                         onPageChange={handlePaginationChange}/></div> : null}
-    //                 </Grid.Column>
-    //             </Grid.Row>
-    //             <Grid.Row>
-    //                 <Grid.Column>
-    //                     {formio.formsIdsForMigration.length !== 0 ? <div><Button
-    //                         onClick={() => {
-    //                             setFormio(formio => ({
-    //                                 ...formio,
-    //                                 open: true
-    //                             }));
-    //                         }}
-    //                         loading={migrationState.status === EXECUTING}
-    //                         disabled={migrationState.status === EXECUTING}
-    //                         primary>{t('migration.migration-action-label', {env: environment})}</Button>
-    //                         <Button secondary onClick={() => {
-    //                             clearEnvContext()
-    //                             navigation.navigate("/");
-    //                         }}>{t('form.cancel.label')}</Button></div> : null}
-    //
-    //                 </Grid.Column>
-    //             </Grid.Row>
-    //         </Grid>
-    //     </div>
-    // </Container>
 };
 
 export default MigrationPage;
