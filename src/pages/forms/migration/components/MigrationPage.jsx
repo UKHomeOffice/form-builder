@@ -22,6 +22,7 @@ import Overlay from "../../../../common/Overlay";
 import Table from "react-bootstrap/Table";
 import ExtendedBootstrapSwitchButton from "../../../../common/ExtendedBootstrapSwitchButton";
 import Modal from "react-bootstrap/Modal";
+import Badge from "react-bootstrap/Badge";
 
 const MigrationPage = () => {
     const {
@@ -204,12 +205,15 @@ const MigrationPage = () => {
                                     return <tr key={formId}>
                                        <td>{form.title}</td>
                                        <td>{form.name}</td>
-                                       <td>
+                                        <td> {form.exists?
+                                            <React.Fragment>
+                                                <h5 className="text-center"><Badge variant="info"><FontAwesomeIcon icon={faCheck}/><span className="ml-1">Migrated</span></Badge></h5>
+                                            </React.Fragment>:
                                            <ExtendedBootstrapSwitchButton
                                                key={formId}
                                                checked={exists || checked}
                                                disabled={exists}
-                                               onlabel={exists? <React.Fragment><FontAwesomeIcon icon={faCheck}/><span className="ml-1">Migrated</span></React.Fragment>: "Migrate"}
+                                               onlabel={"Migrate"}
                                                onstyle='primary'
                                                offlabel={"Migrate?"}
                                                offstyle='info'
@@ -226,7 +230,7 @@ const MigrationPage = () => {
                                                        ...formio
                                                    }));
                                                }}
-                                           />
+                                           />}
                                        </td>
                                    </tr>
                                 })

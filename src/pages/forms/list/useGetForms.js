@@ -1,5 +1,5 @@
 import {useNavigation} from "react-navi";
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import _ from "lodash";
 import useApiRequest from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";

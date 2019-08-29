@@ -1,4 +1,3 @@
-import React from "react";
 import "bootstrap-switch-button-react/src/style.css";
 import BootstrapSwitchButton from "bootstrap-switch-button-react";
 

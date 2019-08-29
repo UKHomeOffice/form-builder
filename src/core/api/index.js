@@ -6,7 +6,6 @@ import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
-import jwt_decode from "jwt-decode";
 
 const keycloakTokenProvider = new KeycloakTokenProvider();
 
@@ -29,8 +28,7 @@ const configureAxios = async (envContext, config, keycloak) => {
 
 const handleError = async (instance, error, keycloak, envContext) => {
     if (error.response) {
-        const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
-        if (error.response.status ===  403 || error.response.status === 401) {
+        if (error.response.status === 403 || error.response.status === 401) {
             console.log("Trying again");
             Object.assign(instance.defaults, configureAxios(envContext, instance.defaults, keycloak));
             Object.assign(error.response.config, configureAxios(envContext, instance.defaults, keycloak));

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import axios from "axios";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import {useToasts} from "react-toast-notifications";
+import formindexdb from '../../../core/db/formindexdb';
 
 const useEditForm = (formId) => {
 
@@ -17,9 +18,10 @@ const useEditForm = (formId) => {
 
     const [editForm, setValues] = useState({
         data: null,
-        original: null,
+        openLocalChangesDetectedModal: false,
         formId: formId,
         displayPreview: false,
+        hasUnsavedData: false,
         missing: {
             path: false,
             title: false,
@@ -58,6 +60,11 @@ const useEditForm = (formId) => {
                 autoDismiss: true,
                 pauseOnHover: true
             });
+
+        formindexdb.form.clear().then(() => {
+            console.log("Draft data cleared from edit page");
+        });
+
         await navigation.navigate(`/forms/${envContext.id}/${editForm.data.id}/preview`, {replace: true});
     };
 
@@ -98,6 +105,9 @@ const useEditForm = (formId) => {
         const cancelEditRef = cancelEdit.current;
 
         return () => {
+            formindexdb.form.clear().then(() => {
+                console.log("Draft data cleared");
+            });
             cancelEditRef.cancel("Cancelling edit request");
             isMounted.current = false;
         }
@@ -107,10 +117,20 @@ const useEditForm = (formId) => {
     useEffect(() => {
         if (status === SUCCESS) {
             if (isMounted.current) {
+                formindexdb.form.get(formId).then(dataFromLocal => {
+                    if (dataFromLocal) {
+                        setValues(editForm => ({
+                            ...editForm,
+                            openLocalChangesDetectedModal: true
+                        }));
+                    }
+                }, error => {
+                    console.log(error);
+                });
+
                 setValues(editForm => ({
                     ...editForm,
                     data: response.data,
-                    original: response.data
                 }));
             }
         }
@@ -160,12 +180,30 @@ const useEditForm = (formId) => {
                 ...editForm
             });
         }
+        softSave();
     };
 
     const updateForm = (form) => {
         editForm.data.components = form.components;
         setValues({
             ...editForm
+        });
+        softSave();
+    };
+
+    const softSave = () => {
+        setValues({
+            ...editForm,
+            hasUnsavedData: true
+        });
+        formindexdb.form.put({
+            path: navigation.getCurrentValue().url.pathname,
+            id: formId,
+            schema: editForm.data
+        }).then((id) => {
+            console.log(`saved ${id}`);
+        }).catch((err) => {
+            console.error(err);
         });
     };
 
@@ -201,8 +239,28 @@ const useEditForm = (formId) => {
         setValues({
             ...editForm
         });
+        softSave();
     };
 
+    const closeDraftModal = () => {
+        setValues({
+            ...editForm,
+            openLocalChangesDetectedModal: false
+        });
+    };
+
+    const loadLocalChanges = () => {
+        formindexdb.form.get(formId).then(dataFromLocal => {
+            setValues(editForm => ({
+                ...editForm,
+                data:  dataFromLocal.schema,
+                openLocalChangesDetectedModal: false,
+            }));
+        }, error => {
+            console.log(error);
+        });
+
+    };
 
     return {
         status,
@@ -216,7 +274,9 @@ const useEditForm = (formId) => {
         formInvalid,
         editRequest,
         state,
-        changeDisplay
+        changeDisplay,
+        closeDraftModal,
+        loadLocalChanges
     }
 };
 

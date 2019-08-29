@@ -213,9 +213,7 @@ const useCreateForm = (formContent = null) => {
                 ...form
             });
         }
-        if (form.data.components && form.data.components.length !== 0) {
-            softSave();
-        }
+        softSave();
     };
 
     const openPreview = () => {
