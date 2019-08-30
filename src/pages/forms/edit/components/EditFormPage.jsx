@@ -10,8 +10,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import Alert from "react-bootstrap/Alert";
 import Overlay from "../../../../common/Overlay";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import {useBeforeunload} from 'react-beforeunload';
+import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmLoadLocalChangesModal";
 
 const EditFormPage = ({formId}) => {
     const {
@@ -32,6 +32,7 @@ const EditFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
     const {envContext} = useEnvContext();
+    useBeforeunload(() => "You will lose data if you have made updates");
 
     if (!envContext.editable) {
 
@@ -47,23 +48,13 @@ const EditFormPage = ({formId}) => {
     }
 
     return <React.Fragment>
-        <Modal show={editForm.openLocalChangesDetectedModal} onHide={() => closeDraftModal()}>
-            <Modal.Header closeButton>
-                <Modal.Title>{t('form.edit.unsaved.data.detected-local-changes-title')}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body><React.Fragment>
-                <p>{t('form.edit.unsaved.data.detected-local-changes')}</p>
-            </React.Fragment></Modal.Body>
-            <Modal.Footer>
-                <Button
-                    variant="secondary" onClick={() => closeDraftModal()}>{t('form.edit.unsaved.data.button-cancel')}</Button>
-                <Button data-cy="confirm-local"
-                        onClick={() => loadLocalChanges()}
-                        variant="primary">{t('form.edit.unsaved.data.button-load')}</Button>
 
-            </Modal.Footer>
-        </Modal>
-        <Overlay active={!status || status === EXECUTING} styleName="mt-5"
+        <ConfirmLoadLocalChangesModal
+            loadLocalChanges={loadLocalChanges}
+            openLocalChangesDetectedModal={editForm.openLocalChangesDetectedModal}
+            closeConfirmLoadLocalChangesModal={closeDraftModal}/>
+
+        <Overlay active={(!status || status === EXECUTING) || editForm.reloadingFromLocal} styleName="mt-5"
                  children=
                      {editForm.data ?
                          <React.Fragment>
@@ -72,7 +63,7 @@ const EditFormPage = ({formId}) => {
                                      <span className="ml-2">{t('form.edit.unsaved.data.title')}</span>
                                  </Alert.Heading>
                                  <p>{t('form.edit.unsaved.data.description')}</p>
-                             </Alert></Container>: null}
+                             </Alert></Container> : null}
                              <FormBuilderComponent
                                  envContext={envContext}
                                  form={editForm}
@@ -92,9 +83,7 @@ const EditFormPage = ({formId}) => {
                          </React.Fragment> : null}
 
                  loadingText={t('form.loading-form')}/>
-        </React.Fragment>
-
-
+    </React.Fragment>
 
 
 };

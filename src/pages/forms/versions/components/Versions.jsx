@@ -36,8 +36,9 @@ const Versions = ({formId}) => {
     }) : [];
 
     const versionTabs = data ? data.map((version) => {
-        return <Tab.Pane key={version.versionId} eventKey={version.versionId}>
-            <VersionPreview version={version} restore={restore} restoreState={restoreState}/>
+        const versionId = version.versionId;
+        return <Tab.Pane key={versionId} eventKey={versionId} mountOnEnter={true} unmountOnExit={true}>
+            <VersionPreview versionId={versionId} restore={restore} restoreState={restoreState}/>
         </Tab.Pane>
     }) : [];
     return <Container fluid className="mt-3">

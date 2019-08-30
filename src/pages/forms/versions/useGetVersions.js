@@ -23,7 +23,7 @@ const useGetVersions = (formId) => {
     const cancelVersionsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}/versions?limit=${versions.limit}&offset=${((versions.activePage ) * versions.limit)}`, {
+        `/form/${formId}/versions?limit=${versions.limit}&offset=${((versions.activePage ) * versions.limit)}&select=validTo&select=latest&select=versionId&select=validFrom`, {
             verb: 'get', params: {
                 cancelToken: cancelVersionsRequest.current.token
             }
@@ -129,8 +129,8 @@ const useGetVersions = (formId) => {
         }));
     };
 
-    const restore = (version) => {
-        setVersion(version.versionId)
+    const restore = (versionId) => {
+        setVersion(versionId)
     };
 
     const setVersionKey = (versionKey) => {

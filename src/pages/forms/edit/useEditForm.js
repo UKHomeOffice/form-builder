@@ -19,6 +19,7 @@ const useEditForm = (formId) => {
     const [editForm, setValues] = useState({
         data: null,
         openLocalChangesDetectedModal: false,
+        reloadingFromLocal: false,
         formId: formId,
         displayPreview: false,
         hasUnsavedData: false,
@@ -250,16 +251,26 @@ const useEditForm = (formId) => {
     };
 
     const loadLocalChanges = () => {
+        setValues(editForm => ({
+            ...editForm,
+            reloadingFromLocal : true
+        }));
         formindexdb.form.get(formId).then(dataFromLocal => {
             setValues(editForm => ({
                 ...editForm,
-                data:  dataFromLocal.schema,
+                reloadingFromLocal: false,
+                data:  {
+                    name: dataFromLocal.schema.name,
+                    title: dataFromLocal.schema.title,
+                    path: dataFromLocal.schema.path,
+                    components: dataFromLocal.schema.components,
+                    display: dataFromLocal.schema.display
+                },
                 openLocalChangesDetectedModal: false,
             }));
         }, error => {
             console.log(error);
         });
-
     };
 
     return {

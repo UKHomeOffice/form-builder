@@ -118,13 +118,21 @@ const messages = {
                 "successful-description": "{{formName}} has been successfully sent for approval. Form to be promoted to {{env}}",
             }
         },
+        "unsaved" : {
+            "data" : {
+                "detected-local-changes-title" : "Unsaved local changes detected",
+                "detected-local-changes" : "Please confirm whether you would like to load local changes to create a form",
+                "button-load" : "Load local changes",
+                "button-cancel" : "Ignore local changes"
+            }
+
+        },
         "create": {
             "unsaved" : {
                 "data": {
-                    "title" : "Unsaved form data",
+                     "title" : "Unsaved form data",
                     "description" : "You have created a form schema. If you navigate away from this page you will lose your data. Please ensure you save using 'Create form'",
-                    "detected-title" : "Local new form detected",
-                    "detected-description" : "Please confirm if you would like to load the local changes"
+
                 }
             },
             "file-upload" : {
@@ -228,13 +236,8 @@ const messages = {
             },
             "unsaved" : {
                 "data" : {
-                    "detected-local-changes" : "Please confirm if you would like to load local changes",
-                    "detected-local-changes-title" : "Local changes detected",
-
                     "title" : "Unsaved form data",
                     "description": "If you navigate away from this page you will lose your unsaved data. Please ensure you save using 'Update form'",
-                    "button-load" :"Load local changes",
-                    "button-cancel" : "Ignore local changes"
                 }
             },
             "form-type" : {

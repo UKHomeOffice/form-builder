@@ -51,9 +51,12 @@ const useCreateForm = (formContent = null) => {
         data: formContent && formContent !== '' ? sanitize(parseToObject(formContent)) : {
             title: '',
             path: '',
-            display: '',
+            display: 'form',
             name: ''
         },
+        openLocalChangesDetectedModal: false,
+        reloadingFromLocal: false,
+        localData: null,
         displayPreview: false,
         missing: {
             path: false,
@@ -141,12 +144,11 @@ const useCreateForm = (formContent = null) => {
 
     useEffect(() => {
         console.log("checking for any existing data");
-        formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then((data) => {
-            if (data) {
+        formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).count().then((data) => {
+            if (data !== 0) {
                 setValues({
                     ...form,
-                    hasUnsavedData: true,
-                    data: data.schema
+                    openLocalChangesDetectedModal: true
                 });
             }
         });
@@ -277,6 +279,32 @@ const useCreateForm = (formContent = null) => {
     };
 
 
+    const loadLocalChanges = () => {
+        setValues(form => ({
+            ...form,
+            reloadingFromLocal : true
+        }));
+        formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then(dataFromLocal => {
+            console.log(JSON.stringify(dataFromLocal.schema));
+            setValues(form => ({
+                ...form,
+                reloadingFromLocal: false,
+                data: dataFromLocal.schema,
+                openLocalChangesDetectedModal: false,
+            }));
+        }, error => {
+            console.log(error);
+        });
+
+    };
+    const closeDraftModal = () => {
+        setValues({
+            ...form,
+            openLocalChangesDetectedModal: false
+        });
+    };
+
+
     return {
         formInvalid,
         backToForms,
@@ -290,6 +318,8 @@ const useCreateForm = (formContent = null) => {
         closePreview,
         changeDisplay,
         updateSchema,
+        loadLocalChanges,
+        closeDraftModal
     }
 };
 
