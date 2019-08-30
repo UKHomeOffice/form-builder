@@ -8,16 +8,13 @@ import axios from "axios";
 import _ from 'lodash';
 import FormioUtils from 'formiojs/utils';
 import useCommonFormUtils from "../../common/useCommonFormUtils";
-import {useToasts} from "react-toast-notifications";
-import {useTranslation} from "react-i18next";
+import eventEmitter from "../../../../core/eventEmitter";
 
 const usePreviewForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
-    const {addToast} = useToasts();
-    const {t} = useTranslation();
 
     const [form, setValue] = useState({
         data: null,
@@ -60,15 +57,15 @@ const usePreviewForm = (formId) => {
         }));
     };
     const failedToLoadFormCallback = () => {
-        const message = response ? response.data.message : 'No response from Form API server';
+
         setValue(form => ({
             ...form,
             disableAllActions: true
         }));
-        addToast(`${t('form.list.failure.forms-load', {error: message})}`,
-            {
-                appearance: 'error'
-            });
+        eventEmitter.publish('error', {
+            response: response,
+            exception: exception
+        })
     };
 
     useEffect(() => {

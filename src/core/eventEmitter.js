@@ -1,4 +1,5 @@
-import {EventEmitter} from 'fbemitter'
+import PubSub from 'PubSub';
 
-const eventEmitter = new EventEmitter();
+const eventEmitter = new PubSub();
+
 export default eventEmitter;

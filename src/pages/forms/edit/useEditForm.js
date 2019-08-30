@@ -8,6 +8,7 @@ import axios from "axios";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import {useToasts} from "react-toast-notifications";
 import formindexdb from '../../../core/db/formindexdb';
+import eventEmitter from "../../../core/eventEmitter";
 
 const useEditForm = (formId) => {
 
@@ -81,23 +82,10 @@ const useEditForm = (formId) => {
         savedCallback.current = callback;
         editSuccessCallback.current = onSuccessfulEdit;
         editFailedCallback.current = () => {
-            let message = '';
-            if (response) {
-                if (response.data.validationErrors) {
-                    response.data.validationErrors.forEach((validationError) => {
-                        message += validationError.message + "\n";
-                    });
-                } else {
-                    message = response.data.exception;
-                }
-            } else {
-                message = "No response from Form API server";
-            }
-
-            addToast(`${editForm.data.title} failed to update due to ${message}`,
-                {
-                    appearance: 'error'
-                });
+            eventEmitter.publish('error', {
+                response: state.response,
+                exception: state.exception
+            });
         }
     });
 
@@ -134,6 +122,12 @@ const useEditForm = (formId) => {
                     data: response.data,
                 }));
             }
+        }
+        if (status === ERROR) {
+            eventEmitter.publish('error', {
+                response: state.response,
+                exception: state.exception
+            });
         }
     }, [response, status, setValues]);
 
@@ -253,13 +247,13 @@ const useEditForm = (formId) => {
     const loadLocalChanges = () => {
         setValues(editForm => ({
             ...editForm,
-            reloadingFromLocal : true
+            reloadingFromLocal: true
         }));
         formindexdb.form.get(formId).then(dataFromLocal => {
             setValues(editForm => ({
                 ...editForm,
                 reloadingFromLocal: false,
-                data:  {
+                data: {
                     name: dataFromLocal.schema.name,
                     title: dataFromLocal.schema.title,
                     path: dataFromLocal.schema.path,

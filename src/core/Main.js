@@ -7,44 +7,12 @@ import config from 'react-global-configuration'
 import {useTranslation} from "react-i18next";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
-import eventEmitter from "./eventEmitter";
-import {useToasts} from "react-toast-notifications";
 
 export const Main = ({children}) => {
     const route = useCurrentRoute();
     const {t} = useTranslation();
     const [show, setShow] = useState(true);
-    const {addToast} = useToasts();
 
-    //centralise errors
-    eventEmitter.addListener('error', error => {
-        const response = error.response;
-        const exception = error.exception;
-        const message = error.message;
-        const options = {
-            appearance: 'error',
-            autoDismiss: true,
-            pauseOnHover: true
-        };
-        if (message) {
-            addToast(`${t('error.general')}: ${message}`,
-                options);
-        } else if (exception) {
-            addToast(`${t('error.general')}: ${exception.message}`,
-                options);
-        } else {
-            let errorMessage;
-            if (response.data.validationErrors) {
-                response.data.validationErrors.forEach((validationError) => {
-                    errorMessage += validationError.message + "\n";
-                });
-            } else {
-                errorMessage = response.data.message;
-            }
-            addToast(`${t('error.general')}: ${errorMessage}`,
-                options);
-        }
-    });
 
     const pageNotFound = () => {
         return <Container>

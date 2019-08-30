@@ -197,7 +197,7 @@ const useMigrations = () => {
             };
 
             failedToLoadFormsCallback.current = () => {
-                eventEmitter.emit('error', {
+                eventEmitter.publish('error', {
                     exception: exception,
                     response: response
                 });
@@ -205,7 +205,7 @@ const useMigrations = () => {
             handleMigrationCallback.current = () => {
                 for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
 
-                    eventEmitter.emit('error', {
+                    eventEmitter.publish('error', {
                         message: t('migration.failure.description', {formName: failedForm.name})
                     });
 
@@ -224,7 +224,7 @@ const useMigrations = () => {
                         });
                 }
                 makeRequest();
-                eventEmitter.emit('enable-navigation');
+                eventEmitter.publish('enable-navigation', {});
             }
         });
 
@@ -293,7 +293,7 @@ const useMigrations = () => {
                 ...formio,
                 open: false
             }));
-            eventEmitter.emit('disable-navigation');
+            eventEmitter.publish('disable-navigation', {});
             migrateRequest();
         };
 

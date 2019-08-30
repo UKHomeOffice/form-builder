@@ -42,7 +42,7 @@ export const App = () => (
                       }}
                       onTokens={(tokens) => {
                           const token = tokens.token;
-                          eventEmitter.emit('token-refreshed', token);
+                          eventEmitter.publish('token-refreshed', token);
                       }}
                       initConfig={{
                           onLoad: 'login-required'

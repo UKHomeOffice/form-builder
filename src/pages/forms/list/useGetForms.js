@@ -126,7 +126,7 @@ const useGetForms = () => {
         useEffect(() => {
 
             handleFailedToLoadFormsCallback.current = () => {
-                eventEmitter.emit('error', {
+                eventEmitter.publish('error', {
                     message: t('form.list.failure.forms-load', {error: exception.message})
                 })
             };
@@ -171,7 +171,7 @@ const useGetForms = () => {
             };
 
             failedFormDownloadCallback.current = () => {
-                eventEmitter.emit('error', {
+                eventEmitter.publish('error', {
                     message: `${t('form.download.failed')} - ${t('form.download.failed-message')}`
                 });
             };

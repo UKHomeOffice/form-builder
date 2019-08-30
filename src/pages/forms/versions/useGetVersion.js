@@ -37,7 +37,7 @@ const useGetVersion = (versionId) => {
     };
 
     const failedGetVersion = () => {
-        eventEmitter.emit('error', {
+        eventEmitter.publish('error', {
             exception: exception,
             response: response
         });
