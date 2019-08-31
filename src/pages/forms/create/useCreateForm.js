@@ -8,23 +8,21 @@ import useCommonFormUtils from "../common/useCommonFormUtils";
 import useLogger from "../../../core/logging/useLogger";
 import createForm from "../../../core/form/createForm";
 import {useTranslation} from "react-i18next";
-import {useToasts} from "react-toast-notifications";
 import formindexdb from '../../../core/db/formindexdb';
+import eventEmitter from "../../../core/eventEmitter";
+import uuid4 from "uuid4";
+import {toast} from "react-toastify";
 
 const useCreateForm = (formContent = null) => {
     const {t} = useTranslation();
-    const {addToast} = useToasts();
     const sanitize = (form) => {
         try {
             return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
         } catch (e) {
-
-            addToast(`${t('error.general')} - ${t('form.create.failure.failed-to-create', {error: e.toString()})}`,
-                {
-                    appearance: 'error',
-                    autoDismiss: true,
-                    pauseOnHover: true
-                });
+            eventEmitter.publish('error', {
+               id: uuid4(),
+               message: `${t('error.general')} - ${t('form.create.failure.failed-to-create', {error: e.toString()})}`
+            });
         }
     };
 
@@ -32,12 +30,11 @@ const useCreateForm = (formContent = null) => {
         try {
             return JSON.parse(formContent)
         } catch (e) {
-            addToast(`${t('error.general')} - ${t('form.create.failure.invalid-json')}`,
-                {
-                    appearance: 'error',
-                    autoDismiss: true,
-                    pauseOnHover: true
-                });
+
+            eventEmitter.publish('error', {
+                id: uuid4(),
+                message: `${t('error.general')} - ${t('form.create.failure.invalid-json')}`
+            });
         }
     };
 
@@ -66,7 +63,7 @@ const useCreateForm = (formContent = null) => {
     });
 
     const formName = form.data.name;
-    const [{status, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
+    const [{status, exception, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
             try {
                 const formResponse = await axios({
                     method: 'GET',
@@ -98,12 +95,8 @@ const useCreateForm = (formContent = null) => {
         }]
     );
     const success = async () => {
-        addToast(`${form.data.name} has been successfully created`,
-            {
-                appearance: 'success',
-                autoDismiss: true,
-                pauseOnHover: true
-            });
+        toast.success(`${form.data.name} has been successfully created`)
+
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared");
         });
@@ -112,23 +105,12 @@ const useCreateForm = (formContent = null) => {
 
 
     const failure = () => {
-        let message = '';
-        if (response) {
-            if (response.data.validationErrors) {
-                response.data.validationErrors.forEach((validationError) => {
-                    message += validationError.message + "\n";
-                });
-            } else {
-                message = response.data.exception;
-            }
-        } else {
-            message = "No response from Form API server";
-        }
-
-        addToast(`${t('error.general')}: ${t('form.create.failure.failed-to-create', {error: message})}`,
-            {
-                appearance: 'error'
-            });
+        eventEmitter.publish('error', {
+            id: uuid4(),
+            exception: exception,
+            response: response,
+            translateKey: 'form.create.failure.failed-to-create'
+        });
     };
 
     const savedCallback = useRef();
@@ -285,7 +267,6 @@ const useCreateForm = (formContent = null) => {
             reloadingFromLocal : true
         }));
         formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then(dataFromLocal => {
-            console.log(JSON.stringify(dataFromLocal.schema));
             setValues(form => ({
                 ...form,
                 reloadingFromLocal: false,

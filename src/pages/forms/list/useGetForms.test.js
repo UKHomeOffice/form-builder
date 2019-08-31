@@ -9,15 +9,6 @@ jest.mock("react-keycloak", () => ({
     }
 }));
 
-jest.mock('react-toast-notifications' , () => ({
-    useToasts: () => {
-        return {
-            addToast : () => {
-                return jest.fn();
-            }
-        }
-    }
-}));
 
 describe('useGetForms', () => {
     beforeEach(() => {

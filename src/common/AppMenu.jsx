@@ -10,13 +10,10 @@ import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowsAlt, faCog, faCogs, faHome, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash';
-import {useToasts} from "react-toast-notifications";
-
 
 const AppMenu = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
-    const {addToast} = useToasts();
     const {clearEnvContext, changeContext, envContext} = useEnvContext();
     const {state, setState} = useContext(ApplicationContext);
 
@@ -49,40 +46,6 @@ const AppMenu = () => {
     });
 
 
-    eventEmitter.subscribeOnce('error', error => {
-        const response = error.response;
-        const exception = error.exception;
-        const message = error.message;
-        const options = {
-            appearance: 'error',
-            autoDismiss: true,
-            pauseOnHover: true
-        };
-        if (message) {
-            addToast(`${t('error.general')}: ${message}`,
-                options);
-        } else if (exception) {
-            addToast(`${t('error.general')}: ${exception.message}`,
-                options);
-        } else {
-            let errorMessage = '';
-
-            if (response) {
-                if (response.data['validationErrors']) {
-                    response.data['validationErrors'].forEach((validationError) => {
-                        errorMessage += validationError.message + "\n";
-                    });
-                } else {
-                    errorMessage = response.data.exception ? response.data.exception : response.data.message;
-                }
-            } else {
-                errorMessage = "Failed to reach API Server"
-            }
-
-            addToast(`${t('error.general')}: ${errorMessage}`,
-                options);
-        }
-    });
 
     const environments = config.get('environments');
 

@@ -7,6 +7,7 @@ import config from 'react-global-configuration'
 import {useTranslation} from "react-i18next";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
+import ErrorHandling from "../common/ErrorHandling";
 
 export const Main = ({children}) => {
     const route = useCurrentRoute();
@@ -33,7 +34,7 @@ export const Main = ({children}) => {
                 <AppHeader/>
             </Container>
             <NavNotFoundBoundary render={pageNotFound}>
-                {children || null}
+                <ErrorHandling>{children || null}</ErrorHandling>
             </NavNotFoundBoundary>
             <Footer/>
         </React.Fragment>
@@ -48,7 +49,7 @@ export const Main = ({children}) => {
                 </Container></React.Fragment> : null
         }
         <NavNotFoundBoundary render={pageNotFound}>
-            {children || null}
+            <ErrorHandling>{children || null}</ErrorHandling>
         </NavNotFoundBoundary>
         <Footer/>
     </React.Fragment>

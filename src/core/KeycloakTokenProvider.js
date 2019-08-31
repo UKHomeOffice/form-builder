@@ -1,23 +1,31 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
 
 export class KeycloakTokenProvider {
     constructor() {
         this.fetchKeycloakToken = this.fetchKeycloakToken.bind(this);
-        this.axios = axios.create();
-        this.axios.interceptors.response.use(response => {
-            return response;
-        }, async error => {
-            return this.handleError(this.axios, error);
-        });
+
     }
 
-    handleError = async (instance, error) => {
+    handleError = async (instance, error, keycloak) => {
         if (error.response) {
-            const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
-            if ((error.response.status ===  403 || error.response.status === 401) && isExpired) {
+            if ((error.response.status === 403 || error.response.status === 401)) {
                 console.log("Retrying...");
-                return await instance.request(error.response.config);
+                const oldToken = error.response.config.headers['Authorization'].replace('Bearer', '');
+                const newToken = keycloak.token;
+                if (oldToken !== newToken) {
+                    const config = error.config;
+                    config.headers['Authorization'] = `Bearer ${newToken}`;
+                    return new Promise((resolve, reject) => {
+                        instance.request(config).then(response => {
+                            resolve(response);
+                        }).catch((err) => {
+                            reject(err);
+                        });
+                    });
+                } else {
+                    console.log('Token is old...rejecting and retrying');
+                    return Promise.reject(error);
+                }
             } else {
                 return Promise.reject(error);
             }
@@ -26,20 +34,25 @@ export class KeycloakTokenProvider {
         }
     };
 
-    fetchKeycloakToken = async (environment, token) => {
+    fetchKeycloakToken = async (environment, keycloak) => {
+        const instance = axios.create();
+        instance.interceptors.response.use(response => {
+            return response;
+        }, async error => {
+            return this.handleError(instance, error, keycloak);
+        });
+
         if (!environment) {
             throw Error("No environment provided");
         }
-        if (!token) {
-            throw Error("No token provided");
-        }
+
         const fetchToken = async () => {
             try {
-                const tokenResponse = await this.axios({
+                const tokenResponse = await instance({
                     method: 'GET',
                     url: `/keycloak/${environment.id}/token`,
                     headers: {
-                        "Authorization": `Bearer ${token}`
+                        "Authorization": `Bearer ${keycloak.token}`
                     }
                 });
                 if (tokenResponse.status !== 200) {

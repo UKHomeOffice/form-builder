@@ -4,20 +4,16 @@ import axios from "axios";
 import _ from 'lodash';
 import config from "react-global-configuration"
 import {KeycloakTokenProvider} from "../../core/KeycloakTokenProvider";
-import useLogger from "../../core/logging/useLogger";
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../core/context/useEnvContext";
 import {ApplicationContext} from "../../core/AppRouter";
 import {useKeycloak} from "react-keycloak";
-import jwt_decode from "jwt-decode";
-import {useToasts} from "react-toast-notifications";
+import eventEmitter from "../../core/eventEmitter";
 
 const useReports = () => {
     const keycloakProvider = new KeycloakTokenProvider();
     const {t} = useTranslation();
-    const {log} = useLogger();
     const [keycloak] = useKeycloak();
-    const {addToast} = useToasts();
 
     const [reports, setReports] = useState({
         statusFormsPerEnvCount: EXECUTING,
@@ -36,61 +32,13 @@ const useReports = () => {
 
     instance.interceptors.request.use(async (config) => {
             const environment = config.headers['x-environment'];
-            const token = keycloak.token;
-            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, token);
+            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, keycloak);
             config.headers['Authorization'] = `Bearer ${jwtToken}`;
             return Promise.resolve(config);
         },
         (err) => {
             return Promise.reject(err);
         });
-
-    instance.interceptors.response.use(null, async (error) => {
-        if (!error.response) {
-            return Promise.reject(error);
-        }
-        const isExpired = jwt_decode(error.response.config.headers['Authorization'].replace('Bearer', '')).exp < new Date().getTime() / 1000;
-        if ((error.response.status === 403 || error.response.status === 401) && isExpired) {
-            console.log("Retying");
-            const environment = error.response.config.headers['x-environment'];
-            const token = keycloak.token;
-            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, token);
-            Object.assign(instance.defaults, {
-                "Authorization": `Bearer ${jwtToken}`
-            });
-            Object.assign(error.response.config, {
-                "Authorization": `Bearer ${jwtToken}`
-            });
-            return await instance.request(error.response.config);
-        } else if (axios.isCancel(error)) {
-            console.log(error.message);
-            return Promise.resolve({
-                data: {
-                    total: 0
-                }
-            });
-        } else {
-            const url = error.config ? error.config.url : "";
-            const errorMessage = error.message;
-            addToast(`${t('error.general')}: ${t('home.failure.reports', {url: url, error: errorMessage})}`,
-                {
-                    appearance: 'error',
-                    autoDismiss: true,
-                    pauseOnHover: true
-                });
-            log([{
-                message: `Failed to get report data from ${url}`,
-                level: "error",
-                exception: errorMessage,
-                reportUrl: url
-            }]);
-            return Promise.resolve({
-                data: {
-                    total: 0
-                }
-            })
-        }
-    });
 
     const fetchReportsCallback = useRef();
     const cancelTokenRefs = useRef([]);
@@ -124,12 +72,14 @@ const useReports = () => {
                 });
             } catch (error) {
                 if (!axios.isCancel(error)) {
-                    addToast(`${t('error.general')}: ${t('home.failure.reports', {url: url, error: error.message})}`,
-                        {
-                            appearance: 'error',
-                            autoDismiss: true,
-                            pauseOnHover: true
-                        });
+
+                    eventEmitter.publish('error', {
+                        id: environment.id,
+                        message: `${t('error.general')}: ${t('home.failure.reports', {
+                            url: url,
+                            error: error.message
+                        })}`
+                    });
                 }
                 return Promise.resolve({
                     environment: environment,
@@ -182,20 +132,22 @@ const useReports = () => {
                 }
             } catch (error) {
                 if (error.message && error.message !== 'Cancelling API request') {
-                    addToast(`${t('error.general')}: ${t('home.failure.reports', {url: environment.url, error: error.message})}`,
-                        {
-                            appearance: 'error',
-                            autoDismiss: true,
-                            pauseOnHover: true
-                        });
+                    eventEmitter.publish('error', {
+                        id: environment.id,
+                        message: `${t('error.general')}: ${t('home.failure.reports', {
+                            url: environment.url,
+                            error: error.message
+                        })}`
+                    });
+
                 }
                 return {
                     environment: environment.id,
                     formTypes: {
-                        total : 0
+                        total: 0
                     },
                     wizardTypes: {
-                        total : 0
+                        total: 0
                     }
                 }
             }

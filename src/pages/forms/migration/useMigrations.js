@@ -6,14 +6,14 @@ import _ from 'lodash';
 import useLogger from "../../../core/logging/useLogger";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
-import {useToasts} from "react-toast-notifications";
 import eventEmitter from '../../../core/eventEmitter';
+import  uuid4 from "uuid4";
+import {toast} from "react-toastify";
 
 const useMigrations = () => {
         const {clearEnvContext, getEnvDetails} = useEnvContext();
         const {log} = useLogger();
         const {t} = useTranslation();
-        const {addToast} = useToasts();
 
         const [formio, setFormio] = useState({
             url: '',
@@ -206,6 +206,7 @@ const useMigrations = () => {
                 for (const failedForm of migrationState.response.data.formsFailedToMigrate) {
 
                     eventEmitter.publish('error', {
+                        id: uuid4(),
                         message: t('migration.failure.description', {formName: failedForm.name})
                     });
 
@@ -216,12 +217,9 @@ const useMigrations = () => {
                         return id === successfulForm.formId
                     });
                     setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
-                    addToast(`${t('migration.success.description', {formName: successfulForm.name})}`,
-                        {
-                            appearance: 'success',
-                            autoDismiss: true,
-                            pauseOnHover: true
-                        });
+
+                    toast(`${t('migration.success.description', {formName: successfulForm.name})}`)
+
                 }
                 makeRequest();
                 eventEmitter.publish('enable-navigation', {});

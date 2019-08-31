@@ -3,6 +3,7 @@ import axios from "axios";
 import useApiRequest from "../../../core/api";
 import eventEmitter from '../../../core/eventEmitter';
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
+import uuid4 from "uuid4";
 
 const useGetVersion = (versionId) => {
     const [version, setVersion] = useState({
@@ -39,7 +40,8 @@ const useGetVersion = (versionId) => {
     const failedGetVersion = () => {
         eventEmitter.publish('error', {
             exception: exception,
-            response: response
+            response: response,
+            id: uuid4()
         });
     };
 

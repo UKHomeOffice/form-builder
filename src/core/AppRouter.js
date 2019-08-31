@@ -10,7 +10,6 @@ import config from "react-global-configuration"
 import _ from 'lodash';
 import {Logout} from "../common/Logout";
 import Unauthorized from "../common/Unauthorized";
-import {ToastProvider} from 'react-toast-notifications'
 import Overlay from "../common/Overlay";
 
 const hasAuthorization = (authorizationRoles, context, matcher) => {
@@ -86,6 +85,7 @@ export const AppRouter = () => {
 
 
     return <Overlay active={!initialised} styleName="mt-5" children={
+
         (<ApplicationContext.Provider value={{state, setState}}>
                 <Router routes={routes} context={{
                     isAuthenticated: keycloak.authenticated,
@@ -93,11 +93,11 @@ export const AppRouter = () => {
                     keycloak: keycloak,
                     config: config
                 }}>
-                    <ToastProvider placement="top-center"><Main>
+                    <Main>
                         <Suspense fallback={null}>
                             <View/>
                         </Suspense>
-                    </Main></ToastProvider>
+                    </Main>
                 </Router>
             </ApplicationContext.Provider>
         )

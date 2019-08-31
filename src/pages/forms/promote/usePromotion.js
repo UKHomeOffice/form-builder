@@ -9,7 +9,9 @@ import {useTranslation} from "react-i18next";
 import {KeycloakTokenProvider} from "../../../core/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 import Stepper from 'bs-stepper'
-import {useToasts} from "react-toast-notifications";
+import eventEmitter from "../../../core/eventEmitter";
+import * as uuid4 from "uuid4";
+import {toast} from "react-toastify";
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
@@ -17,7 +19,6 @@ const usePromotion = (formId) => {
     const [keycloak] = useKeycloak();
     const {getEnvDetails, envContext} = useEnvContext();
     const {t} = useTranslation();
-    const {addToast} = useToasts();
     const [form, setValue] = useState({
         data: null,
         formId: formId,
@@ -36,10 +37,10 @@ const usePromotion = (formId) => {
         }
     );
 
-    const [{status, response}, execute] = useMultipleApiCallbackRequest(async (axios) => {
+    const [{status, response, exception}, execute] = useMultipleApiCallbackRequest(async (axios) => {
         try {
             const promotionEnvironment = getEnvDetails(form.environment);
-            const token = await keycloakTokenProvider.fetchKeycloakToken(promotionEnvironment, keycloak.token);
+            const token = await keycloakTokenProvider.fetchKeycloakToken(promotionEnvironment, keycloak);
 
             const headers = {
                 "x-promote-kc-token": `Bearer ${token}`,
@@ -118,35 +119,27 @@ const usePromotion = (formId) => {
 
 
     const handleFailedToLoadFormCallback = () => {
-        let message = '';
-        if (response) {
-            message = response.data.message;
-        } else {
-            message = "No response from Form API server";
-        }
-        addToast(`${t('form.promote.failed-to-load-form', {error: message})}`,
-            {
-                appearance: 'error'
-            });
+        eventEmitter.publish('error', {
+            id: uuid4(),
+            exception: fetchState.exception,
+            response: fetchState.response,
+            translateKey: 'form.promote.failed-to-load-form',
+            translateKeyMeta: {
+                formName: form.data.name
+            }
+        });
+
     };
     const handleFailedPromotionCallback = () => {
-        let message = '';
-        if (response) {
-            if (response.data.validationErrors) {
-                response.data.validationErrors.forEach((validationError) => {
-                    message += validationError.message + "\n";
-                });
-            } else {
-                message = response.data.message;
-            }
-        } else {
-            message = "No response from Form API server";
-        }
-
-        addToast(`${t('form.promote.failed-to-promote', {formName: form.data.name, error: message})}`,
-            {
-                appearance: 'error'
-            });
+        eventEmitter.publish('error', {
+            translateKey: `form.promote.failed-to-promote`,
+            translateKeyMeta: {
+                formName: form.data.name
+            },
+            id: uuid4(),
+            exception: exception,
+            response: response
+        });
     };
 
 
@@ -166,12 +159,8 @@ const usePromotion = (formId) => {
             })
         }
 
-        addToast(`${message}`,
-            {
-                appearance: 'success',
-                autoDismiss: true,
-                pauseOnHover: true
-            });
+        toast.success(`${message}`);
+
         navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
 

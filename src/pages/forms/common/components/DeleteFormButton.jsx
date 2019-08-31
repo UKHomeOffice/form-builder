@@ -4,11 +4,12 @@ import {ERROR, EXECUTING, SUCCESS} from "../../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import {useToasts} from "react-toast-notifications";
+import eventEmitter from "../../../../core/eventEmitter";
+import  uuid4 from "uuid4";
+import {toast} from "react-toastify";
 
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const [open, setOpen] = useState(false);
-    const {addToast} = useToasts();
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${form.id}`, {verb: 'delete'}
     );
@@ -19,23 +20,18 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
 
     const callback = () => {
         setOpen(false);
-        addToast(`${t('form.delete.successful', {formName: form.name})}`,
-            {
-                appearance: 'success',
-                autoDismiss: true,
-                pauseOnHover: true
-            });
+        toast.success(`${t('form.delete.successful', {formName: form.name})}`);
         onSuccessfulDeletion()
     };
     const failedCallback = () => {
         setOpen(false);
         const message = response ? JSON.stringify(response.data.exception) : 'Failed to connect to API Server';
-        addToast(`${t('form.delete.failure.failed-to-delete', {formName: form.name, error: message})}`,
-            {
-                appearance: 'danger',
-                autoDismiss: true,
-                pauseOnHover: true
-            });
+
+        eventEmitter.publish('error', {
+            id: uuid4(),
+            message: `${t('form.delete.failure.failed-to-delete', {formName: form.name, error: message})}`
+        });
+
     };
 
     useEffect(() => {

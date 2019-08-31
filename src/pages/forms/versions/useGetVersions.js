@@ -3,7 +3,9 @@ import axios from "axios";
 import useApiRequest from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
-import {useToasts} from "react-toast-notifications";
+import { toast} from "react-toastify";
+import eventEmitter from "../../../core/eventEmitter";
+import uuid4 from "uuid4";
 
 const useGetVersions = (formId) => {
     const initialState = {
@@ -19,7 +21,6 @@ const useGetVersions = (formId) => {
     const [versions, setVersions] = useState(initialState);
     const {t} = useTranslation();
     const CancelToken = axios.CancelToken;
-    const {addToast} = useToasts();
     const cancelVersionsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
@@ -52,35 +53,16 @@ const useGetVersions = (formId) => {
         };
         restoreCallback.current = () => {
             if (restoreState.status === SUCCESS) {
-                addToast(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`,
-                    {
-                        appearance: 'success',
-                        autoDismiss: true,
-                        pauseOnHover: true
-                    });
+                toast.success(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`);
                 makeRequest();
             }
             if (restoreState.status === ERROR) {
-                let message = '';
-                if (restoreState.response) {
-                    if (restoreState.response.data.validationErrors) {
-                        restoreState.response.data.validationErrors.forEach((validationError) => {
-                            message += validationError.message + "\n";
-                        });
-                    } else {
-                        message = restoreState.response.data.exception;
-                    }
-                } else {
-                    message = "No response from Form API server";
-                }
-
-                addToast(`${t('form.restore.failure', {
-                        error: message
-                    })}`,
-                    {
-                        appearance: 'error'
-                    });
-
+                eventEmitter.publish('error', {
+                    id: uuid4(),
+                    translateKey: 'form.restore.failure',
+                    exception: restoreState.exception,
+                    response: restoreState.response
+                });
             }
         };
         executeRestoreCallback.current = () => {

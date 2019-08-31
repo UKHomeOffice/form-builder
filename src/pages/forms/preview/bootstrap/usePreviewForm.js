@@ -9,6 +9,7 @@ import _ from 'lodash';
 import FormioUtils from 'formiojs/utils';
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import eventEmitter from "../../../../core/eventEmitter";
+import  uuid4 from "uuid4";
 
 const usePreviewForm = (formId) => {
 
@@ -63,9 +64,10 @@ const usePreviewForm = (formId) => {
             disableAllActions: true
         }));
         eventEmitter.publish('error', {
+            id: uuid4(),
             response: response,
             exception: exception
-        })
+        });
     };
 
     useEffect(() => {

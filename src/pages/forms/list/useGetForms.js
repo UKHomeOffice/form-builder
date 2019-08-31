@@ -8,15 +8,14 @@ import fileDownload from 'js-file-download';
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import axios from "axios";
-import {useToasts} from 'react-toast-notifications'
 import eventEmitter from '../../../core/eventEmitter';
-
+import {toast} from "react-toastify";
+import uuid from 'uuid4';
 
 const useGetForms = () => {
         const navigation = useNavigation();
         const {envContext} = useEnvContext();
         const {t} = useTranslation();
-        const {addToast} = useToasts();
         const initialState = {
             column: null,
             direction: null,
@@ -127,6 +126,7 @@ const useGetForms = () => {
 
             handleFailedToLoadFormsCallback.current = () => {
                 eventEmitter.publish('error', {
+                    id: uuid(),
                     message: t('form.list.failure.forms-load', {error: exception.message})
                 })
             };
@@ -162,16 +162,13 @@ const useGetForms = () => {
 
             successfulFormDownloadCallback.current = () => {
                 fileDownload(downloadFormState.response.data, `${forms.downloadFile.formName}.json`);
-                addToast(`${t('form.download.successful-message', {formName: forms.downloadFile.formName})}`,
-                    {
-                        appearance: 'success',
-                        autoDismiss: true,
-                        pauseOnHover: true
-                    });
+                toast.success(`${t('form.download.successful-message', {formName: forms.downloadFile.formName})}`)
+
             };
 
             failedFormDownloadCallback.current = () => {
                 eventEmitter.publish('error', {
+                    id: uuid(),
                     message: `${t('form.download.failed')} - ${t('form.download.failed-message')}`
                 });
             };
@@ -232,7 +229,7 @@ const useGetForms = () => {
                     handleFailedToLoadFormsCallback.current();
                 }
             }
-        }, [response, status, setValues, addToast]);
+        }, [response, status, setValues]);
 
 
         useEffect(() => {

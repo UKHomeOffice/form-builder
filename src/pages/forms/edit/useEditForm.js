@@ -6,19 +6,19 @@ import useEnvContext from "../../../core/context/useEnvContext";
 import _ from 'lodash';
 import axios from "axios";
 import useCommonFormUtils from "../common/useCommonFormUtils";
-import {useToasts} from "react-toast-notifications";
 import formindexdb from '../../../core/db/formindexdb';
 import eventEmitter from "../../../core/eventEmitter";
+import {toast} from "react-toastify";
+import uuid4 from "uuid4";
 
 const useEditForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
-    const {addToast} = useToasts();
 
     const [editForm, setValues] = useState({
-        data: null,
+        data: {},
         openLocalChangesDetectedModal: false,
         reloadingFromLocal: false,
         formId: formId,
@@ -36,7 +36,7 @@ const useEditForm = (formId) => {
     const cancelEdit = useRef(CancelToken.source());
 
 
-    const [{status, response}, makeRequest] = useApiRequest(
+    const [{status, response, exception}, makeRequest] = useApiRequest(
         `/form/${formId}`, {
             verb: 'get', params: {
                 cancelToken: cancelEdit.current.token
@@ -56,12 +56,7 @@ const useEditForm = (formId) => {
     const editFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        addToast(`${editForm.data.name} has been successfully updated`,
-            {
-                appearance: 'success',
-                autoDismiss: true,
-                pauseOnHover: true
-            });
+        toast(`${editForm.data.name} has been successfully updated`);
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared from edit page");
@@ -73,7 +68,7 @@ const useEditForm = (formId) => {
     const callback = () => {
         setValues(form => ({
             ...form,
-            data: null
+            data: {}
         }));
         makeRequest();
     };
@@ -83,6 +78,7 @@ const useEditForm = (formId) => {
         editSuccessCallback.current = onSuccessfulEdit;
         editFailedCallback.current = () => {
             eventEmitter.publish('error', {
+                id: uuid4(),
                 response: state.response,
                 exception: state.exception
             });
@@ -125,8 +121,8 @@ const useEditForm = (formId) => {
         }
         if (status === ERROR) {
             eventEmitter.publish('error', {
-                response: state.response,
-                exception: state.exception
+                response: response,
+                exception: exception
             });
         }
     }, [response, status, setValues]);

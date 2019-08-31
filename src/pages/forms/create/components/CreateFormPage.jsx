@@ -8,8 +8,6 @@ import Alert from "react-bootstrap/Alert";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/Container";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Overlay from "../../../../common/Overlay";
 import {useBeforeunload} from "react-beforeunload";
 import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmLoadLocalChangesModal";
@@ -43,7 +41,7 @@ const CreateFormPage = () => {
                 <span className="ml-2">{t('form.create.unsaved.data.title')}</span>
             </Alert.Heading>
             <p>{t('form.create.unsaved.data.description')}</p>
-        </Alert></Container>: null}
+        </Alert></Container> : null}
 
 
         <ConfirmLoadLocalChangesModal
@@ -53,25 +51,25 @@ const CreateFormPage = () => {
 
 
         <Overlay active={form.reloadingFromLocal} loadingText={"Loading local changes"}
-        children={
-            <FormBuilderComponent
-                form={form}
-                t={t}
-                envContext={envContext}
-                updateField={updateField}
-                openPreview={openPreview}
-                closePreview={closePreview}
-                status={status}
-                save={makeRequest}
-                formChoices={formChoices}
-                messageKeyPrefix={"form.create"}
-                backToForms={backToForms}
-                formInvalid={formInvalid}
-                changeDisplay={changeDisplay}
-                updateForm={(jsonSchema) => {
-                    updateSchema(jsonSchema);
-                }}
-        /> }/>
+                 children={
+                     <FormBuilderComponent
+                         form={form}
+                         t={t}
+                         envContext={envContext}
+                         updateField={updateField}
+                         openPreview={openPreview}
+                         closePreview={closePreview}
+                         status={status}
+                         save={makeRequest}
+                         formChoices={formChoices}
+                         messageKeyPrefix={"form.create"}
+                         backToForms={backToForms}
+                         formInvalid={formInvalid}
+                         changeDisplay={changeDisplay}
+                         updateForm={(jsonSchema) => {
+                             updateSchema(jsonSchema);
+                         }}
+                     />}/>
     </div>
 };
 

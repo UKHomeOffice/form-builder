@@ -10,7 +10,6 @@ import {useKeycloak} from "react-keycloak";
 const keycloakTokenProvider = new KeycloakTokenProvider();
 
 const configureAxios = async (envContext, config, keycloak) => {
-    const token = keycloak.token;
     config.headers['Accept'] = 'application/json';
     config.headers['Content-Type'] = 'application/json';
     config.headers['Cache-Control'] = "no-cache";
@@ -19,7 +18,7 @@ const configureAxios = async (envContext, config, keycloak) => {
         config.headers.Authorization = config.headers['x-promote-kc-token'];
         delete config.headers['x-promote-kc-token'];
     } else {
-        const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(envContext, token);
+        const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
         config.headers['Authorization'] = `Bearer ${jwtToken}`;
     }
 

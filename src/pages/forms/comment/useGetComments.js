@@ -2,8 +2,10 @@ import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
-import {useToasts} from "react-toast-notifications";
 import {useTranslation} from "react-i18next";
+import eventEmitter from "../../../core/eventEmitter";
+import uuid4 from "uuid4";
+import {toast} from "react-toastify";
 
 const useGetComments = (formId) => {
     const {t} = useTranslation();
@@ -16,7 +18,6 @@ const useGetComments = (formId) => {
     const isMounted = useRef(true);
     const [comments, setComments] = useState(initialState);
     const [comment, setComment] = useState('');
-    const {addToast} = useToasts();
     const CancelToken = axios.CancelToken;
 
     const cancelCommentsRequest = useRef(CancelToken.source());
@@ -55,36 +56,21 @@ const useGetComments = (formId) => {
         };
 
         failedToLoadCommentsCallback.current = () => {
-            let message = '';
-            if (response) {
-                message = response.data.message;
-            } else {
-                message = "No response from Form API server";
-            }
-            addToast(`${t('error.general')}: ${t('comments.failure.comments-load', {error: message})}`,
-                {
-                    appearance: 'error'
-                });
+            eventEmitter.publish('error', {
+                id: uuid4(),
+                exception: exception,
+                response: response,
+                translateKey: 'comments.failure.comments-load'
+            });
         };
 
         failedToSaveCommentCallback.current = () => {
-            let message = '';
-            if (saveCommentRequestState.response) {
-                const saveResponse = saveCommentRequestState.response.data;
-                if (saveResponse.validationErrors) {
-                    saveResponse.validationErrors.forEach((validationError) => {
-                        message += validationError.message + "\n";
-                    });
-                } else {
-                    message = saveResponse.exception;
-                }
-            } else {
-                message = "No response from Form API server";
-            }
-            addToast(`${t('error.general')}: ${t('comments.failure.create-comment', {error: message})}`,
-                {
-                    appearance: 'error'
-                });
+            eventEmitter.publish('error', {
+                id: uuid4(),
+                exception: saveCommentRequestState.exception,
+                response: saveCommentRequestState.response,
+                translateKey: 'comments.failure.create-comment'
+            });
         };
 
         successfullySavedCommentCallback.current = () => {
@@ -102,12 +88,7 @@ const useGetComments = (formId) => {
                     data: data,
                     total: total
                 }));
-                addToast(`${t('comments.success.created')}`,
-                    {
-                        appearance: 'success',
-                        autoDismiss: true,
-                        pauseOnHover: true
-                    });
+                toast.success(`${t('comments.success.created')}`);
             }
         }
 

@@ -46,7 +46,6 @@ const EditFormPage = ({formId}) => {
         </Container>
 
     }
-
     return <React.Fragment>
 
         <ConfirmLoadLocalChangesModal
@@ -55,8 +54,7 @@ const EditFormPage = ({formId}) => {
             closeConfirmLoadLocalChangesModal={closeDraftModal}/>
 
         <Overlay active={(!status || status === EXECUTING) || editForm.reloadingFromLocal} styleName="mt-5"
-                 children=
-                     {editForm.data ?
+                 children={
                          <React.Fragment>
                              {editForm.hasUnsavedData ? <Container><Alert variant="warning" className="border-1 mt-2">
                                  <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
@@ -80,7 +78,7 @@ const EditFormPage = ({formId}) => {
                                  save={editRequest}
                                  changeDisplay={changeDisplay}
                              />
-                         </React.Fragment> : null}
+                         </React.Fragment> }
 
                  loadingText={t('form.loading-form')}/>
     </React.Fragment>

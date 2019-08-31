@@ -18,7 +18,7 @@ const useFormDataReplacer = () => {
         }
         const updatedForm = variableReplacer.replace(form, variableReplacements);
         const components = updatedForm.components;
-        const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak.token);
+        const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
         if (token) {
             FormioUtils.eachComponent(components, (component) => {
                 if (component.data && component.dataSrc === 'url') {
