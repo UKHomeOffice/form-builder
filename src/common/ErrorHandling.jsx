@@ -17,7 +17,6 @@ class ErrorHandling extends React.Component {
 
     componentDidCatch(error, errorInfo) {
         this.setState({error: true});
-        console.error(error);
     }
 
     componentDidMount() {
@@ -47,12 +46,23 @@ class ErrorHandling extends React.Component {
                     if (error.response.data.exception) {
                         errorMessage = error.response.data.exception
                     }
-                    translateMetaData['error'] = errorMessage;
-                    toast.error(<React.Fragment>
-                        <h6>{t(translateKey, translateMetaData)}</h6>
-                    </React.Fragment>, {
-                        toastId: error.id
-                    });
+
+                    if (translateKey) {
+                        translateMetaData['error'] = errorMessage;
+                        toast.error(<React.Fragment>
+                            <h6>{t(translateKey, translateMetaData)}</h6>
+                        </React.Fragment>, {
+                            toastId: error.id
+                        });
+                    } else {
+                        toast.error(<React.Fragment>
+                            <h6>{t('error.general')}</h6>
+                            <h6>{errorMessage}</h6>
+                        </React.Fragment>, {
+                            toastId: error.id
+                        });
+                    }
+
 
                 } else {
                     toast.error(`${error.message}`, {
@@ -65,12 +75,16 @@ class ErrorHandling extends React.Component {
 
     render() {
         const {t} = this.props;
-        return this.state.error ? <Container><Alert variant="warning" className="mt-5">
-            <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
-                <span className="ml-2">{t('error.general')}</span>
-            </Alert.Heading>
-            <p>{t('error.component-error')}</p>
-        </Alert></Container> : this.props.children
+
+        if (this.state.error) {
+            return <Container><Alert variant="warning" className="mt-5">
+                <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                    <span className="ml-2">{t('error.general')}</span>
+                </Alert.Heading>
+                <p>{t('error.component-error')}</p>
+            </Alert></Container>
+        }
+        return this.props.children
     }
 }
 
