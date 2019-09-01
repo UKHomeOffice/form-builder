@@ -56,7 +56,7 @@ const useEditForm = (formId) => {
     const editFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        toast(`${editForm.data.name} has been successfully updated`);
+        toast.success(`${editForm.data.name} has been successfully updated`);
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared from edit page");

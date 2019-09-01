@@ -218,7 +218,7 @@ const useMigrations = () => {
                     });
                     setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
 
-                    toast(`${t('migration.success.description', {formName: successfulForm.name})}`)
+                    toast.success(`${t('migration.success.description', {formName: successfulForm.name})}`)
 
                 }
                 makeRequest();

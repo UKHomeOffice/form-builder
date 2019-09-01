@@ -6,12 +6,13 @@ import useEnvContext from "../../../core/context/useEnvContext";
 import createForm from "../../../core/form/createForm";
 import useLogger from "../../../core/logging/useLogger";
 import {useTranslation} from "react-i18next";
-import {KeycloakTokenProvider} from "../../../core/KeycloakTokenProvider";
+import keycloakTokenProvider from "../../../core/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 import Stepper from 'bs-stepper'
 import eventEmitter from "../../../core/eventEmitter";
 import * as uuid4 from "uuid4";
 import {toast} from "react-toastify";
+
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
@@ -27,9 +28,6 @@ const usePromotion = (formId) => {
         environment: null,
         stepper: null
     });
-
-
-    const keycloakTokenProvider = new KeycloakTokenProvider();
 
     const [fetchState, makeRequest] = useApiRequest(
         `/form/${formId}`, {

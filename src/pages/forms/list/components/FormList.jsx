@@ -60,7 +60,6 @@ const FormList = () => {
 
     const {direction, column, data, total, limit} = forms;
 
-    const isLoading = !status || status === EXECUTING;
     const isEditable = (canEdit() && envContext.editable);
     const cursor = {cursor: 'pointer'};
     return <Container>

@@ -3,7 +3,7 @@ import {EXECUTING, SUCCESS} from "../../core/api/actionTypes";
 import axios from "axios";
 import _ from 'lodash';
 import config from "react-global-configuration"
-import {KeycloakTokenProvider} from "../../core/KeycloakTokenProvider";
+import keycloakTokenProvider from "../../core/KeycloakTokenProvider";
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../core/context/useEnvContext";
 import {ApplicationContext} from "../../core/AppRouter";
@@ -11,7 +11,6 @@ import {useKeycloak} from "react-keycloak";
 import eventEmitter from "../../core/eventEmitter";
 
 const useReports = () => {
-    const keycloakProvider = new KeycloakTokenProvider();
     const {t} = useTranslation();
     const [keycloak] = useKeycloak();
 
@@ -29,10 +28,9 @@ const useReports = () => {
     const isMounted = useRef(true);
 
     const instance = axios.create();
-
     instance.interceptors.request.use(async (config) => {
             const environment = config.headers['x-environment'];
-            const jwtToken = await keycloakProvider.fetchKeycloakToken(environment, keycloak);
+            const jwtToken = await keycloakTokenProvider.fetchKeycloakToken(environment, keycloak);
             config.headers['Authorization'] = `Bearer ${jwtToken}`;
             return Promise.resolve(config);
         },

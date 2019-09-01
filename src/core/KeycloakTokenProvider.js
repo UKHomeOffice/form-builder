@@ -1,31 +1,46 @@
 import axios from "axios";
+import qs from 'querystring';
+import config from 'react-global-configuration';
 
-export class KeycloakTokenProvider {
-    constructor() {
-        this.fetchKeycloakToken = this.fetchKeycloakToken.bind(this);
+class KeycloakTokenProvider {
 
+    constructor(config) {
+        this.config = config;
     }
 
     handleError = async (instance, error, keycloak) => {
+        const keycloakConfig = this.config.get('keycloak');
         if (error.response) {
             if ((error.response.status === 403 || error.response.status === 401)) {
-                console.log("Retrying...");
-                const oldToken = error.response.config.headers['Authorization'].replace('Bearer', '');
-                const newToken = keycloak.token;
-                if (oldToken !== newToken) {
-                    const config = error.config;
-                    config.headers['Authorization'] = `Bearer ${newToken}`;
-                    return new Promise((resolve, reject) => {
-                        instance.request(config).then(response => {
-                            resolve(response);
-                        }).catch((err) => {
-                            reject(err);
-                        });
+                console.log("Retrying..." + error.response.status);
+                let response;
+                try {
+                    response = await axios({
+                        method: 'POST',
+                        url: `${keycloakConfig.authUrl}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        data: qs.stringify({
+                            grant_type: 'refresh_token',
+                            client_id: keycloakConfig.clientId,
+                            refresh_token: keycloak.refreshToken
+                        })
                     });
-                } else {
-                    console.log('Token is old...rejecting and retrying');
-                    return Promise.reject(error);
+                } catch (e) {
+                    console.error(e);
                 }
+                console.log("Got new token");
+                const token = response.data.access_token;
+                const config = error.config;
+                config.headers['Authorization'] = `Bearer ${token}`;
+                return new Promise((resolve, reject) => {
+                    instance.request(config).then(response => {
+                        resolve(response);
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                });
             } else {
                 return Promise.reject(error);
             }
@@ -67,4 +82,8 @@ export class KeycloakTokenProvider {
         return await fetchToken();
     };
 }
+
+const keycloakTokenProvider = new KeycloakTokenProvider(config);
+
+export default keycloakTokenProvider;
 

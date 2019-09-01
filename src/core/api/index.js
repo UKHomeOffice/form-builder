@@ -4,10 +4,8 @@ import reducer, {initialState} from './reducer';
 import {error, executing, success} from './actionCreators';
 import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
-import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
-
-const keycloakTokenProvider = new KeycloakTokenProvider();
+import keycloakTokenProvider from '../KeycloakTokenProvider';
 
 const configureAxios = async (envContext, config, keycloak) => {
     config.headers['Accept'] = 'application/json';
@@ -25,21 +23,6 @@ const configureAxios = async (envContext, config, keycloak) => {
     return Promise.resolve(config);
 };
 
-const handleError = async (instance, error, keycloak, envContext) => {
-    if (error.response) {
-        if (error.response.status === 403 || error.response.status === 401) {
-            console.log("Trying again");
-            Object.assign(instance.defaults, configureAxios(envContext, instance.defaults, keycloak));
-            Object.assign(error.response.config, configureAxios(envContext, instance.defaults, keycloak));
-            return await instance.request(error.response.config);
-        } else {
-            return Promise.reject(error);
-        }
-    } else {
-        return Promise.reject(error);
-    }
-}
-
 const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const instance = axios.create();
@@ -50,11 +33,6 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
             return Promise.reject(err);
         });
 
-    instance.interceptors.response.use(response => {
-        return response;
-    }, async error => {
-        return handleError(instance, error, keycloak, envContext);
-    });
     const makeRequest = async () => {
         dispatch(executing());
         let response;
@@ -91,11 +69,11 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
             return Promise.reject(err);
         });
 
-    instance.interceptors.response.use(response => {
-        return response;
-    }, async error => {
-        return handleError(instance, error, keycloak, envContext);
-    });
+    // instance.interceptors.response.use(response => {
+    //     return response;
+    // }, async error => {
+    //     return handleError(instance, error, keycloak, envContext);
+    // });
 
     const execute = async () => {
         if (logBefore) {

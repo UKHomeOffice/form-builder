@@ -1,6 +1,6 @@
 import useEnvContext from "../context/useEnvContext";
 import VariableReplacer from "./VariableReplacer";
-import {KeycloakTokenProvider} from "../KeycloakTokenProvider";
+import keycloakTokenProvider from '../KeycloakTokenProvider';
 import FormioUtils from "formiojs/utils";
 import {useKeycloak} from "react-keycloak";
 
@@ -8,9 +8,6 @@ const useFormDataReplacer = () => {
     const {envContext} = useEnvContext();
     const [keycloak] = useKeycloak();
     const variableReplacer = new VariableReplacer();
-    const keycloakTokenProvider = new KeycloakTokenProvider();
-
-
     const performFormParse = async (form) => {
         const variableReplacements = envContext ? envContext['variable-replacements'] : null;
         if (!variableReplacements) {
