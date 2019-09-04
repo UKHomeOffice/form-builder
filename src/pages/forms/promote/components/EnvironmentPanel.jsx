@@ -11,6 +11,7 @@ import {faCaretLeft, faCaretRight, faCog} from "@fortawesome/free-solid-svg-icon
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import ExtendedBootstrapSwitchButton from '../../../../common/ExtendedBootstrapSwitchButton';
+import  uuid4 from "uuid4";
 
 const EnvironmentPanel = ({form, setValue, isDisabled}) => {
     const {availableEnvironments, envContext} = useEnvContext();
@@ -21,6 +22,7 @@ const EnvironmentPanel = ({form, setValue, isDisabled}) => {
             environment: environment === form.environment ? null : environment
         }));
     };
+    const availablePromitionEnvironments = availableEnvironments(envContext.id);
     return <Container>
         <Row>
             <Col>
@@ -28,25 +30,49 @@ const EnvironmentPanel = ({form, setValue, isDisabled}) => {
             </Col>
         </Row>
         <Row>
-            <Col>
-                {availableEnvironments(envContext.id).length !== 0 ?
-                    _.map(availableEnvironments(envContext.id), (environment) => {
-                        const id = environment.id;
-                        return <ExtendedBootstrapSwitchButton
-                                key={id}
-                                checked={id === form.environment}
-                                onlabel={t('form.promote.environment', {env: environment.label})}
-                                onstyle='primary'
-                                offlabel={<React.Fragment><FontAwesomeIcon icon={faCog}/><span className="ml-1">{environment.label}</span></React.Fragment>}
-                                offstyle='info'
-                                style='w-100 mt-2'
-                                onChange={() => {
-                                    handleChange(id)
-                                }}
-                            />
+            {isMobile ? (availablePromitionEnvironments.length !== 0 ?
+                _.map(availablePromitionEnvironments, (environment) => {
+                    const id = environment.id;
+                    return <ExtendedBootstrapSwitchButton
+                        key={id}
+                        checked={id === form.environment}
+                        onlabel={t('form.promote.environment', {env: environment.label})}
+                        onstyle='primary'
+                        offlabel={<React.Fragment><FontAwesomeIcon icon={faCog}/><span
+                            className="ml-1">{environment.label}</span></React.Fragment>}
+                        offstyle='info'
+                        style='w-100 mt-2'
+                        onChange={() => {
+                            handleChange(id)
+                        }}
+                    />
 
-                    }) : null}
-            </Col>
+                }) : null) : (availablePromitionEnvironments.length !== 0 ?
+                        _.chunk(availablePromitionEnvironments, 3).map((envs) => {
+                            const cols = _.map(envs, (environment) => {
+                                const id = environment.id;
+                                return <Col key={id}><ExtendedBootstrapSwitchButton
+                                    key={id}
+                                    checked={id === form.environment}
+                                    onlabel={t('form.promote.environment', {env: environment.label})}
+                                    onstyle='primary'
+                                    offlabel={<React.Fragment><FontAwesomeIcon icon={faCog}/><span
+                                        className="ml-1">{environment.label}</span></React.Fragment>}
+                                    offstyle='info'
+                                    style='w-100 mt-2'
+                                    onChange={() => {
+                                        handleChange(id)
+                                    }}
+                                /></Col>
+                            });
+                            while(cols.length !== 3) {
+                                cols.push(<Col/>);
+                            }
+                          return <Container key={uuid4()}><Row key={uuid4()}>{cols}</Row></Container>
+                        })
+
+                : null)
+            }
         </Row>
         <Row>
             <Col>
@@ -71,3 +97,5 @@ const EnvironmentPanel = ({form, setValue, isDisabled}) => {
 };
 
 export default EnvironmentPanel;
+
+
