@@ -69,12 +69,6 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
             return Promise.reject(err);
         });
 
-    // instance.interceptors.response.use(response => {
-    //     return response;
-    // }, async error => {
-    //     return handleError(instance, error, keycloak, envContext);
-    // });
-
     const execute = async () => {
         if (logBefore) {
             log(logBefore);

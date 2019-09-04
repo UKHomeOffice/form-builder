@@ -12,6 +12,7 @@ import formindexdb from '../../../core/db/formindexdb';
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
 import {toast} from "react-toastify";
+import axios from "axios";
 
 const useCreateForm = (formContent = null) => {
     const {t} = useTranslation();
@@ -20,8 +21,8 @@ const useCreateForm = (formContent = null) => {
             return _.omit(form, ['_id', 'access', 'owner', 'created', 'modified', 'machineName'])
         } catch (e) {
             eventEmitter.publish('error', {
-               id: uuid4(),
-               message: `${t('error.general')} - ${t('form.create.failure.failed-to-create', {error: e.toString()})}`
+                id: uuid4(),
+                message: `${t('error.general')} - ${t('form.create.failure.failed-to-create', {error: e.toString()})}`
             });
         }
     };
@@ -42,14 +43,15 @@ const useCreateForm = (formContent = null) => {
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
     const {log} = useLogger();
-
+    const isMounted = useRef(true);
 
     const [form, setValues] = useState({
         data: formContent && formContent !== '' ? sanitize(parseToObject(formContent)) : {
             title: '',
             path: '',
             display: 'form',
-            name: ''
+            name: '',
+            components: []
         },
         openLocalChangesDetectedModal: false,
         reloadingFromLocal: false,
@@ -63,11 +65,18 @@ const useCreateForm = (formContent = null) => {
     });
 
     const formName = form.data.name;
+    const CancelGetToken = axios.CancelToken;
+    const cancelGet = useRef(CancelGetToken.source());
+    const CancelCreateToken = axios.CancelToken;
+    const cancelCreate = useRef(CancelCreateToken.source());
+
     const [{status, exception, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
+
             try {
                 const formResponse = await axios({
                     method: 'GET',
-                    url: `${envContext.url}/form?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`
+                    url: `${envContext.url}/form?filter=name__eq__${form.data.name},path__eq__${form.data.path}&limit=1`,
+                    cancelToken: cancelGet.current.token
                 });
 
                 if (formResponse.data.total === 0) {
@@ -77,7 +86,8 @@ const useCreateForm = (formContent = null) => {
                 return await axios({
                     "method": "PUT",
                     "url": `${envContext.url}/form/${formLoaded.id}`,
-                    "data": form.data
+                    "data": form.data,
+                    cancelToken: cancelCreate.current.token
                 });
             } catch (error) {
                 throw {
@@ -126,6 +136,9 @@ const useCreateForm = (formContent = null) => {
 
     useEffect(() => {
         console.log("checking for any existing data");
+        const cancelGetRef = cancelCreate.current;
+        const cancelCreateRef = cancelGet.current;
+
         formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).count().then((data) => {
             if (data !== 0) {
                 setValues({
@@ -141,6 +154,10 @@ const useCreateForm = (formContent = null) => {
             formindexdb.form.clear().then(() => {
                 console.log("Draft data cleared");
             });
+            isMounted.current = false;
+            cancelGetRef.cancel("Cancelling get request");
+            cancelCreateRef.cancel("Cancelling create request");
+
         };
     }, []);
 
@@ -163,56 +180,65 @@ const useCreateForm = (formContent = null) => {
     };
 
     const updateField = (target, value) => {
-        const hasValue = value && value !== '';
-        if (target === 'title') {
-            if (hasValue) {
-                form.missing['title'] = false;
-                form.missing["path"] = false;
-                form.missing["formName"] = false;
+        if (isMounted.current) {
+            const hasValue = value && value !== '';
+            if (target === 'title') {
+                if (hasValue) {
+                    form.missing['title'] = false;
+                    form.missing["path"] = false;
+                    form.missing["formName"] = false;
 
-                form.data.title = value;
-                form.data.path = _.toLower(value).replace(/\s/g, '');
+                    form.data.title = value;
+                    form.data.path = _.toLower(value).replace(/\s/g, '');
 
-                if (form.data.components && form.data.components.length !== 0) {
-                    formindexdb.form.delete(form.data.name).then(() => {
-                        console.log("deleted old record");
+                    if (form.data.components && form.data.components.length !== 0) {
+                        formindexdb.form.delete(form.data.name).then(() => {
+                            console.log("deleted old record");
+                        });
+                    }
+                    form.data.name = _.camelCase(value);
+                    form.data.machineName = form.data.name;
+                    setValues({
+                        ...form
+                    });
+                } else {
+                    form.missing['title'] = true;
+                    form.data.title = '';
+                    setValues({
+                        ...form
                     });
                 }
-                form.data.name = _.camelCase(value);
-                form.data.machineName = form.data.name;
-                setValues({
-                    ...form
-                });
             } else {
-                form.missing['title'] = true;
-                form.data.title = '';
+                form.missing[target] = !hasValue;
+                form.data[target] = value;
                 setValues({
                     ...form
                 });
             }
-        } else {
-            form.missing[target] = !hasValue;
-            form.data[target] = value;
-            setValues({
-                ...form
-            });
+            softSave();
         }
-        softSave();
+
     };
 
     const openPreview = () => {
-        handleForm(form.data);
-        setValues({
-            ...form,
-            displayPreview: true
-        });
+        if (isMounted.current) {
+            handleForm(form.data);
+            setValues({
+                ...form,
+                displayPreview: true
+            });
+        }
+
     };
 
     const closePreview = () => {
-        setValues({
-            ...form,
-            displayPreview: false
-        });
+        if (isMounted.current) {
+            setValues({
+                ...form,
+                displayPreview: false
+            });
+        }
+
     };
 
     const formInvalid = () => {
@@ -223,18 +249,21 @@ const useCreateForm = (formContent = null) => {
     };
 
     const changeDisplay = (value) => {
-        form.data.display = value;
-        handleForm(form.data);
-        setValues({
-            ...form
-        });
-        softSave();
+        if (isMounted.current) {
+            form.data.display = value;
+            handleForm(form.data);
+            setValues({
+                ...form
+            });
+            softSave();
+        }
+
     };
 
 
     const softSave = () => {
         if (form.data.components
-                && form.data.components.length !== 0
+            && form.data.components.length !== 0
         ) {
             setValues({
                 ...form,
@@ -253,36 +282,45 @@ const useCreateForm = (formContent = null) => {
     };
 
     const updateSchema = (jsonSchema) => {
-        form.data.components = jsonSchema.components;
-        setValues({
-            ...form
-        });
-        softSave();
+        if (isMounted.current) {
+            form.data.components = jsonSchema.components;
+            setValues({
+                ...form
+            });
+            softSave();
+        }
+
     };
 
 
     const loadLocalChanges = () => {
-        setValues(form => ({
-            ...form,
-            reloadingFromLocal : true
-        }));
-        formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then(dataFromLocal => {
+        if (isMounted.current) {
             setValues(form => ({
                 ...form,
-                reloadingFromLocal: false,
-                data: dataFromLocal.schema,
-                openLocalChangesDetectedModal: false,
+                reloadingFromLocal: true
             }));
-        }, error => {
-            console.log(error);
-        });
+            formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).first().then(dataFromLocal => {
+                setValues(form => ({
+                    ...form,
+                    reloadingFromLocal: false,
+                    data: dataFromLocal.schema,
+                    openLocalChangesDetectedModal: false,
+                }));
+            }, error => {
+                console.log(error);
+            });
+        }
+
 
     };
     const closeDraftModal = () => {
-        setValues({
-            ...form,
-            openLocalChangesDetectedModal: false
-        });
+        if (isMounted.current) {
+            setValues({
+                ...form,
+                openLocalChangesDetectedModal: false
+            });
+        }
+
     };
 
 

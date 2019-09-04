@@ -70,7 +70,7 @@
   "legacy-migration" : true,
   "keycloak": {
     "authUrl": "https://keycloak.elf79.dev/auth",
-    "clientId": "platform-ui",
+    "clientId": "www",
     "realm": "elf",
     "access-roles" : ["platform"],
     "promotion-roles" : ["platform"],

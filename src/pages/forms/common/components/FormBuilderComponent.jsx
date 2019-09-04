@@ -1,5 +1,5 @@
 import React from 'react';
-import {FormBuilder} from 'react-formio';
+import {FormBuilder, Formio} from 'react-formio';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
@@ -9,6 +9,8 @@ import Button from "react-bootstrap/Button";
 import {EXECUTING} from "../../../../core/api/actionTypes";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import PreviewFormModal from "../../create/components/PreviewFormModal";
+import {useKeycloak} from "react-keycloak";
+import useEnvContext from "../../../../core/context/useEnvContext";
 
 const FormBuilderComponent = ({
                                   form,
@@ -23,10 +25,49 @@ const FormBuilderComponent = ({
                                   openPreview,
                                   save,
                                   formInvalid,
-                                  changeDisplay
+                                  changeDisplay,
+
                               }) => {
+        const {envContext} = useEnvContext();
+        const {keycloak} = useKeycloak();
+        Formio.baseUrl = `${envContext.url}/`;
+        Formio.formsUrl = `${envContext.url}/form`;
+        Formio.formUrl = `${envContext.url}/form`;
+        Formio.projectUrl = `${envContext.url}`;
 
+        Formio.plugins = [{
+            priority: 0,
+            requestOptions: function (value, url) {
+                value.headers['Authorization'] = `Bearer ${keycloak.token}`;
+                return value;
+            }
+        }, {
+            priority: 0,
+            preRequest: function (requestArgs) {
+                requestArgs.url = requestArgs.url.replace("_id", "id");
+                return requestArgs;
+            }
+        }, {
+            priority: 0,
+            requestResponse: function (response) {
+                return {
+                    ok: response.ok,
+                    json: () => response.json().then((result) => {
+                        if (result.forms) {
+                            return result.forms.map((form) => {
+                                form['_id'] = form.id;
+                                return form;
+                            });
+                        }
+                        result['_id'] = result.id;
+                        return result;
+                    }),
+                    status: response.status,
+                    headers: response.headers
+                };
 
+            }
+        }];
         return <Container>
             <Row>
                 <Container>
@@ -115,7 +156,7 @@ const FormBuilderComponent = ({
                 <Container>
                     <FormBuilder form={{
                         display: form.data.display,
-                        components: form.data.components,
+                        components: form.data.components? form.data.components: [],
                         title: form.data.title,
                         name: form.data.name,
                         path: form.data.path
@@ -128,7 +169,7 @@ const FormBuilderComponent = ({
                 </Col>
             </Row>
             <PreviewFormModal form={form.data} title={form.title} open={form.displayPreview}
-                                                    onClosePreview={closePreview}/>
+                              onClosePreview={closePreview}/>
             <Row>
                 <Container>
                     <ButtonToolbar>
@@ -139,7 +180,7 @@ const FormBuilderComponent = ({
                         <Button data-cy="preview-form"
                                 variant="dark"
                                 className="mr-2"
-                                onClick={() =>  openPreview()}>{t('form.preview.label')}</Button>
+                                onClick={() => openPreview()}>{t('form.preview.label')}</Button>
                         <Button data-cy="persist-form"
                                 variant="primary"
                                 disabled={formInvalid()}

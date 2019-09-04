@@ -30,7 +30,7 @@
 
 import 'cypress-file-upload';
 
-const username = 'dev1@lodev.xyz';
+const username = 'aminmc@gmail.com';
 const password = 'secret';
 
 
