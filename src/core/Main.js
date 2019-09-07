@@ -20,9 +20,7 @@ export const Main = ({children}) => {
     useEffect(() => {
         const events = [
             'load',
-            'click',
-            'scroll',
-            'keypress'
+            'click'
         ];
         events.forEach((eventType) => {
             document.addEventListener(eventType, (e) => {
