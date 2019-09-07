@@ -50,6 +50,7 @@ class KeycloakTokenProvider {
     };
 
     fetchKeycloakToken = async (environment, keycloak) => {
+
         const instance = axios.create();
         instance.interceptors.response.use(response => {
             return response;
@@ -61,11 +62,12 @@ class KeycloakTokenProvider {
             throw Error("No environment provided");
         }
 
+
         const fetchToken = async () => {
             try {
                 const keycloakConfig = this.config.get('keycloak');
 
-                const accessToken =  await axios({
+                const accessToken = await axios({
                     method: 'POST',
                     url: `${keycloakConfig.authUrl}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,
                     headers: {
@@ -91,7 +93,7 @@ class KeycloakTokenProvider {
                 return tokenResponse.data.access_token;
             } catch (e) {
                 throw new Error("Failed to get keycloak token from environment: "
-                    + environment.id + " e: "+ e.message);
+                    + environment.id + " e: " + e.message);
             }
 
         };

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import AppMenu from "../common/AppMenu";
 import Footer from "../common/Footer";
 import {NavNotFoundBoundary, useCurrentRoute} from "react-navi";
@@ -8,12 +8,33 @@ import {useTranslation} from "react-i18next";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 import ErrorHandling from "../common/ErrorHandling";
+import {useKeycloak} from "react-keycloak";
+import jwt_decode from "jwt-decode";
 
 export const Main = ({children}) => {
     const route = useCurrentRoute();
     const {t} = useTranslation();
     const [show, setShow] = useState(true);
+    const {keycloak} = useKeycloak();
 
+    useEffect(() => {
+        const events = [
+            'load',
+            'click',
+            'scroll',
+            'keypress'
+        ];
+        events.forEach((eventType) => {
+            document.addEventListener(eventType, (e) => {
+                const isExpired = jwt_decode(keycloak.refreshToken).exp < new Date().getTime() / 1000;
+                if (isExpired) {
+                    keycloak.logout();
+                }
+            });
+        });
+
+
+    }, []);
 
     const pageNotFound = () => {
         return <Container>

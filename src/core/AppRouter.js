@@ -11,8 +11,6 @@ import _ from 'lodash';
 import {Logout} from "../common/Logout";
 import Unauthorized from "../common/Unauthorized";
 import Overlay from "../common/Overlay";
-import jwt_decode from "jwt-decode";
-import eventEmitter from "../core/eventEmitter";
 
 const hasAuthorization = (authorizationRoles, context, matcher) => {
     const roles = context.keycloak.tokenParsed.realm_access.roles;
@@ -84,14 +82,6 @@ export const AppRouter = () => {
         environment: environmentLocalStorage ? _.find(environments, {id: environmentLocalStorage}) : null,
         activeMenuItem: environmentLocalStorage ? t('menu.forms.name') : (window.location.pathname ? window.location.pathname : t('menu.home.name'))
     });
-
-    setInterval(() => {
-        const refreshToken = keycloak.refreshToken;
-        const isExpired = jwt_decode(refreshToken).exp < new Date().getTime() / 1000;
-        if (isExpired) {
-            keycloak.logout();
-        }
-    }, 60000 * 5);
 
     return <Overlay active={!initialised} styleName="mt-5" children={
 
