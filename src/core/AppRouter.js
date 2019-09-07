@@ -91,7 +91,7 @@ export const AppRouter = () => {
         if (isExpired) {
             keycloak.logout();
         }
-    }, 60000 * 20);
+    }, 60000 * 5);
 
     return <Overlay active={!initialised} styleName="mt-5" children={
 

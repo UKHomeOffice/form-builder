@@ -63,11 +63,26 @@ class KeycloakTokenProvider {
 
         const fetchToken = async () => {
             try {
+                const keycloakConfig = this.config.get('keycloak');
+
+                const accessToken =  await axios({
+                    method: 'POST',
+                    url: `${keycloakConfig.authUrl}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    data: qs.stringify({
+                        grant_type: 'refresh_token',
+                        client_id: keycloakConfig.clientId,
+                        refresh_token: keycloak.refreshToken
+                    })
+                });
+
                 const tokenResponse = await instance({
                     method: 'GET',
                     url: `/keycloak/${environment.id}/token`,
                     headers: {
-                        "Authorization": `Bearer ${keycloak.token}`
+                        "Authorization": `Bearer ${accessToken.data.access_token}`
                     }
                 });
                 if (tokenResponse.status !== 200) {
@@ -75,7 +90,8 @@ class KeycloakTokenProvider {
                 }
                 return tokenResponse.data.access_token;
             } catch (e) {
-                throw new Error("Failed to get keycloak token from environment: " + environment.id);
+                throw new Error("Failed to get keycloak token from environment: "
+                    + environment.id + " e: "+ e.message);
             }
 
         };
