@@ -9,8 +9,14 @@ import Alert from "react-bootstrap/Alert";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
+import useEnvContext from "../../../../core/context/useEnvContext";
+import {useBeforeunload} from "react-beforeunload";
+import Overlay from "../../../../common/Overlay";
+import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmLoadLocalChangesModal";
 
 const DuplicateFormPage = ({formContent}) => {
+    const {envContext} = useEnvContext();
+    useBeforeunload(() => "You will lose data if you have made updates");
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
     const {
@@ -19,49 +25,56 @@ const DuplicateFormPage = ({formContent}) => {
         makeRequest,
         formInvalid,
         form,
-        setValues,
         updateField,
         openPreview,
         closePreview,
-        changeDisplay
+        changeDisplay,
+        updateSchema,
+        loadLocalChanges,
+        closeDraftModal
 
     } = useCreateForm(formContent);
 
-    if (!formContent) {
-        return <Container>
-            <Alert variant="warning" className="border-1 mt-2">
-                <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
-                    <span className="ml-2">{t('error.general')}</span>
-                </Alert.Heading>
-                <p className="lead">{t('form.create.duplicate.no-form-content')}</p>
-            </Alert>
-        </Container>
-    }
 
     return <Container>
         <Row>
             <Col>
-                <FormBuilderComponent
-                    duplicate={true}
-                    form={form}
-                    t={t}
-                    updateField={updateField}
-                    openPreview={openPreview}
-                    closePreview={closePreview}
-                    status={status}
-                    save={makeRequest}
-                    formChoices={formChoices}
-                    messageKeyPrefix={"form.create"}
-                    backToForms={backToForms}
-                    formInvalid={formInvalid}
-                    changeDisplay={changeDisplay}
-                    updateForm={(jsonSchema) =>
-                        setValues({
-                            ...form,
-                            data: Object.assign(jsonSchema, form.data)
-                        })
-                    }
-                />
+                {form.hasUnsavedData ? <Container><Alert variant="warning" className="border-1 mt-2">
+                    <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                        <span className="ml-2">{t('form.create.unsaved.data.title')}</span>
+                    </Alert.Heading>
+                    <p>{t('form.create.unsaved.data.description')}</p>
+                </Alert></Container> : null}
+
+                <ConfirmLoadLocalChangesModal
+                    loadLocalChanges={loadLocalChanges}
+                    openLocalChangesDetectedModal={form.openLocalChangesDetectedModal}
+                    closeConfirmLoadLocalChangesModal={closeDraftModal}/>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <Overlay active={form.reloadingFromLocal} loadingText={"Loading local changes"}
+                         children={
+                             <FormBuilderComponent
+                                 form={form}
+                                 duplicate={true}
+                                 t={t}
+                                 envContext={envContext}
+                                 updateField={updateField}
+                                 openPreview={openPreview}
+                                 closePreview={closePreview}
+                                 status={status}
+                                 save={makeRequest}
+                                 formChoices={formChoices}
+                                 messageKeyPrefix={"form.create"}
+                                 backToForms={backToForms}
+                                 formInvalid={formInvalid}
+                                 changeDisplay={changeDisplay}
+                                 updateForm={(jsonSchema) => {
+                                     updateSchema(jsonSchema);
+                                 }}
+                             />}/>
             </Col>
         </Row>
 

@@ -70,8 +70,6 @@ const useCreateForm = (formContent = null) => {
     const CancelCreateToken = axios.CancelToken;
     const cancelCreate = useRef(CancelCreateToken.source());
 
-    const softSaveRef = useRef();
-
     const [{status, exception, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
 
             try {
@@ -152,10 +150,11 @@ const useCreateForm = (formContent = null) => {
                 });
             }
         });
-        setInterval(() => {
-            softSaveRef.current();
+        const intervalId = setInterval(() => {
+            softSave();
         }, 30000);
         return () => {
+            clearInterval(intervalId);
             formindexdb.form.clear().then(() => {
                 console.log("Draft data cleared");
             });
@@ -167,9 +166,6 @@ const useCreateForm = (formContent = null) => {
     }, []);
 
     useEffect(() => {
-        softSaveRef.current = () => {
-            softSave();
-        };
         savedCallback.current = callback;
         failedCallbackRef.current = failedCallback;
     });
