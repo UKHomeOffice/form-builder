@@ -55,6 +55,8 @@ const useEditForm = (formId) => {
 
     const editFailedCallback = useRef();
 
+    const loadingFormFailedCallback = useRef();
+
     const onSuccessfulEdit = async () => {
         toast.success(`${editForm.data.name} has been successfully updated`);
 
@@ -76,6 +78,12 @@ const useEditForm = (formId) => {
     useEffect(() => {
         savedCallback.current = callback;
         editSuccessCallback.current = onSuccessfulEdit;
+        loadingFormFailedCallback.current = () => {
+            eventEmitter.publish('error', {
+                response: response,
+                exception: exception
+            });
+        }
         editFailedCallback.current = () => {
             eventEmitter.publish('error', {
                 id: uuid4(),
@@ -120,12 +128,9 @@ const useEditForm = (formId) => {
             }
         }
         if (status === ERROR) {
-            eventEmitter.publish('error', {
-                response: response,
-                exception: exception
-            });
+            loadingFormFailedCallback.current();
         }
-    }, [response, status, setValues]);
+    }, [response, status, setValues, formId]);
 
     useEffect(() => {
         const onSuccessEdit = async () => {

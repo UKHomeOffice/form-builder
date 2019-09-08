@@ -7,7 +7,7 @@ import useLogger from "../../../core/logging/useLogger";
 import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import eventEmitter from '../../../core/eventEmitter';
-import  uuid4 from "uuid4";
+import uuid4 from "uuid4";
 import {toast} from "react-toastify";
 
 const useMigrations = () => {
@@ -33,6 +33,7 @@ const useMigrations = () => {
         const savedCallback = useRef();
         const handleMigrationCallback = useRef();
         const failedToLoadFormsCallback = useRef();
+        const clearContextCallback = useRef();
 
         const [searchTitle] = useDebouncedCallback(
             (value) => {
@@ -168,11 +169,11 @@ const useMigrations = () => {
                     })
 
                 } catch (error) {
-                    throw {
+                    throw Object.assign( new Error(error.message), {
                         response: {
                             data: error
                         }
-                    }
+                    })
                 }
             }, [{
                 message: `Loading forms for migration`,
@@ -185,15 +186,20 @@ const useMigrations = () => {
 
 
         useEffect(() => {
+            clearContextCallback.current = () => {
+                clearEnvContext();
+            };
             savedCallback.current = () => {
-                setFormio(formio => ({
-                    ...formio,
-                    data: null,
-                    total: 0,
-                    numberOnPage: 0
-                }));
+                if (formio.environment) {
+                    setFormio(formio => ({
+                        ...formio,
+                        data: null,
+                        total: 0,
+                        numberOnPage: 0
+                    }));
 
-                makeRequest();
+                    makeRequest();
+                }
             };
 
             failedToLoadFormsCallback.current = () => {
@@ -227,13 +233,11 @@ const useMigrations = () => {
         });
 
         useEffect(() => {
-            clearEnvContext();
+            clearContextCallback.current();
         }, []);
 
         useEffect(() => {
-            if (formio.environment) {
-                savedCallback.current();
-            }
+            savedCallback.current();
         }, [formio.activePage, formio.searchTitle]);
 
         useEffect(() => {

@@ -81,12 +81,11 @@ const usePromotion = (formId) => {
 
             }
         } catch (error) {
-            throw {
+            throw Object.assign(new Error(error.message), {
                 response: {
                     data: error
-                },
-                exception: error
-            };
+                }
+            });
         }
     }, [{
         message: `Initiating form ${form.data ? form.data.name : ''} promotion to ${form.environment}`,

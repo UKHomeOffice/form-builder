@@ -17,7 +17,9 @@ export const Main = ({children}) => {
     const [show, setShow] = useState(true);
     const {keycloak} = useKeycloak();
 
-    useEffect(() => {
+    const refreshTokenCheckRef = useRef();
+
+    const refreshTokenCheckCallback = () => {
         const events = [
             'load',
             'click'
@@ -30,9 +32,15 @@ export const Main = ({children}) => {
                 }
             });
         });
+    };
 
+    useEffect(() => {
+        refreshTokenCheckRef.current = refreshTokenCheckCallback;
+    });
 
-    }, []);
+    useEffect(() => {
+        refreshTokenCheckRef.current();
+    });
 
     const pageNotFound = () => {
         return <Container>

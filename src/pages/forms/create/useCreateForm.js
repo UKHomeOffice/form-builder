@@ -70,6 +70,8 @@ const useCreateForm = (formContent = null) => {
     const CancelCreateToken = axios.CancelToken;
     const cancelCreate = useRef(CancelCreateToken.source());
 
+    const softSaveRef = useRef();
+
     const [{status, exception, response}, makeRequest] = useMultipleApiCallbackRequest(async (axios) => {
 
             try {
@@ -90,11 +92,11 @@ const useCreateForm = (formContent = null) => {
                     cancelToken: cancelCreate.current.token
                 });
             } catch (error) {
-                throw {
+                throw Object.assign(new Error(error.message), {
                     response: {
                         data: error
                     }
-                }
+                });
             }
         }, [{
             message: `Creating form ${formName}`,
@@ -134,10 +136,13 @@ const useCreateForm = (formContent = null) => {
         failure();
     };
 
+
+
     useEffect(() => {
         console.log("checking for any existing data");
         const cancelGetRef = cancelCreate.current;
         const cancelCreateRef = cancelGet.current;
+
 
         formindexdb.form.where("path").equals(navigation.getCurrentValue().url.pathname).count().then((data) => {
             if (data !== 0) {
@@ -148,7 +153,7 @@ const useCreateForm = (formContent = null) => {
             }
         });
         setInterval(() => {
-            softSave();
+            softSaveRef.current();
         }, 30000);
         return () => {
             formindexdb.form.clear().then(() => {
@@ -162,6 +167,9 @@ const useCreateForm = (formContent = null) => {
     }, []);
 
     useEffect(() => {
+        softSaveRef.current = () => {
+            softSave();
+        };
         savedCallback.current = callback;
         failedCallbackRef.current = failedCallback;
     });

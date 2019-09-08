@@ -6,6 +6,9 @@ import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {useKeycloak} from "react-keycloak";
 import keycloakTokenProvider from '../KeycloakTokenProvider';
+import qs from "querystring";
+import appConfig from 'react-global-configuration';
+
 
 const configureAxios = async (envContext, config, keycloak) => {
     config.headers['Accept'] = 'application/json';
@@ -28,6 +31,12 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     const instance = axios.create();
     const {envContext} = useEnvContext();
     const [keycloak] = useKeycloak();
+
+    instance.interceptors.response.use(response => {
+        return response;
+    }, async error => {
+        return handleError(instance, error, keycloak);
+    });
     instance.interceptors.request.use(async (config) => configureAxios(envContext, config, keycloak),
         (err) => {
             return Promise.reject(err);
@@ -52,7 +61,42 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
     return [state, makeRequest];
 };
 
-
+const handleError = async (instance, error, keycloak) => {
+    const keycloakConfig = appConfig.get('keycloak');
+    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+        console.log("Retrying..." + error.response.status);
+        let response;
+        try {
+            response = await axios({
+                method: 'POST',
+                url: `${keycloakConfig.authUrl}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                data: qs.stringify({
+                    grant_type: 'refresh_token',
+                    client_id: keycloakConfig.clientId,
+                    refresh_token: keycloak.refreshToken
+                })
+            });
+        } catch (e) {
+            console.error(e);
+        }
+        console.log("Got new token");
+        const token = response.data.access_token;
+        const config = error.config;
+        config.headers['Authorization'] = `Bearer ${token}`;
+        return new Promise((resolve, reject) => {
+            instance.request(config).then(response => {
+                resolve(response);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    } else {
+        return Promise.reject(error);
+    }
+};
 export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, logAfter = null, env = null) => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -68,6 +112,12 @@ export const useMultipleApiCallbackRequest = (apiCallback, logBefore = null, log
         (err) => {
             return Promise.reject(err);
         });
+
+    instance.interceptors.response.use(response => {
+        return response;
+    }, async error => {
+        return handleError(instance, error, keycloak);
+    });
 
     const execute = async () => {
         if (logBefore) {
