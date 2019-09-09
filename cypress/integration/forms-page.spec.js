@@ -1,17 +1,18 @@
 describe('Forms Page', () => {
 
-    it('displays forms for local environment', () => {
+    it('displays forms for dev environment', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
-        cy.url().should('include', '/forms/local');
+        cy.url().should('include', '/forms/dev');
 
-        cy.get('h2').should('contain', 'Current environment context');
-        cy.get('[data-cy=context-label]').should('contain', 'Local');
+        cy.contains('Current environment context: Development');
+
+        cy.wait(1000);
 
         cy.get('[data-cy=forms-table]').should('exist');
         cy.get('[data-cy=form-table-data]').should('exist');
@@ -22,14 +23,16 @@ describe('Forms Page', () => {
     it('can search for form title', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
-        cy.url().should('include', '/forms/local');
+        cy.url().should('include', '/forms/dev');
 
-        cy.get('input[name=search-title]').type("User");
+        cy.wait(1000);
+
+        cy.get('input[name=search-title]').type("a");
 
         cy.wait(1000);
         cy.get('[data-cy=forms-table]').should('exist');
@@ -40,22 +43,30 @@ describe('Forms Page', () => {
 
     it('redirect to / if environment context not set', () => {
 
-        const username = 'dev1@lodev.xyz';
+        const username = 'cypressuser@lodev.xyz';
         const password = 'secret';
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.wait(1000);
 
-        cy.url().should('include', '/forms/local');
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
+
+        cy.wait(1000);
+
+        cy.url().should('include', '/forms/dev');
 
         cy.get('[data-cy=logout]').click();
+
+        cy.wait(1000);
 
         cy.get('input[name=username]').type(username);
         cy.get('input[name=password]').type(password);
         cy.get('form').submit();
+
+        cy.wait(500);
 
         cy.url().should('include', '/')
     });

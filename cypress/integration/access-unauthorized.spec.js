@@ -14,7 +14,6 @@ describe("Unauthorized Access", () => {
         cy.wait(500);
         cy.url().should('include', '/unauthorized');
 
-        cy.get('.header').should('exist');
-        cy.get(".header").contains("403");
+        cy.contains("Unauthorized");
     });
 });

@@ -22,7 +22,7 @@ const SchemaModal = ({form, open, close}) => {
                                collapsed={2}/>
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={close}>
+            <Button variant="secondary" onClick={close} data-cy="closeSchemaView">
                 Close
             </Button>
         </Modal.Footer>

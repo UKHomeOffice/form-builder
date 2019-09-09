@@ -29,12 +29,25 @@
 // });
 
 import 'cypress-file-upload';
+import 'cypress-drag-drop';
 
-const username = 'aminmc@gmail.com';
+const username = 'cypressuser@lodev.xyz';
 const password = 'secret';
+
+import Dexie from 'dexie';
+
+const formindexdb = new Dexie('form');
+formindexdb.version(1).stores({
+    form: 'id, path, schema'
+});
 
 
 beforeEach(() => {
+
+    formindexdb.form.clear().then(() => {
+        console.log("Draft data cleared");
+    });
+
     cy.visit("/");
 
     cy.get('input[name=username]').type(username);

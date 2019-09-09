@@ -85,6 +85,7 @@ const FormBuilderComponent = ({
                                             className="font-weight-bold">{t(`${messageKeyPrefix}.form-title.label`)}</Form.Label>
                                         <Form.Control type="text"
                                                       required
+                                                      name="title"
                                                       value={form.data.title}
                                                       onChange={(event) => updateField("title", event.target.value)}
                                                       isInvalid={form.missing.title}
@@ -98,6 +99,7 @@ const FormBuilderComponent = ({
                                             className="font-weight-bold">{t(`${messageKeyPrefix}.form-name.label`)}</Form.Label>
                                         <Form.Control type="text"
                                                       required
+                                                      name="name"
                                                       value={form.data.name}
                                                       onChange={(event) => updateField("name", event.target.value)}
                                                       isInvalid={form.missing.name}
@@ -113,6 +115,7 @@ const FormBuilderComponent = ({
                                             className="font-weight-bold">{t(`${messageKeyPrefix}.form-path.label`)}</Form.Label>
                                         <Form.Control type="text"
                                                       required
+                                                      name="path"
                                                       value={form.data.path}
                                                       onChange={(event) => updateField("path", event.target.value)}
                                                       isInvalid={form.missing.path}

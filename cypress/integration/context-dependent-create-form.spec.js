@@ -10,61 +10,64 @@ describe("Non editable environment cannot create new forms", () => {
     it('unable to create form in non editable environment', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=demo-form-menu]').should('exist');
-        cy.get('[data-cy=demo-form-menu]').click();
 
-        cy.url().should('include', '/forms/demo');
+        cy.get('[data-cy=devA-form-menu]').should('exist');
+        cy.get('[data-cy=devA-form-menu]').click();
 
-        cy.get('h2').should('contain', 'Current environment context');
-        cy.get('[data-cy=context-label]').should('contain', 'Demo');
+        cy.url().should('include', '/forms/devA');
 
-        cy.visit("/forms/demo/create");
+        cy.contains('Current environment context: Development A');
 
+        cy.visit("/forms/devA/create");
+
+        cy.wait(1000);
 
         cy.get('[data-cy=not-allowed-to-create]').should('exist');
-        cy.contains('EnvironmentPanel context does not allow creation of forms directly');
+        cy.contains('Development A context does not allow creation of forms directly');
 
     });
 
     it('unable to create form in non editable environment using builder URL', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=demo-form-menu]').should('exist');
-        cy.get('[data-cy=demo-form-menu]').click();
+        cy.get('[data-cy=devA-form-menu]').should('exist');
+        cy.get('[data-cy=devA-form-menu]').click();
 
-        cy.url().should('include', '/forms/demo');
+        cy.url().should('include', '/forms/devA');
 
-        cy.get('h2').should('contain', 'Current environment context');
-        cy.get('[data-cy=context-label]').should('contain', 'Demo');
+        cy.contains('Current environment context: Development A');
 
-        cy.visit("/forms/demo/create/builder");
+        cy.visit("/forms/devA/create/builder");
+
+        cy.wait(1000);
 
         cy.get('[data-cy=not-allowed-to-create]').should('exist');
-        cy.contains('EnvironmentPanel context does not allow creation of forms directly');
+        cy.contains('Development A context does not allow creation of forms directly');
 
     });
 
     it('unable to create form in non editable environment using file upload', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=demo-form-menu]').should('exist');
-        cy.get('[data-cy=demo-form-menu]').click();
+        cy.get('[data-cy=devA-form-menu]').should('exist');
+        cy.get('[data-cy=devA-form-menu]').click();
 
-        cy.url().should('include', '/forms/demo');
+        cy.url().should('include', '/forms/devA');
 
-        cy.get('h2').should('contain', 'Current environment context');
-        cy.get('[data-cy=context-label]').should('contain', 'Demo');
+        cy.contains('Current environment context: Development A');
 
-        cy.visit("/forms/demo/create/file-upload");
+        cy.visit("/forms/devA/create/file-upload");
+
+        cy.wait(1000);
 
         cy.get('[data-cy=not-allowed-to-create]').should('exist');
-        cy.contains('EnvironmentPanel context does not allow creation of forms directly');
+        cy.contains('Development A context does not allow creation of forms directly');
 
     });
 });

@@ -6,15 +6,15 @@ describe("Create form using upload", () => {
     it('can upload file and create form', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
 
         cy.get('[data-cy=create-form]').click();
 
-        cy.url().should('include', '/forms/local/create');
+        cy.url().should('include', '/forms/dev/create');
 
         cy.fixture('form.json').then(fileContent => {
             const asJson = JSON.stringify(fileContent);
@@ -22,7 +22,7 @@ describe("Create form using upload", () => {
                 {fileContent: asJson, fileName: 'form.json', mimeType: 'text/plain'},
                 {subjectType: 'input', force: true},
             );
-            cy.url().should('include', '/forms/local/create/file-upload');
+            cy.url().should('include', '/forms/dev/create/file-upload');
 
             const newTitle = chance.word({ length: 5 });
 
@@ -32,7 +32,7 @@ describe("Create form using upload", () => {
 
             cy.wait(1000);
 
-            cy.url().should('include', '/forms/local');
+            cy.url().should('include', '/forms/dev');
 
             cy.get('input[name=search-title]').type(newTitle);
 

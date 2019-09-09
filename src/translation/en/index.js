@@ -144,7 +144,7 @@ const messages = {
             },
             "not-allowed": {
                 "title": "Not allowed",
-                "message": "EnvironmentPanel context does not allow creation of forms directly"
+                "message": "{{environment}} context does not allow creation of forms directly"
             },
             "choice": {
                 "label" :"Create a form using builder or upload an existing json file",

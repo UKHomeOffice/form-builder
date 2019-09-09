@@ -113,6 +113,7 @@ const FormList = () => {
         <Row>
             <Col style={{marginTop: '1rem'}}>
                 <Form.Control type="text"
+                              name="search-title"
                               placeholder={t('form.list.search-label')}
                               onChange={(e) => {
                                   handleTitleSearch(e, {
@@ -188,7 +189,7 @@ const FormList = () => {
         <Row>
             <Col>
                 <Overlay active={!status || status === EXECUTING} styleName="mt-5" children={
-                    <Table responsive striped bordered hover>
+                    <Table responsive striped bordered hover data-cy="forms-table">
                         <caption><FontAwesomeIcon icon={faList}/><span className="ml-1">{total} forms</span></caption>
                         <thead>
                         <tr>
@@ -207,7 +208,7 @@ const FormList = () => {
                             <th style={cursor}>{t('form.list.table.formActionsCellLabel')}</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody data-cy="form-table-data">
 
                         {
                             _.map(data, (form, index) => {

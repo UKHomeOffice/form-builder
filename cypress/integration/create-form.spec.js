@@ -6,16 +6,16 @@ describe('Create Form', () => {
     it('can create a new form', () => {
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
 
         cy.get('[data-cy=create-form]').click();
-        cy.url().should('include', '/forms/local/create');
+        cy.url().should('include', '/forms/dev/create');
         cy.get('[data-cy=form-builder]').click();
-        cy.url().should('include', '/forms/local/create/builder');
+        cy.url().should('include', '/forms/dev/create/builder');
 
         const formTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
         cy.get('input[name=title]').type(formTitle);
@@ -25,7 +25,7 @@ describe('Create Form', () => {
         cy.get('[data-cy=persist-form]').click();
 
 
-        cy.url().should('include', '/forms/local');
+        cy.url().should('include', '/forms/dev');
 
         cy.get('input[name=search-title]').type(formTitle);
 

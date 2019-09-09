@@ -14,7 +14,8 @@ const AppHeader = () => {
         const label = environment.label;
         return <div className="center-context" style={{width: '100hv', marginTop:'1rem'}}>
             <h2 data-cy="context-label" className="display-5"><FontAwesomeIcon
-                icon={faCog}/> {t('environment.label')}: <Badge variant={environment.editable ? 'info' : 'danger'}>{label ? label : environment.id}</Badge>
+                icon={faCog}/> {t('environment.label')}: <Badge variant={environment.editable ? 'info' : 'danger'}
+                                                                data-cy="context-label">{label ? label : environment.id}</Badge>
             </h2>
 
         </div>

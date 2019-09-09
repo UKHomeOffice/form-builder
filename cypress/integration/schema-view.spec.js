@@ -4,16 +4,16 @@ const chance = new Chance();
 describe("Schema form", () => {
     it('can preview a form', () => {
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
 
         cy.get('[data-cy=create-form]').click();
-        cy.url().should('include', '/forms/local/create');
+        cy.url().should('include', '/forms/dev/create');
         cy.get('[data-cy=form-builder]').click();
-        cy.url().should('include', '/forms/local/create/builder');
+        cy.url().should('include', '/forms/dev/create/builder');
 
         const formTitle = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
 
@@ -25,7 +25,7 @@ describe("Schema form", () => {
         cy.get("button[ref=saveButton]").click();
         cy.get('[data-cy=persist-form]').click();
 
-        cy.url().should('include', '/forms/local');
+        cy.url().should('include', '/forms/dev');
 
         cy.get('input[name=search-title]').type(formTitle);
         cy.wait(1000);
@@ -36,12 +36,11 @@ describe("Schema form", () => {
 
         cy.get('[data-cy=viewSchema]').click();
 
-
         cy.get('.pretty-json-container').should('exist');
 
-        cy.get(".object-meta-data").contains("11 items");
+        cy.get(".object-meta-data").contains("12 items");
 
-        cy.get('.ui.modal > .close').click({multiple: true});
+        cy.get('[data-cy=closeSchemaView]').click({multiple: true});
 
     });
 });

@@ -3,17 +3,18 @@ const chance = new Chance();
 
 describe('Duplicate form', () => {
     it('can create duplicate form', () => {
-        cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=forms-menu]').should('exist');
+        cy.get('[data-cy=forms-menu]').click();
+
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
 
         cy.get('[data-cy=create-form]').click();
-        cy.url().should('include', '/forms/local/create');
+        cy.url().should('include', '/forms/dev/create');
         cy.get('[data-cy=form-builder]').click();
-        cy.url().should('include', '/forms/local/create/builder');
+        cy.url().should('include', '/forms/dev/create/builder');
 
         const formTitle = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
         cy.get('input[name=title]').type(formTitle);
@@ -22,8 +23,9 @@ describe('Duplicate form', () => {
         cy.get("button[ref=saveButton]").click();
         cy.get('[data-cy=persist-form]').click();
 
+        cy.wait(1000);
 
-        cy.visit("/forms/local");
+        cy.visit("/forms/dev");
 
         cy.get('input[name=search-title]').type(formTitle);
 
@@ -56,8 +58,7 @@ describe('Duplicate form', () => {
         cy.get('[data-cy="delete-form"]').click();
         cy.get('[data-cy="confirm-delete"]').click();
 
-        cy.wait(500);
-
+        cy.wait(1000);
 
     });
 });

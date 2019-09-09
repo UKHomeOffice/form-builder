@@ -67,6 +67,7 @@ const AppMenu = () => {
                     data-cy={`home-menu`}><FontAwesomeIcon icon={faHome} color='white'/><span
                     className="ml-2">Home</span></Nav.Link>
                 <NavDropdown id="collasible-nav-dropdown"
+                             data-cy={`forms-menu`}
                              active={state.activeMenuItem === t('menu.forms.name')}
                              title={<React.Fragment><FontAwesomeIcon icon={faCogs}
                                                                      color='white'/><span

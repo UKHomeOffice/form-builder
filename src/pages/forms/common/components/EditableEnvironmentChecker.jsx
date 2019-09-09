@@ -25,11 +25,11 @@ const EditableEnvironmentChecker = ({children}) => {
         return <div>{children}</div>;
     } else {
         return <Container>
-            <div style={{'paddingTop': '20px'}}>
+            <div style={{'paddingTop': '20px'}} data-cy="not-allowed-to-create">
                 <Alert show={show} variant="danger" onClose={() => setShow(false)} dismissible>
                     <Alert.Heading>{t('form.create.not-allowed.title')}</Alert.Heading>
                     <p>
-                        {t('form.create.not-allowed.message')}
+                        {t('form.create.not-allowed.message', {environment: envContext.label})}
                     </p>
                 </Alert>
             </div>

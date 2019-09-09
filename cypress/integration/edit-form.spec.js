@@ -1,35 +1,41 @@
-import secureLS from "../../src/core/storage";
+import qs from "querystring";
 
 const Chance = require('chance');
 const chance = new Chance();
 
+const tokenData = qs.stringify({
+    grant_type: 'password',
+    client_id: 'www',
+    username: 'cypressuser@lodev.xyz',
+    password: 'secret'
+});
 
 describe("Edit form", () => {
 
     it('can edit a form', () => {
+        cy.wait(1000);
 
         cy.get('[data-cy=forms-menu]').should('exist');
-        cy.get('div[role="listbox"]').click();
+        cy.get('[data-cy=forms-menu]').click();
 
-        cy.get('[data-cy=local-form-menu]').should('exist');
-        cy.get('[data-cy=local-form-menu]').click();
+        cy.get('[data-cy=dev-form-menu]').should('exist');
+        cy.get('[data-cy=dev-form-menu]').click();
 
 
         cy.get('[data-cy=create-form]').click();
-        cy.url().should('include', '/forms/local/create');
+        cy.url().should('include', '/forms/dev/create');
         cy.get('[data-cy=form-builder]').click();
-        cy.url().should('include', '/forms/local/create/builder');
+        cy.url().should('include', '/forms/dev/create/builder');
 
 
-        const formTitle = `${chance.word({ length: 5 })} ${chance.word({ length: 5 })} ${chance.word({ length: 5 })}`;
+        const formTitle = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
         cy.get('input[name=title]').type(formTitle);
         cy.get('[data-cy=persist-form]').click();
 
 
-        cy.url().should('include', '/forms/local');
+        cy.url().should('include', '/forms/dev');
 
         cy.wait(2000);
-
 
         cy.get('input[name=search-title]').type(formTitle);
 
@@ -42,21 +48,31 @@ describe("Edit form", () => {
         cy.wait(500);
 
         cy.request({
-            url: `http://localhost:4000/api/v1/forms?filter=title__eq__${formTitle}`,
+            method: 'POST',
+            url: 'https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token',
             headers: {
-                "Authorization" : `Bearer ${secureLS.get('kc-jwt-local')}`
-            }
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: tokenData
         }).then((resp) => {
-            expect(resp.status).to.eq(200);
-            console.log(resp.body);
-            expect(resp.body.forms.length).to.eq( 1);
-            expect(resp.body.forms[0].components).to.be.undefined;
-        });
-
+                const accessToken = resp.body.access_token;
+                cy.request({
+                    url: `http://localhost:4000/form?filter=title__eq__${formTitle}`,
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                }).then((resp) => {
+                    expect(resp.status).to.eq(200);
+                    expect(resp.body.forms.length).to.eq(1);
+                    expect(resp.body.forms[0].components.length).to.be.eq(1);
+                });
+            });
 
         cy.get('[data-cy="edit-form"]').click();
 
         cy.url().should('contains', '/edit');
+
+        cy.wait(2000);
 
         cy.get("[data-type=textfield]").trigger("mousedown", {which: 1});
         cy.get(".drag-container").trigger("mousemove").trigger("mouseup");
@@ -64,20 +80,33 @@ describe("Edit form", () => {
 
         cy.get('[data-cy=persist-form]').click();
 
-        cy.url().should('include', '/forms/local');
+        cy.url().should('include', '/forms/dev');
+
 
         cy.request({
-            url: `http://localhost:4000/form?filter=title__eq__${formTitle}`,
-            headers: {
-                "Authorization" : `Bearer ${secureLS.get('kc-jwt-local')}`
+                method: 'POST',
+                url: 'https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: tokenData
             }
-        }).then((resp) => {
-            expect(resp.status).to.eq(200);
-            expect(resp.body.forms.length).to.eq(1);
-            expect(resp.body.forms[0].components.length).to.eq(2);
+        ).then((resp) => {
+            const accessToken = resp.body.access_token;
+            cy.request({
+                url: `http://localhost:4000/form?filter=title__eq__${formTitle}`,
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            }).then((resp) => {
+                expect(resp.status).to.eq(200);
+                expect(resp.body.forms.length).to.eq(1);
+                expect(resp.body.forms[0].components.length).to.eq(2);
+            });
         });
 
-        cy.visit("/forms/local");
+
+        cy.visit("/forms/dev");
 
         cy.get('input[name=search-title]').type(formTitle);
 
@@ -97,4 +126,4 @@ describe("Edit form", () => {
         cy.get('[data-cy=form-table-data]').should('empty');
 
     });
-});
+})  ;
