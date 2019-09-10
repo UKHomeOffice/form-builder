@@ -348,7 +348,7 @@ const useGetForms = () => {
             }
             setValues(forms => ({
                 ...forms,
-                activePage: 1,
+                activePage: 0,
                 activeIndex: -1,
                 filter: filter,
                 filterValue: value
