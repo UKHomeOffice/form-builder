@@ -1,4 +1,6 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~formiojs/dist/formio.full.min.css";
+@import "~font-awesome/css/font-awesome.css";
 
 .center {
   height: 50vh;
@@ -152,4 +154,14 @@
   margin: 0;
   top: 0;
   left: 0;
+}
+
+
+.formio-component-submit .submit-success::after {
+  font-family: 'FontAwesome';
+  content: '\f00c';
+}
+.formio-component-submit .submit-fail::after {
+  font-family: 'FontAwesome';
+  content: '\f00d';
 }

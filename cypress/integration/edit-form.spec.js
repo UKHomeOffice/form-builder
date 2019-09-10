@@ -126,4 +126,4 @@ describe("Edit form", () => {
         cy.get('[data-cy=form-table-data]').should('empty');
 
     });
-})  ;
+});

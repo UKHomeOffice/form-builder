@@ -1,7 +1,6 @@
 import React from 'react';
 import useGetForms from "../useGetForms";
 import {EXECUTING} from "../../../../core/api/actionTypes";
-import "../../common/components/FormBuilderComponent.scss"
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import useRoles from "../../common/useRoles";
@@ -131,17 +130,20 @@ const FormList = () => {
                         <Form>
                             <Form.Group>
                                 <Form.Check name="filterBy"
+                                            data-cy="filter-all"
                                             value="all"
                                             onChange={(e) => filter(e, {value: e.target.value})}
                                             inline label="All"
                                             type="radio" id="all"/>
                                 <Form.Check name="filterBy"
                                             inline label="Wizard"
+                                            data-cy="filter-wizard"
                                             value="wizard"
                                             onChange={(e) => filter(e, {value: e.target.value})}
                                             type="radio" id="wizard"/>
                                 <Form.Check
                                     name="filterBy"
+                                    data-cy="filter-form"
                                     inline
                                     value="form"
                                     label="Forms"

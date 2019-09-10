@@ -9,7 +9,7 @@ import _ from 'lodash';
 import FormioUtils from 'formiojs/utils';
 import useCommonFormUtils from "../../common/useCommonFormUtils";
 import eventEmitter from "../../../../core/eventEmitter";
-import  uuid4 from "uuid4";
+import uuid4 from "uuid4";
 
 const usePreviewForm = (formId) => {
 
@@ -104,7 +104,10 @@ const usePreviewForm = (formId) => {
         await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
 
-    const previewSubmission = (submission) => {
+    const previewSubmission = (submission, formioForm) => {
+        if (formioForm) {
+            formioForm.formio.emit('submitDone');
+        }
         setValue(form => ({
             ...form,
             submission: submission

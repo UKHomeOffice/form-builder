@@ -38,7 +38,7 @@ const Comments = ({formId}) => {
                                 <Form.Control as="textarea" rows="3" placeholder="Add a comment" value={comment} onChange={(e) => setComment(e.target.value)}/>
                             </Form.Group>
                         </Form>
-                        <Button disabled={comment === ''} className="float-right" variant="primary" onClick={() => handleNewComment()}>Add</Button>
+                        <Button data-cy="addComment" disabled={comment === ''} className="float-right" variant="primary" onClick={() => handleNewComment()}>Add</Button>
                     </Card.Body>
                 </Card>
             </Col>

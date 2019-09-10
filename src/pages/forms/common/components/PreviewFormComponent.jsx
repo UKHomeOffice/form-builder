@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
 import ReactJson from "react-json-view";
-import {Form} from 'react-formio';
+import {Form, Formio} from 'react-formio';
 import './PreviewFormComponent.scss';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -12,6 +12,8 @@ import {faCaretDown, faCaretRight, faExclamationTriangle} from "@fortawesome/fre
 import Alert from "react-bootstrap/Alert";
 import Collapse from "react-bootstrap/Collapse";
 import Spinner from "react-bootstrap/Spinner";
+import useEnvContext from "../../../../core/context/useEnvContext";
+import {useKeycloak} from "react-keycloak";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
@@ -44,10 +46,11 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
         <Row>
             <Col>
                 {
-                    form? <React.Fragment>
+                    form ? <React.Fragment>
                         <h2>
                             {form.title ? form.title : 'No form title'}
-                            <span className="m-2"><small className="text-muted">{form.name ? form.name : 'No form name'}</small></span>
+                            <span className="m-2"><small
+                                className="text-muted">{form.name ? form.name : 'No form name'}</small></span>
                         </h2>
                     </React.Fragment> : null
                 }
@@ -56,9 +59,9 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
         <Row>
             <Col>
                 <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
-                                                   previewSubmission={(submission) => {
-                                                       handlePreview(submission)
-                                                   }}/>
+                                  previewSubmission={(submission, form) => {
+                                      handlePreview(submission, form)
+                                  }}/>
             </Col>
         </Row>
     </Container>
@@ -66,6 +69,47 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
 
 
 export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
+    const {envContext} = useEnvContext();
+    const [keycloak] = useKeycloak();
+    let formioForm;
+    Formio.plugins = [{
+        priority: 0,
+        requestOptions: function (value, url) {
+            value.headers['Authorization'] = `Bearer ${keycloak.token}`;
+            return value;
+        }
+    }, {
+        priority: 0,
+        preRequest: function (requestArgs) {
+            requestArgs.url = requestArgs.url.replace("_id", "id");
+            return requestArgs;
+        }
+    }, {
+        priority: 0,
+        requestResponse: function (response) {
+            return {
+                ok: response.ok,
+                json: () => response.json().then((result) => {
+                    if (result.forms) {
+                        return result.forms.map((form) => {
+                            form['_id'] = form.id;
+                            return form;
+                        });
+                    }
+                    result['_id'] = result.id;
+                    return result;
+                }),
+                status: response.status,
+                headers: response.headers
+            };
+
+        }
+    }];
+    Formio.baseUrl = `${envContext.url}`;
+    Formio.formsUrl = `${envContext.url}/form`;
+    Formio.formUrl = `${envContext.url}/form`;
+    Formio.projectUrl = `${envContext.url}`;
+
 
     const {t} = useTranslation();
     const {performFormParse} = useFormDataReplacer();
@@ -107,14 +151,27 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
     }
 
     return <React.Fragment>
-        <Form form={parsedForm.form} onSubmit={(submission) => previewSubmission(submission)}
+        <Form form={parsedForm.form}
+              ref={(form) => {
+                  formioForm = form;
+              }}
+              onSubmit={(submission) => {
+                  if (formioForm && formioForm.formio) {
+                      formioForm.submitted = true;
+                      formioForm.submitting = true;
+                  }
+                  previewSubmission(submission, formioForm);
+
+              }}
               options={
                   {
-                      ignoreCache: true,
                       noAlerts: true,
-                      formio: {}
+                      formio: {
+                          noAlerts: true,
+                          formsUrl: `${envContext.url}/form`
+                      }
                   }}/>
-        <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')} />
+        <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')}/>
 
         <ReactJson src={formSubmission ? formSubmission : {}} theme="monokai" name={null}
                    collapseStringsAfterLength={100}

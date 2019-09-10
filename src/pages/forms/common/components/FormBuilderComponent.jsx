@@ -4,7 +4,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
-import './FormBuilderComponent.scss';
 import Button from "react-bootstrap/Button";
 import {EXECUTING} from "../../../../core/api/actionTypes";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
@@ -30,7 +29,7 @@ const FormBuilderComponent = ({
                               }) => {
         const {envContext} = useEnvContext();
         const {keycloak} = useKeycloak();
-        Formio.baseUrl = `${envContext.url}/`;
+        Formio.baseUrl = `${envContext.url}`;
         Formio.formsUrl = `${envContext.url}/form`;
         Formio.formUrl = `${envContext.url}/form`;
         Formio.projectUrl = `${envContext.url}`;

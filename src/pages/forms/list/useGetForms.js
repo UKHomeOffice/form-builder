@@ -66,7 +66,7 @@ const useGetForms = () => {
         const resolveFilter = () => {
             let baseFilter = "";
             if (forms.searchTitle !== '' && forms.searchTitle !== '<>') {
-                baseFilter = `&filter=title__iLike__%${forms.searchTitle}%${forms.filter ? `,${forms.filter}` : ''}`
+                baseFilter = `&filter=title__iLike__${encodeURI(`%${forms.searchTitle}%`)}${forms.filter ? `,${forms.filter}` : ''}`
             } else {
                 if (forms.filter) {
                     baseFilter = `&filter=${forms.filter}`
