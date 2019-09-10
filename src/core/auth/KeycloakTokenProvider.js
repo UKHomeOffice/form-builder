@@ -1,6 +1,6 @@
 import axios from "axios";
 import qs from 'querystring';
-import config from 'react-global-configuration';
+import appConfig from 'react-global-configuration';
 
 class KeycloakTokenProvider {
 
@@ -101,7 +101,7 @@ class KeycloakTokenProvider {
     };
 }
 
-const keycloakTokenProvider = new KeycloakTokenProvider(config);
+const keycloakTokenProvider = new KeycloakTokenProvider(appConfig);
 
 export default keycloakTokenProvider;
 

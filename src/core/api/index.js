@@ -5,7 +5,7 @@ import {error, executing, success} from './actionCreators';
 import useEnvContext from "../context/useEnvContext";
 import useLogger from "../logging/useLogger";
 import {useKeycloak} from "react-keycloak";
-import keycloakTokenProvider from '../KeycloakTokenProvider';
+import keycloakTokenProvider from '../auth/KeycloakTokenProvider';
 import qs from "querystring";
 import appConfig from 'react-global-configuration';
 

@@ -8,8 +8,10 @@ import Button from "react-bootstrap/Button";
 import {EXECUTING} from "../../../../core/api/actionTypes";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import PreviewFormModal from "../../create/components/PreviewFormModal";
-import {useKeycloak} from "react-keycloak";
 import useEnvContext from "../../../../core/context/useEnvContext";
+import keycloakTokenProvider from '../../../../core/auth/KeycloakTokenProvider';
+import {useKeycloak} from "react-keycloak";
+
 
 const FormBuilderComponent = ({
                                   form,
@@ -29,22 +31,24 @@ const FormBuilderComponent = ({
                               }) => {
         const {envContext} = useEnvContext();
         const {keycloak} = useKeycloak();
+
         Formio.baseUrl = `${envContext.url}`;
         Formio.formsUrl = `${envContext.url}/form`;
         Formio.formUrl = `${envContext.url}/form`;
         Formio.projectUrl = `${envContext.url}`;
-
         Formio.plugins = [{
             priority: 0,
-            requestOptions: function (value, url) {
-                value.headers['Authorization'] = `Bearer ${keycloak.token}`;
-                return value;
-            }
-        }, {
-            priority: 0,
-            preRequest: function (requestArgs) {
+            preRequest: async function (requestArgs) {
+                if (!requestArgs.opts.header) {
+                    requestArgs.opts.header = new Headers({
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json; charset=UTF-8'
+                    });
+                }
+                const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
+                requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
                 requestArgs.url = requestArgs.url.replace("_id", "id");
-                return requestArgs;
+                return Promise.resolve(requestArgs);
             }
         }, {
             priority: 0,
@@ -67,6 +71,7 @@ const FormBuilderComponent = ({
 
             }
         }];
+
         return <Container>
             <Row>
                 <Container>
@@ -85,7 +90,7 @@ const FormBuilderComponent = ({
                                         <Form.Control type="text"
                                                       required
                                                       name="title"
-                                                      value={form.data.title}
+                                                      defaultValue={form.data.title}
                                                       onChange={(event) => updateField("title", event.target.value)}
                                                       isInvalid={form.missing.title}
                                                       placeholder={t(`${messageKeyPrefix}.form-title.placeholder`)}/>
@@ -99,7 +104,7 @@ const FormBuilderComponent = ({
                                         <Form.Control type="text"
                                                       required
                                                       name="name"
-                                                      value={form.data.name}
+                                                      defaultValue={form.data.name}
                                                       onChange={(event) => updateField("name", event.target.value)}
                                                       isInvalid={form.missing.name}
                                                       placeholder={t(`${messageKeyPrefix}.form-name.placeholder`)}/>
@@ -115,7 +120,7 @@ const FormBuilderComponent = ({
                                         <Form.Control type="text"
                                                       required
                                                       name="path"
-                                                      value={form.data.path}
+                                                      defaultValue={form.data.path}
                                                       onChange={(event) => updateField("path", event.target.value)}
                                                       isInvalid={form.missing.path}
                                                       placeholder={t(`${messageKeyPrefix}.form-path.placeholder`)}/>
@@ -136,7 +141,8 @@ const FormBuilderComponent = ({
                                                           changeDisplay(e.target.value)
                                                       }}>
                                             {formChoices.map((choice) => {
-                                                return <option key={choice.key} value={choice.value}>{choice.text}</option>
+                                                return <option key={choice.key}
+                                                               value={choice.value}>{choice.text}</option>
                                             })}
 
                                         </Form.Control>
@@ -158,7 +164,7 @@ const FormBuilderComponent = ({
                 <Container>
                     <FormBuilder form={{
                         display: form.data.display,
-                        components: form.data.components? form.data.components: [],
+                        components: form.data.components ? form.data.components : [],
                         title: form.data.title,
                         name: form.data.name,
                         path: form.data.path

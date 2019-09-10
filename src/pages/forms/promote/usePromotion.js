@@ -6,7 +6,7 @@ import useEnvContext from "../../../core/context/useEnvContext";
 import createForm from "../../../core/form/createForm";
 import useLogger from "../../../core/logging/useLogger";
 import {useTranslation} from "react-i18next";
-import keycloakTokenProvider from "../../../core/KeycloakTokenProvider";
+import keycloakTokenProvider from "../../../core/auth/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 import Stepper from 'bs-stepper'
 import eventEmitter from "../../../core/eventEmitter";

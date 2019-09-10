@@ -1,6 +1,6 @@
 import useEnvContext from "../context/useEnvContext";
 import VariableReplacer from "./VariableReplacer";
-import keycloakTokenProvider from '../KeycloakTokenProvider';
+import keycloakTokenProvider from '../auth/KeycloakTokenProvider';
 import FormioUtils from "formiojs/utils";
 import {useKeycloak} from "react-keycloak";
 

@@ -42,6 +42,7 @@ const PreviewFormPage = ({formId}) => {
                 <ButtonToolbar>
                     <Button block={isMobile} className="mr-2"
                             disabled={form.disableAllActions}
+                            data-cy={`backTo${envContext.id}`}
                             onClick={() => {
                                 backToForms();
                             }}

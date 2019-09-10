@@ -3,7 +3,7 @@ import {EXECUTING, SUCCESS} from "../../core/api/actionTypes";
 import axios from "axios";
 import _ from 'lodash';
 import config from "react-global-configuration"
-import keycloakTokenProvider from "../../core/KeycloakTokenProvider";
+import keycloakTokenProvider from "../../core/auth/KeycloakTokenProvider";
 import {useTranslation} from "react-i18next";
 import useEnvContext from "../../core/context/useEnvContext";
 import {ApplicationContext} from "../../core/AppRouter";

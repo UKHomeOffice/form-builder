@@ -89,8 +89,6 @@
     "redux-thunk": "^2.3.0",
     "replace-in-file": "^4.1.0",
     "secure-ls": "^1.2.5",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.87.2",
     "uninstall": "0.0.0",
     "use-debounce": "^2.0.0",
     "uuid4": "^1.1.4",

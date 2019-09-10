@@ -13,6 +13,7 @@ import Alert from "react-bootstrap/Alert";
 import Collapse from "react-bootstrap/Collapse";
 import Spinner from "react-bootstrap/Spinner";
 import useEnvContext from "../../../../core/context/useEnvContext";
+import keycloakTokenProvider from "../../../../core/auth/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
@@ -70,49 +71,10 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
 
 export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
     const {envContext} = useEnvContext();
-    const [keycloak] = useKeycloak();
     let formioForm;
-    Formio.plugins = [{
-        priority: 0,
-        requestOptions: function (value, url) {
-            value.headers['Authorization'] = `Bearer ${keycloak.token}`;
-            return value;
-        }
-    }, {
-        priority: 0,
-        preRequest: function (requestArgs) {
-            requestArgs.url = requestArgs.url.replace("_id", "id");
-            return requestArgs;
-        }
-    }, {
-        priority: 0,
-        requestResponse: function (response) {
-            return {
-                ok: response.ok,
-                json: () => response.json().then((result) => {
-                    if (result.forms) {
-                        return result.forms.map((form) => {
-                            form['_id'] = form.id;
-                            return form;
-                        });
-                    }
-                    result['_id'] = result.id;
-                    return result;
-                }),
-                status: response.status,
-                headers: response.headers
-            };
-
-        }
-    }];
-    Formio.baseUrl = `${envContext.url}`;
-    Formio.formsUrl = `${envContext.url}/form`;
-    Formio.formUrl = `${envContext.url}/form`;
-    Formio.projectUrl = `${envContext.url}`;
-
-
     const {t} = useTranslation();
     const {performFormParse} = useFormDataReplacer();
+    const {keycloak} = useKeycloak();
 
     const [parsedForm, setParsedForm] = useState({
         isParsing: true,
@@ -150,6 +112,45 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
         </div>
     }
 
+    Formio.baseUrl = `${envContext.url}`;
+    Formio.formsUrl = `${envContext.url}/form`;
+    Formio.formUrl = `${envContext.url}/form`;
+    Formio.projectUrl = `${envContext.url}`;
+    Formio.plugins = [{
+        priority: 0,
+        preRequest: async function (requestArgs) {
+            if (!requestArgs.opts.header) {
+                requestArgs.opts.header = new Headers({
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json; charset=UTF-8'
+                });
+            }
+            const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
+            requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
+            requestArgs.url = requestArgs.url.replace("_id", "id");
+            return Promise.resolve(requestArgs);
+        }
+    }, {
+        priority: 0,
+        requestResponse: function (response) {
+            return {
+                ok: response.ok,
+                json: () => response.json().then((result) => {
+                    if (result.forms) {
+                        return result.forms.map((form) => {
+                            form['_id'] = form.id;
+                            return form;
+                        });
+                    }
+                    result['_id'] = result.id;
+                    return result;
+                }),
+                status: response.status,
+                headers: response.headers
+            };
+
+        }
+    }];
     return <React.Fragment>
         <Form form={parsedForm.form}
               ref={(form) => {
