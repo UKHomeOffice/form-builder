@@ -31,7 +31,6 @@ const FormBuilderComponent = ({
                               }) => {
         const {envContext} = useEnvContext();
         const {keycloak} = useKeycloak();
-
         Formio.baseUrl = `${envContext.url}`;
         Formio.formsUrl = `${envContext.url}/form`;
         Formio.formUrl = `${envContext.url}/form`;
@@ -48,7 +47,7 @@ const FormBuilderComponent = ({
                 const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
                 requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
                 requestArgs.url = requestArgs.url.replace("_id", "id");
-                return Promise.resolve(requestArgs);
+                return requestArgs;
             }
         }, {
             priority: 0,

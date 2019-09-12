@@ -10,8 +10,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import Alert from "react-bootstrap/Alert";
 import Overlay from "../../../../common/Overlay";
-import {useBeforeunload} from 'react-beforeunload';
 import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmLoadLocalChangesModal";
+import useBeforeUnload from 'use-before-unload';
+import {useKeycloak} from "react-keycloak";
+import jwt_decode from "jwt-decode";
+
 
 const EditFormPage = ({formId}) => {
     const {
@@ -32,7 +35,14 @@ const EditFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
     const {envContext} = useEnvContext();
-    useBeforeunload(() => "You will lose data if you have made updates");
+    const {keycloak} = useKeycloak();
+
+
+    useBeforeUnload(evt => {
+        const isExpired = jwt_decode(keycloak.refreshToken).exp < new Date().getTime() / 1000;
+        return !isExpired;
+
+    });
 
     if (!envContext.editable) {
 

@@ -9,8 +9,10 @@ import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 import Overlay from "../../../../common/Overlay";
-import {useBeforeunload} from "react-beforeunload";
 import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmLoadLocalChangesModal";
+import {useKeycloak} from "react-keycloak";
+import useBeforeUnload from "use-before-unload";
+import jwt_decode from "jwt-decode";
 
 const CreateFormFileUpload = ({formContent}) => {
     const {t} = useTranslation();
@@ -30,8 +32,14 @@ const CreateFormFileUpload = ({formContent}) => {
         loadLocalChanges
     } = useCreateForm(formContent);
     const {envContext} = useEnvContext();
-    useBeforeunload(() => "You will lose data if you have made updates");
+    const {keycloak} = useKeycloak();
 
+
+    useBeforeUnload(evt => {
+        const isExpired = jwt_decode(keycloak.refreshToken).exp < new Date().getTime() / 1000;
+        return !isExpired;
+
+    });
     return <Container>
 
         <ConfirmLoadLocalChangesModal

@@ -22,7 +22,9 @@ export const Main = ({children}) => {
     const refreshTokenCheckCallback = () => {
         const events = [
             'load',
-            'click'
+            'click',
+            'scroll',
+            'keypress'
         ];
         events.forEach((eventType) => {
             document.addEventListener(eventType, (e) => {

@@ -10,13 +10,14 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormBuilderComponent from "../../common/components/FormBuilderComponent";
 import useEnvContext from "../../../../core/context/useEnvContext";
-import {useBeforeunload} from "react-beforeunload";
 import Overlay from "../../../../common/Overlay";
 import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmLoadLocalChangesModal";
+import {useKeycloak} from "react-keycloak";
+import useBeforeUnload from "use-before-unload";
+import jwt_decode from "jwt-decode";
 
 const DuplicateFormPage = ({formContent}) => {
     const {envContext} = useEnvContext();
-    useBeforeunload(() => "You will lose data if you have made updates");
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
     const {
@@ -35,6 +36,13 @@ const DuplicateFormPage = ({formContent}) => {
 
     } = useCreateForm(formContent);
 
+    const {keycloak} = useKeycloak();
+
+    useBeforeUnload(evt => {
+        const isExpired = jwt_decode(keycloak.refreshToken).exp < new Date().getTime() / 1000;
+        return !isExpired;
+
+    });
 
     return <Container>
         <Row>
