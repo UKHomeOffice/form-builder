@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import eventEmitter from "../../../../core/eventEmitter";
 import  uuid4 from "uuid4";
-import {toast} from "react-toastify";
+import {ToastsStore} from 'react-toasts';
 
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
     const [open, setOpen] = useState(false);
@@ -20,7 +20,7 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
 
     const callback = () => {
         setOpen(false);
-        toast.success(`${t('form.delete.successful', {formName: form.name})}`);
+        ToastsStore.success(`${t('form.delete.successful', {formName: form.name})}`);
         onSuccessfulDeletion()
     };
     const failedCallback = () => {

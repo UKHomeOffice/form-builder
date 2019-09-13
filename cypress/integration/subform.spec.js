@@ -27,7 +27,6 @@ describe('Create Form with subform', () => {
 
         cy.url().should('include', '/forms/dev');
 
-        cy.get('button[aria-label="close"]').click();
 
 
         cy.get('input[name=search-title]').type(subFormTitle);
@@ -73,7 +72,6 @@ describe('Create Form with subform', () => {
 
         cy.get('[data-cy=persist-form]').click();
 
-        cy.get('button[aria-label="close"]').click();
 
         cy.get('input[name=search-title]').type(formTitle);
 
@@ -102,7 +100,6 @@ describe('Create Form with subform', () => {
         cy.get('[data-cy="delete-form"]').click();
         cy.get('[data-cy="confirm-delete"]').click();
 
-        cy.get('button[aria-label="close"]').click();
 
         cy.wait(1000);
         cy.get('input[name=search-title]').clear();
@@ -113,7 +110,6 @@ describe('Create Form with subform', () => {
         cy.get('[data-cy="delete-form"]').click();
         cy.get('[data-cy="confirm-delete"]').click();
 
-        cy.get('button[aria-label="close"]').click();
 
         cy.wait(1000);
 

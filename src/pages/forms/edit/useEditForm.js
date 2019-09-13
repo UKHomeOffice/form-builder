@@ -8,8 +8,8 @@ import axios from "axios";
 import useCommonFormUtils from "../common/useCommonFormUtils";
 import formindexdb from '../../../core/db/formindexdb';
 import eventEmitter from "../../../core/eventEmitter";
-import {toast} from "react-toastify";
 import uuid4 from "uuid4";
+import {ToastsStore} from 'react-toasts';
 
 const useEditForm = (formId) => {
 
@@ -58,7 +58,8 @@ const useEditForm = (formId) => {
     const loadingFormFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        toast.success(`${editForm.data.name} has been successfully updated`);
+        ToastsStore.success(`${editForm.data.name} has been successfully updated`);
+
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared from edit page");

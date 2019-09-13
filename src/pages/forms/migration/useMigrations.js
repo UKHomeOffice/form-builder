@@ -8,7 +8,7 @@ import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import eventEmitter from '../../../core/eventEmitter';
 import uuid4 from "uuid4";
-import {toast} from "react-toastify";
+import {ToastsStore} from 'react-toasts';
 
 const useMigrations = () => {
         const {clearEnvContext, getEnvDetails} = useEnvContext();
@@ -224,7 +224,7 @@ const useMigrations = () => {
                     });
                     setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
 
-                    toast.success(`${t('migration.success.description', {formName: successfulForm.name})}`)
+                    ToastsStore.success(`${t('migration.success.description', {formName: successfulForm.name})}`)
 
                 }
                 makeRequest();

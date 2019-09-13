@@ -29,7 +29,6 @@ describe('Create Comment ', () => {
 
         cy.get('input[name=search-title]').type(formTitle);
 
-        cy.get('button[aria-label="close"]').click();
 
         cy.wait(1000);
 
@@ -41,8 +40,6 @@ describe('Create Comment ', () => {
         cy.get('[data-rb-event-key=comments]').click();
         cy.get('textarea[id="comment"]').type('Hello this is a comment');
         cy.get('[data-cy=addComment]').click();
-
-        cy.get('button[aria-label="close"]').click();
 
         cy.wait(1000);
 
@@ -63,7 +60,6 @@ describe('Create Comment ', () => {
         cy.get('[data-cy="delete-form"]').click();
         cy.get('[data-cy="confirm-delete"]').click();
 
-        cy.get('button[aria-label="close"]').click();
 
         cy.wait(1000);
         cy.get('input[name=search-title]').clear();

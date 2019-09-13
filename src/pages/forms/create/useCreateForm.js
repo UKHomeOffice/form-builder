@@ -11,8 +11,8 @@ import {useTranslation} from "react-i18next";
 import formindexdb from '../../../core/db/formindexdb';
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
-import {toast} from "react-toastify";
 import axios from "axios";
+import {ToastsStore} from 'react-toasts';
 
 const useCreateForm = (formContent = null) => {
     const {t} = useTranslation();
@@ -105,7 +105,7 @@ const useCreateForm = (formContent = null) => {
         }]
     );
     const success = async () => {
-        toast.success(`${form.data.name} has been successfully created`)
+        ToastsStore.success(`${form.data.name} has been successfully created`);
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared");

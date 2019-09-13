@@ -10,8 +10,8 @@ import config from 'react-global-configuration';
 import configuration from './config/appConfig';
 import eventEmitter from './core/eventEmitter';
 import Spinner from "react-bootstrap/Spinner";
-import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {ToastsContainer, ToastsStore,ToastsContainerPosition} from 'react-toasts';
 
 
 if (window.ENVIRONMENT_CONFIG) {
@@ -54,7 +54,8 @@ export const App = () => (
         </Spinner>
     </div>}>
         <Provider store={store}>
-            <ToastContainer/>
+            <ToastsContainer store={ToastsStore}
+                             position={ToastsContainerPosition.TOP_CENTER}/>
             <AppRouter/>
         </Provider>
     </KeycloakProvider>

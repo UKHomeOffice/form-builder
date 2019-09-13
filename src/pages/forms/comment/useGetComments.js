@@ -5,7 +5,7 @@ import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
-import {toast} from "react-toastify";
+import {ToastsStore} from 'react-toasts';
 
 const useGetComments = (formId) => {
     const {t} = useTranslation();
@@ -88,7 +88,7 @@ const useGetComments = (formId) => {
                     data: data,
                     total: total
                 }));
-                toast.success(`${t('comments.success.created')}`);
+                ToastsStore.success(`${t('comments.success.created')}`);
             }
         }
 
