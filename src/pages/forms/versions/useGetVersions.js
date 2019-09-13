@@ -3,10 +3,9 @@ import axios from "axios";
 import useApiRequest from "../../../core/api";
 import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
-import { toast} from "react-toastify";
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
-
+import {ToastsStore} from 'react-toasts';
 const useGetVersions = (formId) => {
     const initialState = {
         limit: 10,
@@ -53,7 +52,7 @@ const useGetVersions = (formId) => {
         };
         restoreCallback.current = () => {
             if (restoreState.status === SUCCESS) {
-                toast.success(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`);
+                ToastsStore.success(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`);
                 makeRequest();
             }
             if (restoreState.status === ERROR) {

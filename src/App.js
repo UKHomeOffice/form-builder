@@ -10,7 +10,6 @@ import config from 'react-global-configuration';
 import configuration from './config/appConfig';
 import eventEmitter from './core/eventEmitter';
 import Spinner from "react-bootstrap/Spinner";
-import 'react-toastify/dist/ReactToastify.css';
 import {ToastsContainer, ToastsStore,ToastsContainerPosition} from 'react-toasts';
 
 
