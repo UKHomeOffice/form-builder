@@ -224,7 +224,7 @@ const FormList = () => {
                                         </div>
                                         <Collapse in={forms.activeIndex === index}>
                                             <div>
-                                                <Card style={{width: '18rem'}}>
+                                                <Card style={{width: '100%'}}>
                                                     <Card.Header>
                                                         <Card.Title>{form.name}</Card.Title>
                                                         <Card.Subtitle>
