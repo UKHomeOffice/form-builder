@@ -31,44 +31,40 @@ const EnvironmentListPanel = ({environments}) => {
     };
     return <Container>
         <div style={{textAlign: 'center'}}>
-            <h1 className="display-5"><FontAwesomeIcon icon={faCogs}/><span className="ml-2">{t('home.environments')}</span></h1>
+            <h1 className="display-5"><FontAwesomeIcon icon={faCogs}/><span
+                className="ml-2">{t('home.environments')}</span></h1>
         </div>
-        <Container>
-            <Row>
-                {
-                    _.map(environments, (environment) => {
-                        return <React.Fragment key={uuid4()}>
-                            <div style={{marginTop: '1rem'}}>
-                                <Col key={uuid4()}>
-                                    <Card style={{width: '20rem'}} key={uuid4()} bg="light">
-                                        <Card.Body>
-                                            <Card.Title><FontAwesomeIcon icon={faCog}/>
-                                                <span> {environment.label ? environment.label : environment.id}</span></Card.Title>
-                                            <Card.Text>
-                                                {environment.description}
-                                            </Card.Text>
-                                        </Card.Body>
-                                        <ListGroup className="list-group-flush">
-                                            <ListGroupItem><FontAwesomeIcon
-                                                icon={faGlobe}/><span> {t('environment.url', {url: environment.url})}</span></ListGroupItem>
-                                            <ListGroupItem
-                                                variant={environment.editable ? 'success' : 'danger'}><FontAwesomeIcon
-                                                icon={faEdit}/><span> {t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</span></ListGroupItem>
-                                        </ListGroup>
-                                        <Card.Body>
-                                            <Card.Link href="#" onClick={() => {
-                                                handleClick(environment);
-                                            }} className="stretched-link">View forms</Card.Link>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            </div>
-                        </React.Fragment>
+        {
+            _.chunk(environments, 3).map(envs => {
+                const cols = _.map(envs, environment => {
+                    return <Col key={environment.id}>
+                        <Card style={{width: '100%'}} key={uuid4()} bg="light">
+                            <Card.Body>
+                                <Card.Title><FontAwesomeIcon icon={faCog}/>
+                                    <span> {environment.label ? environment.label : environment.id}</span></Card.Title>
+                                <Card.Text>
+                                    {environment.description}
+                                </Card.Text>
+                            </Card.Body>
+                            <ListGroup className="list-group-flush">
+                                <ListGroupItem><FontAwesomeIcon
+                                    icon={faGlobe}/><span> {t('environment.url', {url: environment.url})}</span></ListGroupItem>
+                                <ListGroupItem
+                                    variant={environment.editable ? 'success' : 'danger'}><FontAwesomeIcon
+                                    icon={faEdit}/><span> {t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</span></ListGroupItem>
+                            </ListGroup>
+                            <Card.Body>
+                                <Card.Link href="#" onClick={async () => {
+                                    await handleClick(environment);
+                                }} className="stretched-link">View forms</Card.Link>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                });
+                return <Container key={uuid4()} className="mt-4"><Row key={uuid4()}>{cols}</Row></Container>
+            })
+        }
 
-                    })
-                }
-            </Row>
-        </Container>
     </Container>
 
 };

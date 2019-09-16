@@ -1,6 +1,6 @@
 const classes = {
     'has-error': 'govuk-form-group--error',
-    'form-control ui fluid selection dropdown': 'form-control fluid selection dropdown govuk-select',
+    'form-control ui fluid selection dropdown': 'form-control govuk-select',
     'formio-day-component-month': 'formio-day-component-month govuk-date-input__input govuk-input--width-2',
     'formio-day-component-day': 'ormio-day-component-day govuk-date-input__input govuk-input--width-2',
     'formio-day-component-year': 'formio-day-component-year govuk-date-input__input govuk-input--width-4',
