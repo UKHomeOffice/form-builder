@@ -15,6 +15,7 @@ import Spinner from "react-bootstrap/Spinner";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import keycloakTokenProvider from "../../../../core/auth/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
+import FileService from "../../../../core/FileService";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
@@ -119,38 +120,51 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
     Formio.plugins = [{
         priority: 0,
         preRequest: async function (requestArgs) {
+            if (!requestArgs.opts) {
+                requestArgs.opts = {};
+            }
             if (!requestArgs.opts.header) {
-                requestArgs.opts.header = new Headers({
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json; charset=UTF-8'
-                });
+                requestArgs.opts.header = new Headers();
+                if (requestArgs.method !== 'upload') {
+                    requestArgs.opts.header.set('Accept', 'application/json');
+                    requestArgs.opts.header.set('Content-type', 'application/json; charset=UTF-8');
+                } else {
+                    requestArgs.opts.header.set('Content-type', requestArgs.file.type);
+                }
             }
             const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
             requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
+            if (!requestArgs.url) {
+                requestArgs.url = "";
+            }
             requestArgs.url = requestArgs.url.replace("_id", "id");
-            return Promise.resolve(requestArgs);
-        }
-    }, {
-        priority: 0,
-        requestResponse: function (response) {
-            return {
-                ok: response.ok,
-                json: () => response.json().then((result) => {
-                    if (result.forms) {
-                        return result.forms.map((form) => {
-                            form['_id'] = form.id;
-                            return form;
-                        });
-                    }
-                    result['_id'] = result.id;
-                    return result;
-                }),
-                status: response.status,
-                headers: response.headers
-            };
+            return requestArgs;
+        },
 
-        }
-    }];
+
+    },
+
+        {
+            priority: 0,
+            requestResponse: function (response) {
+                return {
+                    ok: response.ok,
+                    json: () => response.json().then((result) => {
+                        if (result.forms) {
+                            return result.forms.map((form) => {
+                                form['_id'] = form.id;
+                                return form;
+                            });
+                        }
+                        result['_id'] = result.id;
+                        return result;
+                    }),
+                    status: response.status,
+                    headers: response.headers
+                };
+
+            }
+        }];
     return <React.Fragment>
         <Form form={parsedForm.form}
               ref={(form) => {
@@ -167,10 +181,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
               options={
                   {
                       noAlerts: true,
-                      formio: {
-                          noAlerts: true,
-                          formsUrl: `${envContext.url}/form`
-                      }
+                      fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>
         <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')}/>
 

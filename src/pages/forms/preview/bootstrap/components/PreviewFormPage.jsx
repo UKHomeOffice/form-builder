@@ -31,7 +31,10 @@ const PreviewFormPage = ({formId}) => {
         duplicate,
         edit,
         parseCss,
-        setTabKey
+        setTabKey,
+        parseSubmissionSchema,
+        closeFormSubmissionSchemaView,
+        openFormSubmissionSchemaView
     } = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
@@ -54,6 +57,14 @@ const PreviewFormPage = ({formId}) => {
                                 openSchemaView();
                             }}
                             className="mr-2">{t('form.schema.view', {env: envContext.id})}</Button>
+                    {/*TODO: Will introduce once submission schema generated */}
+                    {/*<Button block={isMobile} variant="outline-dark"*/}
+                            {/*data-cy="viewFormSubmissionSchema"*/}
+                            {/*disabled={form.disableAllActions}*/}
+                            {/*onClick={() => {*/}
+                                {/*openFormSubmissionSchemaView();*/}
+                            {/*}}*/}
+                            {/*className="mr-2">{t('form.submission.schema.view', {env: envContext.id})}</Button>*/}
 
                     {canEdit() && envContext.editable ? <React.Fragment>
                         <Button block={isMobile} variant="dark"
@@ -111,8 +122,11 @@ const PreviewFormPage = ({formId}) => {
                 </Tabs>
             </Col>
         </Row>
-        {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView}
+        {form.data ? <SchemaModal form={parseCss(form.data)} open={form.openSchemaView} title={t('form.schema.label')}
                                   close={closeSchemaView}/> : null}
+
+        {form.data ? <SchemaModal form={parseSubmissionSchema(form.data)} open={form.openFormSchemaSubmissionView} title={t('form.submission.schema.label', {formName:form.data.name})}
+                                  close={closeFormSubmissionSchemaView}/> : null}
 
     </Container>
 

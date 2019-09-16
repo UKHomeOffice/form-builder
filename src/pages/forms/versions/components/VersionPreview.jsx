@@ -13,13 +13,12 @@ import Collapse from "react-bootstrap/Collapse";
 import ListGroup from "react-bootstrap/ListGroup";
 import Col from "react-bootstrap/Col";
 import useGetVersion from "../useGetVersion";
-import {TextSpinner} from "../../../../common/Overlay";
 
 const VersionPreview = ({versionId, restore, restoreState}) => {
     const {envContext} = useEnvContext();
     const {setVersion, version, status} = useGetVersion(versionId);
     if (!version.data || (!status || status === EXECUTING)) {
-        return <TextSpinner loadingText={"Loading version"}/>
+        return <div>Loading...</div>
     }
     return <Container fluid>
         <Row className="mt-2">

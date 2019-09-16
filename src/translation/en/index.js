@@ -192,6 +192,12 @@ const messages = {
             }
 
         },
+        "submission":{
+           "schema":{
+               "view": "View Submission Schema",
+               "label": "Submission schema for {{formName}}"
+           }
+        },
         "delete" : {
             "confirm" : "Are you sure you want to delete {{formName}}?",
             "successful" : "Successfully deleted {{formName}}",

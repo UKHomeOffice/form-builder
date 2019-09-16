@@ -23,7 +23,8 @@ const usePreviewForm = (formId) => {
         submission: null,
         openSchemaView: false,
         tabKey: 'details',
-        disableAllActions: false
+        disableAllActions: false,
+        openFormSchemaSubmissionView: false,
     });
 
     const isMounted = useRef(true);
@@ -167,6 +168,28 @@ const usePreviewForm = (formId) => {
         return form;
     };
 
+    const parseSubmissionSchema = (form) => {
+        const submission = {};
+        FormioUtils.eachComponent(form.components, (component, path) => {
+
+        });
+        return submission;
+    };
+
+    const closeFormSubmissionSchemaView = () => {
+        setValue(form => ({
+            ...form,
+            openFormSchemaSubmissionView: false
+        }));
+    };
+
+    const openFormSubmissionSchemaView = () => {
+        setValue(form => ({
+            ...form,
+            openFormSchemaSubmissionView: true
+        }));
+    };
+
     return {
         previewSubmission,
         status,
@@ -180,7 +203,10 @@ const usePreviewForm = (formId) => {
         edit,
         parseCss,
         exception,
-        setTabKey
+        setTabKey,
+        parseSubmissionSchema,
+        openFormSubmissionSchemaView,
+        closeFormSubmissionSchemaView
     }
 };
 
