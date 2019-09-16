@@ -38,8 +38,8 @@ const GovUKPreviewFormPage = ({formId}) => {
                     className="m-2">{t('error.general')}</span></Alert.Heading>
                 <p className="lead">{t('form.list.failure.forms-load', {error: JSON.stringify(response.data)})}</p>
             </Alert>
-        </Container> : <Container>{form.data ? <PreviewFormPanel form={form.data} submission={form.submission}
-                                                                 handlePreview={previewSubmission}/> : null}</Container>)}
+        </Container> : <Container>{form.data ? <PreviewFormPanel form={form.data} formSubmission={form.submission}
+                                                                 previewSubmission={previewSubmission}/> : null}</Container>)}
     </React.Fragment>
 };
 

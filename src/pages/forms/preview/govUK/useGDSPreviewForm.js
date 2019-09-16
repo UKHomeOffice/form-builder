@@ -56,7 +56,10 @@ const useGDSPreviewForm = (formId) => {
         navigation.navigate("/forms", {replace: true});
     };
 
-    const previewSubmission = (submission) => {
+    const previewSubmission = (submission, formioForm) => {
+        if (formioForm) {
+            formioForm.formio.emit('submitDone');
+        }
         setValue(form => ({
             ...form,
             submission: submission
