@@ -10,12 +10,13 @@ import {useDebouncedCallback} from "use-debounce";
 import axios from "axios";
 import eventEmitter from '../../../core/eventEmitter';
 import uuid from 'uuid4';
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
 
 const useGetForms = () => {
         const navigation = useNavigation();
         const {envContext} = useEnvContext();
         const {t} = useTranslation();
+        const { addToast } = useToasts();
         const initialState = {
             column: null,
             direction: null,
@@ -162,8 +163,12 @@ const useGetForms = () => {
 
             successfulFormDownloadCallback.current = () => {
                 fileDownload(downloadFormState.response.data, `${forms.downloadFile.formName}.json`);
-                ToastsStore.success(`${t('form.download.successful-message', {formName: forms.downloadFile.formName})}`)
 
+                addToast(`${t('form.download.successful-message', {formName: forms.downloadFile.formName})}`, {
+                    appearance: 'success',
+                    autoDismiss: true,
+                    id: uuid()
+                });
             };
 
             failedFormDownloadCallback.current = () => {

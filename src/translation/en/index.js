@@ -214,7 +214,8 @@ const messages = {
         },
         "schema": {
           "label" : "Form schema view",
-          "view": "View form schema"
+          "view": "View form schema",
+          "edit": "Edit schema"
         },
         "preview" : {
             "duplicate" : "Duplicate form",

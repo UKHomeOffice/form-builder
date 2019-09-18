@@ -5,9 +5,10 @@ import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
 
 const useGetComments = (formId) => {
+    const {addToast} = useToasts();
     const {t} = useTranslation();
     const initialState = {
         limit: 5,
@@ -88,7 +89,12 @@ const useGetComments = (formId) => {
                     data: data,
                     total: total
                 }));
-                ToastsStore.success(`${t('comments.success.created')}`);
+
+                addToast(`${t('comments.success.created')}`, {
+                    autoDismiss: true,
+                    appearance: 'success',
+                    id:uuid4()
+                });
             }
         }
 

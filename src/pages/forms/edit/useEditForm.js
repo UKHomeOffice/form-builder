@@ -9,14 +9,14 @@ import useCommonFormUtils from "../common/useCommonFormUtils";
 import formindexdb from '../../../core/db/formindexdb';
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
 
 const useEditForm = (formId) => {
 
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();
-
+    const {addToast} = useToasts();
     const [editForm, setValues] = useState({
         data: {},
         openLocalChangesDetectedModal: false,
@@ -58,8 +58,7 @@ const useEditForm = (formId) => {
     const loadingFormFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        ToastsStore.success(`${editForm.data.name} has been successfully updated`);
-
+        addToast(`${editForm.data.name} has been successfully updated`, { id:  uuid4(), appearance: 'success', autoDismiss: true});
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared from edit page");

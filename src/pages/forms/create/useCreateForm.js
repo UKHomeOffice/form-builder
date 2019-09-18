@@ -12,9 +12,10 @@ import formindexdb from '../../../core/db/formindexdb';
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
 import axios from "axios";
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
 
 const useCreateForm = (formContent = null) => {
+    const {addToast} = useToasts();
     const {t} = useTranslation();
     const sanitize = (form) => {
         try {
@@ -105,7 +106,12 @@ const useCreateForm = (formContent = null) => {
         }]
     );
     const success = async () => {
-        ToastsStore.success(`${form.data.name} has been successfully created`);
+
+       addToast(`${form.data.name} has been successfully created`, {
+           appearance: 'success',
+           autoDismiss: true,
+           id: uuid4()
+       });
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared");

@@ -5,9 +5,10 @@ import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import Alert from "react-bootstrap/Alert";
 import {withTranslation} from "react-i18next";
 import eventEmitter from "../core/eventEmitter";
-import {ToastsStore} from 'react-toasts';
+import {withToastManager} from "react-toast-notifications";
 import _ from 'lodash';
 import ValidationError from "./ValidationError";
+import uuid4 from "uuid4";
 
 class ErrorHandling extends React.Component {
     constructor(props) {
@@ -25,40 +26,61 @@ class ErrorHandling extends React.Component {
             const translateKey = error.translateKey;
             const translateMetaData = error.translateKeyMeta ? error.translateKeyMeta : {};
             if (!_.isEmpty(error.exception)) {
-                ToastsStore.error(JSON.stringify(error.exception), {
-                    toastId: error.id
+                this.props.toastManager.add(JSON.stringify(error.exception), {
+                    appearance: 'error',
+                    autoDismiss: false,
+                    id: uuid4()
                 });
             } else if (!_.isEmpty(error.response)) {
                 const validationErrors = error.response.data.validationErrors;
                 if (!_.isEmpty(validationErrors)) {
-                    ToastsStore.error(<ValidationError translateKey={translateKey}
-                                                       validationErrors={validationErrors}/>, {
-                        toastId: error.id
+                    this.props.toastManager.add(<ValidationError translateKey={translateKey}
+                                                                 validationErrors={validationErrors}/>, {
+                        appearance: 'error',
+                        autoDismiss: false,
+                        id: uuid4()
+
                     });
-                }
-                let errorMessage = "";
-                if (error.response.data.message) {
-                    errorMessage = error.response.data.message;
-                }
-
-                if (error.response.data.exception) {
-                    errorMessage = error.response.data.exception
-                }
-
-                if (translateKey) {
-                    translateMetaData['error'] = errorMessage;
-                    ToastsStore.error(<React.Fragment>
-                        <h6>{t(translateKey, translateMetaData)}</h6>
-                    </React.Fragment>);
                 } else {
-                    ToastsStore.error(<React.Fragment>
-                        <h6>{t('error.general')}</h6>
-                        <h6>{errorMessage}</h6>
-                    </React.Fragment>);
+                    let errorMessage = "";
+                    if (error.response.data.message) {
+                        errorMessage += error.response.data.message;
+                    }
+
+                    if (error.response.data.exception) {
+                        errorMessage += error.response.data.exception
+                    }
+
+                    if (translateKey) {
+                        translateMetaData['error'] = errorMessage;
+
+                        this.props.toastManager.add(<React.Fragment>
+                            <h6>{t(translateKey, translateMetaData)}</h6>
+                        </React.Fragment>, {
+                            appearance: 'error',
+                            autoDismiss: false,
+                            id: uuid4()
+
+                        });
+                    } else {
+                        this.props.toastManager.add(<React.Fragment>
+                            <h6>{t('error.general')}</h6>
+                            <h6>{errorMessage}</h6>
+                        </React.Fragment>, {
+                            appearance: 'error',
+                            autoDismiss: false,
+                            id: uuid4()
+
+                        });
+                    }
                 }
 
             } else {
-                ToastsStore.error(`${error.message}`);
+                this.props.toastManager.add(`${error.message}`, {
+                    appearance: 'error',
+                    autoDismiss: false,
+                    id: uuid4()
+                });
             }
         });
     }
@@ -78,4 +100,4 @@ class ErrorHandling extends React.Component {
     }
 }
 
-export default withTranslation()(ErrorHandling);
+export default withTranslation()(withToastManager(ErrorHandling));

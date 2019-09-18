@@ -5,8 +5,10 @@ import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
 import {useTranslation} from "react-i18next";
 import eventEmitter from "../../../core/eventEmitter";
 import uuid4 from "uuid4";
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
+
 const useGetVersions = (formId) => {
+    const {addToast} = useToasts();
     const initialState = {
         limit: 10,
         activePage: 0,
@@ -52,7 +54,12 @@ const useGetVersions = (formId) => {
         };
         restoreCallback.current = () => {
             if (restoreState.status === SUCCESS) {
-                ToastsStore.success(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`);
+
+                addToast(`${t("form.restore.success-title")} - ${t("form.restore.success-description", {versionId: version})}`, {
+                    appearance: 'success',
+                    autoDismiss: true,
+                    id: uuid4()
+                });
                 makeRequest();
             }
             if (restoreState.status === ERROR) {

@@ -5,10 +5,12 @@ import {useTranslation} from "react-i18next";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import eventEmitter from "../../../../core/eventEmitter";
-import  uuid4 from "uuid4";
-import {ToastsStore} from 'react-toasts';
+import uuid4 from "uuid4";
+import {useToasts} from "react-toast-notifications";
 
 const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
+
+    const {addToast} = useToasts();
     const [open, setOpen] = useState(false);
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${form.id}`, {verb: 'delete'}
@@ -20,7 +22,11 @@ const DeleteFormButton = ({form, onSuccessfulDeletion}) => {
 
     const callback = () => {
         setOpen(false);
-        ToastsStore.success(`${t('form.delete.successful', {formName: form.name})}`);
+        addToast(`${t('form.delete.successful', {formName: form.name})}`, {
+            appearance: 'success',
+            autoDismiss: true,
+            id: uuid4()
+        });
         onSuccessfulDeletion()
     };
     const failedCallback = () => {

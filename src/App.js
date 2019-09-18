@@ -10,8 +10,7 @@ import config from 'react-global-configuration';
 import configuration from './config/appConfig';
 import eventEmitter from './core/eventEmitter';
 import Spinner from "react-bootstrap/Spinner";
-import {ToastsContainer, ToastsStore,ToastsContainerPosition} from 'react-toasts';
-
+import {ToastProvider} from 'react-toast-notifications'
 
 if (window.ENVIRONMENT_CONFIG) {
     console.log("Using built version of application");
@@ -53,9 +52,11 @@ export const App = () => (
         </Spinner>
     </div>}>
         <Provider store={store}>
-            <ToastsContainer store={ToastsStore}
-                             position={ToastsContainerPosition.TOP_CENTER}/>
-            <AppRouter/>
+            <ToastProvider
+                autoDismissTimeout={5000}
+                placement={'top-center'}>
+                <AppRouter/>
+            </ToastProvider>
         </Provider>
     </KeycloakProvider>
 );

@@ -8,13 +8,13 @@ import {useTranslation} from "react-i18next";
 import {useDebouncedCallback} from "use-debounce";
 import eventEmitter from '../../../core/eventEmitter';
 import uuid4 from "uuid4";
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
 
 const useMigrations = () => {
         const {clearEnvContext, getEnvDetails} = useEnvContext();
         const {log} = useLogger();
         const {t} = useTranslation();
-
+        const {addToast} = useToasts();
         const [formio, setFormio] = useState({
             url: '',
             username: '',
@@ -169,7 +169,7 @@ const useMigrations = () => {
                     })
 
                 } catch (error) {
-                    throw Object.assign( new Error(error.message), {
+                    throw Object.assign(new Error(error.message), {
                         response: {
                             data: error
                         }
@@ -224,7 +224,11 @@ const useMigrations = () => {
                     });
                     setFormio(formio => ({...formio, formsIdsForMigration: selectedFormIds}));
 
-                    ToastsStore.success(`${t('migration.success.description', {formName: successfulForm.name})}`)
+                    addToast(`${t('migration.success.description', {formName: successfulForm.name})}`, {
+                        appearance: 'success',
+                        autoDismiss: true,
+                        id: uuid4()
+                    });
 
                 }
                 makeRequest();

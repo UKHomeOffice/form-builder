@@ -159,6 +159,10 @@ const usePreviewForm = (formId) => {
         await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`, {replace: true});
     };
 
+    const editSchema = async () => {
+        await navigation.navigate(`/forms/${envContext.id}/${formId}/schema`, {replace: true});
+    };
+
     const parseCss = (form) => {
         FormioUtils.eachComponent(form.components, (component) => {
             if (component.customClass && component.customClass.indexOf('-govuk-') >= 0) {
@@ -203,6 +207,7 @@ const usePreviewForm = (formId) => {
         edit,
         parseCss,
         exception,
+        editSchema,
         setTabKey,
         parseSubmissionSchema,
         openFormSubmissionSchemaView,

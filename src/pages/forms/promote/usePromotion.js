@@ -11,7 +11,7 @@ import {useKeycloak} from "react-keycloak";
 import Stepper from 'bs-stepper'
 import eventEmitter from "../../../core/eventEmitter";
 import * as uuid4 from "uuid4";
-import {ToastsStore} from 'react-toasts';
+import {useToasts} from "react-toast-notifications";
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
@@ -19,6 +19,7 @@ const usePromotion = (formId) => {
     const [keycloak] = useKeycloak();
     const {getEnvDetails, envContext} = useEnvContext();
     const {t} = useTranslation();
+    const { addToast } = useToasts();
     const [form, setValue] = useState({
         data: null,
         formId: formId,
@@ -155,7 +156,11 @@ const usePromotion = (formId) => {
             })
         }
 
-        ToastsStore.success(`${message}`);
+        addToast(`${message}`, {
+            appearance: 'success',
+            autoDismiss: true,
+            id: uuid4()
+        });
 
         navigation.navigate(`/forms/${envContext.id}`, {replace: true});
     };
