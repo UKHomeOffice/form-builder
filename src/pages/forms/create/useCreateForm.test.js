@@ -1,6 +1,19 @@
 import {act, renderHook} from 'react-hooks-testing-library'
 import useCreateForm from "./useCreateForm";
 
+jest.mock('react-toast-notifications', () => ({
+    withToastManager: () => {
+        return jest.fn();
+    },
+    useToasts: () => {
+        return {
+            addToast: () => {
+                return jest.fn();
+            }
+        }
+    }
+}));
+
 describe('useCreateForm', () => {
     beforeEach(() => {
 
@@ -11,10 +24,12 @@ describe('useCreateForm', () => {
             }
         };
 
+
+        const addToastModule = require('react-toast-notifications');
         const naviModule = require('react-navi');
         naviModule.useNavigation = jest.fn(() => {
             return {
-                getCurrentValue : () => {
+                getCurrentValue: () => {
                     return {
                         url: {
                             pathname: 'test'

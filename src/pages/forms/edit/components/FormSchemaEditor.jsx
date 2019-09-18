@@ -7,10 +7,12 @@ import jwt_decode from "jwt-decode";
 import Alert from "./EditFormPage";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
+import {useTranslation} from "react-i18next";
 
 const FormSchemaEditor = ({formId}) => {
     const {envContext} = useEnvContext();
     const {keycloak} = useKeycloak();
+    const {t} = useTranslation();
 
     useBeforeUnload(evt => {
         const isExpired = jwt_decode(keycloak.refreshToken).exp < new Date().getTime() / 1000;
