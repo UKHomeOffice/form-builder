@@ -6,12 +6,20 @@ import JSONEditor from 'jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import './FormJsonSchemaEditor.scss';
 import {withTranslation} from "react-i18next";
+import _ from 'lodash';
+
 
 class FormJsonSchemaEditor extends Component {
     componentDidMount() {
         const options = Object.assign({}, this.props);
+
+        const nonEditableFields = ['id', 'access', 'links', 'versionId', 'createdOn', 'updatedOn', 'latest'];
         delete options.json;
         delete options.text;
+
+        options['onEditable'] = (node) => {
+           return {field: false, value: !_.includes(nonEditableFields, node.field)}
+        };
 
         this.jsoneditor = new JSONEditor(this.container, options);
 
