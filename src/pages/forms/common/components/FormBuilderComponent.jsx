@@ -11,7 +11,7 @@ import PreviewFormModal from "../../create/components/PreviewFormModal";
 import useEnvContext from "../../../../core/context/useEnvContext";
 import keycloakTokenProvider from '../../../../core/auth/KeycloakTokenProvider';
 import {useKeycloak} from "react-keycloak";
-
+import '../../../../core/form/SubFormComponent';
 
 const FormBuilderComponent = ({
                                   form,
