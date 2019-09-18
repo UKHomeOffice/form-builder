@@ -66,7 +66,7 @@ const EnvironmentPanel = ({form, setValue, isDisabled}) => {
                                 /></Col>
                             });
                             while(cols.length !== 3) {
-                                cols.push(<Col/>);
+                                cols.push(<Col key={uuid4()}/>);
                             }
                           return <Container key={uuid4()}><Row key={uuid4()}>{cols}</Row></Container>
                         })

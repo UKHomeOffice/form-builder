@@ -10,8 +10,10 @@ import keycloakTokenProvider from "../../../core/auth/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 import Stepper from 'bs-stepper'
 import eventEmitter from "../../../core/eventEmitter";
-import * as uuid4 from "uuid4";
+import uuid4 from "uuid4";
 import {useToasts} from "react-toast-notifications";
+import FormioUtils from "formiojs/utils";
+import _ from 'lodash';
 
 const usePromotion = (formId) => {
     const {log} = useLogger();
@@ -19,7 +21,7 @@ const usePromotion = (formId) => {
     const [keycloak] = useKeycloak();
     const {getEnvDetails, envContext} = useEnvContext();
     const {t} = useTranslation();
-    const { addToast } = useToasts();
+    const {addToast} = useToasts();
     const [form, setValue] = useState({
         data: null,
         formId: formId,
@@ -43,6 +45,70 @@ const usePromotion = (formId) => {
             const headers = {
                 "x-promote-kc-token": `Bearer ${token}`,
             };
+
+            const subFormComponents = FormioUtils.searchComponents(form.data.components, {
+                'type': 'form'
+            });
+
+            if (!_.isEmpty(subFormComponents)) {
+                const subFormIds = subFormComponents.map((subForm) => {
+                    return subForm.form;
+                });
+
+                const subForms = await Promise.all(subFormIds.map(async (subFormId) => {
+                    try {
+                        const formData = await axios.get(`${envContext.url}/form/${subFormId}`);
+                        return formData.data;
+                    } catch (e) {
+                        return null;
+                    }
+                }));
+
+                const subFormsFromEnv = await Promise.all(subForms.filter((subForm) => {
+                    return subForm
+                }).map(async (subForm) => {
+                    const response = await axios.get(`${promotionEnvironment.url}/form?name=${subForm.name}&select=id`);
+                    return {
+                        id: response.data.total >= 1 ? response.data.forms[0].id : null,
+                        subFormToPromote: subForm
+                    };
+                }));
+
+                await subFormsFromEnv.forEach(async (data) => {
+                    let formId;
+                    if (data.id) {
+                        await axios({
+                            method: 'PUT',
+                            url: `${promotionEnvironment.url}/form/${data.id}`,
+                            data: data.subFormToPromote,
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        formId = data.id;
+                        console.log('Updated latest subForm');
+                    } else {
+                        const result = await axios({
+                            method: 'POST',
+                            url: `${promotionEnvironment.url}/form`,
+                            data: data.subFormToPromote,
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        console.log('New subform created');
+                        formId = result.headers['x-form-id'];
+                    }
+
+                    FormioUtils.eachComponent(form.data.components, (component) => {
+                        if (component.type === 'form' && component.form === data.subFormToPromote.id) {
+                            component.form = formId;
+                            console.log('Updated subForm reference');
+                        }
+                    });
+                });
+            }
+
             const formResponse = await axios({
                 method: 'GET',
                 headers: headers,

@@ -36,40 +36,8 @@
     {
       "id": "devA",
       "label": "Development A",
-      "url": "http://localhost:4000",
+      "url": "http://localhost:4001",
       "description": "Elf Dev A environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
-          "clientId": "form-builder",
-          "secret": "31c1a09d-6f71-42de-8dd2-b04458f1b760"
-        }
-      },
-      "editable": false,
-      "variable-replacements": [
-        {
-          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
-        },
-        {
-          "{$.staffDetailsContext.staffId}": "{{guid}}"
-        },
-        {
-          "{$.keycloakContext.givenName}": "{{firstName}}"
-        },
-        {
-          "{$.keycloakContext.familyName}": "{{lastName}}"
-        }
-      ]
-    },
-    {
-      "id": "devB",
-      "label": "Development B",
-      "url": "http://localhost:4000",
-      "description": "Elf Dev B environment",
       "service": {
         "formio": {
           "username": "me@lodev.xyz",
