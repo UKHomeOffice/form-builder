@@ -26,7 +26,7 @@ class ErrorHandling extends React.Component {
             const translateKey = error.translateKey;
             const translateMetaData = error.translateKeyMeta ? error.translateKeyMeta : {};
             if (!_.isEmpty(error.exception)) {
-                this.props.toastManager.add(JSON.stringify(error.exception), {
+                this.props.toastManager.add(error.exception.message, {
                     appearance: 'error',
                     autoDismiss: false,
                     id: uuid4()

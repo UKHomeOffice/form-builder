@@ -58,7 +58,11 @@ const useEditForm = (formId) => {
     const loadingFormFailedCallback = useRef();
 
     const onSuccessfulEdit = async () => {
-        addToast(`${editForm.data.name} has been successfully updated`, { id:  uuid4(), appearance: 'success', autoDismiss: true});
+        addToast(`${editForm.data.name} has been successfully updated`, {
+            id: uuid4(),
+            appearance: 'success',
+            autoDismiss: true
+        });
 
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared from edit page");
@@ -83,7 +87,7 @@ const useEditForm = (formId) => {
                 response: response,
                 exception: exception
             });
-        }
+        };
         editFailedCallback.current = () => {
             eventEmitter.publish('error', {
                 id: uuid4(),
@@ -104,7 +108,7 @@ const useEditForm = (formId) => {
             cancelEditRef.cancel("Cancelling edit request");
             isMounted.current = false;
         }
-    }, [editForm.formId]);
+    }, []);
 
 
     useEffect(() => {
@@ -183,6 +187,14 @@ const useEditForm = (formId) => {
         editForm.data.components = form.components;
         setValues({
             ...editForm
+        });
+        softSave();
+    };
+
+    const updateJSON = (json) => {
+        editForm.data = json;
+        setValues({
+            ...editForm,
         });
         softSave();
     };
@@ -268,12 +280,21 @@ const useEditForm = (formId) => {
         });
     };
 
+    const editSchemaView = async () => {
+        await navigation.navigate(`/forms/${envContext.id}/${formId}/edit/schema`);
+    };
+
+    const formBuilderEditView = async() => {
+        await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`);
+    };
+
     return {
         status,
         editForm,
         response,
         updateField,
         updateForm,
+        updateJSON,
         backToForms,
         closePreview,
         openPreview,
@@ -282,7 +303,9 @@ const useEditForm = (formId) => {
         state,
         changeDisplay,
         closeDraftModal,
-        loadLocalChanges
+        loadLocalChanges,
+        editSchemaView,
+        formBuilderEditView
     }
 };
 

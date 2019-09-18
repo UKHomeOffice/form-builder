@@ -30,7 +30,8 @@ const EditFormPage = ({formId}) => {
         state,
         changeDisplay,
         closeDraftModal,
-        loadLocalChanges
+        loadLocalChanges,
+        editSchemaView
     } = useEditForm(formId);
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
@@ -73,6 +74,7 @@ const EditFormPage = ({formId}) => {
                                  <p>{t('form.edit.unsaved.data.description')}</p>
                              </Alert></Container> : null}
                              <FormBuilderComponent
+                                 editSchemaView={editSchemaView}
                                  envContext={envContext}
                                  form={editForm}
                                  updateField={updateField}

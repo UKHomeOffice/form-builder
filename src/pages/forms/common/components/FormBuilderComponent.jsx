@@ -27,6 +27,7 @@ const FormBuilderComponent = ({
                                   save,
                                   formInvalid,
                                   changeDisplay,
+                                  editSchemaView,
 
                               }) => {
     const {envContext} = useEnvContext();
@@ -180,10 +181,14 @@ const FormBuilderComponent = ({
         <Row>
             <Container>
                 <ButtonToolbar>
-                    <Button data-cy="edit-form"
+                    <Button data-cy="cancel-edit-form"
                             variant="secondary"
                             className="mr-2"
                             onClick={() => backToForms()}>{t('form.cancel.label')}</Button>
+                    <Button data-cy="edit-schema-form"
+                            variant="info"
+                            className="mr-2"
+                            onClick={async () => await editSchemaView()}>{t('form.schema.edit.label')}</Button>
                     <Button data-cy="preview-form"
                             variant="dark"
                             className="mr-2"
