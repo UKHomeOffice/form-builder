@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import useFormDataReplacer from "../../../../core/replacements/useFormDataReplacer";
-import ReactJson from "react-json-view";
 import {Form, Formio} from 'react-formio';
 import './PreviewFormComponent.scss';
 import Container from "react-bootstrap/Container";
@@ -16,6 +15,7 @@ import useEnvContext from "../../../../core/context/useEnvContext";
 import keycloakTokenProvider from "../../../../core/auth/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 import FileService from "../../../../core/FileService";
+import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
@@ -185,10 +185,13 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
                   }}/>
         <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')}/>
 
-        <ReactJson src={formSubmission ? formSubmission : {}} theme="monokai" name={null}
-                   collapseStringsAfterLength={100}
-                   collapsed={submissionInfoCollapsed}/>
 
+        <FormJsonSchemaEditor
+            readonly={true}
+            json={formSubmission ? formSubmission : {}}
+            mode={'tree'}
+            indentation={2}
+        />
     </React.Fragment>
 };
 

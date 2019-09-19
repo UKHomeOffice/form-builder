@@ -17,9 +17,16 @@ class FormJsonSchemaEditor extends Component {
         delete options.json;
         delete options.text;
 
-        options['onEditable'] = (node) => {
-           return {field: false, value: !_.includes(nonEditableFields, node.field)}
-        };
+        if (!this.props.readonly) {
+            options['onEditable'] = (node) => {
+                return {field: false, value: !_.includes(nonEditableFields, node.field)}
+            };
+        } else {
+            options['onEditable'] = (node) => {
+                return false;
+            };
+        }
+
 
         this.jsoneditor = new JSONEditor(this.container, options);
 

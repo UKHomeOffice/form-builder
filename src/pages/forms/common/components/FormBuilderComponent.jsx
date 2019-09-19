@@ -185,10 +185,10 @@ const FormBuilderComponent = ({
                             variant="secondary"
                             className="mr-2"
                             onClick={() => backToForms()}>{t('form.cancel.label')}</Button>
-                    <Button data-cy="edit-schema-form"
-                            variant="info"
-                            className="mr-2"
-                            onClick={async () => await editSchemaView()}>{t('form.schema.edit.label')}</Button>
+                    {editSchemaView && (typeof editSchemaView === 'function')? <Button data-cy="edit-schema-form"
+                        variant="info"
+                        className="mr-2"
+                        onClick={async () => await editSchemaView()}>{t('form.schema.edit.label')}</Button> : null}
                     <Button data-cy="preview-form"
                             variant="dark"
                             className="mr-2"
@@ -204,8 +204,6 @@ const FormBuilderComponent = ({
     </Container>
 
 };
-
-
 
 
 export default FormBuilderComponent;
