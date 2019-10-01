@@ -21,13 +21,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.idea
-node_modules
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-.env
-
-integration/cypress/screenshots
-integration/cypress/videos
-dist
-
-

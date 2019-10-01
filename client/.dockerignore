@@ -1,0 +1,10 @@
+.cache
+coverage
+dist
+node_modules
+.idea
+test
+build/
+.drone.yml
+.nyc_output
+integration/

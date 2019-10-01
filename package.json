@@ -22,94 +22,11 @@
     }
   },
   "dependencies": {
-    "@nivo/bar": "^0.57.0",
-    "@nivo/core": "^0.57.0",
-    "@nivo/pie": "^0.57.0",
-    "ajv": "^6.10.0",
-    "axios": "^0.19.0",
-    "axios-retry": "^3.1.2",
-    "concurrently": "^4.1.0",
-    "core-js": "^2.6.5",
-    "cors": "^2.8.5",
-    "dummy-json": "^2.0.0",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.12.1",
-    "express": "^4.16.4",
-    "fbemitter": "^2.1.1",
-    "font-awesome": "^4.7.0",
-    "formiojs": "4.0.0-rc.30",
-    "govuk-frontend": "^2.13.0",
-    "i18next": "^15.1.0",
-    "i18next-browser-languagedetector": "^3.0.1",
-    "jest-dom": "^3.1.4",
-    "jest-enzyme": "^7.0.2",
-    "js-file-download": "^0.4.5",
-    "jwt-decode": "^2.2.0",
-    "keycloak-connect": "^6.0.1",
-    "keycloak-js": "^6.0.1",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
-    "navi": "^0.12.6",
-    "node-sass": "^4.12.0",
-    "react": "^16.8.6",
-    "react-avatar": "^3.6.0",
-    "react-device-detect": "^1.6.2",
-    "react-dom": "^16.8.6",
-    "react-formio": "4.0.0-beta.28",
-    "react-global-configuration": "^1.3.0",
-    "react-helmet": "^5.2.1",
-    "react-i18next": "^10.9.0",
-    "react-json-view": "^1.19.1",
-    "react-keycloak": "^6.0.4",
-    "react-mentions": "^3.1.0",
-    "react-navi": "^0.12.6",
-    "react-redux": "^7.0.3",
-    "react-router": "^5.0.0",
-    "react-scripts": "3.0.0",
-    "react-semantic-toasts": "^0.5.3",
-    "react-test-renderer": "^16.8.6",
-    "react-testing-library": "^7.0.0",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0",
-    "replace-in-file": "^4.1.0",
-    "secure-ls": "^1.2.5",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.87.2",
-    "use-debounce": "^2.0.0",
-    "uuid4": "^1.1.4",
-    "winston": "^3.2.1"
+    "concurrently": "^4.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
-    "start:both": "concurrently \"node server \" \"npm start\"",
-    "cypress:open": "cypress open"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "chance": "^1.0.18",
-    "cypress": "^3.4.1",
-    "cypress-file-upload": "^3.1.1",
-    "eslint-plugin-react-hooks": "^1.6.0",
-    "husky": "^2.4.0",
-    "react-hooks-testing-library": "^0.5.0"
-  },
-  "proxy": "http://localhost:8101"
+    "audit:all" : "concurrently \"npm audit --prefix server\" \"npm audit --prefix client\" \"npm audit --prefix integration\"",
+    "install:all": "concurrently \"npm --prefix server install\" \"npm --prefix client install\" \"npm --prefix integration install\"",
+    "dev": "concurrently \"npm --prefix server run watch-ts\" \"npm --prefix server run watch-node\" \"npm --prefix client start\""
+  }
 }

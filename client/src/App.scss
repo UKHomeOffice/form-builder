@@ -1,0 +1,140 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~formiojs/dist/formio.full.min.css";
+@import "~font-awesome/css/font-awesome.css";
+
+.center {
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.center-context {
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+
+.loader {
+  position: absolute;
+  left: 0 !important;
+  top: 0 !important;
+  margin-left: -30px;
+  margin-top: -30px;
+  z-index: 10000;
+  display: inline-block;
+  border: none !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  width: 0 !important;
+  height: 0mi !important;
+  animation: none !important
+}
+
+
+.navbar-dark .navbar-nav .active > .nav-link,
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link.show,
+.navbar-dark .navbar-nav .show > .nav-link {
+  border-bottom: 3px solid #5bc0eb;
+  bottom: -10px;
+  content: " ";
+  left: 0;
+  right: 0;
+}
+
+.divider {
+  height: 0;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-top: 1px solid #e9ecef;
+}
+
+.context-border-teal {
+  border-bottom: 3px solid #5bc0eb;
+  bottom: -10px;
+  content: " ";
+  left: 0;
+  right: 0;
+}
+
+.context-border-red {
+  border-bottom: 3px solid #dc3545;
+  bottom: -10px;
+  content: " ";
+  left: 0;
+  right: 0;
+}
+
+.grid-divider {
+  overflow-x: hidden;
+  position: relative;
+}
+
+.grid-divider > [class*="col"]:nth-child(n + 2):after {
+  content: "";
+  background-color: #6c757d ;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    height: 1px;
+    left: 0;
+    top: -4px;
+  }
+  @media (min-width: 768px) {
+    width: 1px;
+    height: auto;
+    left: -1px;
+  }
+}
+
+
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+  &:before {
+    content: '';
+    // use the linear-gradient for the fading effect
+    // use a solid background color for a solid bar
+    background: #818078;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
+
+    padding: 0 .5em;
+    line-height: 1.5em;
+    // this is really the only tricky part, you need to specify the background color of the container element...
+    color: black;
+    background-color: #fcfcfa;
+  }
+}
+
+
+.modal-fullscreen {
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0;
+  top: 0;
+  left: 0;
+}
