@@ -14,6 +14,10 @@ import ConfirmLoadLocalChangesModal from "../../localchanges/components/ConfirmL
 import useBeforeUnload from 'use-before-unload';
 import {useKeycloak} from "react-keycloak";
 import jwt_decode from "jwt-decode";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {Button} from "react-bootstrap";
+import {useNavigation} from "react-navi";
 
 
 const EditFormPage = ({formId}) => {
@@ -37,6 +41,7 @@ const EditFormPage = ({formId}) => {
     const {formChoices} = useCommonFormUtils();
     const {envContext} = useEnvContext();
     const {keycloak} = useKeycloak();
+    const navigation = useNavigation();
 
 
     useBeforeUnload(evt => {
@@ -62,34 +67,42 @@ const EditFormPage = ({formId}) => {
             loadLocalChanges={loadLocalChanges}
             openLocalChangesDetectedModal={editForm.openLocalChangesDetectedModal}
             closeConfirmLoadLocalChangesModal={closeDraftModal}/>
-
+        <Container>
+            <Row>
+                <Col>
+                    <Button variant="outline-secondary" onClick={async () => {
+                        await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
+                    }}>Back to forms in {envContext.label}</Button>
+                </Col>
+            </Row>
+        </Container>
         <Overlay active={(!status || status === EXECUTING) || editForm.reloadingFromLocal} styleName="mt-5"
                  children={
-                         <React.Fragment>
-                             {editForm.hasUnsavedData ? <Container><Alert variant="warning" className="border-1 mt-2">
-                                 <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
-                                     <span className="ml-2">{t('form.edit.unsaved.data.title')}</span>
-                                 </Alert.Heading>
-                                 <p>{t('form.edit.unsaved.data.description')}</p>
-                             </Alert></Container> : null}
-                             <FormBuilderComponent
-                                 editSchemaView={editSchemaView}
-                                 envContext={envContext}
-                                 form={editForm}
-                                 updateField={updateField}
-                                 updateForm={updateForm}
-                                 status={state.status}
-                                 formChoices={formChoices}
-                                 messageKeyPrefix={"form.edit"}
-                                 backToForms={backToForms}
-                                 closePreview={closePreview}
-                                 openPreview={openPreview}
-                                 t={t}
-                                 formInvalid={formInvalid}
-                                 save={editRequest}
-                                 changeDisplay={changeDisplay}
-                             />
-                         </React.Fragment> }
+                     <React.Fragment>
+                         {editForm.hasUnsavedData ? <Container><Alert variant="warning" className="border-1 mt-2">
+                             <Alert.Heading><FontAwesomeIcon icon={faExclamationCircle}/>
+                                 <span className="ml-2">{t('form.edit.unsaved.data.title')}</span>
+                             </Alert.Heading>
+                             <p>{t('form.edit.unsaved.data.description')}</p>
+                         </Alert></Container> : null}
+                         <FormBuilderComponent
+                             editSchemaView={editSchemaView}
+                             envContext={envContext}
+                             form={editForm}
+                             updateField={updateField}
+                             updateForm={updateForm}
+                             status={state.status}
+                             formChoices={formChoices}
+                             messageKeyPrefix={"form.edit"}
+                             backToForms={backToForms}
+                             closePreview={closePreview}
+                             openPreview={openPreview}
+                             t={t}
+                             formInvalid={formInvalid}
+                             save={editRequest}
+                             changeDisplay={changeDisplay}
+                         />
+                     </React.Fragment>}
 
                  loadingText={t('form.loading-form')}/>
     </React.Fragment>
