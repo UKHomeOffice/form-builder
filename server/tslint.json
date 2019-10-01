@@ -1,0 +1,46 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:latest"
+  ],
+  "jsRules": {
+    "object-literal-sort-keys": [
+      false
+    ]
+  },
+  "rules": {
+    "no-submodule-imports": [true, "keycloak-admin/lib/utils/auth", "formiojs/utils", "type-cacheable/dist/CacheManager"],
+    "interface-name": [
+      false
+    ],
+    "object-literal-sort-keys": [
+      false
+    ],
+    "no-magic-numbers": [
+      true
+    ],
+    "no-console": [
+      true
+    ],
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "curly": true,
+    "await-promise": [true, "Bluebird"],
+    "only-arrow-functions": true,
+    "ordered-imports": false,
+    "no-debugger": true,
+    "no-string-throw": true,
+    "no-var-keyword": true,
+    "cyclomatic-complexity": true,
+    "semicolon": [
+      true,
+      "always"
+    ]
+  },
+  "rulesDirectory": [],
+  "linterOptions" : {
+    "exclude": ["src/formio/**"]
+  }
+}
