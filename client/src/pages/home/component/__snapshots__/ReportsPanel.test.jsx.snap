@@ -44,13 +44,14 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
             rotation={null}
             size={null}
             spin={false}
+            swapOpacity={false}
             symbol={false}
             title=""
             transform={null}
           >
             <svg
               aria-hidden="true"
-              className="svg-inline--fa fa-chart-line fa-w-16 "
+              className="svg-inline--fa fa-chart-line fa-w-16 fa-null fa-rotate-null fa-pull-null "
               data-icon="chart-line"
               data-prefix="fas"
               focusable="false"
