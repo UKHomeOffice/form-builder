@@ -28,7 +28,6 @@ describe('Create Form with subform', () => {
         cy.url().should('include', '/forms/dev');
 
 
-
         cy.get('input[name=search-title]').type(subFormTitle);
 
         cy.wait(1000);
@@ -56,17 +55,15 @@ describe('Create Form with subform', () => {
 
         cy.get('a[href="#form"]').click();
 
-        cy.get('input[name="data[reference]"]').uncheck();
+        cy.get('input[name="data[reference]"]').uncheck().wait(1000);
+
+        cy.get('div[tabIndex=0]').first().click();
+
+        cy.get('input[role=textbox]').first().type(subFormTitle);
 
         cy.wait(1000);
 
-        cy.get('div[tabIndex=0]').click();
-
-        cy.get('input[role=textbox]').type(subFormTitle);
-
-        cy.wait(1000);
-
-        cy.get('div[data-id="1"]').click();
+        cy.get('div[data-id="1"]').first().click();
 
         cy.get('button[ref=saveButton]').click();
 
@@ -75,19 +72,17 @@ describe('Create Form with subform', () => {
 
         cy.get('input[name=search-title]').type(formTitle);
 
-        cy.wait(1000);
+        cy.wait(2000);
 
 
-        cy.get('[data-cy=preview-form]').click();
-
-        cy.wait(1000);
+        cy.get('[data-cy=preview-form]').click().wait(3000);
 
         cy.contains('Text Field');
         cy.contains('Submit');
 
         const randomInput = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
 
-        cy.get('input[type=text]').type(randomInput);
+        cy.get('input[type=text]').first().type(randomInput);
         cy.get('button[ref=button]').click();
 
 
