@@ -1,0 +1,45 @@
+{
+  "name" : "selectWithInteger",
+  "path" : "selectWithInteger",
+  "title" : "selectWithInteger",
+  "display" : "form",
+  "components": [{
+    "type": "select",
+    "label" : "Select A",
+    "key": "selectOne",
+    "data": {
+      "values": [{
+        "label": "One A",
+        "value": "1"
+      },
+        {
+          "label": "Two A",
+          "value": "2"
+        }
+      ]
+    }
+  },
+    {
+      "type": "select",
+      "key": "selectTwo",
+      "label" : "Select B",
+      "data": {
+        "values": [{
+          "label": "One B",
+          "value": 1
+        },
+          {
+            "label": "Two B",
+            "value": 2
+          }
+        ]
+      }
+    },
+    {
+      "type": "button",
+      "action": "submit",
+      "label": "Submit",
+      "theme": "primary"
+    }
+  ]
+}
