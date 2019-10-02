@@ -36,9 +36,9 @@ describe("Schema form", () => {
 
         cy.get('[data-cy=viewSchema]').click();
 
-        cy.get('.pretty-json-container').should('exist');
+        cy.get('.jsoneditor-tree').should('exist');
 
-        cy.get(".object-meta-data").contains("12 items");
+        cy.get('div[title="object containing 12 items"]').should('exist');
 
         cy.get('[data-cy=closeSchemaView]').click({multiple: true});
 
