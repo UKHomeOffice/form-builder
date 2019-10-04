@@ -254,7 +254,7 @@ const useCreateForm = (formContent = null) => {
             formindexdb.form.put({
                 path: navigation.getCurrentValue().url.pathname,
                 id: form.data.name,
-                schema: form.data
+                schema: JSON.parse(JSON.stringify(form.data))
             }).then((id) => {
                 console.log(`saved ${id}`);
             }).catch((err) => {

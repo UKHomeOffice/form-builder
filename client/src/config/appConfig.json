@@ -11,9 +11,9 @@
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://192.168.86.22:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "31c1a09d-6f71-42de-8dd2-b04458f1b760"
+          "secret": "355a3761-a9ab-4981-9013-c431086ff6ff"
         }
       },
       "editable": true,
@@ -44,9 +44,9 @@
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://192.168.86.22:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "31c1a09d-6f71-42de-8dd2-b04458f1b760"
+          "secret": "355a3761-a9ab-4981-9013-c431086ff6ff"
         }
       },
       "editable": false,
@@ -76,9 +76,9 @@
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "https://keycloak.elf79.dev/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://192.168.86.22:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "31c1a09d-6f71-42de-8dd2-b04458f1b760"
+          "secret": "355a3761-a9ab-4981-9013-c431086ff6ff"
         }
       },
       "editable": false,
@@ -101,7 +101,7 @@
   "gov-uk-enabled" : true,
   "legacy-migration" : true,
   "keycloak": {
-    "authUrl": "https://keycloak.elf79.dev/auth",
+    "authUrl": "http://192.168.86.22:8080/auth",
     "clientId": "www",
     "realm": "elf",
     "access-roles" : ["platform"],
