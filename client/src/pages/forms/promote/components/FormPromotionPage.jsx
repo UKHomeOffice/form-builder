@@ -45,6 +45,7 @@ const FormPromotionPage = ({formId}) => {
                 }
             }
             const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
+            requestArgs.opts.header.set('x-user-email', keycloak.tokenParsed.email);
             requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
             if (!requestArgs.url) {
                 requestArgs.url = "";
