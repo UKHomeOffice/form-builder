@@ -1,5 +1,8 @@
 # Change Log
 
+## 2.0.1
+### Update:
+    - Removed x-user-email from PreviewComponent
 ## 2.0.0
 ### Fixes:
     - Bumped version to 2.0.0
