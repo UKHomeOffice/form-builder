@@ -26,44 +26,45 @@ steps:
       branch: master
       event: push
 
-  - name: deploy_to_dev
-    image: quay.io/ukhomeofficedigital/kd
-    secrets:
-      - DEV_KUBE_SERVER
-      - DEV_KUBE_PROTOCOL
-      - DEV_KUBE_TOKEN
-      - DEV_WHITELIST
-      - DEV_NGINX_IMAGE
-      - DEV_NGINX_TAG
-      - DEV_FORMBUILDER_NAME
-      - DEV_FORMBUILDER_URL
-      - DEV_FORMBUILDER_IMAGE
-      - DEV_FORMBUILDER_TAG
-      - DEV_FORMBUILDER_CLIENT_ID
-      - DEV_FORMBUILDER_KUBE_NAMESPACE
-      - DEV_FORMBUILDER_PORT
-      - DEV_FORMBUILDER_APP_CONFIG
-    commands:
-      - export KUBE_SERVER=$${DEV_KUBE_SERVER}
-      - export KUBE_PROTOCOL=$${DEV_KUBE_PROTOCOL}
-      - export KUBE_TOKEN=$${DEV_KUBE_TOKEN}
-      - export WHITELIST=$${DEV_WHITELIST}
-      - export NGINX_IMAGE=$${DEV_NGINX_IMAGE}
-      - export NGINX_TAG=$${DEV_NGINX_TAG}
-      - export FORMBUILDER_NAME=$${DEV_FORMBUILDER_NAME}
-      - export FORMBUILDER_URL=$${DEV_FORMBUILDER_URL}
-      - export FORMBUILDER_IMAGE=$${DEV_FORMBUILDER_IMAGE}
-      - export FORMBUILDER_CLIENT_ID=$${DEV_FORMBUILDER_CLIENT_ID}
-      - export FORMBUILDER_KUBE_NAMESPACE=$${DEV_FORMBUILDER_KUBE_NAMESPACE}
-      - export FORMBUILDER_PORT=$${DEV_FORMBUILDER_PORT}
-      - export FORMBUILDER_APP_CONFIG=$${DEV_FORMBUILDER_APP_CONFIG}
-      - export FORMBUILDER_TAG=${DRONE_COMMIT_SHA}
-      - kd --insecure-skip-tls-verify -f kube/cert.yml
-      - kd --insecure-skip-tls-verify -f kube/secret.yml
-      - kd --insecure-skip-tls-verify -f kube/network-policy.yml
-      - kd --insecure-skip-tls-verify -f kube/service.yml
-      - kd --insecure-skip-tls-verify -f kube/deployment.yml
-      - kd --insecure-skip-tls-verify -f kube/ingress.yml
-    when:
-      environment: dev
-      event: deployment
+
+- name: deploy_to_dev
+  image: quay.io/ukhomeofficedigital/kd
+  secrets:
+    - DEV_KUBE_SERVER
+    - DEV_KUBE_PROTOCOL
+    - DEV_KUBE_TOKEN
+    - DEV_WHITELIST
+    - DEV_NGINX_IMAGE
+    - DEV_NGINX_TAG
+    - DEV_FORMBUILDER_NAME
+    - DEV_FORMBUILDER_URL
+    - DEV_FORMBUILDER_IMAGE
+    - DEV_FORMBUILDER_TAG
+    - DEV_FORMBUILDER_CLIENT_ID
+    - DEV_FORMBUILDER_KUBE_NAMESPACE
+    - DEV_FORMBUILDER_PORT
+    - DEV_FORMBUILDER_APP_CONFIG
+  commands:
+    - export KUBE_SERVER=$${DEV_KUBE_SERVER}
+    - export KUBE_PROTOCOL=$${DEV_KUBE_PROTOCOL}
+    - export KUBE_TOKEN=$${DEV_KUBE_TOKEN}
+    - export WHITELIST=$${DEV_WHITELIST}
+    - export NGINX_IMAGE=$${DEV_NGINX_IMAGE}
+    - export NGINX_TAG=$${DEV_NGINX_TAG}
+    - export FORMBUILDER_NAME=$${DEV_FORMBUILDER_NAME}
+    - export FORMBUILDER_URL=$${DEV_FORMBUILDER_URL}
+    - export FORMBUILDER_IMAGE=$${DEV_FORMBUILDER_IMAGE}
+    - export FORMBUILDER_CLIENT_ID=$${DEV_FORMBUILDER_CLIENT_ID}
+    - export FORMBUILDER_KUBE_NAMESPACE=$${DEV_FORMBUILDER_KUBE_NAMESPACE}
+    - export FORMBUILDER_PORT=$${DEV_FORMBUILDER_PORT}
+    - export FORMBUILDER_APP_CONFIG=$${DEV_FORMBUILDER_APP_CONFIG}
+    - export FORMBUILDER_TAG=${DRONE_COMMIT_SHA}
+    - kd --insecure-skip-tls-verify -f kube/cert.yml
+    - kd --insecure-skip-tls-verify -f kube/secret.yml
+    - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+    - kd --insecure-skip-tls-verify -f kube/service.yml
+    - kd --insecure-skip-tls-verify -f kube/deployment.yml
+    - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  when:
+    environment: dev
+    event: deployment

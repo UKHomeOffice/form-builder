@@ -19,7 +19,7 @@ FROM digitalpatterns/node:latest
 
 WORKDIR /app
 
-RUN mkdir -p /app
+RUN mkdir -p /app /config
 
 COPY --from=build /app-build/client/node_modules/govuk-frontend/assets /app/client/node_modules/govuk-frontend/assets
 COPY --from=build /app-build/client/build /app/client/build
@@ -27,7 +27,7 @@ COPY --from=build /app-build/server/dist /app/server/dist
 COPY --from=build /app-build/server/node_modules /app/server/node_modules
 
 
-RUN chown -R node:node /app
+RUN chown -R node:node /app /config
 
 ENV NODE_ENV='production'
 
