@@ -207,7 +207,7 @@ const useEditForm = (formId) => {
         formindexdb.form.put({
             path: navigation.getCurrentValue().url.pathname,
             id: formId,
-            schema: editForm.data
+            schema: JSON.parse(JSON.stringify(editForm.data))
         }).then((id) => {
             console.log(`saved ${id}`);
         }).catch((err) => {
@@ -267,6 +267,7 @@ const useEditForm = (formId) => {
                 ...editForm,
                 reloadingFromLocal: false,
                 data: {
+                    id: dataFromLocal.schema.id,
                     name: dataFromLocal.schema.name,
                     title: dataFromLocal.schema.title,
                     path: dataFromLocal.schema.path,

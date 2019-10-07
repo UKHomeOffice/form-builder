@@ -47,6 +47,7 @@ const FormBuilderComponent = ({
             }
             const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
             requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
+            requestArgs.opts.header.set('x-user-email', keycloak.tokenParsed.email);
             requestArgs.url = requestArgs.url.replace("_id", "id");
             return requestArgs;
         }

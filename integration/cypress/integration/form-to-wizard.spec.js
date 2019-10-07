@@ -47,7 +47,7 @@ describe('Form to wizard', () => {
        cy.get('input[name=title]').type(formTitle);
 
        cy.get("[data-type=textfield]").trigger("mousedown", { which: 1 })
-       cy.get(".drag-container .components").trigger("mousemove").trigger("mouseup");
+       cy.get(".drag-container .formio-builder-components").trigger("mousemove").trigger("mouseup");
 
        cy.wait(500);
 

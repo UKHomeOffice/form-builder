@@ -39,20 +39,18 @@ describe("Preview form", () => {
 
         const randomInput = `${chance.word({length: 5})} ${chance.word({length: 5})} ${chance.word({length: 5})}`;
 
-        cy.get('input[type=text]').type(randomInput);
+        cy.get('input[type=text]').first().type(randomInput);
         cy.get('button[ref=button]').click();
 
-        cy.get('.pretty-json-container').should('exist');
+        cy.get('.jsoneditor-tree').should('exist');
 
-        cy.get('.node-ellipsis').click({multiple: true});
+        cy.get('div[title="object containing 3 items"]').should('exist');
 
-        cy.get(".object-meta-data").contains("3 items");
+        cy.get('button[class="jsoneditor-button jsoneditor-collapsed"]').first().click();
 
-        cy.get('.node-ellipsis').click({multiple: true});
+        cy.get('div[title="object containing 2 items"]').should('exist');
 
-        cy.get('.object-meta-data').contains("2 items");
-
-        cy.get(".string-value").contains(randomInput);
+        cy.contains(randomInput);
 
     });
 });

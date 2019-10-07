@@ -1,5 +1,5 @@
 {
-  "name": "form-builder-client",
+  "name": "formbuilderclient",
   "version": "1.0.0",
   "private": true,
   "contributors": [
@@ -46,7 +46,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "fbemitter": "^2.1.1",
     "font-awesome": "^4.7.0",
-    "formiojs": "4.2.5",
+    "formiojs": "4.2.12",
     "govuk-frontend": "^2.13.0",
     "handlebars": "^4.4.0",
     "i18next": "^15.1.3",

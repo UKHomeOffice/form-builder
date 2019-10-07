@@ -134,6 +134,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
             }
             const token = await keycloakTokenProvider.fetchKeycloakToken(envContext, keycloak);
             requestArgs.opts.header.set('Authorization', `Bearer ${token}`);
+            requestArgs.opts.header.set('x-user-email', keycloak.tokenParsed.email);
             if (!requestArgs.url) {
                 requestArgs.url = "";
             }
