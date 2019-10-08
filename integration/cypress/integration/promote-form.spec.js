@@ -27,9 +27,7 @@ describe('Promote Form', () => {
 
         cy.url().should('include', '/forms/dev');
 
-        cy.get('input[name=search-title]').type(formTitle);
-
-        cy.wait(1000);
+        cy.get('input[name=search-title]').type(formTitle).wait(2000);
 
         cy.get('[data-cy="promote-form"]').click();
 

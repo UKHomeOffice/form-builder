@@ -1,5 +1,8 @@
 # Change Log
-
+## 2.0.2
+### Update:
+    - Upgrade of formio to 4.3.1
+    - Update package-lock.json of client directory
 ## 2.0.1
 ### Update:
     - Removed x-user-email from PreviewComponent

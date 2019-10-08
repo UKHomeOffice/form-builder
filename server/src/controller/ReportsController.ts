@@ -33,18 +33,18 @@ export class ReportsController extends BaseHttpController {
                         'Authorization': `Bearer ${token}`
                     },
                 });
-                return Promise.resolve({
+                return {
                     environment: environment,
                     response: response.data
-                });
+                };
             } catch (error) {
                 logger.error(`Failed to total form count from ${environment.url} ${error.message}` );
-                return Promise.resolve({
+                return {
                     environment: environment,
                     response: {
                         total: 0
                     }
-                });
+                };
             }
         }));
 
