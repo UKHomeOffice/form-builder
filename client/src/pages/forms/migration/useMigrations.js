@@ -32,6 +32,7 @@ const useMigrations = () => {
         const handleMigrationCallback = useRef();
         const failedToLoadFormsCallback = useRef();
         const clearContextCallback = useRef();
+        const successfulFormioLoad = useRef();
 
         const [searchTitle] = useDebouncedCallback(
             (value) => {
@@ -89,7 +90,14 @@ const useMigrations = () => {
                     makeRequest();
                 }
             };
-
+            successfulFormioLoad.current = () => {
+                setFormio(formio => ({
+                    ...formio,
+                    forms: response.data,
+                    numberOnPage: response.data.length,
+                    total: parseInt(response.headers['content-range'].split('/')[1])
+                }));
+            };
             failedToLoadFormsCallback.current = () => {
                 eventEmitter.publish('error', {
                     exception: exception,
@@ -135,17 +143,12 @@ const useMigrations = () => {
 
         useEffect(() => {
             if (status === SUCCESS) {
-                setFormio(formio => ({
-                    ...formio,
-                    forms: response.data,
-                    numberOnPage: response.data.length,
-                    total: parseInt(response.headers['content-range'].split('/')[1])
-                }));
+                successfulFormioLoad.current();
             }
             if (status === ERROR) {
                 failedToLoadFormsCallback.current();
             }
-        }, [status, setFormio, formio, response]);
+        }, [status]);
 
 
         useEffect(() => {

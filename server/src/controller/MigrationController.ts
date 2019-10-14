@@ -38,25 +38,23 @@ export class MigrationController extends BaseHttpController {
                 }
             });
             logger.debug('New formio token received');
-
+            const jwtToken = tokenResponse.headers['x-jwt-token'];
             const responseFromFormio = await axios({
                 headers: {
                     "Content-Type": "application/json",
-                    'x-jwt-token': tokenResponse.headers['x-jwt-token']
+                    'x-jwt-token': jwtToken
                 },
                 url: `${formio.url}/form?&limit=${formio.limit}&skip=${((formio.activePage) * formio.limit)}${formio.searchTitle !== '' ? `&title__regex=/${formio.searchTitle}/i` : ''}`,
                 method: 'GET',
             });
-
             if (responseFromFormio.data) {
-                logger.debug('Loaded forms from formio server', {
+                logger.info('Loaded forms from formio server', {
                     size: responseFromFormio.data.length
                 });
                 const names = responseFromFormio.data.map((form) => {
                     return form.name;
                 });
                 const token = await this.keycloakService.token(environment.id);
-
                 const existing = await axios({
                     url: `${environment.url}/form?select=name&filter=name__in__${names.join('|')}`,
                     method: 'GET',
@@ -77,9 +75,13 @@ export class MigrationController extends BaseHttpController {
                     })
                 }
 
-                res.json(responseFromFormio);
+                res.header('content-range', responseFromFormio.headers['content-range'])
+                    .header('x-jwt-token', jwtToken)
+                    .json(responseFromFormio.data)
             } else {
-                res.json([]);
+                res.header('content-range', responseFromFormio.headers['content-range'])
+                    .header('x-jwt-token', jwtToken)
+                    .json([]);
             }
         } catch(e) {
             logger.error('Failed to load forms due to '.concat(e.message));
