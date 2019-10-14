@@ -1,4 +1,8 @@
 # Change Log
+## 2.0.4
+### Fixes:
+    - Formio migration issue
+    
 ## 2.0.3
 ### Update:
     - Upgrade of formio to 4.3.3
