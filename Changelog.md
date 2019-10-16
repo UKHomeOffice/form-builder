@@ -1,4 +1,8 @@
 # Change Log
+## 2.0.5
+### Update:
+    - Upgrade of formio to 4.3.5
+    - Update package-lock.json of client directory  
 ## 2.0.4
 ### Fixes:
     - Formio migration issue
