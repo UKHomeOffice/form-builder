@@ -1,13 +1,11 @@
-
-const Component = require('formiojs/components/_classes/component/Component').default;
-const Components = require('formiojs/components/Components').default;
-const FormComponent = require('formiojs/components/form/Form').default;
-
+import Base from 'formiojs/components/_classes/component/Component';
+import FormComponent from 'formiojs/components/form/Form';
+import Components from 'formiojs/components/Components';
 
 export class SubFormComponent extends FormComponent {
 
     static schema(...extend) {
-        return Component.schema({
+        return Base.schema({
             label: 'Form',
             type: 'form',
             key: 'form',
