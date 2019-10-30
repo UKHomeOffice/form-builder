@@ -1,4 +1,18 @@
 # Change Log
+### 2.0.8
+### Update:
+    - Upgrade of formio to 4.6.2
+    - Gov UK Preview page using new formio template architecture
+    - @digitalpatterns/formio-gds-template 1.0.5
+    - removed old template file for gds template
+    - removed govuk frontend dependency as this is now a transient dependency of @digitalpatterns/formio-gds-template
+
+## 2.0.7
+### Update:
+    - Upgrade of formio to 4.5.0
+    - Update package-lock.json of client directory  
+    - Fixed SubFormComponent
+
 ## 2.0.7
 ### Update:
     - Upgrade of formio to 4.4.2

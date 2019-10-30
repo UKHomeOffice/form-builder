@@ -301,6 +301,9 @@ const useCreateForm = (formContent = null) => {
                 ...form,
                 openLocalChangesDetectedModal: false
             });
+            formindexdb.form.clear().then(() => {
+                console.log("Draft data cleared");
+            });
         }
 
     };

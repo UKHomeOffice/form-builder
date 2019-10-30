@@ -11,11 +11,11 @@ import _ from 'lodash';
 
 class FormJsonSchemaEditor extends Component {
     componentDidMount() {
-        const options = Object.assign({}, this.props);
+        const optionsFromPops = Object.assign({}, this.props);
 
         const nonEditableFields = ['id', 'access', 'links', 'versionId', 'createdOn', 'updatedOn', 'latest'];
-        delete options.json;
-        delete options.text;
+
+        const options = _.omit(optionsFromPops, ['json', 'text', 't', 'readonly', 'i18n', 'tReady']);
 
         if (!this.props.readonly) {
             options['onEditable'] = (node) => {

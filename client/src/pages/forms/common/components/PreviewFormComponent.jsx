@@ -195,7 +195,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
     </React.Fragment>
 };
 
-export default PreviewFormComponent;
+export default React.memo(PreviewFormComponent, (prevProps, nextProps) => { return true });
 
 
 

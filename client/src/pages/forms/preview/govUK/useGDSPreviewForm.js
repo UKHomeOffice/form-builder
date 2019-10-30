@@ -3,10 +3,12 @@ import {useNavigation} from "react-navi";
 import {useEffect, useRef, useState} from "react";
 import {SUCCESS} from "../../../../core/api/actionTypes";
 import {Formio} from "react-formio";
-import govukFormioTemplate from "./govuk-formio-template";
-import {initAll} from 'govuk-frontend'
+import gds from '@digitalpatterns/formio-gds-template';
+
 
 const useGDSPreviewForm = (formId) => {
+
+    Formio.use(gds);
     const navigation = useNavigation();
     const [form, setValue] = useState({
         data: null,
@@ -22,8 +24,7 @@ const useGDSPreviewForm = (formId) => {
     const savedCallback = useRef();
 
     const callback = () => {
-        Formio.Templates.current = govukFormioTemplate;
-        initAll();
+
         setValue(form => ({
             ...form,
             data: null

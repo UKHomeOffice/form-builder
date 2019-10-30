@@ -255,6 +255,9 @@ const useEditForm = (formId) => {
             ...editForm,
             openLocalChangesDetectedModal: false
         });
+        formindexdb.form.clear().then(() => {
+            console.log("Draft data cleared");
+        });
     };
 
     const loadLocalChanges = () => {

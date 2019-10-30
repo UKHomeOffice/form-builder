@@ -13,7 +13,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 
 const GovUKPreviewFormPage = ({formId}) => {
-
+    document.body.className = 'js-enabled';
     const {t} = useTranslation();
     const {status, response, form, previewSubmission} = useGDSPreviewForm(formId);
 
