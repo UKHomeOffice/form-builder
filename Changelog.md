@@ -1,4 +1,10 @@
 # Change Log
+### 2.0.9
+### Update:
+ - Upgrade of formio to 4.7.0
+ - Upgrade of @digtialpatterns/formio-gds-template 1.0.6
+ - Upgrade package-lock.json
+ 
 ### 2.0.8
 ### Update:
     - Upgrade of formio to 4.6.2
