@@ -21,7 +21,7 @@ WORKDIR /app
 
 RUN mkdir -p /app /config
 
-COPY --from=build /app-build/client/node_modules/govuk-frontend/assets /app/client/node_modules/govuk-frontend/assets
+COPY --from=build /app-build/client/node_modules/govuk-frontend/govuk/assets /app/client/node_modules/govuk-frontend/assets
 COPY --from=build /app-build/client/build /app/client/build
 COPY --from=build /app-build/server/dist /app/server/dist
 COPY --from=build /app-build/server/node_modules /app/server/node_modules

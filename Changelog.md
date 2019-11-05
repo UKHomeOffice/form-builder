@@ -1,4 +1,8 @@
 # Change Log
+### 2.1.1
+### Update:
+ - Fixed Dockerfile copy gov uk assets
+ 
 ### 2.1.0
 ### Update:
  - Upgrade of formio to 4.7.1
