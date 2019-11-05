@@ -89,7 +89,7 @@ server.setConfig((app) => {
     app.use(keycloakService.middleware());
 
     if (appConfig['gov-uk-enabled']) {
-        app.use('/assets', express.static('../client/node_modules/govuk-frontend/assets'));
+        app.use('/assets', express.static('../client/node_modules/govuk-frontend/govuk/assets'));
     }
     app.use(express.static('../client/build'));
 
