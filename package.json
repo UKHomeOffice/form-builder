@@ -1,6 +1,6 @@
 {
   "name": "form-builder",
-  "version": "2.0.9",
+  "version": "2.1.0",
   "private": true,
   "contributors": [
     {
@@ -22,10 +22,11 @@
     }
   },
   "dependencies": {
-    "concurrently": "^4.1.0"
+    "concurrently": "^4.1.0",
+    "formiojs": "^4.7.0"
   },
   "scripts": {
-    "audit:all" : "concurrently \"npm audit --prefix server\" \"npm audit --prefix client\" \"npm audit --prefix integration\"",
+    "audit:all": "concurrently \"npm audit --prefix server\" \"npm audit --prefix client\" \"npm audit --prefix integration\"",
     "install:all": "concurrently \"npm --prefix server install\" \"npm --prefix client install\" \"npm --prefix integration install\"",
     "dev": "concurrently \"npm --prefix server run watch-ts\" \"npm --prefix server run watch-node\" \"npm --prefix client start\""
   }
