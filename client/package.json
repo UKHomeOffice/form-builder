@@ -1,6 +1,6 @@
 {
   "name": "formbuilderclient",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "contributors": [
     {
@@ -47,7 +47,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "fbemitter": "^2.1.1",
     "font-awesome": "^4.7.0",
-    "formiojs": "4.7.1",
+    "formiojs": "4.7.0",
     "handlebars": "^4.5.1",
     "i18next": "^15.1.3",
     "i18next-browser-languagedetector": "^3.0.3",

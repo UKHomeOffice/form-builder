@@ -1,4 +1,8 @@
 # Change Log
+### 2.1.2
+### Update:
+ - Downgrading to formio 4.7.0 due to DayComponent not working
+ 
 ### 2.1.1
 ### Update:
  - Fixed Dockerfile copy gov uk assets
