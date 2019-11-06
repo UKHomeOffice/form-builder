@@ -9,12 +9,13 @@ import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Button from "react-bootstrap/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-   faCaretRight,
+    faCaretRight,
     faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/Container";
+import VersionsPromotionPanel from "./VersionsPromotionPanel";
 
-const FormToPromotePanel = ({form, backToForms}) => {
+const FormToPromotePanel = ({form, backToForms, handleSpecificVersion}) => {
     const {t} = useTranslation();
     if (!form) {
         return null;
@@ -25,11 +26,19 @@ const FormToPromotePanel = ({form, backToForms}) => {
                 <hr className="hr-text" data-content="Form to promote"/>
             </Col>
         </Row>
+        {/*<Row>*/}
+        {/*    <Col className="mb-2">*/}
+        {/*        <Button variant={form.promoteSpecificVersion ? 'info' : 'primary'} onClick={() => {*/}
+        {/*            handleSpecificVersion()*/}
+        {/*        }}>{form.promoteSpecificVersion ? t('form.promote.latestVersion') : t('form.promote.specificVersion')}</Button>*/}
+        {/*    </Col>*/}
+        {/*</Row>*/}
         <Row>
             <Col>
-                <Form form={form.data} options={{
-                    readOnly: true
-                }}/>
+                {!form.promoteSpecificVersion ?
+                    <Form form={form.data} options={{
+                        readOnly: true
+                    }}/> : <VersionsPromotionPanel formId={form.formId}/>}
             </Col>
         </Row>
         <Row>
@@ -39,13 +48,16 @@ const FormToPromotePanel = ({form, backToForms}) => {
                             onClick={() => {
                                 backToForms();
                             }}
-                            variant="secondary"><FontAwesomeIcon icon={faTimes}/><span className="ml-2">{t('form.cancel.label')}</span></Button>
+                            variant="secondary"><FontAwesomeIcon icon={faTimes}/><span
+                        className="ml-2">{t('form.cancel.label')}</span></Button>
                     <Button block={isMobile} variant="primary"
+                            disabled={!form.data}
                             data-cy="promote-next-env"
                             onClick={() => {
                                 form.stepper.next();
                             }}
-                            className="mr-2">{t('form.promote.next')}<span className="ml-2"><FontAwesomeIcon icon={faCaretRight}/></span></Button>
+                            className="mr-2">{t('form.promote.next')}<span className="ml-2"><FontAwesomeIcon
+                        icon={faCaretRight}/></span></Button>
 
                 </ButtonToolbar>
             </Col>

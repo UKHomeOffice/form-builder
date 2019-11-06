@@ -16,11 +16,15 @@ const usePromotion = (formId) => {
     const {addToast} = useToasts();
     const [form, setValue] = useState({
         data: null,
+        latestForm: null,
         formId: formId,
         step: 'form',
         disabled: true,
         environment: null,
-        stepper: null
+        stepper: null,
+        versionId: null,
+        promoteSpecificVersion: false,
+        versionsToCompare: null
     });
 
     const [fetchState, makeRequest] = useApiRequest(
@@ -123,6 +127,7 @@ const usePromotion = (formId) => {
             setValue(form => ({
                 ...form,
                 data: fetchState.response.data,
+                latestForm: fetchState.response.data,
                 stepper: new Stepper(document.querySelector('#promotionStepper'), {
                     linear: true,
                     animation: true
@@ -152,6 +157,14 @@ const usePromotion = (formId) => {
         return !form.environment
     };
 
+    const handleSpecificVersion = () => {
+        setValue(form => ({
+            ...form,
+            data: (!form.promoteSpecificVersion ? null : form.latestForm),
+            promoteSpecificVersion: !form.promoteSpecificVersion
+        }));
+    };
+
     return {
         fetchState,
         form,
@@ -160,7 +173,8 @@ const usePromotion = (formId) => {
         backToForms,
         status,
         response,
-        execute
+        execute,
+        handleSpecificVersion
     }
 };
 

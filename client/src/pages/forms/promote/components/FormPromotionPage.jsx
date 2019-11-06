@@ -17,7 +17,7 @@ import useEnvContext from "../../../../core/context/useEnvContext";
 import {useKeycloak} from "react-keycloak";
 
 const FormPromotionPage = ({formId}) => {
-    const {fetchState, form, setValue, backToForms, isDisabled, status, execute} = usePromotion(formId);
+    const {fetchState, form, setValue, backToForms, isDisabled, status, execute, handleSpecificVersion} = usePromotion(formId);
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
     const {keycloak} = useKeycloak();
@@ -78,7 +78,7 @@ const FormPromotionPage = ({formId}) => {
 
             }
         }];
-    return <Container>
+    return <Container >
         <div id="promotionStepper" className="bs-stepper">
             <div className="bs-stepper-header" role="tablist">
                 <div className="step" data-target="#form-selection-part">
@@ -111,7 +111,7 @@ const FormPromotionPage = ({formId}) => {
             <div className="bs-stepper-content">
                 <div id="form-selection-part" className="content" role="tabpanel"
                      aria-labelledby="form-selection-part-trigger">
-                    <FormToPromotePanel form={form} backToForms={backToForms}/>
+                    <FormToPromotePanel form={form} backToForms={backToForms} handleSpecificVersion={handleSpecificVersion}/>
                 </div>
                 <div id="environment-part" className="content" role="tabpanel"
                      aria-labelledby="environment-part-trigger">

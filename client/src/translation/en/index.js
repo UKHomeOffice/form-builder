@@ -100,6 +100,8 @@ const messages = {
             "failed-message": "Please try again"
         },
         "promote": {
+            "latestVersion": "Promote latest version",
+            "specificVersion" : "Promote a specific version",
             "no-environments-to-promote-title": "No available environment",
             "no-environments-to-promote-description": "Please check your application configuration. No promotable environment available",
             "promoting-label": "Promoting form...",
