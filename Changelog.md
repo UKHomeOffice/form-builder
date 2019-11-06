@@ -1,4 +1,8 @@
 # Change Log
+### 2.2.1
+### Fix:
+ - Preview page not showing submission data
+ 
 ### 2.2.0
 ### Update:
  - Upgraded react-formio to 4.2.3
