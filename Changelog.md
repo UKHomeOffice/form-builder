@@ -1,4 +1,10 @@
 # Change Log
+### 2.2.0
+### Update:
+ - Upgraded react-formio to 4.2.3
+ - Removed formiojs from package.json
+ - Upgraded @digitalpatterns/formio-gds-template to 1.1.0
+ 
 ### 2.1.2
 ### Update:
  - Downgrading to formio 4.7.0 due to DayComponent not working
