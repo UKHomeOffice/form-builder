@@ -181,6 +181,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
                           form.formio.on('change', (value) => {
                               eventEmitter.publish("formChange", value);
                           });
+                          form.formio.on('prevPage', (page) => {
+                              console.log("page", page);
+                          })
                       });
                   }
               }}
@@ -194,14 +197,6 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
               }}
               options={
                   {
-                      hooks: {
-                          beforeNext : (currentPage, submission, next) => {
-                              console.log("currentPage", currentPage);
-                              console.log("submission", submission);
-
-                              next();
-                          }
-                      },
                       noAlerts: true,
                       fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>
