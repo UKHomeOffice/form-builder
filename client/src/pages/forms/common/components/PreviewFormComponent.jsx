@@ -16,6 +16,7 @@ import keycloakTokenProvider from "../../../../core/auth/KeycloakTokenProvider";
 import {useKeycloak} from "react-keycloak";
 import FileService from "../../../../core/FileService";
 import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
+import eventEmitter from "../../../../core/eventEmitter";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
@@ -169,6 +170,19 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
         <Form form={parsedForm.form}
               ref={(form) => {
                   formioForm = form;
+                  if (form) {
+                      form.createPromise.then(() => {
+                          form.formio.on('error', errors => {
+                              eventEmitter.publish("formSubmissionError", errors);
+                          });
+                          form.formio.on('submit', () => {
+                              eventEmitter.publish("formSubmissionSuccessful");
+                          });
+                          form.formio.on('change', (value) => {
+                              eventEmitter.publish("formChange", value);
+                          });
+                      });
+                  }
               }}
               onSubmit={(submission) => {
                   if (formioForm && formioForm.formio) {
@@ -180,6 +194,14 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
               }}
               options={
                   {
+                      hooks: {
+                          beforeNext : (currentPage, submission, next) => {
+                              console.log("currentPage", currentPage);
+                              console.log("submission", submission);
+
+                              next();
+                          }
+                      },
                       noAlerts: true,
                       fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>

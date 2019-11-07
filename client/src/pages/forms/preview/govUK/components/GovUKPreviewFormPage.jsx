@@ -10,6 +10,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
+import ErrorSummary from "./ErrorSummary";
 
 
 const GovUKPreviewFormPage = ({formId}) => {
@@ -30,6 +31,7 @@ const GovUKPreviewFormPage = ({formId}) => {
 
     return <React.Fragment>
         <hr className="hr-text" data-content={t('form.preview.govuk.header')}/>
+        <ErrorSummary/>
         {!status || status === EXECUTING ? <div className="center-context">
             <Spinner animation="border" role="status"/>
             </div> : (status === ERROR ? <Container>
