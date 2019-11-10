@@ -43,7 +43,12 @@ class ErrorSummary extends React.Component {
                         <ul className="govuk-list govuk-error-summary__list">
                             {this.state.errors.map(e => {
                                 return <li key={uuid()}>
-                                    <a href="#">{e.message}</a>
+                                    <a href="#" onClick={() => {
+                                        if (document.getElementsByName("data[" + e.component.key + "]")
+                                            && document.getElementsByName("data[" + e.component.key + "]")[0]) {
+                                            document.getElementsByName("data[" + e.component.key + "]")[0].focus()
+                                        }
+                                    }}>{e.message}</a>
                                 </li>
                             })}
 

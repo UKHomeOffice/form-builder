@@ -181,9 +181,6 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
                           form.formio.on('change', (value) => {
                               eventEmitter.publish("formChange", value);
                           });
-                          form.formio.on('prevPage', (page) => {
-                              console.log("page", page);
-                          })
                       });
                   }
               }}
@@ -197,6 +194,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
               }}
               options={
                   {
+                      breadcrumbSettings: {
+                          clickable: false
+                      },
                       noAlerts: true,
                       fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>
