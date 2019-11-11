@@ -294,6 +294,11 @@ const useEditForm = (formId) => {
     };
 
     const changeJSONEditorMode = (value) => {
+        if (value === 'text' || value === 'code') {
+            document.getElementById("jsoneditor").style.height = '700px';
+        } else {
+            document.getElementById("jsoneditor").style.height = 'auto';
+        }
         setValues({
             ...editForm,
             jsonEditorMode: value
