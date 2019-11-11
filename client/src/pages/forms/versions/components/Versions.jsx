@@ -16,7 +16,7 @@ import ReactPaginate from 'react-paginate';
 
 const Versions = ({formId}) => {
     const {versions, status, handlePaginationChange, restore, restoreState, setVersionKey} = useGetVersions(formId);
-    const {limit, data, total, versionKey} = versions;
+    const {limit, data, total, versionKey, activePage} = versions;
     const {t} = useTranslation();
 
     const navItems = data ? data.map((version) => {
@@ -49,6 +49,7 @@ const Versions = ({formId}) => {
                     previousLabel={'Previous'}
                     nextLabel={'Next'}
                     breakLabel={'...'}
+                    forcePage={activePage}
                     previousClassName={'page-item'}
                     nextClassName={'page-item'}
                     pageCount={Math.ceil(parseInt(total) / limit)}

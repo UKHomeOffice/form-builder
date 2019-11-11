@@ -15,9 +15,9 @@ import PreviewFormModal from "../../create/components/PreviewFormModal";
 import SchemaDiffModal from "./SchemaDiffModal";
 
 const VersionsPromotionPanel = ({formId, selectFormToPromote}) => {
-    const {status, versions, handlePaginationChange, compare, showVersion,
+    const {status, versions, handleVersionPagination, compare, showVersion,
             hideVersion, hideCompare} = useGetVersionsForPromotion(formId);
-    const {limit, total} = versions;
+    const {limit, total, activePage} = versions;
     const {t} = useTranslation();
     if (!status || status === EXECUTING) {
         return <TextSpinner loadingText={t('versions.loading')} styleName="mt-5"/>
@@ -35,7 +35,10 @@ const VersionsPromotionPanel = ({formId, selectFormToPromote}) => {
                     pageCount={Math.ceil(parseInt(total) / limit)}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
-                    onPageChange={(e) => handlePaginationChange(e.selected)}
+                    onPageChange={(e) => {
+                        handleVersionPagination(e.selected)
+                    }}
+                    forcePage={activePage}
                     containerClassName={'pagination'}
                     pageClassName={'page-item'}
                     pageLinkClassName={'page-link'}

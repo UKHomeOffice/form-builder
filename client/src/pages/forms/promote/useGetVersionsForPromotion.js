@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
 import {SUCCESS} from "../../../core/api/actionTypes";
-import _ from 'lodash';
+
 
 const useGetVersionsForPromotion = (formId) => {
 
@@ -67,7 +67,7 @@ const useGetVersionsForPromotion = (formId) => {
         }
     }, [response, status, setVersions]);
 
-    const handlePaginationChange = (activePage) => {
+    const handleVersionPagination = (activePage) => {
         setVersions(versions => ({
             ...versions,
             activePage: activePage
@@ -125,7 +125,7 @@ const useGetVersionsForPromotion = (formId) => {
         status,
         versions,
         response,
-        handlePaginationChange,
+        handleVersionPagination,
         exception,
         compare,
         hideCompare,
