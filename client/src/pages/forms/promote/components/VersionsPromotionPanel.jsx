@@ -13,8 +13,11 @@ import ReactPaginate from "react-paginate";
 import Badge from "react-bootstrap/Badge";
 import PreviewFormModal from "../../create/components/PreviewFormModal";
 import SchemaDiffModal from "./SchemaDiffModal";
+import {useToasts} from "react-toast-notifications";
+import uuid4 from "uuid4";
 
 const VersionsPromotionPanel = ({formId, selectFormToPromote}) => {
+    const {addToast} = useToasts();
     const {status, versions, handleVersionPagination, compare, showVersion,
             hideVersion, hideCompare} = useGetVersionsForPromotion(formId);
     const {limit, total, activePage} = versions;
@@ -78,7 +81,12 @@ const VersionsPromotionPanel = ({formId, selectFormToPromote}) => {
                                         && (versions.versionsToCompare.first !== null && versions.versionsToCompare.second !== null)) {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    alert("You cannot select more than 2 schemas to compare");
+                                    e.target.checked = false;
+                                    addToast("You can only select 2 schemas to compare at a time.", {
+                                        appearance: 'error',
+                                        autoDismiss: true,
+                                        id: uuid4()
+                                    });
                                     return false;
                                 } else {
                                     compare(e, version)

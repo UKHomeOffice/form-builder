@@ -177,8 +177,8 @@ const FormBuilderComponent = ({
                 <hr className="hr-text" data-content={t('form.create.actions')}/>
             </Col>
         </Row>
-        <PreviewFormModal form={form.data} title={form.title} open={form.displayPreview}
-                          onClosePreview={closePreview}/>
+
+
         <Row>
             <Container>
                 <ButtonToolbar>
