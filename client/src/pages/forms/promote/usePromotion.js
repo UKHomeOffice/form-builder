@@ -165,6 +165,16 @@ const usePromotion = (formId) => {
         }));
     };
 
+    const selectVersionToPromote = (version) => {
+        setValue(form => ({
+            ...form,
+            data: {
+                versionId: version.versionId,
+                ...version.schema
+            }
+        }));
+    };
+
     return {
         fetchState,
         form,
@@ -174,7 +184,8 @@ const usePromotion = (formId) => {
         status,
         response,
         execute,
-        handleSpecificVersion
+        handleSpecificVersion,
+        selectVersionToPromote
     }
 };
 

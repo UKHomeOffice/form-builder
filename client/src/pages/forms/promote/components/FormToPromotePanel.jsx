@@ -15,7 +15,7 @@ import {
 import Container from "react-bootstrap/Container";
 import VersionsPromotionPanel from "./VersionsPromotionPanel";
 
-const FormToPromotePanel = ({form, backToForms, handleSpecificVersion}) => {
+const FormToPromotePanel = ({form, backToForms, handleSpecificVersion, selectVersionToPromote}) => {
     const {t} = useTranslation();
     if (!form) {
         return null;
@@ -26,19 +26,19 @@ const FormToPromotePanel = ({form, backToForms, handleSpecificVersion}) => {
                 <hr className="hr-text" data-content="Form to promote"/>
             </Col>
         </Row>
-        {/*<Row>*/}
-        {/*    <Col className="mb-2">*/}
-        {/*        <Button variant={form.promoteSpecificVersion ? 'info' : 'primary'} onClick={() => {*/}
-        {/*            handleSpecificVersion()*/}
-        {/*        }}>{form.promoteSpecificVersion ? t('form.promote.latestVersion') : t('form.promote.specificVersion')}</Button>*/}
-        {/*    </Col>*/}
-        {/*</Row>*/}
+        <Row>
+            <Col className="mb-2">
+                <Button variant={form.promoteSpecificVersion ? 'info' : 'primary'} onClick={() => {
+                    handleSpecificVersion()
+                }}>{form.promoteSpecificVersion ? t('form.promote.latestVersion') : t('form.promote.specificVersion')}</Button>
+            </Col>
+        </Row>
         <Row>
             <Col>
                 {!form.promoteSpecificVersion ?
                     <Form form={form.data} options={{
                         readOnly: true
-                    }}/> : <VersionsPromotionPanel formId={form.formId}/>}
+                    }}/> : <VersionsPromotionPanel formId={form.formId} selectFormToPromote={(version) => {selectVersionToPromote(version)}}/>}
             </Col>
         </Row>
         <Row>

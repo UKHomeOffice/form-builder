@@ -194,9 +194,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
               }}
               options={
                   {
-                      breadcrumbSettings: {
-                          clickable: false
-                      },
+                      // breadcrumbSettings: {
+                      //     clickable: false
+                      // },
                       noAlerts: true,
                       fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>

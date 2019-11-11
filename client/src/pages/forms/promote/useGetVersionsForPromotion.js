@@ -1,11 +1,8 @@
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import useApiRequest from "../../../core/api";
-import {ERROR, SUCCESS} from "../../../core/api/actionTypes";
-import {useTranslation} from "react-i18next";
-import eventEmitter from "../../../core/eventEmitter";
-import uuid4 from "uuid4";
-import {useToasts} from "react-toast-notifications";
+import {SUCCESS} from "../../../core/api/actionTypes";
+import _ from 'lodash';
 
 const useGetVersionsForPromotion = (formId) => {
 
@@ -14,7 +11,12 @@ const useGetVersionsForPromotion = (formId) => {
         activePage: 0,
         data: [],
         total: 0,
-        versionKey: null
+        versionsToCompare: {
+            first: null,
+            second: null
+        },
+        showCompareModal: false,
+        versionToView: null
     };
     const isMounted = useRef(true);
     const [versions, setVersions] = useState(initialState);
@@ -22,7 +24,7 @@ const useGetVersionsForPromotion = (formId) => {
     const cancelVersionsRequest = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}/versions?limit=${versions.limit}&offset=${((versions.activePage ) * versions.limit)}&select=createdBy&select=validTo&select=latest&select=versionId&select=validFrom&select=updatedBy`, {
+        `/form/${formId}/versions?limit=${versions.limit}&offset=${((versions.activePage ) * versions.limit)}`, {
             verb: 'get', params: {
                 cancelToken: cancelVersionsRequest.current.token
             }
@@ -57,7 +59,6 @@ const useGetVersionsForPromotion = (formId) => {
             if (isMounted.current) {
                 setVersions(versions => ({
                     ...versions,
-                    versionKey: response.data.versions ? response.data.versions[0].versionId : null,
                     data: response.data.versions,
                     total: response.data.total
                 }));
@@ -73,7 +74,52 @@ const useGetVersionsForPromotion = (formId) => {
         }));
     };
 
+    const compare = (e, version) => {
+        const checked = e.target.checked;
 
+        if (checked) {
+            if (versions.versionsToCompare.first === null) {
+                versions.versionsToCompare.first = version;
+            } else {
+                versions.versionsToCompare.second = version;
+            }
+        } else {
+            if (versions.versionsToCompare.first !== null
+                && versions.versionsToCompare.first.versionId === version.versionId) {
+                versions.versionsToCompare.first = null;
+            }
+            if (versions.versionsToCompare.second !== null
+                && versions.versionsToCompare.second.versionId === version.versionId) {
+                versions.versionsToCompare.second = null;
+            }
+        }
+        const showModal = versions.versionsToCompare.first !== null && versions.versionsToCompare.second !== null;
+
+        setVersions(versions => ({
+            ...versions,
+            showCompareModal: showModal
+        }));
+    };
+
+    const showVersion = (version) => {
+        setVersions(versions => ({
+            ...versions,
+            versionToView: version
+        }));
+    };
+
+    const hideVersion = () => {
+        setVersions(versions => ({
+            ...versions,
+            versionToView: null
+        }));
+    };
+    const hideCompare = () => {
+        setVersions(versions => ({
+            ...versions,
+            showCompareModal: false
+        }));
+    };
 
     return {
         status,
@@ -81,6 +127,10 @@ const useGetVersionsForPromotion = (formId) => {
         response,
         handlePaginationChange,
         exception,
+        compare,
+        hideCompare,
+        showVersion,
+        hideVersion
     }
 };
 

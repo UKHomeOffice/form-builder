@@ -11,9 +11,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ReactPaginate from "react-paginate";
 import Badge from "react-bootstrap/Badge";
+import PreviewFormModal from "../../create/components/PreviewFormModal";
+import SchemaDiffModal from "./SchemaDiffModal";
 
-const VersionsPromotionPanel = ({formId}) => {
-    const {status, versions, handlePaginationChange} = useGetVersionsForPromotion(formId);
+const VersionsPromotionPanel = ({formId, selectFormToPromote}) => {
+    const {status, versions, handlePaginationChange, compare, showVersion,
+            hideVersion, hideCompare} = useGetVersionsForPromotion(formId);
     const {limit, total} = versions;
     const {t} = useTranslation();
     if (!status || status === EXECUTING) {
@@ -51,29 +54,49 @@ const VersionsPromotionPanel = ({formId}) => {
                     <th>Updated on</th>
                     <th>Updated by</th>
                     <th>Compare schemas</th>
-                    <th></th>
+                    <th/>
                 </tr>
                 </thead>
                 <tbody>
                 {versions.data.map(version => {
                     return <tr key={version.versionId}>
-                        <td style={{textAlign: 'center'}}><Form.Check id={version.versionId} name="formVersion"
+                        <td style={{textAlign: 'center'}}><Form.Check id={version.versionId}
+                                                                      onChange={()=> selectFormToPromote(version)}
+                                                                      name="formVersion"
                                                                       type="radio"/></td>
                         <td>{version.latest? <React.Fragment>
-                            <Badge variant="light">{version.versionId}</Badge>
-                            <span className="sr-only">latest</span>
+                            {version.versionId}<span><Badge variant="danger"> Latest</Badge></span>
                         </React.Fragment> : version.versionId}</td>
                         <td>{moment(version.validFrom).fromNow()}</td>
                         <td>{version.updatedBy ? version.updatedBy : version.createdBy}</td>
                         <td style={{textAlign: 'center'}}>
-                            <Form.Check type="checkbox" aria-label="radio 1" onChange={(e) => alert("hello")}/>
+                            <Form.Check type="checkbox" aria-label="radio 1" onChange={(e) => {
+                                if (e.target.checked
+                                        && (versions.versionsToCompare.first !== null && versions.versionsToCompare.second !== null)) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    alert("You cannot select more than 2 schemas to compare");
+                                    return false;
+                                } else {
+                                    compare(e, version)
+                                }
+                            }}/>
                         </td>
-                        <td style={{textAlign: 'center'}}>View form</td>
+                        <td style={{textAlign: 'center'}}><a href="#" onClick={() => showVersion(version)} >View form</a></td>
                     </tr>
                 })}
 
                 </tbody>
             </Table>
+        </Row>
+        <Row>
+            <PreviewFormModal form={versions.versionToView? versions.versionToView.schema: {}} open={versions.versionToView}
+                              onClosePreview={hideVersion}/>
+        </Row>
+        <Row>
+            <SchemaDiffModal open={versions.showCompareModal} hide={hideCompare}
+                             firstSchema={versions.versionsToCompare.first ? versions.versionsToCompare.first: ""}
+                             secondSchema={versions.versionsToCompare.second ?versions.versionsToCompare.second: ""}/>
         </Row>
     </Container>
 };

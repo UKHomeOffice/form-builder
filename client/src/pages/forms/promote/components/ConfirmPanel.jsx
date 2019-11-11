@@ -36,6 +36,7 @@ const ConfirmPanel = ({form, setValue, backToForms, promote, status}) => {
                 <Table bordered responsive>
                     <thead>
                     <tr>
+                        <th>Version Id</th>
                         <th>Title</th>
                         <th>Name</th>
                         <th>Path</th>
@@ -44,6 +45,7 @@ const ConfirmPanel = ({form, setValue, backToForms, promote, status}) => {
                     </thead>
                     <tbody>
                     <tr>
+                        <td>{form.data.versionId}</td>
                         <td>{form.data.title}</td>
                         <td>{form.data.name}</td>
                         <td>{form.data.path}</td>
