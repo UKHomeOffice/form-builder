@@ -18,6 +18,7 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import PreviewFormModal from "../../create/components/PreviewFormModal";
+import Form from "react-bootstrap/Form";
 
 const FormSchemaEditor = ({formId}) => {
     const {
@@ -31,7 +32,8 @@ const FormSchemaEditor = ({formId}) => {
         closeDraftModal,
         closePreview,
         loadLocalChanges,
-        formBuilderEditView
+        formBuilderEditView,
+        changeJSONEditorMode
     } = useEditForm(formId);
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
@@ -91,12 +93,30 @@ const FormSchemaEditor = ({formId}) => {
                                      <hr className="hr-text" data-content={t('form.schema.label')}/>
                                  </Col>
                              </Row>
+                             <Row className="mb-2">
+                                 <Col>
+                                     <Form.Label
+                                         className="font-weight-bold">Select JSON editor mode</Form.Label>
+
+                                     <Form.Control as="select"
+                                                   data-cy="jsonEditorType"
+                                                   value={editForm.jsonEditorMode}
+                                                   onChange={(e) => {
+                                                       changeJSONEditorMode(e.target.value)
+                                                   }}>
+                                                <option value="tree" selected={editForm.jsonEditorMode === 'tree'}>Tree</option>
+                                                <option value="code"  selected={editForm.jsonEditorMode === 'code'}>Code</option>
+                                                <option value="text"  selected={editForm.jsonEditorMode === 'text'}>Text</option>
+
+                                     </Form.Control>
+                                 </Col>
+                             </Row>
                              <Row>
                                  <Col>
                                      <FormJsonSchemaEditor
                                          onChangeJSON={(json) => updateJSON(json)}
                                          json={editForm.data}
-                                         mode={'tree'}
+                                         mode={editForm.jsonEditorMode}
                                          indentation={2}
                                      />
                                  </Col>

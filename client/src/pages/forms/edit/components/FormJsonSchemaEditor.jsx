@@ -72,7 +72,7 @@ class FormJsonSchemaEditor extends Component {
     }
 
     render() {
-        return (<div className="jsoneditor-react-container" ref={elem => this.container = elem}/>);
+        return (<div className="jsoneditor-react-container" id="jsoneditor" ref={elem => this.container = elem}/>);
     }
 }
 

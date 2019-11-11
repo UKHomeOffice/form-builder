@@ -24,6 +24,7 @@ const useEditForm = (formId) => {
         formId: formId,
         displayPreview: false,
         hasUnsavedData: false,
+        jsonEditorMode: "tree",
         missing: {
             path: false,
             title: false,
@@ -292,6 +293,13 @@ const useEditForm = (formId) => {
         await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`);
     };
 
+    const changeJSONEditorMode = (value) => {
+        setValues({
+            ...editForm,
+            jsonEditorMode: value
+        });
+    };
+
     return {
         status,
         editForm,
@@ -309,7 +317,8 @@ const useEditForm = (formId) => {
         closeDraftModal,
         loadLocalChanges,
         editSchemaView,
-        formBuilderEditView
+        formBuilderEditView,
+        changeJSONEditorMode
     }
 };
 
