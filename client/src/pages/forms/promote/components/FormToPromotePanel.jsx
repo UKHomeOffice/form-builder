@@ -10,10 +10,12 @@ import Button from "react-bootstrap/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faCaretRight,
-    faTimes
+    faTimes,
+    faInfoCircle
 } from "@fortawesome/free-solid-svg-icons";
 import Container from "react-bootstrap/Container";
 import VersionsPromotionPanel from "./VersionsPromotionPanel";
+import Alert from "react-bootstrap/Alert";
 
 const FormToPromotePanel = ({form, backToForms, handleSpecificVersion, selectVersionToPromote}) => {
     const {t} = useTranslation();
@@ -24,6 +26,13 @@ const FormToPromotePanel = ({form, backToForms, handleSpecificVersion, selectVer
         <Row>
             <Col>
                 <hr className="hr-text" data-content="Form to promote"/>
+            </Col>
+        </Row>
+        <Row>
+            <Col className="text-center">
+                <Alert  variant="info">
+                    <FontAwesomeIcon icon={faInfoCircle}/><span className="ml-1"><strong>{t('form.promote.subFormNotice')}</strong></span>
+                </Alert>
             </Col>
         </Row>
         <Row>

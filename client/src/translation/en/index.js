@@ -100,6 +100,7 @@ const messages = {
             "failed-message": "Please try again"
         },
         "promote": {
+            "subFormNotice" : "If your form contains sub forms, then those sub forms will automatically be promoted to the environment",
             "latestVersion": "Promote latest version",
             "specificVersion" : "Promote a specific version",
             "no-environments-to-promote-title": "No available environment",
