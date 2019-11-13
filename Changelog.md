@@ -1,4 +1,9 @@
 # Change Log
+### 2.2.2
+### Update:
+ - Formio 4.7.5 upgrade
+ - @digitalpatterns/formio-gds-template upgrade to 1.1.6
+
 ### 2.2.1
 ### Fix:
  - Preview page not showing submission data
