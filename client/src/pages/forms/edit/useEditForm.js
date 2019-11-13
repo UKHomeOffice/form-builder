@@ -201,10 +201,10 @@ const useEditForm = (formId) => {
     };
 
     const softSave = () => {
-        setValues({
+        setValues(editForm => ({
             ...editForm,
             hasUnsavedData: true
-        });
+        }));
         formindexdb.form.put({
             path: navigation.getCurrentValue().url.pathname,
             id: formId,

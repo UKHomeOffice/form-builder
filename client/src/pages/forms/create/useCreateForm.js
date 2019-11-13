@@ -128,11 +128,7 @@ const useCreateForm = (formContent = null) => {
                 });
             }
         });
-        const intervalId = setInterval(() => {
-            softSave();
-        }, 30000);
         return () => {
-            clearInterval(intervalId);
             formindexdb.form.clear().then(() => {
                 console.log("Draft data cleared");
             });
@@ -247,10 +243,10 @@ const useCreateForm = (formContent = null) => {
         if (form.data.components
             && form.data.components.length !== 0
         ) {
-            setValues({
+            setValues(form => ({
                 ...form,
                 hasUnsavedData: true
-            });
+            }));
             formindexdb.form.put({
                 path: navigation.getCurrentValue().url.pathname,
                 id: form.data.name,
