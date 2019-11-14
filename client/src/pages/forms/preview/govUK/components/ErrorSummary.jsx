@@ -28,8 +28,8 @@ class ErrorSummary extends React.Component {
         });
         eventEmitter.subscribe('formChange', (value) => {
             this.setState({
-                errors: _.filter(this.state.errors, error => {
-                    return error.component.key !== value.changed.component.key;
+                errors: _.filter(this.state.errors, ({message, instance}) => {
+                    return instance.component.key !== value.changed.component.key;
                 })
             })
         });
