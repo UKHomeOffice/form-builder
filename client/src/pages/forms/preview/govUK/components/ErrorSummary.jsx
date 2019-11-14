@@ -13,9 +13,12 @@ class ErrorSummary extends React.Component {
     }
 
     componentDidMount() {
-        eventEmitter.subscribe('formSubmissionError', (errors) => {
+        eventEmitter.subscribe('formSubmissionError', ({errors, form}) => {
+              const updated = errors.map(error => {
+                  return {message: error.message, instance: form.formio.getComponent(error.component.key)};
+              });
             this.setState({
-                errors: errors
+                errors: updated
             })
         });
         eventEmitter.subscribe('formSubmissionSuccessful', () => {
@@ -41,14 +44,11 @@ class ErrorSummary extends React.Component {
                     </h2>
                     <div className="govuk-error-summary__body">
                         <ul className="govuk-list govuk-error-summary__list">
-                            {this.state.errors.map(e => {
+                            {this.state.errors.map(({message,instance}) => {
                                 return <li key={uuid()}>
                                     <a href="#" onClick={() => {
-                                        if (document.getElementsByName("data[" + e.component.key + "]")
-                                            && document.getElementsByName("data[" + e.component.key + "]")[0]) {
-                                            document.getElementsByName("data[" + e.component.key + "]")[0].focus()
-                                        }
-                                    }}>{e.message}</a>
+                                        instance.focus();
+                                    }}>{message}</a>
                                 </li>
                             })}
 

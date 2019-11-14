@@ -17,6 +17,7 @@ import {useKeycloak} from "react-keycloak";
 import FileService from "../../../../core/FileService";
 import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 import eventEmitter from "../../../../core/eventEmitter";
+import {Details} from 'govuk-frontend';
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
@@ -172,8 +173,14 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
                   formioForm = form;
                   if (form) {
                       form.createPromise.then(() => {
+                          form.formio.on('render', () => {
+                              const details = document.querySelectorAll('[data-module="govuk-details"]');
+                              details.forEach(  (detail) => {
+                                  new Details(detail).init();
+                              });
+                          });
                           form.formio.on('error', errors => {
-                              eventEmitter.publish("formSubmissionError", errors);
+                              eventEmitter.publish("formSubmissionError", {errors: errors, form: form});
                           });
                           form.formio.on('submit', () => {
                               eventEmitter.publish("formSubmissionSuccessful");
@@ -194,9 +201,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
               }}
               options={
                   {
-                      // breadcrumbSettings: {
-                      //     clickable: false
-                      // },
+                      breadcrumbSettings: {
+                          clickable: false
+                      },
                       noAlerts: true,
                       fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>
