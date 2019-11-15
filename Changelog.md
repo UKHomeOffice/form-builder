@@ -1,4 +1,8 @@
 # Change Log
+# 2.2.3
+### Update:
+ - @digitalpatterns/formio-gds-template upgrade to 1.1.9
+ 
 # 2.2.2
 ### Feature:
  - Ability to promote a specific version in the promotion screen

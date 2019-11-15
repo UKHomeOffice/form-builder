@@ -1,7 +1,9 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~formiojs/dist/formio.full.min.css";
 @import "~font-awesome/css/font-awesome.css";
-
+.no-border  {
+  border-bottom: none !important;
+}
 .center {
   height: 50vh;
   display: flex;
