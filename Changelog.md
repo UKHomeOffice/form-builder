@@ -1,4 +1,8 @@
 # Change Log
+# 2.2.3=4
+### Update:
+ - formiojs upgrade to 4.7.7
+ 
 # 2.2.3
 ### Update:
  - @digitalpatterns/formio-gds-template upgrade to 1.1.9
