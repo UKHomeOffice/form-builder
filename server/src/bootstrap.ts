@@ -6,17 +6,17 @@ import replace from 'replace-in-file';
 import Ajv from 'ajv';
 import cors from 'cors';
 import fs from 'fs';
-import logger from "./util/logger";
+import logger from './util/logger';
 import schema from './configSchema.json';
 import './controller';
-import {EventEmitter} from "events";
-import TYPE from "./container/TYPE";
-import {ApplicationContext} from "./container/ApplicationContext";
+import {EventEmitter} from 'events';
+import TYPE from './container/TYPE';
+import {ApplicationContext} from './container/ApplicationContext';
 import httpContext from 'express-http-context';
-import {ApplicationConstants} from "./constant/ApplicationConstants";
-import {InversifyExpressServer} from "inversify-express-utils";
-import {KeycloakService} from "./auth/KeycloakService";
-import * as bodyParser from "body-parser";
+import {ApplicationConstants} from './constant/ApplicationConstants';
+import {InversifyExpressServer} from 'inversify-express-utils';
+import {KeycloakService} from './auth/KeycloakService';
+import * as bodyParser from 'body-parser';
 
 const ajv = new Ajv({allErrors: true});
 
@@ -26,20 +26,19 @@ const app = express();
 
 const validate = ajv.compile(schema);
 
-const appConfig = JSON.parse(fs.readFileSync("/config/appConfig.json").toString("utf-8"));
+const appConfig = JSON.parse(fs.readFileSync(process.env.APP_CONFIG_LOCATION || '/config/appConfig.json').toString('utf-8'));
 
 const valid = validate(appConfig);
 if (valid) {
-    logger.info("Application config schema valid");
+    logger.info('Application config schema valid');
 } else {
-    logger.error("Application config schema invalid");
+    logger.error('Application config schema invalid');
     validate.errors.forEach((error) => {
         logger.error(error);
     });
-    logger.error("Due to config validation errors application will not start up. Goodbye.");
+    logger.error('Due to config validation errors application will not start up. Goodbye.');
     process.exit(0);
 }
-
 
 const applicationContext: ApplicationContext = new ApplicationContext(appConfig);
 const container = applicationContext.iocContainer();
@@ -67,8 +66,6 @@ const processIndex = () => {
 
 processIndex();
 
-
-
 const server = new InversifyExpressServer(container,
     null,
     {rootPath: '/ui'},
@@ -94,8 +91,8 @@ server.setConfig((app) => {
     app.use(express.static('../client/build'));
 
     app.use('*', (req, res, next) => {
-        if (!req.originalUrl.startsWith("/ui")) {
-            res.sendFile("index.html", {root: '../client/build'});
+        if (!req.originalUrl.startsWith('/ui')) {
+            res.sendFile('index.html', {root: '../client/build'});
         } else  {
             next();
         }
@@ -147,7 +144,6 @@ process.on('unhandledRejection', (reason: Error, promise) => {
 process.on('uncaughtException', (error) => {
     logger.error('uncaughtException', error);
 });
-
 
 const clearUp = async () => {
     eventEmitter.emit(ApplicationConstants.SHUTDOWN_EVENT);

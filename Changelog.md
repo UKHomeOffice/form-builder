@@ -1,5 +1,10 @@
 # Change Log
-# 2.2.3=4
+# 2.2.5
+### Update:
+ - upgrade formio gds template to 1.2.0
+ - added option to specify application config file location for server using APP_CONFIG_LOCATION (must be full path)
+ 
+# 2.2.4
 ### Update:
  - formiojs upgrade to 4.7.7
  
