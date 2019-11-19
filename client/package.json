@@ -1,6 +1,6 @@
 {
   "name": "formbuilderclient",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "private": true,
   "contributors": [
     {
@@ -22,7 +22,7 @@
     }
   },
   "dependencies": {
-    "@digitalpatterns/formio-gds-template": "1.2.0",
+    "@digitalpatterns/formio-gds-template": "1.2.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",

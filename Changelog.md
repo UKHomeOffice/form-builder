@@ -1,4 +1,9 @@
 # Change Log
+# 2.2.6
+### Update:
+ - upgrade formio gds template to 1.2.1
+ - upgrade formio to 4.7.8
+
 # 2.2.5
 ### Update:
  - upgrade formio gds template to 1.2.0
