@@ -1,4 +1,9 @@
 # Change Log
+# 2.2.7
+### Fixed:
+ - Sub form promotion. Incorrect sub form look url, as a result sometimes sub form was not being promoted.
+ - Added additional logs in Promotion Controller for better debugging
+ - Fixed issue if a form has multiple sub forms of the same reference then promotion would create duplicates
 # 2.2.6
 ### Update:
  - upgrade formio gds template to 1.2.1

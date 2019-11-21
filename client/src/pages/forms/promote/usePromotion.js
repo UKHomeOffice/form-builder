@@ -37,7 +37,8 @@ const usePromotion = (formId) => {
         `/ui/promotion`, {
             verb: 'post', params: {
                 form: form.data,
-                env: getEnvDetails(form.environment)
+                env: getEnvDetails(form.environment),
+                currentEnv: envContext
             }
         }
     );
