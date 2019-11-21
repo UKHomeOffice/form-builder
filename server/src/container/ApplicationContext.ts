@@ -1,10 +1,10 @@
 import {Container} from 'inversify';
-import logger from "../util/logger";
+import logger from '../util/logger';
 import {EventEmitter} from 'events';
-import {ApplicationConstants} from "../constant/ApplicationConstants";
-import TYPE from "./TYPE";
-import {ProtectMiddleware} from "../middleware/ProtectMiddleware";
-import {KeycloakService} from "../auth/KeycloakService";
+import {ApplicationConstants} from '../constant/ApplicationConstants';
+import TYPE from './TYPE';
+import {ProtectMiddleware} from '../middleware/ProtectMiddleware';
+import {KeycloakService} from '../auth/KeycloakService';
 
 export class ApplicationContext {
     private readonly container: Container;

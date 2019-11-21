@@ -7,7 +7,6 @@ import TYPE from '../container/TYPE';
 import axios from 'axios';
 import _ from 'lodash';
 
-
 @provide(TYPE.KeycloakService)
 export class KeycloakService {
 
@@ -15,13 +14,12 @@ export class KeycloakService {
 
     constructor(@inject(TYPE.AppConfig) private readonly appConfig: any) {
         this.keycloak = new Keycloak({}, {
-            clientId: this.appConfig['keycloak'].clientId,
-            serverUrl: this.appConfig['keycloak'].authUrl,
-            realm: this.appConfig['keycloak'].realm,
+            clientId: this.appConfig.keycloak.clientId,
+            serverUrl: this.appConfig.keycloak.authUrl,
+            realm: this.appConfig.keycloak.realm,
             bearerOnly: true,
         });
     }
-
 
     public middleware(): RequestHandler {
         return this.keycloak.middleware();
@@ -38,13 +36,13 @@ export class KeycloakService {
             url: `${environment.service.keycloak.tokenUrl}`,
             auth: {
                 username: environment.service.keycloak.clientId,
-                password: environment.service.keycloak.secret
+                password: environment.service.keycloak.secret,
             },
             withCredentials: true,
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            data: 'grant_type=client_credentials'
+            data: 'grant_type=client_credentials',
         });
         return tokenResponse.data.access_token;
     }

@@ -4,11 +4,11 @@ import * as express from 'express';
 import {inject} from 'inversify';
 import {KeycloakService} from '../auth/KeycloakService';
 import util from 'formiojs/utils';
-import FormioUtils from 'formiojs/utils';
 import _ from 'lodash';
 import axios from 'axios';
 import logger from '../util/logger';
 import {FormUtil} from './FormUtil';
+import HttpStatusCode from 'http-status-codes';
 
 @controller('')
 export class PromotionController extends BaseHttpController {
@@ -22,8 +22,7 @@ export class PromotionController extends BaseHttpController {
     @httpPost('/promotion', TYPE.ProtectMiddleware)
     public async promote(@request() req: express.Request,
                          @response() res: express.Response,
-                         @next() next: express.NextFunction): Promise<void> {
-
+                         @next() nextFunction: express.NextFunction): Promise<void> {
 
         const body = req.body;
         const formToPromote = body.form;
@@ -34,27 +33,34 @@ export class PromotionController extends BaseHttpController {
         try {
 
             const promotionEnvToken = await this.keycloakService.token(envToPromote.id);
-            const headers = {
-                'Authorization': `Bearer ${promotionEnvToken}`,
-                'x-user-email': userId,
-            };
-
             const subFormComponents = util.searchComponents(formToPromote.components, {
                 type: 'form',
             });
             const formToPromoteId = formToPromote.id;
             logger.info(`Checking if ${formToPromoteId} has any subforms...`);
+            const headers = {
+                'Authorization': `Bearer ${promotionEnvToken}`,
+                'x-user-email': userId,
+            };
             if (!_.isEmpty(subFormComponents)) {
+                const currentEnvToken = await this.keycloakService.token(currentEnv.id);
                 logger.info(`Detected subforms for ${formToPromoteId}`);
 
+                // @ts-ignore
                 const subFormIds = _.uniqBy(subFormComponents, (subForm) => subForm.form)
-                                    .map((sub) => sub.form);
+                    .map((sub) => {
+                        // @ts-ignore
+                        return sub.form;
+                    });
                 logger.info(`Loading ${subFormIds} from environment`);
 
                 const subForms = await Promise.all(subFormIds.map(async (subFormId) => {
                     try {
                         const formData = await axios.get(`${currentEnv.url}/form/${subFormId}`, {
-                            headers: headers
+                            headers: {
+                                'Authorization': `Bearer ${currentEnvToken}`,
+                                'x-user-email': userId,
+                            },
                         });
                         return formData.data;
                     } catch (e) {
@@ -72,11 +78,11 @@ export class PromotionController extends BaseHttpController {
                 logger.info(`Checking if final filtered forms ${filtered.length} exists in ${promotionEnvId}`);
 
                 const subFormsFromEnv = await Promise.all(filtered.map(async (subForm: any) => {
-                    const response = await axios.get(`${envToPromote.url}/form?name=${subForm.name}&select=id`,
-                        {headers: headers});
+                    const subFormResponse = await axios.get(`${envToPromote.url}/form?name=${subForm.name}&select=id`,
+                        {headers});
                     return {
-                        id: response.data.total >= 1 ? response.data.forms[0].id : null,
-                        subFormToPromote: subForm
+                        id: subFormResponse.data.total >= 1 ? subFormResponse.data.forms[0].id : null,
+                        subFormToPromote: subForm,
                     };
                 }));
                 logger.info(`${subFormsFromEnv.length} located in ${promotionEnvId}`);
@@ -104,7 +110,7 @@ export class PromotionController extends BaseHttpController {
                         logger.info('New subform created');
                         formId = result.headers['x-form-id'];
                     }
-                    FormioUtils.eachComponent(formToPromote.components, (component) => {
+                    util.eachComponent(formToPromote.components, (component) => {
                         if (component.type === 'form' && component.form === data.subFormToPromote.id) {
                             component.form = formId;
                             logger.info(`Updated subForm ${component.key} with new reference ${formId}`);
@@ -121,8 +127,8 @@ export class PromotionController extends BaseHttpController {
             });
 
             if (formResponse.data.total === 0) {
-                const response: any = await this.formUtil.createForm(headers, formToPromote, envToPromote);
-                logger.info(`New form promoted to ${envToPromote.id} and result ${response.status}`);
+                const createFormResponse: any = await this.formUtil.createForm(headers, formToPromote, envToPromote);
+                logger.info(`New form promoted to ${envToPromote.id} and result ${createFormResponse.status}`);
             } else {
                 logger.info(`Form ${formToPromote.name} does exists in ${envToPromote.id}, so updating`);
                 const formLoaded = formResponse.data.forms[0];
@@ -148,7 +154,7 @@ export class PromotionController extends BaseHttpController {
                     logger.info(`${formToPromote.name} successfully updated ${updateResponse.status}`);
                 }
             }
-            res.sendStatus(200);
+            res.sendStatus(HttpStatusCode.OK);
         } catch (e) {
             logger.error(e.stack);
             throw e;

@@ -1,10 +1,10 @@
-import {BaseHttpController, controller, httpGet, request, response} from "inversify-express-utils";
-import TYPE from "../container/TYPE";
-import {inject} from "inversify";
+import {BaseHttpController, controller, httpGet, request, response} from 'inversify-express-utils';
+import TYPE from '../container/TYPE';
+import {inject} from 'inversify';
 import axios from 'axios';
 import * as express from 'express';
-import {KeycloakService} from "../auth/KeycloakService";
-import logger from "../util/logger";
+import {KeycloakService} from '../auth/KeycloakService';
+import logger from '../util/logger';
 import _ from 'lodash';
 
 @controller('')
@@ -26,34 +26,35 @@ export class ReportsController extends BaseHttpController {
             const url = `${environment.url}/form?countOnly=true`;
             const token = await this.keycloakService.token(environment.id);
             try {
-                const response = await instance({
-                    url: url,
+                const perEnvResponse = await instance({
+                    url,
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 return {
-                    environment: environment,
-                    response: response.data
+                    environment,
+                    response: perEnvResponse.data,
                 };
             } catch (error) {
-                logger.error(`Failed to total form count from ${environment.url} ${error.message}` );
+                logger.error(`Failed to total form count from ${environment.url} ${error.message}`);
                 return {
-                    environment: environment,
+                    environment,
                     response: {
-                        total: 0
-                    }
+                        total: 0,
+                    },
                 };
             }
         }));
 
         const formsCountData = _.map(perEnvResults, (result: { environment: any, response: any }) => {
             return {
-                "id": result.environment.id,
-                "label": result.environment.label,
-                "value": result.response ? parseInt(result.response.total) : 0
-            }
+                id: result.environment.id,
+                label: result.environment.label,
+                // tslint:disable-next-line:radix
+                value: result.response ? parseInt(result.response.total) : 0,
+            };
         });
 
         const formTypeResults = await axios.all(this.appConfig.environments.map(async (environment) => {
@@ -64,56 +65,57 @@ export class ReportsController extends BaseHttpController {
                     url: `${environment.url}/form?filter=display__eq__form&countOnly=true`,
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 const wizardTypes = await instance({
                     url: `${environment.url}/form?filter=display__eq__wizard&countOnly=true`,
-                    method: "GET",
+                    method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 return {
                     environment: environment.id,
                     formTypes: formTypes.data,
-                    wizardTypes: wizardTypes.data
-                }
+                    wizardTypes: wizardTypes.data,
+                };
             } catch (error) {
                 logger.error(`Failed to get form type count from ${environment.url} ${error.stack}`);
                 return {
                     environment: environment.id,
                     formTypes: {
-                        total: 0
+                        total: 0,
                     },
                     wizardTypes: {
-                        total: 0
-                    }
-                }
+                        total: 0,
+                    },
+                };
             }
         }));
         const typeData = _.map(formTypeResults, (result: {
             environment: any,
             wizardTypes: any,
-            formTypes: any
+            formTypes: any,
         }) => {
             const env = result.environment;
+            // tslint:disable-next-line:radix
             const wizards = parseInt(result.wizardTypes.total);
+            // tslint:disable-next-line:radix
             const forms = parseInt(result.formTypes.total);
             return {
                 name: env,
                 wizard: wizards,
                 form: forms,
-            }
+            };
         });
 
         res.json(
             {
-                formsCountData: formsCountData,
-                typeData:typeData
-            }
-        )
-
+                formsCountData,
+                typeData,
+            },
+        );
 
     }
 }

@@ -3,7 +3,7 @@ import {inject} from 'inversify';
 import {provide} from 'inversify-binding-decorators';
 import {BaseMiddleware} from 'inversify-express-utils';
 import {KeycloakService} from '../auth/KeycloakService';
-import TYPE from "../container/TYPE";
+import TYPE from '../container/TYPE';
 
 @provide(TYPE.ProtectMiddleware)
 export class ProtectMiddleware extends BaseMiddleware {

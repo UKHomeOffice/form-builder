@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import * as express from 'express';
 
 export class FormUtil {
@@ -9,7 +9,7 @@ export class FormUtil {
                 url: `${envContext.approvalUrl}`,
                 method: 'POST',
                 data: form,
-                headers: headers
+                headers,
             });
         } else {
             try {
@@ -17,7 +17,7 @@ export class FormUtil {
                     url: `${envContext.url}/form`,
                     method: 'POST',
                     data: form,
-                    headers: headers
+                    headers,
                 });
             } catch (e) {
                 throw e.response.data;
@@ -25,5 +25,5 @@ export class FormUtil {
         }
 
         return response;
-    };
+    }
 }

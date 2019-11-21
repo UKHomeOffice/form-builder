@@ -1,11 +1,12 @@
-import {BaseHttpController, controller, httpPost, next, request, response} from "inversify-express-utils";
-import TYPE from "../container/TYPE";
+import {BaseHttpController, controller, httpPost, next, request, response} from 'inversify-express-utils';
+import TYPE from '../container/TYPE';
 import * as express from 'express';
 import axios from 'axios';
-import logger from "../util/logger";
+import logger from '../util/logger';
 import _ from 'lodash';
-import {inject} from "inversify";
-import {KeycloakService} from "../auth/KeycloakService";
+import {inject} from 'inversify';
+import {KeycloakService} from '../auth/KeycloakService';
+import HttpStatusCode from 'http-status-codes';
 
 @controller('')
 export class MigrationController extends BaseHttpController {
@@ -18,7 +19,7 @@ export class MigrationController extends BaseHttpController {
     @httpPost('/load-migration-forms', TYPE.ProtectMiddleware)
     public async loadMigrationForms(@request() req: express.Request,
                                     @response() res: express.Response,
-                                    @next() next: express.NextFunction): Promise<void> {
+                                    @next() nextFunction: express.NextFunction): Promise<void> {
 
         logger.info('Loading formio forms...');
         const formio = req.body.formio;
@@ -26,30 +27,30 @@ export class MigrationController extends BaseHttpController {
         try {
             const tokenResponse = await axios({
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
                 },
                 method: 'POST',
                 url: `${formio.url}/user/login`,
                 data: {
                     data: {
                         email: formio.username,
-                        password: formio.password
-                    }
-                }
+                        password: formio.password,
+                    },
+                },
             });
             logger.debug('New formio token received');
             const jwtToken = tokenResponse.headers['x-jwt-token'];
             const responseFromFormio = await axios({
                 headers: {
-                    "Content-Type": "application/json",
-                    'x-jwt-token': jwtToken
+                    'Content-Type': 'application/json',
+                    'x-jwt-token': jwtToken,
                 },
                 url: `${formio.url}/form?&limit=${formio.limit}&skip=${((formio.activePage) * formio.limit)}${formio.searchTitle !== '' ? `&title__regex=/${formio.searchTitle}/i` : ''}`,
                 method: 'GET',
             });
             if (responseFromFormio.data) {
                 logger.info('Loaded forms from formio server', {
-                    size: responseFromFormio.data.length
+                    size: responseFromFormio.data.length,
                 });
                 const names = responseFromFormio.data.map((form) => {
                     return form.name;
@@ -59,8 +60,8 @@ export class MigrationController extends BaseHttpController {
                     url: `${environment.url}/form?select=name&filter=name__in__${names.join('|')}`,
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
 
                 if (existing.data.total !== 0) {
@@ -69,21 +70,21 @@ export class MigrationController extends BaseHttpController {
                             return f.name === form.name;
                         });
                         if (found) {
-                            form['exists'] = true;
+                            form.exists = true;
                         }
                         return form;
-                    })
+                    });
                 }
 
                 res.header('content-range', responseFromFormio.headers['content-range'])
                     .header('x-jwt-token', jwtToken)
-                    .json(responseFromFormio.data)
+                    .json(responseFromFormio.data);
             } else {
                 res.header('content-range', responseFromFormio.headers['content-range'])
                     .header('x-jwt-token', jwtToken)
                     .json([]);
             }
-        } catch(e) {
+        } catch (e) {
             logger.error('Failed to load forms due to '.concat(e.message));
             throw e;
         }
@@ -92,7 +93,7 @@ export class MigrationController extends BaseHttpController {
 
     @httpPost('/migrate', TYPE.ProtectMiddleware)
     public async migrate(@request() req: express.Request,
-                         @response() res: express.Response,): Promise<void> {
+                         @response() res: express.Response): Promise<void> {
 
         const formio = req.body.formio;
         const environment = req.body.env;
@@ -100,16 +101,16 @@ export class MigrationController extends BaseHttpController {
 
         const tokenResponse = await axios({
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
             },
             method: 'POST',
             url: `${formio.url}/user/login`,
             data: {
                 data: {
                     email: formio.username,
-                    password: formio.password
-                }
-            }
+                    password: formio.password,
+                },
+            },
         });
 
         const formsSuccessfullyMigrated = [];
@@ -124,35 +125,35 @@ export class MigrationController extends BaseHttpController {
                 method: 'GET',
                 url: `${formio.url}/form/${formId}`,
                 headers: {
-                    "Content-Type": "application/json",
-                    'x-jwt-token': tokenResponse.headers['x-jwt-token']
+                    'Content-Type': 'application/json',
+                    'x-jwt-token': tokenResponse.headers['x-jwt-token'],
                 },
             });
             try {
-                const response = await axios({
+                const formResponse = await axios({
                     url: `${environment.url}/form`,
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     },
-                    data: santize(form.data)
+                    data: santize(form.data),
                 });
 
-                if (response.status === 201) {
-                    formsSuccessfullyMigrated.push({formId: formId, name: form.data.name});
+                if (formResponse.status === HttpStatusCode.CREATED) {
+                    formsSuccessfullyMigrated.push({formId, name: form.data.name});
                 } else {
-                    logger.error(`Failed to migrate ${formId} due to ${response.data}`);
-                    formsFailedToMigrate.push({formId: formId, name: form.data.name});
+                    logger.error(`Failed to migrate ${formId} due to ${formResponse.data}`);
+                    formsFailedToMigrate.push({formId, name: form.data.name});
                 }
             } catch (e) {
                 logger.error(`Failed to migrate ${formId} due to ${e.message}`);
-                formsFailedToMigrate.push({formId: formId, name: form.data.name});
+                formsFailedToMigrate.push({formId, name: form.data.name});
             }
         }
 
         res.json({
-            formsSuccessfullyMigrated: formsSuccessfullyMigrated,
-            formsFailedToMigrate: formsFailedToMigrate
+            formsSuccessfullyMigrated,
+            formsFailedToMigrate,
         });
 
     }

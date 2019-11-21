@@ -25,6 +25,7 @@
     "express": "^4.16.4",
     "express-http-context": "^1.2.3",
     "formiojs": "4.7.8",
+    "http-status-codes": "^1.4.0",
     "inversify": "^5.0.1",
     "inversify-binding-decorators": "^4.0.0",
     "inversify-express-utils": "^6.3.2",
