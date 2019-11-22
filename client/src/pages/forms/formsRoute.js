@@ -5,9 +5,11 @@ import {withAccessAuthorization, withEnvContext} from "../../core/AppRouter";
 
 
 export default mount({
-    '/:env': withAccessAuthorization(withEnvContext(route({
-        "title": "Forms",
-        "view": <FormList/>
+    '/:env': withAccessAuthorization(withEnvContext(route(req =>{
+        return {
+            "title": `Forms ${req.params.env}`,
+            "view": <FormList/>
+        }
     }))),
     '/:env/create': lazy(() => import('../forms/create/createFormRoutes')),
     '/:env/:formId/edit': lazy(() => import('../forms/edit/editFormRoutes')),
