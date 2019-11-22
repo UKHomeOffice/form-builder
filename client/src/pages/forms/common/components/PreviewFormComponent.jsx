@@ -18,6 +18,7 @@ import FileService from "../../../../core/FileService";
 import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 import eventEmitter from "../../../../core/eventEmitter";
 import {Details} from 'govuk-frontend';
+import VariableReplacer from "../../../../core/replacements/VariableReplacer";
 
 const PreviewFormComponent = ({form, submission, handlePreview}) => {
     const {t} = useTranslation();
@@ -119,6 +120,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
     Formio.formsUrl = `${envContext.url}/form`;
     Formio.formUrl = `${envContext.url}/form`;
     Formio.projectUrl = `${envContext.url}`;
+    const variableReplacer = new VariableReplacer();
     Formio.plugins = [{
         priority: 0,
         preRequest: async function (requestArgs) {
@@ -152,14 +154,17 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
                 return {
                     ok: response.ok,
                     json: () => response.json().then((result) => {
+
                         if (result.forms) {
                             return result.forms.map((form) => {
-                                form['_id'] = form.id;
-                                return form;
+                                const updatedForm = variableReplacer.replace(form, envContext['variable-replacements']);
+                                updatedForm['_id'] = form.id;
+                                return updatedForm;
                             });
                         }
-                        result['_id'] = result.id;
-                        return result;
+                        const updatedForm = variableReplacer.replace(result, envContext['variable-replacements']);
+                        updatedForm['_id'] = result.id;
+                        return updatedForm;
                     }),
                     status: response.status,
                     headers: response.headers
