@@ -1,4 +1,8 @@
 # Change Log
+# 2.2.8
+### Fixed:
+ - Nested forms not getting data context resolved
+  
 # 2.2.7
 ### Fixed:
  - Sub form promotion. Incorrect sub form look url, as a result sometimes sub form was not being promoted.
