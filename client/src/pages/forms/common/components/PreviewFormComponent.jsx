@@ -20,7 +20,7 @@ import eventEmitter from "../../../../core/eventEmitter";
 import {Details} from 'govuk-frontend';
 import VariableReplacer from "../../../../core/replacements/VariableReplacer";
 
-const PreviewFormComponent = ({form, submission, handlePreview}) => {
+const PreviewFormComponent = ({form, submission, mode, handlePreview, handleEditorModeViewChange}) => {
     const {t} = useTranslation();
     const [open, setOpen] = useState(false);
     const cursor = {cursor: 'pointer'};
@@ -64,6 +64,8 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
         <Row>
             <Col>
                 <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
+                                  handleEditorModeViewChange={handleEditorModeViewChange}
+                                  mode={mode}
                                   previewSubmission={(submission, form) => {
                                       handlePreview(submission, form)
                                   }}/>
@@ -73,7 +75,7 @@ const PreviewFormComponent = ({form, submission, handlePreview}) => {
 };
 
 
-export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submissionInfoCollapsed = false}) => {
+export const PreviewFormPanel = ({form, formSubmission, previewSubmission, mode,submissionInfoCollapsed = false, handleEditorModeViewChange}) => {
     const {envContext} = useEnvContext();
     let formioForm;
     const {t} = useTranslation();
@@ -217,8 +219,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, submi
 
         <FormJsonSchemaEditor
             readonly={true}
+            handleEditModeView={e => handleEditorModeViewChange(e)}
             json={formSubmission ? formSubmission : {}}
-            mode={'tree'}
+            mode={mode}
             indentation={2}
         />
     </React.Fragment>

@@ -13,7 +13,8 @@ const useGDSPreviewForm = (formId) => {
     const [form, setValue] = useState({
         data: null,
         formId: formId,
-        submission: null
+        submission: null,
+        jsonEditorMode: "tree",
     });
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${formId}`, {
@@ -66,14 +67,26 @@ const useGDSPreviewForm = (formId) => {
             submission: submission
         }));
     };
-
+    const handleEditorModeViewChange = (e) => {
+        const mode = e.target.value;
+        if (mode === 'text' || mode === 'code') {
+            document.getElementById("jsoneditor").style.height = '700px';
+        } else {
+            document.getElementById("jsoneditor").style.height = 'auto';
+        }
+        setValue(form => ({
+            ...form,
+            jsonEditorMode: mode
+        }));
+    };
 
     return {
         previewSubmission,
         status,
         form,
         response,
-        backToForms
+        backToForms,
+        handleEditorModeViewChange
     }
 };
 

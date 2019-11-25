@@ -33,7 +33,8 @@ const PreviewFormPage = ({formId}) => {
         parseCss,
         setTabKey,
         parseSubmissionSchema,
-        closeFormSubmissionSchemaView
+        closeFormSubmissionSchemaView,
+        handleEditorModeViewChange
     } = usePreviewForm(formId);
     const {canEdit} = useRoles();
     const {envContext} = useEnvContext();
@@ -95,6 +96,8 @@ const PreviewFormPage = ({formId}) => {
 
                         {form.data ?
                             <div className="mt-2"><PreviewFormComponent form={parseCss(form.data)}
+                                                                        mode={form.jsonEditorMode}
+                                                                        handleEditorModeViewChange={handleEditorModeViewChange}
                                                                         submission={form.submission}
                                                                         handlePreview={previewSubmission}/>
                             </div> : null}

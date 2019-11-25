@@ -16,7 +16,7 @@ import ErrorSummary from "./ErrorSummary";
 const GovUKPreviewFormPage = ({formId}) => {
     document.body.className = 'js-enabled';
     const {t} = useTranslation();
-    const {status, response, form, previewSubmission} = useGDSPreviewForm(formId);
+    const {status, response, form, previewSubmission, handleEditorModeViewChange} = useGDSPreviewForm(formId);
 
     if (!config.get('gov-uk-enabled', false)) {
         return <Container>
@@ -41,6 +41,8 @@ const GovUKPreviewFormPage = ({formId}) => {
                 <p className="lead">{t('form.list.failure.forms-load', {error: JSON.stringify(response.data)})}</p>
             </Alert>
         </Container> : <Container>{form.data ? <PreviewFormPanel form={form.data} formSubmission={form.submission}
+                                                                 mode={form.jsonEditorMode}
+                                                                 handleEditorModeViewChange={handleEditorModeViewChange}
                                                                  previewSubmission={previewSubmission}/> : null}</Container>)}
     </React.Fragment>
 };

@@ -24,6 +24,7 @@ const usePreviewForm = (formId) => {
         openSchemaView: false,
         tabKey: 'details',
         disableAllActions: false,
+        jsonEditorMode: "tree",
         openFormSchemaSubmissionView: false,
     });
 
@@ -194,6 +195,18 @@ const usePreviewForm = (formId) => {
         }));
     };
 
+    const handleEditorModeViewChange = (e) => {
+        const mode = e.target.value;
+        if (mode === 'text' || mode === 'code') {
+            document.getElementById("jsoneditor").style.height = '700px';
+        } else {
+            document.getElementById("jsoneditor").style.height = 'auto';
+        }
+        setValue(form => ({
+            ...form,
+            jsonEditorMode: mode
+        }));
+    };
     return {
         previewSubmission,
         status,
@@ -211,7 +224,8 @@ const usePreviewForm = (formId) => {
         setTabKey,
         parseSubmissionSchema,
         openFormSubmissionSchemaView,
-        closeFormSubmissionSchemaView
+        closeFormSubmissionSchemaView,
+        handleEditorModeViewChange
     }
 };
 

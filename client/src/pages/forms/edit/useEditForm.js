@@ -294,7 +294,8 @@ const useEditForm = (formId) => {
         await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`);
     };
 
-    const changeJSONEditorMode = (value) => {
+    const changeJSONEditorMode = (e) => {
+        const value = e.target.value;
         if (value === 'text' || value === 'code') {
             document.getElementById("jsoneditor").style.height = '700px';
         } else {

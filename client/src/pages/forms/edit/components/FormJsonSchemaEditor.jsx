@@ -7,6 +7,7 @@ import 'jsoneditor/dist/jsoneditor.css';
 import './FormJsonSchemaEditor.scss';
 import {withTranslation} from "react-i18next";
 import _ from 'lodash';
+import Form from "react-bootstrap/Form";
 
 
 class FormJsonSchemaEditor extends Component {
@@ -72,7 +73,20 @@ class FormJsonSchemaEditor extends Component {
     }
 
     render() {
-        return (<div className="jsoneditor-react-container" id="jsoneditor" ref={elem => this.container = elem}/>);
+        return <React.Fragment>
+            <div className="mb-2"><Form.Label
+                className="font-weight-bold">Select editor mode</Form.Label>
+            <Form.Control as="select"
+                          data-cy="jsonEditorType"
+                          onChange={this.props.handleEditModeView}>
+                <option value="tree">Tree</option>
+                <option value="code">Code</option>
+                <option value="text">Text</option>
+
+            </Form.Control>
+            </div>
+            <div className="jsoneditor-react-container" id="jsoneditor" ref={elem => this.container = elem}/>
+        </React.Fragment>;
     }
 }
 
