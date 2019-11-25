@@ -176,8 +176,6 @@ const FormBuilderComponent = ({
                 <hr className="hr-text" data-content={t('form.create.actions')}/>
             </Col>
         </Row>
-
-
         <Row>
             <Container>
                 <ButtonToolbar>

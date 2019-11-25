@@ -25,6 +25,7 @@ const useEditForm = (formId) => {
         displayPreview: false,
         hasUnsavedData: false,
         jsonEditorMode: "tree",
+        openInSchemaEditorMode: false,
         missing: {
             path: false,
             title: false,
