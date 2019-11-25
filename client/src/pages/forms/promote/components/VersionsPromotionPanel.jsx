@@ -101,7 +101,7 @@ const VersionsPromotionPanel = ({formId, selectFormToPromote}) => {
             </Table>
         </Row>
         <Row>
-            <PreviewFormModal form={versions.versionToView? versions.versionToView.schema: {}} open={versions.versionToView}
+            <PreviewFormModal form={versions.versionToView? versions.versionToView.schema: {}} open={versions.versionToView !== null}
                               onClosePreview={hideVersion}/>
         </Row>
         <Row>

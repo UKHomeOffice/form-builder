@@ -104,9 +104,9 @@ const FormSchemaEditor = ({formId}) => {
                                                    onChange={(e) => {
                                                        changeJSONEditorMode(e.target.value)
                                                    }}>
-                                                <option value="tree" selected={editForm.jsonEditorMode === 'tree'}>Tree</option>
-                                                <option value="code"  selected={editForm.jsonEditorMode === 'code'}>Code</option>
-                                                <option value="text"  selected={editForm.jsonEditorMode === 'text'}>Text</option>
+                                                <option value="tree">Tree</option>
+                                                <option value="code">Code</option>
+                                                <option value="text">Text</option>
 
                                      </Form.Control>
                                  </Col>
