@@ -30,7 +30,10 @@ const CreateFormPage = () => {
         changeDisplay,
         updateSchema,
         closeDraftModal,
-        loadLocalChanges
+        loadLocalChanges,
+        changeSchemaView,
+        changeJSONEditorMode,
+        updateJSON
     } = useCreateForm();
 
     const {envContext} = useEnvContext();
@@ -60,9 +63,13 @@ const CreateFormPage = () => {
         <Overlay active={form.reloadingFromLocal} loadingText={"Loading local changes"}
                  children={
                      <FormBuilderComponent
+                         changeSchemaView={changeSchemaView}
+                         changeJSONEditorMode={changeJSONEditorMode}
+                         openInSchemaEditorMode={form.openInSchemaEditorMode}
+                         envContext={envContext}
+                         onRawJSONUpdate={updateJSON}
                          form={form}
                          t={t}
-                         envContext={envContext}
                          updateField={updateField}
                          openPreview={openPreview}
                          closePreview={closePreview}

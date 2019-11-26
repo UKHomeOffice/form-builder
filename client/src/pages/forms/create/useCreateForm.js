@@ -55,6 +55,8 @@ const useCreateForm = (formContent = null) => {
         reloadingFromLocal: false,
         localData: null,
         displayPreview: false,
+        jsonEditorMode: "code",
+        openInSchemaEditorMode: false,
         missing: {
             path: false,
             title: false,
@@ -304,6 +306,29 @@ const useCreateForm = (formContent = null) => {
 
     };
 
+    const changeSchemaView = () => {
+        setValues(form => ({
+            ...form,
+            openInSchemaEditorMode: !form.openInSchemaEditorMode,
+            jsonEditorMode: "code"
+        }));
+    };
+
+    const changeJSONEditorMode = (e) => {
+        const value = e.target.value;
+        setValues(form => ({
+            ...form,
+            jsonEditorMode: value
+        }));
+    };
+
+    const updateJSON = (content) => {
+        setValues(form => ({
+            ...form,
+            data: content
+        }));
+        softSave();
+    };
 
     return {
         formInvalid,
@@ -319,7 +344,10 @@ const useCreateForm = (formContent = null) => {
         changeDisplay,
         updateSchema,
         loadLocalChanges,
-        closeDraftModal
+        closeDraftModal,
+        changeSchemaView,
+        changeJSONEditorMode,
+        updateJSON
     }
 };
 
