@@ -24,7 +24,7 @@ const usePreviewForm = (formId) => {
         openSchemaView: false,
         tabKey: 'details',
         disableAllActions: false,
-        jsonEditorMode: "tree",
+        jsonEditorMode: "code",
         openFormSchemaSubmissionView: false,
     });
 

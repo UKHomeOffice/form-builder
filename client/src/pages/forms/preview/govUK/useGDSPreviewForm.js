@@ -14,7 +14,7 @@ const useGDSPreviewForm = (formId) => {
         data: null,
         formId: formId,
         submission: null,
-        jsonEditorMode: "tree",
+        jsonEditorMode: "code",
     });
     const [{status, response}, makeRequest] = useApiRequest(
         `/form/${formId}`, {

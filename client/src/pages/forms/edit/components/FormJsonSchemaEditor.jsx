@@ -8,15 +8,20 @@ import './FormJsonSchemaEditor.scss';
 import {withTranslation} from "react-i18next";
 import _ from 'lodash';
 import Form from "react-bootstrap/Form";
-
+import PropTypes from 'prop-types';
 
 class FormJsonSchemaEditor extends Component {
+    constructor(props) {
+        super(props);
+        this.handleViewOnModeChange = this.handleViewOnModeChange.bind(this);
+    }
+
     componentDidMount() {
         const optionsFromPops = Object.assign({}, this.props);
 
         const nonEditableFields = ['id', 'access', 'links', 'versionId', 'createdOn', 'updatedOn', 'latest'];
 
-        const options = _.omit(optionsFromPops, ['json', 'text', 't', 'readonly', 'i18n', 'tReady']);
+        const options = _.omit(optionsFromPops, ['json', 'text', 't', 'readonly', 'i18n', 'tReady', 'handleEditModeView']);
 
         if (!this.props.readonly) {
             options['onEditable'] = (node) => {
@@ -35,20 +40,22 @@ class FormJsonSchemaEditor extends Component {
             this.jsoneditor.set(this.props.json);
         }
         if ('text' in this.props) {
-            this.jsoneditor.setText(this.props.text);
+            this.jsoneditor.setText(JSON.stringify(this.props.json));
         }
 
         this.schema = cloneDeep(this.props.schema);
         this.schemaRefs = cloneDeep(this.props.schemaRefs);
+
+        this.handleViewOnModeChange();
     }
 
     componentDidUpdate() {
         if ('json' in this.props) {
-            this.jsoneditor.update(this.props.json);
+            this.jsoneditor.set(this.props.json);
         }
 
         if ('text' in this.props) {
-            this.jsoneditor.updateText(this.props.text);
+            this.jsoneditor.setText(JSON.stringify(this.props.json));
         }
 
         if ('mode' in this.props) {
@@ -64,6 +71,21 @@ class FormJsonSchemaEditor extends Component {
             this.schemaRefs = cloneDeep(this.props.schemaRefs);
             this.jsoneditor.setSchema(this.props.schema, this.props.schemaRefs);
         }
+
+        this.handleViewOnModeChange();
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return this.props.mode !== nextProps.mode
+            || (this.props.refreshOnContentChange ? this.props.json !== nextProps.json : false);
+    }
+
+    handleViewOnModeChange() {
+        if (this.props.mode === 'text' || this.props.mode === 'code') {
+            document.getElementById("jsoneditor").style.height = '700px';
+        } else {
+            document.getElementById("jsoneditor").style.height = 'auto';
+        }
     }
 
     componentWillUnmount() {
@@ -76,18 +98,23 @@ class FormJsonSchemaEditor extends Component {
         return <React.Fragment>
             <div className="mb-2"><Form.Label
                 className="font-weight-bold">Select editor mode</Form.Label>
-            <Form.Control as="select"
-                          data-cy="jsonEditorType"
-                          onChange={this.props.handleEditModeView}>
-                <option value="tree">Tree</option>
-                <option value="code">Code</option>
-                <option value="text">Text</option>
+                <Form.Control as="select"
+                              data-cy="jsonEditorType"
+                              defaultValue={this.props.mode}
+                              onChange={this.props.handleEditModeView}>
+                    <option value="code">Code</option>
+                    <option value="tree">Tree</option>
+                    <option value="text">Text</option>
 
-            </Form.Control>
+                </Form.Control>
             </div>
             <div className="jsoneditor-react-container" id="jsoneditor" ref={elem => this.container = elem}/>
         </React.Fragment>;
     }
 }
 
+FormJsonSchemaEditor.propTypes = {
+    refreshOnContentChange: PropTypes.bool,
+    handleEditModeView: PropTypes.func,
+};
 export default withTranslation()(FormJsonSchemaEditor);

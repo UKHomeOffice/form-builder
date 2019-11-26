@@ -24,7 +24,7 @@ const useEditForm = (formId) => {
         formId: formId,
         displayPreview: false,
         hasUnsavedData: false,
-        jsonEditorMode: "tree",
+        jsonEditorMode: "code",
         openInSchemaEditorMode: false,
         missing: {
             path: false,
@@ -193,11 +193,11 @@ const useEditForm = (formId) => {
         softSave();
     };
 
-    const updateJSON = (json) => {
-        editForm.data = json;
-        setValues({
+    const updateJSON = (content) => {
+        setValues(editForm => ({
             ...editForm,
-        });
+            data: content
+        }));
         softSave();
     };
 
@@ -286,25 +286,20 @@ const useEditForm = (formId) => {
         });
     };
 
-    const editSchemaView = async () => {
-        await navigation.navigate(`/forms/${envContext.id}/${formId}/edit/schema`);
-    };
-
-    const formBuilderEditView = async () => {
-        await navigation.navigate(`/forms/${envContext.id}/${formId}/edit`);
+    const changeSchemaView = () => {
+        setValues(editForm => ({
+            ...editForm,
+            openInSchemaEditorMode: !editForm.openInSchemaEditorMode,
+            jsonEditorMode: "code"
+        }));
     };
 
     const changeJSONEditorMode = (e) => {
         const value = e.target.value;
-        if (value === 'text' || value === 'code') {
-            document.getElementById("jsoneditor").style.height = '700px';
-        } else {
-            document.getElementById("jsoneditor").style.height = 'auto';
-        }
-        setValues({
+        setValues(editForm => ({
             ...editForm,
             jsonEditorMode: value
-        });
+        }));
     };
 
     return {
@@ -323,10 +318,8 @@ const useEditForm = (formId) => {
         changeDisplay,
         closeDraftModal,
         loadLocalChanges,
-        editSchemaView,
-        formBuilderEditView,
-        changeJSONEditorMode
-    }
+        changeJSONEditorMode,
+        changeSchemaView}
 };
 
 export default useEditForm;

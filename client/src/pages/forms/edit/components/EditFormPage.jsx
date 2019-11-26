@@ -35,7 +35,9 @@ const EditFormPage = ({formId}) => {
         changeDisplay,
         closeDraftModal,
         loadLocalChanges,
-        editSchemaView
+        updateJSON,
+        changeSchemaView,
+        changeJSONEditorMode
     } = useEditForm(formId);
     const {t} = useTranslation();
     const {formChoices} = useCommonFormUtils();
@@ -85,9 +87,12 @@ const EditFormPage = ({formId}) => {
                              </Alert.Heading>
                              <p>{t('form.edit.unsaved.data.description')}</p>
                          </Alert></Container> : null}
-                         <FormBuilderComponent
-                             editSchemaView={editSchemaView}
+                          <FormBuilderComponent
+                             changeSchemaView={changeSchemaView}
+                             changeJSONEditorMode={changeJSONEditorMode}
+                             openInSchemaEditorMode={editForm.openInSchemaEditorMode}
                              envContext={envContext}
+                             onRawJSONUpdate={updateJSON}
                              form={editForm}
                              updateField={updateField}
                              updateForm={updateForm}
@@ -97,7 +102,6 @@ const EditFormPage = ({formId}) => {
                              backToForms={backToForms}
                              closePreview={closePreview}
                              openPreview={openPreview}
-                             t={t}
                              formInvalid={formInvalid}
                              save={editRequest}
                              changeDisplay={changeDisplay}

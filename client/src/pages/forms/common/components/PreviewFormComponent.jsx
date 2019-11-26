@@ -219,6 +219,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, mode,
 
         <FormJsonSchemaEditor
             readonly={true}
+            refreshOnContentChange={true}
             handleEditModeView={e => handleEditorModeViewChange(e)}
             json={formSubmission ? formSubmission : {}}
             mode={mode}
