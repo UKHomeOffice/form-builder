@@ -1,6 +1,6 @@
 {
   "name": "formbuilderclient",
-  "version": "2.2.8",
+  "version": "2.3.0",
   "private": true,
   "contributors": [
     {
@@ -22,7 +22,7 @@
     }
   },
   "dependencies": {
-    "@digitalpatterns/formio-gds-template": "1.2.1",
+    "@digitalpatterns/formio-gds-template": "1.2.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
@@ -124,6 +124,6 @@
   },
   "proxy": "http://localhost:8101",
   "resolutions": {
-    "handlebars" : "^4.5.3"
+    "handlebars": "^4.5.3"
   }
 }

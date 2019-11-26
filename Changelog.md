@@ -1,4 +1,10 @@
 # Change Log
+# 2.3.0
+### Added
+ - Ability to edit form in raw editor mode and switch back to builder without losing changes
+### Updated
+ - GDS Template to 1.2.2 
+
 # 2.2.8
 ### Fixed:
  - Nested forms not getting data context resolved
