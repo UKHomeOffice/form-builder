@@ -35,6 +35,7 @@ const CreateFormPage = () => {
         changeJSONEditorMode,
         updateJSON
     } = useCreateForm();
+
     const {envContext} = useEnvContext();
     const {keycloak} = useKeycloak();
 
