@@ -1,4 +1,10 @@
 # Change Log
+# 2.3.1
+### Fixed
+ - [Preview in edit mode breaks](https://github.com/DigitalPatterns/form-builder/issues/51)
+ - Upgraded dependencies
+ - Realigned schema view json editor with rest of builder
+    
 # 2.3.0
 ### Added
  - Ability to edit form in raw editor mode and switch back to builder without losing changes
