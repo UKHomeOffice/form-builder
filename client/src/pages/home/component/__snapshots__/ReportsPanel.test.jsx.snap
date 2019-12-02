@@ -51,7 +51,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
           >
             <svg
               aria-hidden="true"
-              className="svg-inline--fa fa-chart-line fa-w-16 fa-null fa-rotate-null fa-pull-null "
+              className="svg-inline--fa fa-chart-line fa-w-16 "
               data-icon="chart-line"
               data-prefix="fas"
               focusable="false"
