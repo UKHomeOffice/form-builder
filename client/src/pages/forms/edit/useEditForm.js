@@ -223,17 +223,17 @@ const useEditForm = (formId) => {
 
     const openPreview = () => {
         handleForm(editForm.data);
-        setValues({
+        setValues(editForm =>({
             ...editForm,
             displayPreview: true
-        });
+        }));
     };
 
     const closePreview = () => {
-        setValues({
+        setValues(editForm => ({
             ...editForm,
             displayPreview: false
-        });
+        }));
     };
 
     const formInvalid = () => {

@@ -13,8 +13,10 @@ import {useKeycloak} from "react-keycloak";
 import '../../../../core/form/SubFormComponent';
 import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 import {useTranslation} from "react-i18next";
+import PreviewFormModal from "../../create/components/PreviewFormModal";
 
-const FormBuilderComponent = ({   form,
+const FormBuilderComponent = ({
+                                  form,
                                   updateField,
                                   messageKeyPrefix,
                                   updateForm,
@@ -23,6 +25,7 @@ const FormBuilderComponent = ({   form,
                                   formChoices,
                                   openPreview,
                                   save,
+                                  closePreview,
                                   formInvalid,
                                   changeDisplay,
                                   openInSchemaEditorMode,
@@ -73,7 +76,19 @@ const FormBuilderComponent = ({   form,
 
         }
     }];
-
+    const jsonEditor = <FormJsonSchemaEditor
+        refreshOnContentChange={false}
+        onChangeJSON={(json) => {
+            onRawJSONUpdate(json)
+        }}
+        onChangeText={(text) => {
+            onRawJSONUpdate(JSON.parse(text))
+        }}
+        json={form.data}
+        handleEditModeView={changeJSONEditorMode}
+        mode={form.jsonEditorMode}
+        indentation={2}
+    />;
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
             <Row>
@@ -174,7 +189,7 @@ const FormBuilderComponent = ({   form,
                     }} onChange={(form) => updateForm(form)}/>
                 </Container>
             </Row>
-            </React.Fragment> : <React.Fragment><Row className="mb-2 mt-2">
+        </React.Fragment> : <React.Fragment><Row className="mb-2 mt-2">
             <Col>
                 <FormJsonSchemaEditor
                     refreshOnContentChange={false}
@@ -196,6 +211,10 @@ const FormBuilderComponent = ({   form,
                 <hr className="hr-text" data-content={t('form.create.actions')}/>
             </Col>
         </Row>
+        <PreviewFormModal form={form.data}
+                          title={form.title}
+                          open={form.displayPreview}
+                          onClosePreview={closePreview}/>
         <Row>
             <Container>
                 <ButtonToolbar>

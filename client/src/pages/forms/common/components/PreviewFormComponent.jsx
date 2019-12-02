@@ -20,7 +20,10 @@ import eventEmitter from "../../../../core/eventEmitter";
 import {Details} from 'govuk-frontend';
 import VariableReplacer from "../../../../core/replacements/VariableReplacer";
 
-const PreviewFormComponent = ({form, submission, mode, handlePreview, handleEditorModeViewChange}) => {
+const PreviewFormComponent = ({form, submission, mode,
+                                  handlePreview,
+                                  handleFormioRef,
+                                  handleEditorModeViewChange}) => {
     const {t} = useTranslation();
     const [open, setOpen] = useState(false);
     const cursor = {cursor: 'pointer'};
@@ -63,7 +66,8 @@ const PreviewFormComponent = ({form, submission, mode, handlePreview, handleEdit
         </Row>
         <Row>
             <Col>
-                <PreviewFormPanel form={form} formSubmission={submission} submissionInfoCollapsed={true}
+                <PreviewFormPanel form={form} formSubmission={submission}
+                                  handleFormioRef={handleFormioRef}
                                   handleEditorModeViewChange={handleEditorModeViewChange}
                                   mode={mode}
                                   previewSubmission={(submission, form) => {
@@ -75,7 +79,9 @@ const PreviewFormComponent = ({form, submission, mode, handlePreview, handleEdit
 };
 
 
-export const PreviewFormPanel = ({form, formSubmission, previewSubmission, mode,submissionInfoCollapsed = false, handleEditorModeViewChange}) => {
+export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
+                                     handleFormioRef,
+                                     mode, handleEditorModeViewChange}) => {
     const {envContext} = useEnvContext();
     let formioForm;
     const {t} = useTranslation();
@@ -178,11 +184,14 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, mode,
         <Form form={parsedForm.form}
               ref={(form) => {
                   formioForm = form;
+                  if (handleFormioRef && typeof handleFormioRef === 'function') {
+                      handleFormioRef(form);
+                  }
                   if (form) {
                       form.createPromise.then(() => {
                           form.formio.on('render', () => {
                               const details = document.querySelectorAll('[data-module="govuk-details"]');
-                              details.forEach(  (detail) => {
+                              details.forEach((detail) => {
                                   new Details(detail).init();
                               });
                           });
@@ -222,7 +231,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission, mode,
             refreshOnContentChange={true}
             handleEditModeView={e => handleEditorModeViewChange(e)}
             json={formSubmission ? formSubmission : {}}
-            mode={mode}
+            mode={mode ? mode : 'code'}
             indentation={2}
         />
     </React.Fragment>

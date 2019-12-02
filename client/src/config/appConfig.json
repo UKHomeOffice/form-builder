@@ -35,7 +35,7 @@
 
     {
       "id": "devA",
-      "label": "Development A",
+      "label": "UAT",
       "url": "http://localhost:4001",
       "description": "Elf Dev A environment",
       "service": {
@@ -67,7 +67,7 @@
     },
     {
       "id": "devB",
-      "label": "Development B",
+      "label": "Staging",
       "url": "http://localhost:4002",
       "description": "Elf Dev A environment",
       "service": {
