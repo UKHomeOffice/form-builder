@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -7,7 +7,7 @@ import FormJsonSchemaEditor from "../edit/components/FormJsonSchemaEditor";
 
 
 const SchemaModal = ({form, open, close, title}) => {
-
+    const [mode, setMode] = useState('code');
     return <Modal show={open} onHide={close} dialogClassName="modal-fullscreen">
         <Modal.Header closeButton>
             <Modal.Title><FontAwesomeIcon icon={faCode}/><span className="m-2">{title}</span></Modal.Title>
@@ -16,7 +16,10 @@ const SchemaModal = ({form, open, close, title}) => {
             <FormJsonSchemaEditor
                 readonly={true}
                 json={form}
-                mode={'tree'}
+                mode={mode}
+                handleEditModeView={(e) => {
+                    setMode(e.target.value);
+                }}
                 indentation={2}
             />
 

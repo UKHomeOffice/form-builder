@@ -82,9 +82,9 @@ class FormJsonSchemaEditor extends Component {
 
     handleViewOnModeChange() {
         if (this.props.mode === 'text' || this.props.mode === 'code') {
-            document.getElementById("jsoneditor").style.height = '700px';
+            this.container.style.height = '700px';
         } else {
-            document.getElementById("jsoneditor").style.height = 'auto';
+            this.container.style.height = 'auto';
         }
     }
 
