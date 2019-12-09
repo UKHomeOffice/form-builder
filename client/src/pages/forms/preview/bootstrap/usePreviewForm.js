@@ -33,7 +33,7 @@ const usePreviewForm = (formId) => {
     const cancelPreview = useRef(CancelToken.source());
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/form/${formId}?disableDataContext=true`, {
             verb: 'get', params: {cancelToken: cancelPreview.current.token}
         }
     );

@@ -17,7 +17,7 @@ const useGDSPreviewForm = (formId) => {
         jsonEditorMode: "code",
     });
     const [{status, response}, makeRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/form/${formId}?disableDataContext=true`, {
             verb: 'get', params: {}
         }
     );

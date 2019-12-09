@@ -28,7 +28,7 @@ const usePromotion = (formId) => {
     });
 
     const [fetchState, makeRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/form/${formId}?disableDataContext=true`, {
             verb: 'get', params: {}
         }
     );

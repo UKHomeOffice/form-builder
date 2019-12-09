@@ -39,14 +39,14 @@ const useEditForm = (formId) => {
 
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/form/${formId}?disableDataContext=true`, {
             verb: 'get', params: {
                 cancelToken: cancelEdit.current.token
             }
         }
     );
     const [state, editRequest] = useApiRequest(
-        `/form/${formId}`, {
+        `/form/${formId}?disableDataContext=true`, {
             verb: 'put', params: editForm.data
         }
     );

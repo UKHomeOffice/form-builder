@@ -76,19 +76,7 @@ const FormBuilderComponent = ({
 
         }
     }];
-    const jsonEditor = <FormJsonSchemaEditor
-        refreshOnContentChange={false}
-        onChangeJSON={(json) => {
-            onRawJSONUpdate(json)
-        }}
-        onChangeText={(text) => {
-            onRawJSONUpdate(JSON.parse(text))
-        }}
-        json={form.data}
-        handleEditModeView={changeJSONEditorMode}
-        mode={form.jsonEditorMode}
-        indentation={2}
-    />;
+
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
             <Row>
