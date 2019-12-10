@@ -89,6 +89,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
                 body={false}
                 style={
                   Object {
+                    "marginBottom": "15px",
                     "width": "100hv",
                   }
                 }
@@ -97,6 +98,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
                   className="card"
                   style={
                     Object {
+                      "marginBottom": "15px",
                       "width": "100hv",
                     }
                   }
@@ -253,6 +255,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
                 body={false}
                 style={
                   Object {
+                    "marginBottom": "15px",
                     "width": "100hv",
                   }
                 }
@@ -261,6 +264,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
                   className="card"
                   style={
                     Object {
+                      "marginBottom": "15px",
                       "width": "100hv",
                     }
                   }
