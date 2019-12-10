@@ -13,8 +13,8 @@ const Home = () => {
     const environments = config.get('environments');
     const {t} = useTranslation();
     return <React.Fragment>
-        <div style={{textAlign: 'center'}}><h2 className="display-3"><FontAwesomeIcon icon={faTachometerAlt}/>
-            <span className="ml-2">{t('home.heading.title')}</span></h2></div>
+        <div style={{textAlign: 'center'}}><h1 className="display-4"><FontAwesomeIcon icon={faTachometerAlt}/>
+            <span className="ml-2">{t('home.heading.title')}</span></h1></div>
         <hr/>
         <Container fluid>
             <Row>

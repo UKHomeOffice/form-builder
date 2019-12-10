@@ -23,7 +23,7 @@ const ReportsPanel = () => {
 
         <Row>
             <Col>
-                <Card style={{width: '100hv'}}>
+                <Card style={{width: '100hv', marginBottom: '15px'}}>
                     <Card.Body>
                         <Card.Title>
                             {t('home.forms-per-environment')}
@@ -84,7 +84,7 @@ const ReportsPanel = () => {
 
             </Col>
             <Col>
-                <Card style={{width: '100hv'}}>
+                <Card style={{width: '100hv', marginBottom: '15px'}}>
                     <Card.Body>
                         <Card.Title>
                             {t('home.types-of-forms')}

@@ -38,7 +38,7 @@ const EnvironmentListPanel = ({environments}) => {
             _.chunk(environments, 3).map(envs => {
                 const cols = _.map(envs, environment => {
                     return <Col key={environment.id}>
-                        <Card style={{width: '100%'}} key={uuid4()} bg="light">
+                        <Card style={{width: '100%', marginBottom: '10px'}} key={uuid4()} bg="light">
                             <Card.Body>
                                 <Card.Title><FontAwesomeIcon icon={faCog}/>
                                     <span> {environment.label ? environment.label : environment.id}</span></Card.Title>

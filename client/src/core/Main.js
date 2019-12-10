@@ -10,6 +10,7 @@ import Alert from "react-bootstrap/Alert";
 import ErrorHandling from "../common/ErrorHandling";
 import {useKeycloak} from "react-keycloak";
 import jwt_decode from "jwt-decode";
+import BreadcrumbComponent from "../common/BreadcrumbComponent";
 
 export const Main = ({children}) => {
     const route = useCurrentRoute();

@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {useNavigation} from "react-navi";
+import {NavNotFoundBoundary, useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
 import config from 'react-global-configuration';
 
@@ -10,6 +10,7 @@ import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowsAlt, faCog, faCogs, faHome, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash';
+import BreadcrumbComponent from "./BreadcrumbComponent";
 
 const AppMenu = () => {
     const navigation = useNavigation();
@@ -49,7 +50,7 @@ const AppMenu = () => {
 
     const environments = config.get('environments');
 
-    return <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    return <React.Fragment><Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
 
         <Navbar.Brand>Forms Platform</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
@@ -112,7 +113,7 @@ const AppMenu = () => {
                     className="ml-2">{t('menu.logout.label')}</span></Nav.Link>
             </Nav>
         </Navbar.Collapse>
-    </Navbar>
+    </Navbar>   <BreadcrumbComponent/></React.Fragment>
 };
 
 export default AppMenu;

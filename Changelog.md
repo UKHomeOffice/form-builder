@@ -1,4 +1,10 @@
 # Change Log
+# 2.3.2
+### Updated
+ - GDS Formio template to 1.2.4
+ - Upgraded dependencies
+ - Realigned schema view json editor with rest of builder
+
 # 2.3.1
 ### Fixed
  - [Preview in edit mode breaks](https://github.com/DigitalPatterns/form-builder/issues/51)
