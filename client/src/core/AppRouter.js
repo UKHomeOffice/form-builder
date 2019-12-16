@@ -45,11 +45,19 @@ export const withEditAuthorization = (matcher) => {
 };
 
 export const withEnvContext = (matcher) => {
-    return withAccessAuthorization(map((request, context) =>
-        context.environment
-            ? matcher
-            : redirect(
-            '/')
+    return withAccessAuthorization(map((request, context) => {
+            if (context.environment) {
+                return matcher;
+            }
+
+            if (request.params.env) {
+                context.setEnvFromUrl(request);
+                return matcher
+            }
+            return redirect(
+                '/');
+
+        }
     ));
 };
 
@@ -90,7 +98,17 @@ export const AppRouter = () => {
                     isAuthenticated: keycloak.authenticated,
                     environment: state.environment,
                     keycloak: keycloak,
-                    config: config
+                    config: config,
+                    setEnvFromUrl: (request) => {
+                        const env = _.find(environments, {id: request.params.env});
+                        if (env) {
+                            setState(state => ({
+                                environment: env,
+                                activeMenuItem:  env? t('menu.forms.name') : (window.location.pathname ? window.location.pathname : t('menu.home.name'))
+                            }));
+                            secureLS.set('ENVIRONMENT', env.id);
+                        }
+                    }
                 }}>
                     <Main>
                         <Suspense fallback={null}>

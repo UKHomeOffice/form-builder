@@ -10,7 +10,6 @@ import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowsAlt, faCog, faCogs, faHome, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash';
-import BreadcrumbComponent from "./BreadcrumbComponent";
 
 const AppMenu = () => {
     const navigation = useNavigation();
@@ -113,7 +112,7 @@ const AppMenu = () => {
                     className="ml-2">{t('menu.logout.label')}</span></Nav.Link>
             </Nav>
         </Navbar.Collapse>
-    </Navbar>   <BreadcrumbComponent/></React.Fragment>
+    </Navbar> </React.Fragment>
 };
 
 export default AppMenu;
