@@ -289,7 +289,7 @@ const messages = {
                 "forms-load": "Failed to load forms due to {{error}}"
             },
             "delete-label": "Delete",
-            "search-label": "Search by title...",
+            "search-label": "Search by name or title ...",
             "table": {
                 "formIdentifierCellLabel": "Form Identifier",
                 "formTitleCellLabel": "Title",
