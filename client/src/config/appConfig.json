@@ -11,28 +11,119 @@
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "http://192.168.86.22:8080/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://localhost:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "355a3761-a9ab-4981-9013-c431086ff6ff"
+          "secret": "522bf46a-196f-4418-a98c-02912609195b"
         }
       },
       "editable": true,
-      "variable-replacements": [
-        {
-          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
-        },
-        {
-          "{$.staffDetailsContext.staffId}": "{{guid}}"
-        },
-        {
-          "{$.keycloakContext.givenName}": "{{firstName}}"
-        },
-        {
-          "{$.keycloakContext.familyName}": "{{lastName}}"
+      "fakeDataInterpolationContext": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Fake submission data context",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "keycloakContext",
+              "environmentContext",
+              "staffDetailsDataContext"
+            ],
+            "properties": {
+              "taskContext" : {
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "faker" : "lorem.sentence"
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "faker" : "lorem.sentence"
+                  }
+                }
+              },
+              "processContext" : {
+                 "type" : "object",
+                 "properties": {
+                    "example" : {
+                      "type" : "object",
+                      "properties" : {
+                         "data" : {
+                           "type" : "object",
+                            "properties" : {
+                               "firstName" : {
+                                 "type" : "string",
+                                 "faker" : "name.firstName"
+                               }
+                            }
+                         }
+                       }
+                    }
+                 }
+              },
+              "staffDetailsDataContext": {
+                "type": "object",
+                "properties": {
+                  "staffid": {
+                    "type": "string",
+                    "faker": "random.uuid"
+                  },
+                  "required": [
+                    "staffid"
+                  ]
+                }
+              },
+              "environmentContext": {
+                "type": "object",
+                "properties": {
+                  "referenceDataUrl": {
+                    "type": "string",
+                    "chance": {
+                      "pickone": [
+                        [
+                          "http://localhost:5000/v1/entities"
+                        ]
+                      ]
+                    }
+                  },
+                  "required": [
+                    "referenceDataUrl"
+                  ]
+                }
+              },
+              "keycloakContext": {
+                "type": "object",
+                "properties": {
+                  "familyName": {
+                    "type": "string",
+                    "faker": "name.lastName"
+                  },
+                  "givenName": {
+                    "type": "string",
+                    "faker": "name.firstName"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "chance": {
+                      "email": {
+                        "domain": "homeoffice.gov.uk"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "familyName",
+                  "givenName",
+                  "email"
+                ]
+              }
+            }
+          }
         }
-      ]
+      }
     },
-
     {
       "id": "devA",
       "label": "UAT",
@@ -44,26 +135,118 @@
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "http://192.168.86.22:8080/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://localhost:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "355a3761-a9ab-4981-9013-c431086ff6ff"
+          "secret": "522bf46a-196f-4418-a98c-02912609195b"
         }
       },
       "editable": false,
-      "variable-replacements": [
-        {
-          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
-        },
-        {
-          "{$.staffDetailsContext.staffId}": "{{guid}}"
-        },
-        {
-          "{$.keycloakContext.givenName}": "{{firstName}}"
-        },
-        {
-          "{$.keycloakContext.familyName}": "{{lastName}}"
+      "fakeDataInterpolationContext": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Fake submission data context",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "keycloakContext",
+              "environmentContext",
+              "staffDetailsDataContext"
+            ],
+            "properties": {
+              "taskContext" : {
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "faker" : "lorem.sentence"
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "faker" : "lorem.sentence"
+                  }
+                }
+              },
+              "processContext" : {
+                "type" : "object",
+                "properties": {
+                  "example" : {
+                    "type" : "object",
+                    "properties" : {
+                      "data" : {
+                        "type" : "object",
+                        "properties" : {
+                          "firstName" : {
+                            "type" : "string",
+                            "faker" : "name.firstName"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "staffDetailsDataContext": {
+                "type": "object",
+                "properties": {
+                  "staffid": {
+                    "type": "string",
+                    "faker": "random.uuid"
+                  },
+                  "required": [
+                    "staffid"
+                  ]
+                }
+              },
+              "environmentContext": {
+                "type": "object",
+                "properties": {
+                  "referenceDataUrl": {
+                    "type": "string",
+                    "chance": {
+                      "pickone": [
+                        [
+                          "http://localhost:5000/v1/entities"
+                        ]
+                      ]
+                    }
+                  },
+                  "required": [
+                    "referenceDataUrl"
+                  ]
+                }
+              },
+              "keycloakContext": {
+                "type": "object",
+                "properties": {
+                  "familyName": {
+                    "type": "string",
+                    "faker": "name.lastName"
+                  },
+                  "givenName": {
+                    "type": "string",
+                    "faker": "name.firstName"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "chance": {
+                      "email": {
+                        "domain": "homeoffice.gov.uk"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "familyName",
+                  "givenName",
+                  "email"
+                ]
+              }
+            }
+          }
         }
-      ]
+      }
     },
     {
       "id": "devB",
@@ -76,36 +259,134 @@
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "http://192.168.86.22:8080/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://localhost:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "355a3761-a9ab-4981-9013-c431086ff6ff"
+          "secret": "522bf46a-196f-4418-a98c-02912609195b"
         }
       },
       "editable": false,
-      "variable-replacements": [
-        {
-          "{$.environmentContext.referenceDataUrl}": "http://localhost:5000/v1/entities"
-        },
-        {
-          "{$.staffDetailsContext.staffId}": "{{guid}}"
-        },
-        {
-          "{$.keycloakContext.givenName}": "{{firstName}}"
-        },
-        {
-          "{$.keycloakContext.familyName}": "{{lastName}}"
+      "fakeDataInterpolationContext": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Fake submission data context",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "keycloakContext",
+              "environmentContext",
+              "staffDetailsDataContext"
+            ],
+            "properties": {
+              "taskContext" : {
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "faker" : "lorem.sentence"
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "faker" : "lorem.sentence"
+                  }
+                }
+              },
+              "processContext" : {
+                "type" : "object",
+                "properties": {
+                  "example" : {
+                    "type" : "object",
+                    "properties" : {
+                      "data" : {
+                        "type" : "object",
+                        "properties" : {
+                          "firstName" : {
+                            "type" : "string",
+                            "faker" : "name.firstName"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "staffDetailsDataContext": {
+                "type": "object",
+                "properties": {
+                  "staffid": {
+                    "type": "string",
+                    "faker": "random.uuid"
+                  },
+                  "required": [
+                    "staffid"
+                  ]
+                }
+              },
+              "environmentContext": {
+                "type": "object",
+                "properties": {
+                  "referenceDataUrl": {
+                    "type": "string",
+                    "chance": {
+                      "pickone": [
+                        [
+                          "http://localhost:5000/v1/entities"
+                        ]
+                      ]
+                    }
+                  },
+                  "required": [
+                    "referenceDataUrl"
+                  ]
+                }
+              },
+              "keycloakContext": {
+                "type": "object",
+                "properties": {
+                  "familyName": {
+                    "type": "string",
+                    "faker": "name.lastName"
+                  },
+                  "givenName": {
+                    "type": "string",
+                    "faker": "name.firstName"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "chance": {
+                      "email": {
+                        "domain": "homeoffice.gov.uk"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "familyName",
+                  "givenName",
+                  "email"
+                ]
+              }
+            }
+          }
         }
-      ]
+      }
     }
   ],
-  "gov-uk-enabled" : true,
-  "legacy-migration" : true,
+  "gov-uk-enabled": true,
+  "legacy-migration": true,
   "keycloak": {
-    "authUrl": "http://192.168.86.22:8080/auth",
+    "authUrl": "http://localhost:8080/auth",
     "clientId": "www",
     "realm": "elf",
-    "access-roles" : ["platform"],
-    "promotion-roles" : ["platform"],
-    "edit-roles" : ["platform"]
+    "access-roles": [
+      "platform"
+    ],
+    "promotion-roles": [
+      "platform"
+    ],
+    "edit-roles": [
+      "platform"
+    ]
   }
 }

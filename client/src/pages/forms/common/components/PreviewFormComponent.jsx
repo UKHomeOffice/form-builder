@@ -165,12 +165,12 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
 
                         if (result.forms) {
                             return result.forms.map((form) => {
-                                const updatedForm = variableReplacer.replace(form, envContext['variable-replacements']);
+                                const updatedForm = variableReplacer.replace(form, envContext);
                                 updatedForm['_id'] = form.id;
                                 return updatedForm;
                             });
                         }
-                        const updatedForm = variableReplacer.replace(result, envContext['variable-replacements']);
+                        const updatedForm = variableReplacer.interpolate(result, envContext);
                         updatedForm['_id'] = result.id;
                         return updatedForm;
                     }),

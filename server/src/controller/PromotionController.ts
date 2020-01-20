@@ -33,6 +33,13 @@ export class PromotionController extends BaseHttpController {
         try {
 
             const promotionEnvToken = await this.keycloakService.token(envToPromote.id);
+
+            util.eachComponent(formToPromote.components, component => {
+                if (component.key === 'businessKey' && component.defaultValue !== '') {
+                    component.defaultValue = '';
+                }
+            });
+
             const subFormComponents = util.searchComponents(formToPromote.components, {
                 type: 'form',
             });

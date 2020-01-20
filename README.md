@@ -10,3 +10,5 @@ npm run dev
 ```
 
 Navigate to http://localhost:3000 
+
+Uses https://github.com/marak/Faker.js to build fake data in appConfig.json
