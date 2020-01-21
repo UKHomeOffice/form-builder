@@ -20,11 +20,11 @@ const ButtonGroup = ({
     const {t} = useTranslation();
     return <Container>
         <Row className="grid-divider">
-            {canEdit() ? <React.Fragment>
+            {canEdit() && envContext.editable ? <React.Fragment>
                 <Col className="my-1">
                     <DeleteFormButton form={form} onSuccessfulDeletion={() => handleOnSuccessfulDeletion(form.id)}/>
                 </Col>
-                {envContext.editable ? <React.Fragment>
+                {canEdit() && envContext.editable ? <React.Fragment>
                     <Col className="my-1">
                         <Button data-cy="edit-form"
                                 block variant="primary"
