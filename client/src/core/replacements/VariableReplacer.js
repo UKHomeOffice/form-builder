@@ -18,6 +18,11 @@ class VariableReplacer {
             component.label = FormioUtils.interpolate(component.label, {
                 data: fakeSubmission.data
             });
+            if (component.type === 'select' && component.data.url !== '') {
+                component.data.url = FormioUtils.interpolate(component.data.url, {
+                    data: fakeSubmission.data
+                });
+            }
             if (component.type === 'content') {
                 component.html = FormioUtils.interpolate(component.html, {
                     data: fakeSubmission.data
