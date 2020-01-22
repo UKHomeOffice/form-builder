@@ -87,6 +87,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
             >
               <Card
                 body={false}
+                border="secondary"
                 style={
                   Object {
                     "marginBottom": "15px",
@@ -95,7 +96,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
                 }
               >
                 <div
-                  className="card"
+                  className="card border-secondary"
                   style={
                     Object {
                       "marginBottom": "15px",
@@ -253,6 +254,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
             >
               <Card
                 body={false}
+                border="secondary"
                 style={
                   Object {
                     "marginBottom": "15px",
@@ -261,7 +263,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
                 }
               >
                 <div
-                  className="card"
+                  className="card border-secondary"
                   style={
                     Object {
                       "marginBottom": "15px",

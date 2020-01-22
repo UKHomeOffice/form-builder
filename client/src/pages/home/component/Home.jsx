@@ -15,8 +15,8 @@ const Home = () => {
     return <React.Fragment>
         <div style={{textAlign: 'center'}}><h1 className="display-4"><FontAwesomeIcon icon={faTachometerAlt}/>
             <span className="ml-2">{t('home.heading.title')}</span></h1></div>
-        <hr/>
-        <Container fluid>
+        <div className="divider"/>
+        <Container fluid >
             <Row>
                 <Col><ReportsPanel/></Col>
             </Row>

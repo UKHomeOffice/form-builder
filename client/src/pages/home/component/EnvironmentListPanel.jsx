@@ -37,11 +37,11 @@ const EnvironmentListPanel = ({environments}) => {
         {
             _.chunk(environments, 3).map(envs => {
                 const cols = _.map(envs, environment => {
-                    return <Col key={environment.id}>
-                        <Card style={{width: '100%', marginBottom: '10px'}} key={uuid4()} bg="light">
+                    return <Col className="col-sm-4 d-flex mb-2" key={environment.id}>
+                        <Card border="secondary" className="w-100 h-100" key={uuid4()}>
+                            <Card.Header><FontAwesomeIcon icon={faCog}/>
+                                <span> {environment.label ? environment.label : environment.id}</span></Card.Header>
                             <Card.Body>
-                                <Card.Title><FontAwesomeIcon icon={faCog}/>
-                                    <span> {environment.label ? environment.label : environment.id}</span></Card.Title>
                                 <Card.Text>
                                     {environment.description}
                                 </Card.Text>
@@ -53,11 +53,11 @@ const EnvironmentListPanel = ({environments}) => {
                                     variant={environment.editable ? 'success' : 'danger'}><FontAwesomeIcon
                                     icon={faEdit}/><span> {t('environment.create', {editable: environment.editable ? t('yes') : t('no')})}</span></ListGroupItem>
                             </ListGroup>
-                            <Card.Body>
+                            <Card.Footer className="text-center">
                                 <Card.Link href="#" onClick={async () => {
                                     await handleClick(environment);
                                 }} className="stretched-link">View forms</Card.Link>
-                            </Card.Body>
+                            </Card.Footer>
                         </Card>
                     </Col>
                 });
