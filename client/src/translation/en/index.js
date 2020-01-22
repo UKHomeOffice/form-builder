@@ -235,6 +235,9 @@ const messages = {
             },
             "label": "Preview",
             "form-submission-label": "Form submission",
+            "preload": {
+                "form-submission-label" : "Preview with custom submission data"
+            },
             "submission-warning-title": "Submission is not persisted in preview mode",
             "submission-warning-description": "Data submitted is held in the context of this page and lost when you navigate away.",
             "parsing-form": "Parsing form fields"

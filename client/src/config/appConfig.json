@@ -82,7 +82,7 @@
                     "chance": {
                       "pickone": [
                         [
-                          "http://localhost:5000/v1/entities"
+                          "http://localhost:8000"
                         ]
                       ]
                     }
@@ -206,7 +206,7 @@
                     "chance": {
                       "pickone": [
                         [
-                          "http://localhost:5000/v1/entities"
+                          "http://localhost:8000"
                         ]
                       ]
                     }
@@ -330,7 +330,7 @@
                     "chance": {
                       "pickone": [
                         [
-                          "http://localhost:5000/v1/entities"
+                          "http://localhost:8000"
                         ]
                       ]
                     }

@@ -11,8 +11,9 @@ import useCommonFormUtils from "../../common/useCommonFormUtils";
 import eventEmitter from "../../../../core/eventEmitter";
 import uuid4 from "uuid4";
 
-const usePreviewForm = (formId) => {
 
+const usePreviewForm = (formId) => {
+    Formio.use({});
     const navigation = useNavigation();
     const {envContext} = useEnvContext();
     const {handleForm} = useCommonFormUtils();

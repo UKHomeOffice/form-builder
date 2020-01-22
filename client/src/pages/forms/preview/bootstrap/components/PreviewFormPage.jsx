@@ -20,6 +20,7 @@ import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import {isMobile} from 'react-device-detect';
 import SchemaModal from "../../../schema/SchemaModal";
 
+
 const PreviewFormPage = ({formId}) => {
     const {t} = useTranslation();
     const {

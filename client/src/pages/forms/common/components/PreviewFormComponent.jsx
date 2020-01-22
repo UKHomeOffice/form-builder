@@ -7,7 +7,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCaretDown, faCaretRight, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+import {faCaretDown, faCaretRight, faExclamationTriangle, faPlus} from "@fortawesome/free-solid-svg-icons";
 import Alert from "react-bootstrap/Alert";
 import Collapse from "react-bootstrap/Collapse";
 import Spinner from "react-bootstrap/Spinner";
@@ -17,13 +17,19 @@ import {useKeycloak} from "react-keycloak";
 import FileService from "../../../../core/FileService";
 import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 import eventEmitter from "../../../../core/eventEmitter";
-import {Details} from 'govuk-frontend';
-import VariableReplacer from "../../../../core/replacements/VariableReplacer";
 
-const PreviewFormComponent = ({form, submission, mode,
+import VariableReplacer from "../../../../core/replacements/VariableReplacer";
+import Accordion from "react-bootstrap/Accordion";
+import Card from "react-bootstrap/Card";
+import Button from 'react-bootstrap/Button';
+
+const PreviewFormComponent = ({
+                                  form, submission, mode,
                                   handlePreview,
                                   handleFormioRef,
-                                  handleEditorModeViewChange}) => {
+                                  onRender,
+                                  handleEditorModeViewChange
+                              }) => {
     const {t} = useTranslation();
     const [open, setOpen] = useState(false);
     const cursor = {cursor: 'pointer'};
@@ -68,8 +74,10 @@ const PreviewFormComponent = ({form, submission, mode,
             <Col>
                 <PreviewFormPanel form={form} formSubmission={submission}
                                   handleFormioRef={handleFormioRef}
+                                  onRender={onRender}
                                   handleEditorModeViewChange={handleEditorModeViewChange}
                                   mode={mode}
+
                                   previewSubmission={(submission, form) => {
                                       handlePreview(submission, form)
                                   }}/>
@@ -79,9 +87,23 @@ const PreviewFormComponent = ({form, submission, mode,
 };
 
 
-export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
+const isValidJSON = (text) => {
+    try {
+        const json = JSON.parse(text);
+        if( json && typeof json === 'object') {
+            return  json;
+        }
+    } catch (e) {
+        return false;
+    }
+};
+
+export const PreviewFormPanel = ({
+                                     form, formSubmission, previewSubmission,
                                      handleFormioRef,
-                                     mode, handleEditorModeViewChange}) => {
+                                     onRender,
+                                     mode, handleEditorModeViewChange
+                                 }) => {
     const {envContext} = useEnvContext();
     let formioForm;
     const {t} = useTranslation();
@@ -93,7 +115,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
         form: null
 
     });
+    const [submissionData, setSubmissionData] = useState(null);
 
+    let submissionEditor = null;
     const parseCallBack = useRef();
 
     const callback = () => {
@@ -123,7 +147,6 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
             <Spinner animation="border" role="status"/>
         </div>
     }
-
     Formio.baseUrl = `${envContext.url}`;
     Formio.formsUrl = `${envContext.url}/form`;
     Formio.formUrl = `${envContext.url}/form`;
@@ -162,7 +185,6 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
                 return {
                     ok: response.ok,
                     json: () => response.json().then((result) => {
-
                         if (result.forms) {
                             return result.forms.map((form) => {
                                 const updatedForm = variableReplacer.replace(form, envContext);
@@ -180,8 +202,11 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
 
             }
         }];
+
+
     return <React.Fragment>
         <Form form={parsedForm.form}
+              submission={submissionData}
               ref={(form) => {
                   formioForm = form;
                   if (handleFormioRef && typeof handleFormioRef === 'function') {
@@ -190,10 +215,9 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
                   if (form) {
                       form.createPromise.then(() => {
                           form.formio.on('render', () => {
-                              const details = document.querySelectorAll('[data-module="govuk-details"]');
-                              details.forEach((detail) => {
-                                  new Details(detail).init();
-                              });
+                              if (onRender) {
+                                  onRender(form);
+                              }
                           });
                           form.formio.on('error', errors => {
                               eventEmitter.publish("formSubmissionError", {errors: errors, form: form});
@@ -223,6 +247,43 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
                       noAlerts: true,
                       fileService: new FileService(keycloak, envContext, keycloakTokenProvider)
                   }}/>
+
+
+        <Accordion>
+            <Card>
+                <Card.Header>
+                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                        {t('form.preview.preload.form-submission-label')}
+                    </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="0">
+                    <Card.Body>
+                        <Row>
+                            <Col className="mb-5">
+                                <FormJsonSchemaEditor
+                                    refreshOnContentChange={true}
+                                    editor={(editor) => {
+                                        submissionEditor = editor;
+                                    }}
+                                    onChange={(json) => {
+                                        try {
+                                            setSubmissionData(submissionEditor.get());
+                                        } catch (e) {
+                                            setSubmissionData(null);
+                                        }
+                                    }}
+                                    handleEditModeView={e => handleEditorModeViewChange(e)}
+                                    disableModeSelection={true}
+                                    mode={'code'}
+                                    indentation={2}
+                                />
+                            </Col>
+                        </Row>
+
+                    </Card.Body>
+                </Accordion.Collapse>
+            </Card>
+        </Accordion>
         <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')}/>
 
 
@@ -236,6 +297,7 @@ export const PreviewFormPanel = ({form, formSubmission, previewSubmission,
         />
     </React.Fragment>
 };
+
 
 export default PreviewFormComponent;
 

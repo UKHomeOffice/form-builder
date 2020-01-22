@@ -21,7 +21,16 @@ class FormJsonSchemaEditor extends Component {
 
         const nonEditableFields = ['id', 'access', 'links', 'versionId', 'createdOn', 'updatedOn', 'latest'];
 
-        const options = _.omit(optionsFromPops, ['json', 'text', 't', 'readonly', 'i18n', 'tReady', 'handleEditModeView']);
+        const options = _.omit(optionsFromPops,
+            ['json', 'text', 't', 'readonly', 'i18n', 'tReady', 'handleEditModeView',
+                'refreshOnContentChange',
+                'editor',
+                'disableModeSelection']);
+
+
+        if (this.props.onChange) {
+            options['onChangeText'] = this.props.onChange;
+        }
 
         if (!this.props.readonly) {
             options['onEditable'] = (node) => {
@@ -45,6 +54,10 @@ class FormJsonSchemaEditor extends Component {
 
         this.schema = cloneDeep(this.props.schema);
         this.schemaRefs = cloneDeep(this.props.schemaRefs);
+
+        if (this.props.editor) {
+            this.props.editor(this.jsoneditor);
+        }
 
         this.handleViewOnModeChange();
     }
@@ -84,7 +97,7 @@ class FormJsonSchemaEditor extends Component {
         if (this.props.mode === 'text' || this.props.mode === 'code') {
             this.container.style.height = '700px';
         } else {
-            this.container.style.height = 'auto';
+            this.container.style.height = '700px';
         }
     }
 
@@ -96,6 +109,7 @@ class FormJsonSchemaEditor extends Component {
 
     render() {
         return <React.Fragment>
+            {!this.props.disableModeSelection ?
             <div className="mb-2"><Form.Label
                 className="font-weight-bold">Select editor mode</Form.Label>
                 <Form.Control as="select"
@@ -107,7 +121,7 @@ class FormJsonSchemaEditor extends Component {
                     <option value="text">Text</option>
 
                 </Form.Control>
-            </div>
+            </div> : null}
             <div className="jsoneditor-react-container" id="jsoneditor" ref={elem => this.container = elem}/>
         </React.Fragment>;
     }
