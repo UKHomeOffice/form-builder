@@ -22,6 +22,9 @@ import VariableReplacer from "../../../../core/replacements/VariableReplacer";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import Button from 'react-bootstrap/Button';
+import Badge from "react-bootstrap/Badge";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 const PreviewFormComponent = ({
                                   form, submission, mode,
@@ -203,7 +206,6 @@ export const PreviewFormPanel = ({
             }
         }];
 
-
     return <React.Fragment>
         <Form form={parsedForm.form}
               submission={submissionData}
@@ -252,10 +254,21 @@ export const PreviewFormPanel = ({
         <Accordion>
             <Card>
                 <Card.Header>
+                    <OverlayTrigger
+                        key={'left'}
+                        placement={'left'}
+                        overlay={
+                            <Tooltip id={`tooltip-left`}>
+                                {t('form.preview.preload.form-submission-description')}
+                            </Tooltip>
+                        }
+                    >
                     <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                        {t('form.preview.preload.form-submission-label')}
+                        {t('form.preview.preload.form-submission-label')} <span> <Badge variant="warning">Experimental</Badge></span>
                     </Accordion.Toggle>
+                    </OverlayTrigger>
                 </Card.Header>
+
                 <Accordion.Collapse eventKey="0">
                     <Card.Body>
                         <Row>

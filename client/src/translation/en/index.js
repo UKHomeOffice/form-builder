@@ -236,7 +236,8 @@ const messages = {
             "label": "Preview",
             "form-submission-label": "Form submission",
             "preload": {
-                "form-submission-label" : "Preview with custom submission data"
+                "form-submission-label" : "Preview with custom submission data",
+                "form-submission-description" : "The submission data will be automatically loaded into the form above. Example {'data': { 'textField': 'Apples'}}"
             },
             "submission-warning-title": "Submission is not persisted in preview mode",
             "submission-warning-description": "Data submitted is held in the context of this page and lost when you navigate away.",
