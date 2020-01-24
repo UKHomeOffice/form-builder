@@ -46,12 +46,7 @@ class VariableReplacer {
                     component.customDefaultValue = "";
 
                 }
-                if (component.calculateValue && component.calculateValue !== '') {
-                    component.defaultValue = FormioUtils.evaluate(component.calculateValue, {
-                        data: fakeSubmission.data
-                    }, "value");
-                    component.calculateValue = "";
-                }
+
             });
         } catch (e) {
             console.warn(e);
