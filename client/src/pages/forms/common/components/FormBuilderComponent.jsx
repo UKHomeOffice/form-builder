@@ -38,7 +38,6 @@ const FormBuilderComponent = ({
     const {keycloak} = useKeycloak();
 
     let existingPlugins = Formio.plugins;
-    console.log(existingPlugins.length);
 
     Formio.plugins.forEach(plugin => {
         const removed = Formio.deregisterPlugin(plugin);
@@ -87,7 +86,6 @@ const FormBuilderComponent = ({
         }
     }];
     existingPlugins = Formio.plugins;
-    console.log("After" + existingPlugins.length);
 
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
