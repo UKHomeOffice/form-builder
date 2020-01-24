@@ -5,7 +5,7 @@ describe("variable replacement", () => {
 
     const variableReplacer = new VariableReplacer();
 
-    it('can generate uuid for key', async () => {
+    it('can generate uuid for key', () => {
 
         const data = {
             "components" :[
@@ -16,7 +16,7 @@ describe("variable replacement", () => {
             ]
         };
 
-        const replaced = await variableReplacer.interpolate(data, configuration.environments[0]);
+        const replaced =  variableReplacer.interpolate(data, configuration.environments[0]);
         expect(replaced.components[0].defaultValue).not.toEqual("{{data.staffDetailsDataContext.staffid}}");
     });
 

@@ -11,7 +11,7 @@ class VariableReplacer {
 
     }
 
-    async interpolate(form, environmentContext) {
+    interpolate(form, environmentContext) {
         try {
             const fakeSubmission = jsf.generate(JSON.parse(JSON.stringify(environmentContext['fakeDataInterpolationContext'])));
 
@@ -57,7 +57,7 @@ class VariableReplacer {
             console.warn(e);
             return form;
         }
-        return Promise.resolve(form);
+        return form;
     }
 }
 

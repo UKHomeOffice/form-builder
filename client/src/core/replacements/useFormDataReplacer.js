@@ -5,7 +5,7 @@ const useFormDataReplacer = () => {
     const {envContext} = useEnvContext();
     const variableReplacer = new VariableReplacer();
     const performFormParse = async (form) => {
-        return await variableReplacer.interpolate(form, envContext);
+        return Promise.resolve(variableReplacer.interpolate(form, envContext));
     };
 
     return {
