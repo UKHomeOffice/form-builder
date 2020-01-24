@@ -90,17 +90,6 @@ const PreviewFormComponent = ({
 };
 
 
-const isValidJSON = (text) => {
-    try {
-        const json = JSON.parse(text);
-        if( json && typeof json === 'object') {
-            return  json;
-        }
-    } catch (e) {
-        return false;
-    }
-};
-
 export const PreviewFormPanel = ({
                                      form, formSubmission, previewSubmission,
                                      handleFormioRef,
@@ -138,6 +127,7 @@ export const PreviewFormPanel = ({
 
     useEffect(() => {
         parseCallBack.current();
+
     }, [form]);
 
 
@@ -155,6 +145,30 @@ export const PreviewFormPanel = ({
     Formio.formUrl = `${envContext.url}/form`;
     Formio.projectUrl = `${envContext.url}`;
     const variableReplacer = new VariableReplacer();
+    const interpolationPlugin = {
+        priority: 0,
+        requestResponse: function (response) {
+            return {
+                ok: response.ok,
+                json: () => response.json().then((result) => {
+                    if (result.forms) {
+                        return result.forms.map((form) => {
+                            const updatedForm = variableReplacer.interpolate(form, envContext);
+                            updatedForm['_id'] = form.id;
+                            return updatedForm;
+                        });
+                    }
+                    const updatedForm = variableReplacer.interpolate(result, envContext);
+                    updatedForm['_id'] = result.id;
+                    return updatedForm;
+                }),
+                status: response.status,
+                headers: response.headers
+            };
+
+        }
+    };
+
     Formio.plugins = [{
         priority: 0,
         preRequest: async function (requestArgs) {
@@ -180,31 +194,8 @@ export const PreviewFormPanel = ({
         },
 
 
-    },
+    }, interpolationPlugin];
 
-        {
-            priority: 0,
-            requestResponse: function (response) {
-                return {
-                    ok: response.ok,
-                    json: () => response.json().then((result) => {
-                        if (result.forms) {
-                            return result.forms.map((form) => {
-                                const updatedForm = variableReplacer.interpolate(form, envContext);
-                                updatedForm['_id'] = form.id;
-                                return updatedForm;
-                            });
-                        }
-                        const updatedForm = variableReplacer.interpolate(result, envContext);
-                        updatedForm['_id'] = result.id;
-                        return updatedForm;
-                    }),
-                    status: response.status,
-                    headers: response.headers
-                };
-
-            }
-        }];
 
     return <React.Fragment>
         <Form form={parsedForm.form}

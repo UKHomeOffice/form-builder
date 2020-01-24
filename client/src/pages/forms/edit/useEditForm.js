@@ -39,7 +39,7 @@ const useEditForm = (formId) => {
 
 
     const [{status, response, exception}, makeRequest] = useApiRequest(
-        `/form/${formId}?disableDataContext=true`, {
+        `/form/${formId}?noBusinessKey=true`, {
             verb: 'get', params: {
                 cancelToken: cancelEdit.current.token
             }

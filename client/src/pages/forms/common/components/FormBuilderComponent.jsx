@@ -36,6 +36,16 @@ const FormBuilderComponent = ({
     const {t} = useTranslation();
     const {envContext} = useEnvContext();
     const {keycloak} = useKeycloak();
+
+    let existingPlugins = Formio.plugins;
+    console.log(existingPlugins.length);
+
+    Formio.plugins.forEach(plugin => {
+        const removed = Formio.deregisterPlugin(plugin);
+        console.log(removed);
+    });
+
+
     Formio.baseUrl = `${envContext.url}`;
     Formio.formsUrl = `${envContext.url}/form`;
     Formio.formUrl = `${envContext.url}/form`;
@@ -76,6 +86,8 @@ const FormBuilderComponent = ({
 
         }
     }];
+    existingPlugins = Formio.plugins;
+    console.log("After" + existingPlugins.length);
 
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
