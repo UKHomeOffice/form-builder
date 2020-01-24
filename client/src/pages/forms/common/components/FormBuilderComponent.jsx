@@ -37,11 +37,8 @@ const FormBuilderComponent = ({
     const {envContext} = useEnvContext();
     const {keycloak} = useKeycloak();
 
-    let existingPlugins = Formio.plugins;
-
     Formio.plugins.forEach(plugin => {
-        const removed = Formio.deregisterPlugin(plugin);
-        console.log(removed);
+       Formio.deregisterPlugin(plugin);
     });
 
 
@@ -85,7 +82,6 @@ const FormBuilderComponent = ({
 
         }
     }];
-    existingPlugins = Formio.plugins;
 
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
