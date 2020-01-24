@@ -118,9 +118,9 @@ export const PreviewFormPanel = ({
         form: null
 
     });
-    const [submissionData, setSubmissionData] = useState(null);
+    // const [submissionData, setSubmissionData] = useState(null);
 
-    let submissionEditor = null;
+    // let submissionEditor = null;
     const parseCallBack = useRef();
 
     const callback = () => {
@@ -208,7 +208,6 @@ export const PreviewFormPanel = ({
 
     return <React.Fragment>
         <Form form={parsedForm.form}
-              submission={submissionData}
               ref={(form) => {
                   formioForm = form;
                   if (handleFormioRef && typeof handleFormioRef === 'function') {
@@ -251,52 +250,52 @@ export const PreviewFormPanel = ({
                   }}/>
 
 
-        <Accordion>
-            <Card>
-                <Card.Header>
-                    <OverlayTrigger
-                        key={'left'}
-                        placement={'left'}
-                        overlay={
-                            <Tooltip id={`tooltip-left`}>
-                                {t('form.preview.preload.form-submission-description')}
-                            </Tooltip>
-                        }
-                    >
-                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                        {t('form.preview.preload.form-submission-label')} <span> <Badge variant="warning">Experimental</Badge></span>
-                    </Accordion.Toggle>
-                    </OverlayTrigger>
-                </Card.Header>
+        {/*<Accordion>*/}
+        {/*    <Card>*/}
+        {/*        <Card.Header>*/}
+        {/*            <OverlayTrigger*/}
+        {/*                key={'left'}*/}
+        {/*                placement={'left'}*/}
+        {/*                overlay={*/}
+        {/*                    <Tooltip id={`tooltip-left`}>*/}
+        {/*                        {t('form.preview.preload.form-submission-description')}*/}
+        {/*                    </Tooltip>*/}
+        {/*                }*/}
+        {/*            >*/}
+        {/*            <Accordion.Toggle as={Button} variant="link" eventKey="0">*/}
+        {/*                {t('form.preview.preload.form-submission-label')} <span> <Badge variant="warning">Experimental</Badge></span>*/}
+        {/*            </Accordion.Toggle>*/}
+        {/*            </OverlayTrigger>*/}
+        {/*        </Card.Header>*/}
 
-                <Accordion.Collapse eventKey="0">
-                    <Card.Body>
-                        <Row>
-                            <Col className="mb-5">
-                                <FormJsonSchemaEditor
-                                    refreshOnContentChange={true}
-                                    editor={(editor) => {
-                                        submissionEditor = editor;
-                                    }}
-                                    onChange={(json) => {
-                                        try {
-                                            setSubmissionData(submissionEditor.get());
-                                        } catch (e) {
-                                            setSubmissionData(null);
-                                        }
-                                    }}
-                                    handleEditModeView={e => handleEditorModeViewChange(e)}
-                                    disableModeSelection={true}
-                                    mode={'code'}
-                                    indentation={2}
-                                />
-                            </Col>
-                        </Row>
+        {/*        <Accordion.Collapse eventKey="0">*/}
+        {/*            <Card.Body>*/}
+        {/*                <Row>*/}
+        {/*                    <Col className="mb-5">*/}
+        {/*                        <FormJsonSchemaEditor*/}
+        {/*                            refreshOnContentChange={true}*/}
+        {/*                            editor={(editor) => {*/}
+        {/*                                submissionEditor = editor;*/}
+        {/*                            }}*/}
+        {/*                            onChange={(json) => {*/}
+        {/*                                try {*/}
+        {/*                                    setSubmissionData(submissionEditor.get());*/}
+        {/*                                } catch (e) {*/}
+        {/*                                    setSubmissionData(null);*/}
+        {/*                                }*/}
+        {/*                            }}*/}
+        {/*                            handleEditModeView={e => handleEditorModeViewChange(e)}*/}
+        {/*                            disableModeSelection={true}*/}
+        {/*                            mode={'code'}*/}
+        {/*                            indentation={2}*/}
+        {/*                        />*/}
+        {/*                    </Col>*/}
+        {/*                </Row>*/}
 
-                    </Card.Body>
-                </Accordion.Collapse>
-            </Card>
-        </Accordion>
+        {/*            </Card.Body>*/}
+        {/*        </Accordion.Collapse>*/}
+        {/*    </Card>*/}
+        {/*</Accordion>*/}
         <div className="hr-text mb-2" data-content={t('form.preview.form-submission-label')}/>
 
 
