@@ -34,7 +34,7 @@ class VariableReplacer {
                         data: fakeSubmission.data
                     });
                 }
-                if (component.defaultValue) {
+                if (component.defaultValue && component.defaultValue !== '') {
                     component.defaultValue = FormioUtils.interpolate(component.defaultValue, {
                         data: fakeSubmission.data
                     });

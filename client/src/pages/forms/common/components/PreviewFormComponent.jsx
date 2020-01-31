@@ -7,7 +7,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCaretDown, faCaretRight, faExclamationTriangle, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faCaretDown, faCaretRight, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 import Alert from "react-bootstrap/Alert";
 import Collapse from "react-bootstrap/Collapse";
 import Spinner from "react-bootstrap/Spinner";

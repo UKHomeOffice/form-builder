@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {NavNotFoundBoundary, useNavigation} from "react-navi";
+import {useNavigation} from "react-navi";
 import {useTranslation} from "react-i18next";
 import config from 'react-global-configuration';
 

@@ -214,10 +214,10 @@ const MigrationPage = () => {
                                                checked={exists || checked}
                                                disabled={exists}
                                                onlabel={"Migrate"}
-                                               onstyle='primary'
+                                               onstyle={'primary'}
                                                offlabel={"Migrate?"}
-                                               offstyle='info'
-                                               style='w-100 mt-2'
+                                               offstyle={'info'}
+                                               style={'w-100 mt-2'}
                                                onChange={(checked) => {
                                                    if (checked) {
                                                        formio.formsIdsForMigration.push(formId);

@@ -3,6 +3,7 @@ import eventEmitter from "../../../../../core/eventEmitter";
 import Container from "react-bootstrap/Container";
 import uuid from 'uuid4';
 import _ from 'lodash';
+import parse from 'html-react-parser';
 
 class ErrorSummary extends React.Component {
     constructor(props) {
@@ -27,6 +28,7 @@ class ErrorSummary extends React.Component {
             })
         });
         eventEmitter.subscribe('formChange', (value) => {
+            console.log(value);
             this.setState({
                 errors: _.filter(this.state.errors, ({message, instance}) => {
                     return instance.component.key !== value.changed.component.key;
@@ -48,7 +50,7 @@ class ErrorSummary extends React.Component {
                                 return <li key={uuid()}>
                                     <a href="#" onClick={() => {
                                         instance.focus();
-                                    }}>{message}</a>
+                                    }}><div>{parse(message)}</div></a>
                                 </li>
                             })}
 
