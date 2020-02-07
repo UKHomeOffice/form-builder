@@ -27,13 +27,27 @@ class ErrorSummary extends React.Component {
                 errors: []
             })
         });
-        eventEmitter.subscribe('formChange', (value) => {
-            console.log(value);
-            this.setState({
-                errors: _.filter(this.state.errors, ({message, instance}) => {
-                    return instance.component.key !== value.changed.component.key;
-                })
-            })
+        eventEmitter.subscribe('formChange', ({value, form}) => {
+
+            if (this.state.errors.length !== 0) {
+                let instance;
+                if (form.instance._form.display === 'wizard') {
+                    instance = form.formio.currentPage;
+                } else {
+                    instance = form.formio;
+                }
+                if (instance.isValid(value.data, true)) {
+                    this.setState({
+                        errors: []
+                    });
+                } else {
+                    this.setState({
+                        errors: _.filter(this.state.errors, ({message, instance}) => {
+                            return instance.component.key !== value.changed.component.key;
+                        })
+                    })
+                }
+            }
         });
     }
 

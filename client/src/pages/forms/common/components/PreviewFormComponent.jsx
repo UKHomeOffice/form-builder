@@ -219,7 +219,7 @@ export const PreviewFormPanel = ({
                               eventEmitter.publish("formSubmissionSuccessful");
                           });
                           form.formio.on('change', (value) => {
-                              eventEmitter.publish("formChange", value);
+                              eventEmitter.publish("formChange", {value, form});
                           });
                       });
                   }
