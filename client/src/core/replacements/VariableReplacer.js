@@ -2,6 +2,8 @@ import FormioUtils from 'formiojs/utils';
 import jsf from 'json-schema-faker';
 import Chance from 'chance';
 import faker from 'faker';
+import moment from 'moment';
+import _ from 'lodash';
 
 class VariableReplacer {
     constructor() {
@@ -41,7 +43,13 @@ class VariableReplacer {
                 }
                 if (component.customDefaultValue && component.customDefaultValue !== '') {
                     component.defaultValue = FormioUtils.evaluate(component.customDefaultValue, {
-                        data: fakeSubmission.data
+                        data: fakeSubmission.data,
+                        moment: moment,
+                        _ : _,
+                        component: component,
+                        form : form,
+                        utils: FormioUtils,
+                        util: FormioUtils
                     }, "value");
                     component.customDefaultValue = "";
 
