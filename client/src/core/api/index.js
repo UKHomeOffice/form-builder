@@ -7,7 +7,7 @@ import {useKeycloak} from "react-keycloak";
 import keycloakTokenProvider from '../auth/KeycloakTokenProvider';
 import qs from "querystring";
 import appConfig from 'react-global-configuration';
-
+import _ from 'lodash';
 
 const configureAxios = async (envContext, config, keycloak) => {
     config.headers['Accept'] = 'application/json';
@@ -102,7 +102,11 @@ const useApiRequest = (path, {verb = 'get', params = {}} = {}) => {
 
 const handleError = async (instance, error, keycloak) => {
     const keycloakConfig = appConfig.get('keycloak');
-    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+    const errorResponse = error.response;
+    const isApiForbidden = errorResponse.data
+        && (_.has(errorResponse.data, 'type') && _.get(errorResponse.data, 'type') === 'UNAUTHORIZED');
+    if (!isApiForbidden
+        && (error.response.status === 403 || error.response.status === 401)) {
         console.log("Retrying..." + error.response.status);
         let response;
         try {
