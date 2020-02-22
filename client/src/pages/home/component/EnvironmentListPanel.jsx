@@ -61,7 +61,7 @@ const EnvironmentListPanel = ({environments}) => {
                         </Card>
                     </Col>
                 });
-                return <Container key={uuid4()} className="mt-4"><Row key={uuid4()}>{cols}</Row></Container>
+                return <Container key={uuid4()} className="mt-4"><Row className="d-flex justify-content-center" key={uuid4()}>{cols}</Row></Container>
             })
         }
 

@@ -47,8 +47,8 @@ const PreviewFormPage = ({formId}) => {
                     <Button block={isMobile} className="mr-2"
                             disabled={form.disableAllActions}
                             data-cy={`backTo${envContext.id}`}
-                            onClick={() => {
-                                backToForms();
+                            onClick={async () => {
+                                await backToForms();
                             }}
                             variant="secondary">{t('form.preview.back-to-forms', {env: envContext.id})}</Button>
                     <Button block={isMobile} variant="info"
@@ -62,14 +62,14 @@ const PreviewFormPage = ({formId}) => {
                         <Button block={isMobile} variant="dark"
                                 data-cy="duplicate"
                                 disabled={form.disableAllActions}
-                                onClick={() => {
-                                    duplicate()
+                                onClick={async () => {
+                                    await duplicate()
                                 }}
                                 className="mr-2">{t('form.preview.duplicate', {env: envContext.id})}</Button>
                         <Button block={isMobile} variant="primary"
                                 disabled={form.disableAllActions}
-                                onClick={() => {
-                                    edit()
+                                onClick={async () => {
+                                    await edit()
                                 }}
                                 className="mr-2">{t('form.edit.label-form')}</Button>
                     </React.Fragment> : null}
