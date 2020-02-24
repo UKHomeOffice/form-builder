@@ -103,7 +103,7 @@ const useGetForms = () => {
 
 
         const [downloadFormState, executeDownload] = useApiRequest(
-            `/form/${forms.downloadFile.formId}`, {
+            `/form/${forms.downloadFile.formId}?noBusinessKey=true`, {
                 verb: 'get', params: {
                     responseType: 'arraybuffer'
                 }
