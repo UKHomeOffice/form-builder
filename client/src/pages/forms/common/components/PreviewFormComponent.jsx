@@ -25,6 +25,7 @@ import Button from 'react-bootstrap/Button';
 import Badge from "react-bootstrap/Badge";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import _ from 'lodash';
 
 const PreviewFormComponent = ({
                                   form, submission, mode,
@@ -36,7 +37,7 @@ const PreviewFormComponent = ({
     const {t} = useTranslation();
     const [open, setOpen] = useState(false);
     const cursor = {cursor: 'pointer'};
-
+    const clonedForm = form ? _.cloneDeep(form) : null;
     return <Container>
         <Row>
             <Col>
@@ -63,11 +64,11 @@ const PreviewFormComponent = ({
         <Row>
             <Col>
                 {
-                    form ? <React.Fragment>
+                    clonedForm ? <React.Fragment>
                         <h2>
-                            {form.title ? form.title : 'No form title'}
+                            {clonedForm.title ? clonedForm.title : 'No form title'}
                             <span className="m-2"><small
-                                className="text-muted">{form.name ? form.name : 'No form name'}</small></span>
+                                className="text-muted">{clonedForm.name ? clonedForm.name : 'No form name'}</small></span>
                         </h2>
                     </React.Fragment> : null
                 }
@@ -75,14 +76,14 @@ const PreviewFormComponent = ({
         </Row>
         <Row>
             <Col>
-                <PreviewFormPanel form={form} formSubmission={submission}
+                <PreviewFormPanel form={clonedForm} formSubmission={submission}
                                   handleFormioRef={handleFormioRef}
                                   onRender={onRender}
                                   handleEditorModeViewChange={handleEditorModeViewChange}
                                   mode={mode}
 
-                                  previewSubmission={(submission, form) => {
-                                      handlePreview(submission, form)
+                                  previewSubmission={(submission, clonedForm) => {
+                                      handlePreview(submission, clonedForm)
                                   }}/>
             </Col>
         </Row>
