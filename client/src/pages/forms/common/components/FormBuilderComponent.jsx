@@ -14,6 +14,7 @@ import '../../../../core/form/SubFormComponent';
 import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 import {useTranslation} from "react-i18next";
 import PreviewFormModal from "../../create/components/PreviewFormModal";
+import {isMobile} from "react-device-detect";
 
 const FormBuilderComponent = ({
                                   form,
@@ -38,7 +39,7 @@ const FormBuilderComponent = ({
     const {keycloak} = useKeycloak();
 
     Formio.plugins.forEach(plugin => {
-       Formio.deregisterPlugin(plugin);
+        Formio.deregisterPlugin(plugin);
     });
 
 
@@ -83,10 +84,50 @@ const FormBuilderComponent = ({
         }
     }];
 
+    const actions = <React.Fragment>
+        <Row>
+            <Col className="d-flex flex-column">
+            <ButtonToolbar>
+                    <Button data-cy="cancel-edit-form"
+                            variant="secondary"
+                            className="mr-2"
+                            block={isMobile}
+                            onClick={() => backToForms()}>{t('form.cancel.label')}</Button>
+                    <Button data-cy="edit-schema-form"
+                            variant="info"
+                            className="mr-2"
+                            block={isMobile}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                changeSchemaView();
+                            }}>{openInSchemaEditorMode ? t('form.edit.label-formbuilder') : t('form.schema.edit.label')}</Button>
+                    <Button data-cy="preview-form"
+                            variant="dark"
+                            block={isMobile}
+                            className="mr-2"
+                            onClick={() => openPreview()}>{t('form.preview.label')}</Button>
+                    <Button data-cy="persist-form"
+                            variant="primary"
+                            className="mr-2"
+                            block={isMobile}
+                            disabled={formInvalid()}
+                            onClick={() => save()}>{status === EXECUTING ? t(`${messageKeyPrefix}.updating-label`) : t(`${messageKeyPrefix}.update-label`)}</Button>
+
+                </ButtonToolbar>
+            </Col>
+        </Row>
+    </React.Fragment>;
+
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
             <Row>
                 <Container>
+                    <Row>
+                        <Col>
+                            <hr className="hr-text" data-content={t('form.create.actions')}/>
+                        </Col>
+                    </Row>
+                    {actions}
                     <Row>
                         <Col>
                             <hr className="hr-text" data-content={t('form.details')}/>
@@ -209,32 +250,7 @@ const FormBuilderComponent = ({
                           title={form.title}
                           open={form.displayPreview}
                           onClosePreview={closePreview}/>
-        <Row>
-            <Container>
-                <ButtonToolbar>
-                    <Button data-cy="cancel-edit-form"
-                            variant="secondary"
-                            className="mr-2"
-                            onClick={() => backToForms()}>{t('form.cancel.label')}</Button>
-                    <Button data-cy="edit-schema-form"
-                            variant="info"
-                            className="mr-2"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                changeSchemaView();
-                            }}>{openInSchemaEditorMode ? t('form.edit.label-formbuilder') : t('form.schema.edit.label')}</Button>
-                    <Button data-cy="preview-form"
-                            variant="dark"
-                            className="mr-2"
-                            onClick={() => openPreview()}>{t('form.preview.label')}</Button>
-                    <Button data-cy="persist-form"
-                            variant="primary"
-                            disabled={formInvalid()}
-                            onClick={() => save()}>{status === EXECUTING ? t(`${messageKeyPrefix}.updating-label`) : t(`${messageKeyPrefix}.update-label`)}</Button>
-
-                </ButtonToolbar>
-            </Container>
-        </Row>
+        {actions}
     </Container>
 
 };

@@ -38,10 +38,13 @@ export class FormCreateOrUpdateController extends BaseHttpController {
                 headers,
                 url: `${env.url}/form?filter=name__eq__${form.name},path__eq__${form.path}&limit=1`,
             });
-
+            let formId;
             if (formResponse.data.total === 0) {
                 const createFormResponse = await this.formUtil.createForm(headers, form, env);
+                // @ts-ignore
                 logger.info(`Form ${form.name} successfully created in ${env.id} ${createFormResponse.status}`);
+                // @ts-ignore
+                formId = createFormResponse.headers['x-form-id']
             } else {
                 const formLoaded = formResponse.data.forms[0];
                 const updateResponse = await axios({
@@ -51,8 +54,12 @@ export class FormCreateOrUpdateController extends BaseHttpController {
                     headers,
                 });
                 logger.info(`Form ${form.name} successfully updated in ${env.id} ${updateResponse.status}`);
+                formId = formLoaded.id;
+
             }
-            res.sendStatus(HttpStatusCode.OK);
+            res.json({
+               formId
+            }).sendStatus(HttpStatusCode.OK);
         } catch (e) {
             logger.error(e.stack);
             nextFunction(e);

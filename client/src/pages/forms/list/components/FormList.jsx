@@ -34,6 +34,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import moment from "moment";
 import ReactPaginate from 'react-paginate';
 import ButtonGroup from "./ButtonGroup";
+import {isMobile} from "react-device-detect";
 
 
 const FormList = () => {
@@ -158,14 +159,14 @@ const FormList = () => {
             </Col>
         </Row>
         <Row>
-            <Col style={{marginTop: '1rem'}}>
-                {isEditable ? <div className="float-left">
+            <Col className="mt-2">
+                {isEditable ? <div className="float-lg-left float-md-left float-sm-none mt-2">
                     <Button onClick={async () => await navigation.navigate(`/forms/${envContext.id}/create`)}
                             data-cy="create-form">
-                        <FontAwesomeIcon icon={faPlus} title={t('form.create.label')}/>
+                        <FontAwesomeIcon icon={faPlus} title={t('form.create.label')}/> {t('form.create.label')}
                     </Button>
                 </div> : null}
-                <div className="float-right">
+                <div className="float-lg-right float-md-right float-sm-none mt-2">
                     <ReactPaginate
                         hrefBuilder={() => "#"}
                         previousLabel={'Previous'}
@@ -174,8 +175,8 @@ const FormList = () => {
                         previousClassName={'page-item'}
                         nextClassName={'page-item'}
                         pageCount={Math.ceil(parseInt(total) / limit)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
+                        marginPagesDisplayed={isMobile? 1 : 2}
+                        pageRangeDisplayed={isMobile? 2 : 5 }
                         onPageChange={(e) => handlePaginationChange(e.selected)}
                         containerClassName={'pagination'}
                         breakClassName={'page-link'}

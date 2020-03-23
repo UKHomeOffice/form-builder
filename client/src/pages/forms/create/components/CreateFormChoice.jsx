@@ -13,6 +13,7 @@ import {
    faUpload
 } from "@fortawesome/free-solid-svg-icons";
 import {faWpforms} from '@fortawesome/free-brands-svg-icons'
+import {isMobile} from "react-device-detect";
 
 const CreateFormChoice = () => {
     const navigation = useNavigation();

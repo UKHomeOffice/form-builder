@@ -91,7 +91,7 @@ const useCreateForm = (formContent = null) => {
         formindexdb.form.clear().then(() => {
             console.log("Draft data cleared");
         });
-        await navigation.navigate(`/forms/${envContext.id}`, {replace: true});
+        await navigation.navigate(`/forms/${envContext.id}/${response.data.formId}/preview`, {replace: true});
     };
 
 
