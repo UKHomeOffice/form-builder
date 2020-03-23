@@ -59,7 +59,7 @@ export class FormCreateOrUpdateController extends BaseHttpController {
             }
             res.json({
                 formId: formId
-            });
+            }).status(HttpStatusCode.OK)
         } catch (e) {
             logger.error(e.stack);
             nextFunction(e);
