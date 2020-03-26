@@ -15,7 +15,7 @@ jobs:
           fail-build: false
           include-app-packages: true
       - name: anchore inline scan JSON results
-        run: cat ./anchore-reports/vulnerabilities.json; echo; done
+        run: cat ./anchore-reports/vulnerabilities.json; echo
       - uses: actions/checkout@master
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
@@ -26,3 +26,11 @@ jobs:
           registry: docker.pkg.github.com
           snapshot: true
           tags: "latest, ${{ github.sha }}"
+      - uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Github # default: 8398a7@action-slack
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # optional
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
