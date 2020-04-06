@@ -49,7 +49,7 @@ pipeline:
       environment: secrets
       event: deployment
 
-    build:
+  build:
     image: quay.io/ukhomeofficedigital/drone-docker
     commands:
       - docker build -t cop-form-builder:$${DRONE_COMMIT_SHA} .
