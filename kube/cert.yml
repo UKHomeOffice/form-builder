@@ -7,7 +7,7 @@ spec:
   issuerRef:
     name: platform-tls
     kind: ClusterIssuer
-  commonName: {{.FORMBUILDER_NAME}}.{{.FORMBUILDER_KUBE_NAMESPACE}}.svc.cluster.local
+  commonName: {{.FORMBUILDER_NAME}}.{{.KUBE_NAMESPACE}}.svc.cluster.local
   dnsNames:
   - localhost
   - 127.0.0.1
