@@ -49,6 +49,15 @@ pipeline:
       environment: secrets
       event: deployment
 
+  test:
+    image: digitalpatterns/node:4
+    commands:
+      - npm install
+      - npm --prefix server
+      - npm --prefix client
+    when:
+      event: push
+
   build:
     image: quay.io/ukhomeofficedigital/drone-docker
     commands:
