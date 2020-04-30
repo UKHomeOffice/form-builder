@@ -1,0 +1,53 @@
+name: Publish Docker
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 2 * * 0' # Weekly on Sundays at 02:00
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    env:
+      IMAGE: 'digitalpatterns/form-builder/form-builder-master'
+      IMAGE_DOCKER_HUB: 'digitalpatterns/form-builder'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE }}:latest
+      - uses: anchore/scan-action@master
+        with:
+          image-reference: "${{ env.IMAGE }}:latest"
+          dockerfile-path: "./Dockerfile"
+          fail-build: false
+          include-app-packages: true
+      - name: anchore inline scan JSON results
+        run: cat ./anchore-reports/vulnerabilities.json;
+      - uses: actions/checkout@master
+      - name: Publish to Github Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ${{ env.IMAGE }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          cache: true
+          registry: docker.pkg.github.com
+          snapshot: true
+          tags: "latest, ${{ github.sha }}"
+      - name: Publish to Docker Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ${{ env.IMAGE_DOCKER_HUB }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          cache: true
+          tags: "latest"
+      - uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author_name: Github # default: 8398a7@action-slack
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # optional
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
