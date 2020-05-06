@@ -79,4 +79,4 @@ spec:
           secretName: {{.FORMBUILDER_NAME}}
       - name: certs
         secret:
-          secretName: "{{.FORMBUILDER_NAME}}-pod-tls"
+          secretName: "{{.FORMBUILDER_NAME}}-pod-cmio"
