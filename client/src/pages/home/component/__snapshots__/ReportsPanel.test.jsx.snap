@@ -75,7 +75,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
           </span>
         </h1>
       </div>
-      <ForwardRef
+      <Row
         noGutters={false}
       >
         <div
@@ -434,7 +434,7 @@ exports[`ReportsPanel renders pie and bar chart 1`] = `
             </div>
           </Col>
         </div>
-      </ForwardRef>
+      </Row>
     </div>
   </Container>
 </ReportsPanel>

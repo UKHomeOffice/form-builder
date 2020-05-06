@@ -1,19 +1,19 @@
 {
   "environments": [
     {
-      "id": "dev",
-      "label": "Development",
-      "url": "http://localhost:4000",
-      "description": "Elf Dev environment",
+      "id": "local",
+      "label": "Local Development",
+      "url": "http://192.168.86.39:4000",
+      "description": "Local Dev environment",
       "service": {
         "formio": {
           "username": "me@lodev.xyz",
           "password": "secret"
         },
         "keycloak": {
-          "tokenUrl": "http://localhost:8080/auth/realms/elf/protocol/openid-connect/token",
+          "tokenUrl": "http://192.168.86.39:8080/auth/realms/elf/protocol/openid-connect/token",
           "clientId": "form-builder",
-          "secret": "522bf46a-196f-4418-a98c-02912609195b"
+          "secret": "617143cf-cac0-44aa-9a5a-df5382280218"
         }
       },
       "editable": true,
@@ -44,130 +44,6 @@
                 }
               },
               "processContext" : {
-                 "type" : "object",
-                 "properties": {
-                    "example" : {
-                      "type" : "object",
-                      "properties" : {
-                         "data" : {
-                           "type" : "object",
-                            "properties" : {
-                               "firstName" : {
-                                 "type" : "string",
-                                 "faker" : "name.firstName"
-                               }
-                            }
-                         }
-                       }
-                    }
-                 }
-              },
-              "staffDetailsDataContext": {
-                "type": "object",
-                "properties": {
-                  "staffid": {
-                    "type": "string",
-                    "faker": "random.uuid"
-                  },
-                  "required": [
-                    "staffid"
-                  ]
-                }
-              },
-              "environmentContext": {
-                "type": "object",
-                "properties": {
-                  "referenceDataUrl": {
-                    "type": "string",
-                    "chance": {
-                      "pickone": [
-                        [
-                          "http://localhost:8000"
-                        ]
-                      ]
-                    }
-                  },
-                  "required": [
-                    "referenceDataUrl"
-                  ]
-                }
-              },
-              "keycloakContext": {
-                "type": "object",
-                "properties": {
-                  "familyName": {
-                    "type": "string",
-                    "faker": "name.lastName"
-                  },
-                  "givenName": {
-                    "type": "string",
-                    "faker": "name.firstName"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "chance": {
-                      "email": {
-                        "domain": "homeoffice.gov.uk"
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "familyName",
-                  "givenName",
-                  "email"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "id": "devA",
-      "label": "UAT",
-      "url": "http://localhost:4001",
-      "description": "Elf Dev A environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "http://localhost:8080/auth/realms/elf/protocol/openid-connect/token",
-          "clientId": "form-builder",
-          "secret": "522bf46a-196f-4418-a98c-02912609195b"
-        }
-      },
-      "editable": false,
-      "fakeDataInterpolationContext": {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "description": "Fake submission data context",
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "required": [
-              "keycloakContext",
-              "environmentContext",
-              "staffDetailsDataContext"
-            ],
-            "properties": {
-              "taskContext" : {
-                "type" : "object",
-                "properties" : {
-                  "name" : {
-                    "type" : "string",
-                    "faker" : "lorem.sentence"
-                  },
-                  "description" : {
-                    "type" : "string",
-                    "faker" : "lorem.sentence"
-                  }
-                }
-              },
-              "processContext" : {
                 "type" : "object",
                 "properties": {
                   "example" : {
@@ -206,131 +82,7 @@
                     "chance": {
                       "pickone": [
                         [
-                          "http://localhost:8000"
-                        ]
-                      ]
-                    }
-                  },
-                  "required": [
-                    "referenceDataUrl"
-                  ]
-                }
-              },
-              "keycloakContext": {
-                "type": "object",
-                "properties": {
-                  "familyName": {
-                    "type": "string",
-                    "faker": "name.lastName"
-                  },
-                  "givenName": {
-                    "type": "string",
-                    "faker": "name.firstName"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "chance": {
-                      "email": {
-                        "domain": "homeoffice.gov.uk"
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "familyName",
-                  "givenName",
-                  "email"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "id": "devB",
-      "label": "Staging",
-      "url": "http://localhost:4002",
-      "description": "Elf Dev A environment",
-      "service": {
-        "formio": {
-          "username": "me@lodev.xyz",
-          "password": "secret"
-        },
-        "keycloak": {
-          "tokenUrl": "http://localhost:8080/auth/realms/elf/protocol/openid-connect/token",
-          "clientId": "form-builder",
-          "secret": "522bf46a-196f-4418-a98c-02912609195b"
-        }
-      },
-      "editable": false,
-      "fakeDataInterpolationContext": {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "description": "Fake submission data context",
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "required": [
-              "keycloakContext",
-              "environmentContext",
-              "staffDetailsDataContext"
-            ],
-            "properties": {
-              "taskContext" : {
-                "type" : "object",
-                "properties" : {
-                  "name" : {
-                    "type" : "string",
-                    "faker" : "lorem.sentence"
-                  },
-                  "description" : {
-                    "type" : "string",
-                    "faker" : "lorem.sentence"
-                  }
-                }
-              },
-              "processContext" : {
-                "type" : "object",
-                "properties": {
-                  "example" : {
-                    "type" : "object",
-                    "properties" : {
-                      "data" : {
-                        "type" : "object",
-                        "properties" : {
-                          "firstName" : {
-                            "type" : "string",
-                            "faker" : "name.firstName"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "staffDetailsDataContext": {
-                "type": "object",
-                "properties": {
-                  "staffid": {
-                    "type": "string",
-                    "faker": "random.uuid"
-                  },
-                  "required": [
-                    "staffid"
-                  ]
-                }
-              },
-              "environmentContext": {
-                "type": "object",
-                "properties": {
-                  "referenceDataUrl": {
-                    "type": "string",
-                    "chance": {
-                      "pickone": [
-                        [
-                          "http://localhost:8000"
+                          "http://192.168.86.39:8000"
                         ]
                       ]
                     }
@@ -376,7 +128,7 @@
   "gov-uk-enabled": true,
   "legacy-migration": true,
   "keycloak": {
-    "authUrl": "http://localhost:8080/auth",
+    "authUrl": "http://192.168.86.39:8080/auth",
     "clientId": "www",
     "realm": "elf",
     "access-roles": [
