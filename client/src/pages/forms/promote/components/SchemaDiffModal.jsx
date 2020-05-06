@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import Button from "react-bootstrap/Button";
 import {ReactGhLikeDiff} from 'react-gh-like-diff';
-import 'react-gh-like-diff/lib/diff2html.min.css';
+import 'react-gh-like-diff/dist/css/diff2html.min.css';
 
 const SchemaDiffModal = ({open, hide, firstSchema, secondSchema}) => {
 

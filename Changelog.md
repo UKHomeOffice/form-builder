@@ -1,5 +1,8 @@
 # Change Log
-
+# 2.4.1
+### Updated
+ - GDS Formio template to 1.5.0
+ 
 # 2.4.0
 ### Updated
  - GDS Formio template to 1.4.9
