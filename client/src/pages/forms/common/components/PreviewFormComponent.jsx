@@ -255,7 +255,7 @@ export const PreviewFormPanel = ({
                             </Tooltip>
                         }
                     >
-                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                    <Accordion.Toggle as={Button} variant="link" eventKey="0" data-cy="submission-data">
                         {t('form.preview.preload.form-submission-label')} <span> <Badge variant="warning">Experimental</Badge></span>
                     </Accordion.Toggle>
                     </OverlayTrigger>
