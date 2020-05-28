@@ -120,6 +120,45 @@ pipeline:
       event: push
       branch: master
 
+  deploy_to_dev_eforms:
+    image: quay.io/ukhomeofficedigital/kd
+    secrets:
+      - source: DEV_FORMBUILDER_APP_CONFIG
+        target: FORMBUILDER_APP_CONFIG
+      - source: DEV_FORMBUILDER_IMAGE
+        target: FORMBUILDER_IMAGE
+      - source: DEV_FORMBUILDER_KEYCLOAK_CLIENT_ID
+        target: FORMBUILDER_KEYCLOAK_CLIENT_ID
+      - source: DEV_FORMBUILDER_NAME
+        target: FORMBUILDER_NAME
+      - source: DEV_FORMBUILDER_PORT
+        target: FORMBUILDER_PORT
+      - source: DEV_FORMBUILDER_EFORMS_URL
+        target: FORMBUILDER_URL
+      - source: DEV_KUBE_NAMESPACE_COP_EFORMS
+        target: KUBE_NAMESPACE
+      - source: DEV_KUBE_SERVER
+        target: KUBE_SERVER
+      - source: DEV_EFORMS_KUBE_TOKEN
+        target: KUBE_TOKEN
+      - source: DEV_WHITELIST
+        target: WHITELIST
+      - source: NGINX_IMAGE
+        target: NGINX_IMAGE
+      - source: NGINX_TAG
+        target: NGINX_TAG
+    commands:
+      - export FORMBUILDER_TAG=$${DRONE_COMMIT_SHA}
+      - kd --insecure-skip-tls-verify -f kube/cert.yml
+      - kd --insecure-skip-tls-verify -f kube/secret.yml
+      - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+      - kd --insecure-skip-tls-verify -f kube/service.yml
+      - kd --insecure-skip-tls-verify -f kube/deployment.yml
+      - kd --insecure-skip-tls-verify -f kube/ingress.yml
+    when:
+      event: push
+      branch: master
+
   deploy_to_staging:
     image: quay.io/ukhomeofficedigital/kd
     secrets:
