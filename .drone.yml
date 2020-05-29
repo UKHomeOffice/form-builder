@@ -123,7 +123,7 @@ pipeline:
   deploy_to_dev_eforms:
     image: quay.io/ukhomeofficedigital/kd
     secrets:
-      - source: DEV_FORMBUILDER_APP_CONFIG
+      - source: DEV_FORMBUILDER_EFORMS_APP_CONFIG
         target: FORMBUILDER_APP_CONFIG
       - source: DEV_FORMBUILDER_IMAGE
         target: FORMBUILDER_IMAGE
