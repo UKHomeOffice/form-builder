@@ -25,10 +25,10 @@ const FormPromotionPage = ({formId}) => {
     if (!fetchState.status || fetchState.status === EXECUTING) {
         return <TextSpinner loadingText={t('form.loading-form')} styleName="mt-5"/>
     }
-    Formio.baseUrl = `${envContext.url}`;
+    Formio.baseUrl = `/${envContext.id}`;
     Formio.formsUrl = `${envContext.url}/form`;
     Formio.formUrl = `${envContext.url}/form`;
-    Formio.projectUrl = `${envContext.url}`;
+    Formio.projectUrl = `/${envContext.id}`;
     Formio.plugins = [{
         priority: 0,
         preRequest: async function (requestArgs) {

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const isAbsoluteUrl = new RegExp('^(?:[a-z]+:)?//', 'i');
+
 class FileService {
 
     constructor(keycloak, envContext, keycloakTokenProvider) {
@@ -35,7 +37,8 @@ class FileService {
                 });
             }
         };
-        const response = await axios.post(url, data, config);
+        const  uploadUrl  = isAbsoluteUrl.test(url) ? url : `/${this.envContext.id}${url}`;
+        const response = await axios.post(`${uploadUrl}`, data, config);
         return {
             storage: 'url',
             fileName,

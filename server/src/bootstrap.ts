@@ -17,6 +17,7 @@ import {ApplicationConstants} from './constant/ApplicationConstants';
 import {InversifyExpressServer} from 'inversify-express-utils';
 import {KeycloakService} from './auth/KeycloakService';
 import * as bodyParser from 'body-parser';
+import { createProxyMiddleware} from 'http-proxy-middleware';
 
 const ajv = new Ajv({allErrors: true});
 
@@ -89,6 +90,18 @@ server.setConfig((app) => {
         app.use('/assets', express.static('../client/node_modules/govuk-frontend/govuk/assets'));
     }
     app.use(express.static('../client/build'));
+
+    appConfig.environments.forEach((env) => {
+        if (env['reverse-proxies']) {
+            const reverseProxies = env['reverse-proxies'];
+            reverseProxies.forEach((proxy) => {
+                app.use(proxy.path, createProxyMiddleware({
+                    target: proxy.url,
+                    pathRewrite: proxy.pathRewrite,
+                }));
+            });
+        }
+    });
 
     app.use('*', (req, res, next) => {
         if (!req.originalUrl.startsWith('/ui')) {

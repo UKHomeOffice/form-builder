@@ -4,7 +4,30 @@
       "id": "local",
       "label": "Local Development",
       "url": "http://192.168.86.39:4000",
-      "description": "Local Dev environment",
+      "reverse-proxies": [
+        {
+          "path" : "/local/refdata/**",
+          "url" : "http://localhost:9002",
+          "pathRewrite" : {
+            "^/local/refdata" : ""
+          }
+        },
+        {
+          "path": "/local/files/**",
+          "url": "http://localhost:9003",
+          "pathRewrite": {
+            "^/local/files": "/files"
+          }
+        },
+        {
+          "path" : "/local/form/**",
+          "url" : "http://localhost:4000",
+          "pathRewrite" : {
+            "^/local/form" : "/form"
+          }
+        }
+      ],
+      "description": "Local mac environment",
       "service": {
         "formio": {
           "username": "me@lodev.xyz",
@@ -82,7 +105,7 @@
                     "chance": {
                       "pickone": [
                         [
-                          "http://192.168.86.39:8000"
+                          "http://localhost:9002"
                         ]
                       ]
                     }

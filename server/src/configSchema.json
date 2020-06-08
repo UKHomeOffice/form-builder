@@ -47,6 +47,14 @@
             ],
             "pattern": "^(.*)$"
           },
+          "reverse-proxies": {
+            "$id": "#/properties/environments/items/properties/reverse-proxies",
+            "type": "array",
+            "title": "The reverse proxies",
+            "items": {
+              "$ref": "#/properties/reverse-proxies"
+            }
+          },
           "url": {
             "$id": "#/properties/environments/items/properties/url",
             "type": "string",
@@ -229,6 +237,42 @@
           "examples": [
             "['edit-role1','edit-role2']"
           ]
+        }
+      }
+    },
+    "reverse-proxies": {
+      "$id": "#/properties/reverse-proxies",
+      "type": "object",
+      "title": "The Reverse proxies Schema",
+      "items": {
+        "$id": "#/properties/reverse-proxies/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "path",
+          "url"
+        ],
+        "properties": {
+          "path": {
+            "$id": "#/properties/reverse-proxies/items/properties/path",
+            "type": "string",
+            "title": "The Label Schema",
+            "default": "",
+            "examples": [
+              "/local/refdata/**"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "url": {
+            "$id": "#/properties/reverse-proxies/items/properties/url",
+            "type": "string",
+            "title": "The Url Schema",
+            "default": "",
+            "examples": [
+              "http://localhost:9002"
+            ],
+            "pattern": "^(.*)$"
+          }
         }
       }
     }
