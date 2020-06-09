@@ -98,6 +98,7 @@ server.setConfig((app) => {
                 app.use(proxy.path, createProxyMiddleware({
                     target: proxy.url,
                     pathRewrite: proxy.pathRewrite,
+                    secure: proxy.secure,
                 }));
             });
         }
