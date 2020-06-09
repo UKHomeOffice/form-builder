@@ -26,6 +26,7 @@ import Badge from "react-bootstrap/Badge";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import _ from 'lodash';
+import {host} from "../../../../core/host";
 
 const PreviewFormComponent = ({
                                   form, submission, mode,
@@ -141,10 +142,11 @@ export const PreviewFormPanel = ({
             <Spinner animation="border" role="status"/>
         </div>
     }
-    Formio.baseUrl = `${envContext.url}`;
-    Formio.formsUrl = `${envContext.url}/form`;
-    Formio.formUrl = `${envContext.url}/form`;
-    Formio.projectUrl = `${envContext.url}`;
+
+    Formio.baseUrl = `${host}/${envContext.id}`;
+    Formio.formsUrl = `${host}/${envContext.id}/form`;
+    Formio.formUrl = `${host}/${envContext.id}/form`;
+    Formio.projectUrl = `${host}/${envContext.id}`;
     const variableReplacer = new VariableReplacer();
     const interpolationPlugin = {
         priority: 0,

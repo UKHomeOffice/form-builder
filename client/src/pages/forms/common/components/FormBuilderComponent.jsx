@@ -15,6 +15,7 @@ import FormJsonSchemaEditor from "../../edit/components/FormJsonSchemaEditor";
 import {useTranslation} from "react-i18next";
 import PreviewFormModal from "../../create/components/PreviewFormModal";
 import {isMobile} from "react-device-detect";
+import {host} from "../../../../core/host";
 
 const FormBuilderComponent = ({
                                   form,
@@ -43,10 +44,10 @@ const FormBuilderComponent = ({
     });
 
 
-    Formio.baseUrl = `${envContext.url}`;
-    Formio.formsUrl = `${envContext.url}/form`;
-    Formio.formUrl = `${envContext.url}/form`;
-    Formio.projectUrl = `${envContext.url}`;
+    Formio.baseUrl = `${host}/${envContext.id}`;
+    Formio.formsUrl = `${host}/${envContext.id}/form`;
+    Formio.formUrl = `${host}/${envContext.id}/form`;
+    Formio.projectUrl = `${host}/${envContext.id}`;
     Formio.plugins = [{
         priority: 0,
         preRequest: async function (requestArgs) {
@@ -221,7 +222,7 @@ const FormBuilderComponent = ({
                         title: form.data.title,
                         name: form.data.name,
                         path: form.data.path
-                    }} onChange={(form) => updateForm(form)}/>
+                        }} onChange={(form) => updateForm(form)}/>
                 </Container>
             </Row>
         </React.Fragment> : <React.Fragment><Row className="mb-2 mt-2">
