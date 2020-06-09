@@ -3,29 +3,34 @@
  - Enabling reverse proxy
    - You can know configure reverse proxies for external data sources. For example 
    ```json
+     "environments" : [{
+     {
+     "label" : "Local",
      "reverse-proxies" : [
-        {
-          "path" : "/local/refdata/**",
-          "url" : "http://localhost:9002",
-          "pathRewrite" : {
-            "^/local/refdata" : ""
-          }
-        },
-        {
-          "path": "/local/files/**",
-          "url": "http://localhost:9003",
-          "pathRewrite": {
-            "^/local/files": "/files"
-          }
-        },
-        {
-          "path" : "/local/form/**",
-          "url" : "http://localhost:4000",
-          "pathRewrite" : {
-            "^/local/form" : "/form"
-          }
-        }
-      ]
+             {
+               "path" : "/local/refdata/**",
+               "url" : "http://localhost:9002",
+               "pathRewrite" : {
+                 "^/local/refdata" : ""
+               }
+             },
+             {
+               "path": "/local/files/**",
+               "url": "http://localhost:9003",
+               "pathRewrite": {
+                 "^/local/files": "/files"
+               }
+             },
+             {
+               "path" : "/local/form/**",
+               "url" : "http://localhost:4000",
+               "pathRewrite" : {
+                 "^/local/form" : "/form"
+               }
+             }
+           ]
+     }
+   }]
     ``` 
 **Please note the path /local/form/ is required to perform sub form loading. You must add this if you are planning to use subforms**
  
