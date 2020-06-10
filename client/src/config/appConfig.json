@@ -9,7 +9,8 @@
           "path" : "/local/refdata/**",
           "url" : "http://localhost:9002",
           "secure": false,
-          "changeOrigin": false,
+          "changeOrigin": true,
+          "xfwd": true,
           "pathRewrite" : {
             "^/local/refdata" : ""
           }
@@ -18,7 +19,8 @@
           "path": "/local/files/**",
           "url": "http://localhost:9003",
           "secure": false,
-          "changeOrigin": false,
+          "xfwd": true,
+          "changeOrigin": true,
           "pathRewrite": {
             "^/local/files": "/files"
           }
@@ -27,7 +29,8 @@
           "path" : "/local/form/**",
           "url" : "http://localhost:4000",
           "secure": false,
-          "changeOrigin": false,
+          "xfwd": true,
+          "changeOrigin": true,
           "pathRewrite" : {
             "^/local/form" : "/form"
           }
