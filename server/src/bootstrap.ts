@@ -99,6 +99,8 @@ server.setConfig((app) => {
                     target: proxy.url,
                     pathRewrite: proxy.pathRewrite,
                     secure: proxy.secure,
+                    changeOrigin: proxy.changeOrigin,
+                    xfwd: proxy.xfwd,
                 }));
             });
         }
