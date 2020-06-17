@@ -277,7 +277,7 @@ pipeline:
     when:
       branch: master
       event: deployment
-      environment: production
+      environment: production_eforms
 
   notify:
     image: plugins/slack
