@@ -118,7 +118,9 @@ const FormBuilderComponent = ({
             </Col>
         </Row>
     </React.Fragment>;
-
+    if (!form.data.display) {
+        return <div/>
+    }
     return <Container>
         {!openInSchemaEditorMode ? <React.Fragment>
             <Row>
@@ -216,7 +218,9 @@ const FormBuilderComponent = ({
             </Row>
             <Row>
                 <Container>
-                    <FormBuilder form={{
+                    <FormBuilder
+
+                        form={{
                         display: form.data.display,
                         components: form.data.components ? form.data.components : [],
                         title: form.data.title,

@@ -18,7 +18,7 @@ const useEditForm = (formId) => {
     const {handleForm} = useCommonFormUtils();
     const {addToast} = useToasts();
     const [editForm, setValues] = useState({
-        data: {},
+        data: null,
         openLocalChangesDetectedModal: false,
         reloadingFromLocal: false,
         formId: formId,
