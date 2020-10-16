@@ -1,0 +1,342 @@
+---
+kind: pipeline
+type: kubernetes
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: synch_dev_secrets
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/cop-secrets
+  environment:
+    AWS_ACCESS_KEY_ID:
+      from_secret: DEV_DRONE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: DEV_DRONE_AWS_SECRET_ACCESS_KEY
+    DEPLOY_ENV: dev
+    DRONE_SERVER: https://drone.acp.homeoffice.gov.uk
+    DRONE_TOKEN:
+      from_secret: DRONE_PUBLIC_TOKEN
+  when:
+    event:
+    - promote
+    target:
+    - secrets
+
+- name: synch_staging_secrets
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/cop-secrets
+  environment:
+    AWS_ACCESS_KEY_ID:
+      from_secret: STAGING_DRONE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: STAGING_DRONE_AWS_SECRET_ACCESS_KEY
+    DEPLOY_ENV: staging
+    DRONE_SERVER: https://drone.acp.homeoffice.gov.uk
+    DRONE_TOKEN:
+      from_secret: DRONE_PUBLIC_TOKEN
+  when:
+    event:
+    - promote
+    target:
+    - secrets
+
+- name: synch_production_secrets
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/cop-secrets
+  environment:
+    AWS_ACCESS_KEY_ID:
+      from_secret: PRODUCTION_DRONE_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: PRODUCTION_DRONE_AWS_SECRET_ACCESS_KEY
+    DEPLOY_ENV: production
+    DRONE_SERVER: https://drone.acp.homeoffice.gov.uk
+    DRONE_TOKEN:
+      from_secret: DRONE_PUBLIC_TOKEN
+  when:
+    event:
+    - promote
+    target:
+    - secrets
+
+- name: build
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/drone-docker
+  commands:
+  - docker build -t cop-form-builder:$${DRONE_COMMIT_SHA} .
+  when:
+    event:
+    - push
+
+- name: vulnerability-scan
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/anchore-submission:latest
+  settings:
+    dockerfile: Dockerfile
+    image_name: cop-form-builder:${DRONE_COMMIT_SHA}
+    local_image: true
+    tolerate: low
+  when:
+    branch:
+    - master
+    event:
+    - push
+
+- name: image_to_quay
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/drone-docker
+  settings:
+    registry: quay.io
+    repo: quay.io/ukhomeofficedigital/cop-form-builder
+    tags: ${DRONE_COMMIT_SHA}
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: QUAY_PASSWORD
+    DOCKER_USERNAME:
+      from_secret: QUAY_USERNAME
+  when:
+    branch:
+    - master
+    event:
+    - push
+
+- name: deploy_to_dev
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/kd
+  commands:
+  - export FORMBUILDER_TAG=$${DRONE_COMMIT_SHA}
+  - kd --insecure-skip-tls-verify -f kube/cert.yml
+  - kd --insecure-skip-tls-verify -f kube/secret.yml
+  - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+  - kd --insecure-skip-tls-verify -f kube/service.yml
+  - kd --insecure-skip-tls-verify -f kube/deployment.yml
+  - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  environment:
+    FORMBUILDER_APP_CONFIG:
+      from_secret: DEV_FORMBUILDER_APP_CONFIG
+    FORMBUILDER_IMAGE:
+      from_secret: DEV_FORMBUILDER_IMAGE
+    FORMBUILDER_KEYCLOAK_CLIENT_ID:
+      from_secret: DEV_FORMBUILDER_KEYCLOAK_CLIENT_ID
+    FORMBUILDER_NAME:
+      from_secret: DEV_FORMBUILDER_NAME
+    FORMBUILDER_PORT:
+      from_secret: DEV_FORMBUILDER_PORT
+    FORMBUILDER_URL:
+      from_secret: DEV_FORMBUILDER_URL
+    KUBE_NAMESPACE:
+      from_secret: DEV_KUBE_NAMESPACE_COP_OPS
+    KUBE_SERVER:
+      from_secret: DEV_KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: DEV_KUBE_TOKEN
+    NGINX_IMAGE:
+      from_secret: NGINX_IMAGE
+    NGINX_TAG:
+      from_secret: NGINX_TAG
+    WHITELIST:
+      from_secret: DEV_WHITELIST
+  when:
+    branch:
+    - master
+    event:
+    - push
+
+- name: deploy_to_dev_eforms
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/kd
+  commands:
+  - export FORMBUILDER_TAG=$${DRONE_COMMIT_SHA}
+  - kd --insecure-skip-tls-verify -f kube/cert.yml
+  - kd --insecure-skip-tls-verify -f kube/secret.yml
+  - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+  - kd --insecure-skip-tls-verify -f kube/service.yml
+  - kd --insecure-skip-tls-verify -f kube/deployment.yml
+  - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  environment:
+    FORMBUILDER_APP_CONFIG:
+      from_secret: DEV_FORMBUILDER_EFORMS_APP_CONFIG
+    FORMBUILDER_IMAGE:
+      from_secret: DEV_FORMBUILDER_IMAGE
+    FORMBUILDER_KEYCLOAK_CLIENT_ID:
+      from_secret: DEV_FORMBUILDER_KEYCLOAK_CLIENT_ID
+    FORMBUILDER_NAME:
+      from_secret: DEV_FORMBUILDER_NAME
+    FORMBUILDER_PORT:
+      from_secret: DEV_FORMBUILDER_PORT
+    FORMBUILDER_URL:
+      from_secret: DEV_FORMBUILDER_EFORMS_URL
+    KUBE_NAMESPACE:
+      from_secret: DEV_KUBE_NAMESPACE_COP_EFORMS
+    KUBE_SERVER:
+      from_secret: DEV_KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: DEV_EFORMS_KUBE_TOKEN
+    NGINX_IMAGE:
+      from_secret: NGINX_IMAGE
+    NGINX_TAG:
+      from_secret: NGINX_TAG
+    WHITELIST:
+      from_secret: DEV_WHITELIST
+  when:
+    branch:
+    - master
+    event:
+    - push
+
+- name: deploy_to_staging
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/kd
+  commands:
+  - export FORMBUILDER_TAG=$${DRONE_COMMIT_SHA}
+  - kd --insecure-skip-tls-verify -f kube/cert.yml
+  - kd --insecure-skip-tls-verify -f kube/secret.yml
+  - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+  - kd --insecure-skip-tls-verify -f kube/service.yml
+  - kd --insecure-skip-tls-verify -f kube/deployment.yml
+  - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  environment:
+    FORMBUILDER_APP_CONFIG:
+      from_secret: STAGING_FORMBUILDER_APP_CONFIG
+    FORMBUILDER_IMAGE:
+      from_secret: STAGING_FORMBUILDER_IMAGE
+    FORMBUILDER_KEYCLOAK_CLIENT_ID:
+      from_secret: STAGING_FORMBUILDER_KEYCLOAK_CLIENT_ID
+    FORMBUILDER_NAME:
+      from_secret: STAGING_FORMBUILDER_NAME
+    FORMBUILDER_PORT:
+      from_secret: STAGING_FORMBUILDER_PORT
+    FORMBUILDER_URL:
+      from_secret: STAGING_FORMBUILDER_URL
+    KUBE_NAMESPACE:
+      from_secret: STAGING_KUBE_NAMESPACE_COP_OPS
+    KUBE_SERVER:
+      from_secret: STAGING_KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: STAGING_KUBE_TOKEN
+    NGINX_IMAGE:
+      from_secret: NGINX_IMAGE
+    NGINX_TAG:
+      from_secret: NGINX_TAG
+    WHITELIST:
+      from_secret: STAGING_WHITELIST
+  when:
+    branch:
+    - master
+    event:
+    - promote
+    target:
+    - staging
+
+- name: deploy_to_production
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/kd
+  commands:
+  - export FORMBUILDER_TAG=$${DRONE_COMMIT_SHA}
+  - kd --insecure-skip-tls-verify -f kube/cert.yml
+  - kd --insecure-skip-tls-verify -f kube/secret.yml
+  - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+  - kd --insecure-skip-tls-verify -f kube/service.yml
+  - kd --insecure-skip-tls-verify -f kube/deployment.yml
+  - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  environment:
+    FORMBUILDER_APP_CONFIG:
+      from_secret: PRODUCTION_FORMBUILDER_APP_CONFIG
+    FORMBUILDER_IMAGE:
+      from_secret: PRODUCTION_FORMBUILDER_IMAGE
+    FORMBUILDER_KEYCLOAK_CLIENT_ID:
+      from_secret: PRODUCTION_FORMBUILDER_KEYCLOAK_CLIENT_ID
+    FORMBUILDER_NAME:
+      from_secret: PRODUCTION_FORMBUILDER_NAME
+    FORMBUILDER_PORT:
+      from_secret: PRODUCTION_FORMBUILDER_PORT
+    FORMBUILDER_URL:
+      from_secret: PRODUCTION_FORMBUILDER_URL
+    KUBE_NAMESPACE:
+      from_secret: PRODUCTION_KUBE_NAMESPACE_COP_OPS
+    KUBE_SERVER:
+      from_secret: PRODUCTION_KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: PRODUCTION_KUBE_TOKEN
+    NGINX_IMAGE:
+      from_secret: NGINX_IMAGE
+    NGINX_TAG:
+      from_secret: NGINX_TAG
+    WHITELIST:
+      from_secret: PRODUCTION_WHITELIST
+  when:
+    branch:
+    - master
+    event:
+    - promote
+    target:
+    - production
+
+- name: deploy_to_production_eforms
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/kd
+  commands:
+  - export FORMBUILDER_TAG=$${DRONE_COMMIT_SHA}
+  - kd --insecure-skip-tls-verify -f kube/cert.yml
+  - kd --insecure-skip-tls-verify -f kube/secret.yml
+  - kd --insecure-skip-tls-verify -f kube/network-policy.yml
+  - kd --insecure-skip-tls-verify -f kube/service.yml
+  - kd --insecure-skip-tls-verify -f kube/deployment.yml
+  - kd --insecure-skip-tls-verify -f kube/ingress.yml
+  environment:
+    FORMBUILDER_APP_CONFIG:
+      from_secret: PRODUCTION_FORMBUILDER_EFORMS_APP_CONFIG
+    FORMBUILDER_IMAGE:
+      from_secret: PRODUCTION_FORMBUILDER_IMAGE
+    FORMBUILDER_KEYCLOAK_CLIENT_ID:
+      from_secret: PRODUCTION_FORMBUILDER_KEYCLOAK_CLIENT_ID
+    FORMBUILDER_NAME:
+      from_secret: PRODUCTION_FORMBUILDER_NAME
+    FORMBUILDER_PORT:
+      from_secret: PRODUCTION_FORMBUILDER_PORT
+    FORMBUILDER_URL:
+      from_secret: PRODUCTION_FORMBUILDER_EFORMS_URL
+    KUBE_NAMESPACE:
+      from_secret: PRODUCTION_KUBE_NAMESPACE_COP_EFORMS
+    KUBE_SERVER:
+      from_secret: PRODUCTION_KUBE_SERVER
+    KUBE_TOKEN:
+      from_secret: PRODUCTION_EFORMS_KUBE_TOKEN
+    NGINX_IMAGE:
+      from_secret: NGINX_IMAGE
+    NGINX_TAG:
+      from_secret: NGINX_TAG
+    WHITELIST:
+      from_secret: PRODUCTION_WHITELIST
+  when:
+    branch:
+    - master
+    event:
+    - promote
+    target:
+    - production_eforms
+
+- name: notify
+  pull: if-not-exists
+  image: plugins/slack
+  settings:
+    channel: cop-deployments
+    template: "{{#build.deployTo}}\n  *{{repo.name}} - Build {{build.number}} - {{uppercasefirst build.deployTo}} - {{uppercase build.status}}*\n  {{build.link}}\n{{else}}\n  *{{repo.name}} - Build {{build.number}} - Development - {{uppercase build.status}}*\n  {{build.link}}\n{{/build.deployTo}}\n"
+    username: Drone Build Watcher
+  environment:
+    SLACK_WEBHOOK:
+      from_secret: SLACK_WEBHOOK
+  when:
+    branch:
+    - master
+    event:
+    - push
+    - promote
+    status:
+    - success
+    - failure
+
+...
