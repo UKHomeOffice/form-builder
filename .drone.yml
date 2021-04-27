@@ -193,7 +193,7 @@ steps:
     FORMBUILDER_URL:
       from_secret: SIT_FORMBUILDER_URL
     KUBE_NAMESPACE:
-      from_secret: SIT_KUBE_NAMESPACE_COP
+      from_secret: SIT_KUBE_NAMESPACE_COP_OPS
     KUBE_SERVER:
       from_secret: SIT_KUBE_SERVER
     KUBE_TOKEN:
