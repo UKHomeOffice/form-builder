@@ -31,7 +31,7 @@
 import 'cypress-file-upload';
 import 'cypress-drag-drop';
 
-const username = 'cypressuser@lodev.xyz';
+const username = 'cypressuser@local.cop.homeoffice.gov.uk';
 const password = 'secret';
 
 import Dexie from 'dexie';

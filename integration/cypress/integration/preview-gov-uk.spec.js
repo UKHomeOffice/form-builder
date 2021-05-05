@@ -7,7 +7,7 @@ const chance = new Chance();
 const tokenData = qs.stringify({
     grant_type: 'password',
     client_id: 'www',
-    username: 'cypressuser@lodev.xyz',
+    username: 'cypressuser@local.cop.homeoffice.gov.uk',
     password: 'secret'
 });
 

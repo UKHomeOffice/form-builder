@@ -39,7 +39,7 @@
       "description": "Local mac environment",
       "service": {
         "formio": {
-          "username": "me@lodev.xyz",
+          "username": "me@local.cop.homeoffice.gov.uk",
           "password": "secret"
         },
         "keycloak": {

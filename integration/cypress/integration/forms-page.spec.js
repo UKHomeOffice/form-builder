@@ -43,7 +43,7 @@ describe('Forms Page', () => {
 
     it('redirect to / if environment context not set', () => {
 
-        const username = 'cypressuser@lodev.xyz';
+        const username = 'cypressuser@local.cop.homeoffice.gov.uk';
         const password = 'secret';
 
         cy.get('[data-cy=forms-menu]').should('exist');

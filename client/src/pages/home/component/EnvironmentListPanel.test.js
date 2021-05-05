@@ -16,10 +16,10 @@ describe("Environments panel", () => {
         const data = [
             {
                 "id": "dev",
-                "url": "http://formio.lodev.xyz",
+                "url": "http://formio.local.cop.homeoffice.gov.uk",
                 "description": "development environment",
                 "service": {
-                    "username": "me@lodev.xyz",
+                    "username": "me@local.cop.homeoffice.gov.uk",
                     "password": "secret"
                 },
                 "editable": true,
