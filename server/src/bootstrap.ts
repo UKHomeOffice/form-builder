@@ -18,7 +18,7 @@ import {InversifyExpressServer} from 'inversify-express-utils';
 import {KeycloakService} from './auth/KeycloakService';
 import * as bodyParser from 'body-parser';
 import { createProxyMiddleware} from 'http-proxy-middleware';
-
+import './config/appConfig.json';
 const ajv = new Ajv({allErrors: true});
 
 const port = process.env.FORMBUILDER_PORT || 8101;
@@ -26,8 +26,8 @@ const port = process.env.FORMBUILDER_PORT || 8101;
 const app = express();
 
 const validate = ajv.compile(schema);
-
-const appConfig = JSON.parse(fs.readFileSync(process.env.APP_CONFIG_LOCATION || '/config/appConfig.json').toString('utf-8'));
+const configPath = path.join(__dirname, '/config/appConfig.json')
+const appConfig = JSON.parse(fs.readFileSync(process.env.APP_CONFIG_LOCATION || configPath).toString('utf-8'));
 
 const valid = validate(appConfig);
 if (valid) {
@@ -47,6 +47,7 @@ const eventEmitter: EventEmitter = container.get(TYPE.EventEmitter);
 const keycloakService: KeycloakService = container.get(TYPE.KeycloakService);
 
 const sanitizedConfig = _.cloneDeep(appConfig);
+
 sanitizedConfig.environments.forEach((environment) => {
     delete environment.service;
 });

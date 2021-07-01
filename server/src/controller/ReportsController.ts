@@ -12,7 +12,9 @@ export class ReportsController extends BaseHttpController {
 
     constructor(@inject(TYPE.AppConfig) private readonly appConfig: any,
                 @inject(TYPE.KeycloakService) private readonly keycloakService: KeycloakService) {
+                   
         super();
+        console.log(this.appConfig.environments);
     }
 
     @httpGet('/reports', TYPE.ProtectMiddleware)
@@ -24,7 +26,9 @@ export class ReportsController extends BaseHttpController {
         const instance = axios.create();
         const perEnvResults = await axios.all(this.appConfig.environments.map(async (environment) => {
             const url = `${environment.url}/form?countOnly=true`;
+            console.log(environment.id, 'environment id');
             const token = await this.keycloakService.token(environment.id);
+            console.log(token, 'TOKEN');
             try {
                 const perEnvResponse = await instance({
                     url,

@@ -79,6 +79,8 @@ class KeycloakTokenProvider {
                         refresh_token: keycloak.refreshToken
                     })
                 });
+                console.log(`Bearer ${accessToken.data.access_token}`);
+                console.log(keycloakConfig.clientId);
 
                 const tokenResponse = await instance({
                     method: 'GET',

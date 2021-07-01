@@ -30,7 +30,13 @@ export class KeycloakService {
     }
 
     public async token(env: string): Promise<string> {
+console.log('token function called')
         const environment = _.find(this.appConfig.environments, {id: env});
+        console.log({
+            id: env,
+            userName: environment.service.keycloak.clientId,
+            password: environment.service.keycloak.secret
+        });
         const tokenResponse = await axios({
             method: 'POST',
             url: `${environment.service.keycloak.tokenUrl}`,

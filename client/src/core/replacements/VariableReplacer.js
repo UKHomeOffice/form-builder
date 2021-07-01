@@ -2,7 +2,7 @@ import FormioUtils from 'formiojs/utils';
 import jsf from 'json-schema-faker';
 import Chance from 'chance';
 import faker from 'faker';
-import moment from 'moment';
+import moment from 'moment'; 
 import _ from 'lodash';
 
 class VariableReplacer {

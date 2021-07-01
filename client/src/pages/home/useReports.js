@@ -37,7 +37,7 @@ const useReports = () => {
         }
 
         const keycloakConfig = appConfig.get('keycloak');
-
+        console.log(`${keycloakConfig.authUrl}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`);
         const accessToken = await axios({
             method: 'POST',
             url: `${keycloakConfig.authUrl}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`,

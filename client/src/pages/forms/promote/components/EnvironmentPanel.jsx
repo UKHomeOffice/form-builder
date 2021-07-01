@@ -81,6 +81,7 @@ const EnvironmentPanel = ({form, setValue, isDisabled}) => {
                     <Button block={isMobile} className="mr-2"
                             onClick={() => {
                                 form.stepper.previous();
+                                console.log("helloo!!!")
                             }}
                             variant="secondary"><FontAwesomeIcon icon={faCaretLeft}/><span
                         className="ml-2">{t('form.promote.previous')}</span></Button>
